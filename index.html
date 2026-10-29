@@ -3414,7 +3414,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     }
 
     /* Si se recargó la página justo después de enviar el último intento,
-       el guardado aún dice "sin terminar". Se resuelve aquí para que la
+       el guardado aún dice "sin terminar". Se resuelve hier para que la
        partida no se quede bloqueada en una fila que ya no existe. */
     const ultimoIntento = intentos.length ? intentos[intentos.length - 1] : null;
     const ultimoAcertado = ultimoIntento === normalizar(respuesta.nombre);
@@ -3481,8 +3481,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
 
   /* ============================================================
      TIKITEXTOS, ESTADÍSTICAS Y RANKING MUNDIAL (Supabase)
-     Usa la tabla public.jugadores y las funciones del SQL existente:
-     reclamar_nombre, registrar_acierto y ranking_top.
      ============================================================ */
   const CLAVE_JUG = "tikitexto:jugadores";
   const CLAVE_TOKENS_GLOBAL = "tikitexto:ranking:tokens";
@@ -3502,9 +3500,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   function guardarJ() { try { localStorage.setItem(CLAVE_JUG, JSON.stringify(datosJ)); } catch (error) { /* sin almacenamiento */ } }
   function perfil() { return datosJ.perfiles[datosJ.actual]; }
 
-  // Cada nombre se reclama con un token persistente en este navegador.
-  // Si se cambia de dispositivo, el mismo jugador necesitará conservar su token;
-  // este sistema no es una cuenta con inicio de sesión.
   function cargarTokensGlobales() {
     try {
       const t = JSON.parse(localStorage.getItem(CLAVE_TOKENS_GLOBAL));
@@ -3523,7 +3518,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
           crypto.getRandomValues(bytes);
           token = Array.from(bytes).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
         }
-      } catch (error) { /* alternativa de compatibilidad */ }
+      } catch (error) { /* respaldo */ }
       if (!token) token = "tt-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
       tokensGlobales[nombre] = token;
       try { localStorage.setItem(CLAVE_TOKENS_GLOBAL, JSON.stringify(tokensGlobales)); } catch (error) { /* sin almacenamiento */ }
@@ -3538,9 +3533,9 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   let colaPuntosGlobales = Promise.resolve();
 
   function cabecerasRankingGlobal() {
-    // Con claves sb_publishable_* se envía apikey; no se fuerza un JWT en Authorization.
     return {
       "apikey": RANKING_KEY,
+      "Authorization": "Bearer " + RANKING_KEY,
       "Content-Type": "application/json",
       "Accept": "application/json"
     };
@@ -3559,7 +3554,13 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       const detalle = await respuesta.text().catch(function () { return ""; });
       throw new Error("Supabase " + respuesta.status + (detalle ? ": " + detalle : ""));
     }
-    return respuesta.json();
+    const textoRespuesta = await respuesta.text();
+    if (!textoRespuesta) return null;
+    try {
+      return JSON.parse(textoRespuesta);
+    } catch (e) {
+      return textoRespuesta;
+    }
   }
 
   async function cargarRankingMundial() {
@@ -3630,7 +3631,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   function publicarAciertoMundial(nombre) {
-    // Encola aciertos para evitar perder una actualización si dos eventos coinciden.
     colaPuntosGlobales = colaPuntosGlobales.then(async function () {
       try {
         const reclamo = await reclamarJugadorMundial(nombre);
@@ -3651,7 +3651,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
         if (resultado && resultado.estado === "ok") {
           aplicarPuntosGlobales(nombre, resultado.pts);
         } else if (resultado && resultado.estado === "rapido") {
-          // Supabase no aceptó el punto porque aún no han pasado 10 segundos.
           aplicarPuntosGlobales(nombre, puntosAntes);
           mostrarAviso("Espera 10 segundos entre puntos del ranking mundial.");
         } else {
@@ -3671,7 +3670,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   function ranking() {
-    if (rankingMundialDisponible) {
+    if (rankingMundialDisponible && rankingMundialDatos.length > 0) {
       return rankingMundialDatos.map(function (x) { return [x[0], x[1]]; });
     }
     return Object.keys(datosJ.perfiles).map(function (n) { return [n, datosJ.perfiles[n]]; })
@@ -3696,7 +3695,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     punto.classList.add("punto--ver");
   }
 
-  /* +1 tikitexto por cada acierto. El diario solo puntúa una vez al día. */
   function registrarFin() {
     const p = perfil();
     const repetido = estado.modo === "diario" && p.diario === claveDelDia();
@@ -3794,8 +3792,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     boton.addEventListener("click", alternarTema);
   });
 
-  /* Un solo listener para todos los botones de modo, también los creados
-     dinámicamente en la pantalla de inicio. */
   document.addEventListener("click", function (evento) {
     const objetivo = evento.target;
     if (!objetivo || !objetivo.closest) return;
@@ -3841,7 +3837,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     irAlInicio();
   });
 
-
   document.querySelectorAll("[data-cerrar]").forEach(function (elemento) {
     elemento.addEventListener("click", function () { cerrarModal(); });
   });
@@ -3852,7 +3847,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     document.body.classList.remove("sin-desplazamiento");
   });
 
-  /* Teclado físico: letras, Enter y Retroceso */
   document.addEventListener("keydown", function (evento) {
     if (evento.ctrlKey || evento.metaKey || evento.altKey) return;
     if (evento.isComposing) return;
@@ -3890,7 +3884,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     }
   });
 
-  /* Al volver de segundo plano se guarda por si acaso */
   document.addEventListener("visibilitychange", function () {
     if (document.hidden && estado.modo && !pantallaJuego.hidden) guardarPartida();
   });
@@ -3901,16 +3894,13 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   aplicarTema(document.documentElement.dataset.tema || "claro");
   pintarInicio();
   pintarTikis();
-  // Reclama el jugador guardado y carga el Top 20 mundial al arrancar.
+
   prepararJugadorMundial(datosJ.actual, false).then(function (ok) {
     if (!ok) console.warn("El jugador actual todavía no está conectado al ranking mundial.");
   });
   cargarRankingMundial();
   recuperarPartida();
 })();
-</script>
-</body>
-</html>
 </script>
 </body>
 </html>
