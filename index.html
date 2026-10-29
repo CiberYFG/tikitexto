@@ -3480,9 +3480,12 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   /* ============================================================
-     TIKITEXTOS, ESTADÍSTICAS Y RANKING (guardado en este dispositivo)
+     TIKITEXTOS, ESTADÍSTICAS Y RANKING MUNDIAL (Supabase)
+     Usa la tabla public.jugadores y las funciones del SQL existente:
+     reclamar_nombre, registrar_acierto y ranking_top.
      ============================================================ */
   const CLAVE_JUG = "tikitexto:jugadores";
+  const CLAVE_TOKENS_GLOBAL = "tikitexto:ranking:tokens";
   const NIVELES = [[0, "Cantera"], [10, "Titular"], [25, "Crack"], [50, "Estrella"], [100, "Leyenda"]];
 
   function nuevoPerfil() { return { pts: 0, jugadas: 0, aciertos: 0, racha: 0, mejor: 0, dist: [0, 0, 0, 0, 0, 0], diario: "" }; }
@@ -3498,7 +3501,179 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   let datosJ = cargarJ();
   function guardarJ() { try { localStorage.setItem(CLAVE_JUG, JSON.stringify(datosJ)); } catch (error) { /* sin almacenamiento */ } }
   function perfil() { return datosJ.perfiles[datosJ.actual]; }
+
+  // Cada nombre se reclama con un token persistente en este navegador.
+  // Si se cambia de dispositivo, el mismo jugador necesitará conservar su token;
+  // este sistema no es una cuenta con inicio de sesión.
+  function cargarTokensGlobales() {
+    try {
+      const t = JSON.parse(localStorage.getItem(CLAVE_TOKENS_GLOBAL));
+      return t && typeof t === "object" && !Array.isArray(t) ? t : {};
+    } catch (error) { return {}; }
+  }
+  let tokensGlobales = cargarTokensGlobales();
+  function tokenGlobalPara(nombre) {
+    if (!tokensGlobales[nombre]) {
+      let token = "";
+      try {
+        if (window.crypto && typeof crypto.randomUUID === "function") {
+          token = crypto.randomUUID() + crypto.randomUUID();
+        } else if (window.crypto && crypto.getRandomValues) {
+          const bytes = new Uint8Array(32);
+          crypto.getRandomValues(bytes);
+          token = Array.from(bytes).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+        }
+      } catch (error) { /* alternativa de compatibilidad */ }
+      if (!token) token = "tt-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+      tokensGlobales[nombre] = token;
+      try { localStorage.setItem(CLAVE_TOKENS_GLOBAL, JSON.stringify(tokensGlobales)); } catch (error) { /* sin almacenamiento */ }
+    }
+    return tokensGlobales[nombre];
+  }
+
+  let rankingMundialDatos = [];
+  let rankingMundialDisponible = false;
+  let nombreGlobalValidado = null;
+  let estadoConexionRanking = "pendiente";
+  let colaPuntosGlobales = Promise.resolve();
+
+  function cabecerasRankingGlobal() {
+    // Con claves sb_publishable_* se envía apikey; no se fuerza un JWT en Authorization.
+    return {
+      "apikey": RANKING_KEY,
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    };
+  }
+
+  async function llamarFuncionRankingGlobal(nombreFuncion, parametros) {
+    const base = String(RANKING_URL || "").replace(/\/+$/, "");
+    if (!base || !RANKING_KEY) throw new Error("Falta la URL o la clave de Supabase.");
+    const respuesta = await fetch(base + "/rest/v1/rpc/" + nombreFuncion, {
+      method: "POST",
+      headers: cabecerasRankingGlobal(),
+      body: JSON.stringify(parametros || {}),
+      cache: "no-store"
+    });
+    if (!respuesta.ok) {
+      const detalle = await respuesta.text().catch(function () { return ""; });
+      throw new Error("Supabase " + respuesta.status + (detalle ? ": " + detalle : ""));
+    }
+    return respuesta.json();
+  }
+
+  async function cargarRankingMundial() {
+    try {
+      const filas = await llamarFuncionRankingGlobal("ranking_top", {});
+      rankingMundialDatos = (Array.isArray(filas) ? filas : []).map(function (fila) {
+        return [String(fila.nombre || "Jugador").slice(0, 14), {
+          pts: Math.max(0, Number(fila.pts) || 0),
+          aciertos: 0
+        }];
+      });
+      rankingMundialDisponible = true;
+      if (!modalStats.hidden) pintarStats();
+      return true;
+    } catch (error) {
+      rankingMundialDisponible = false;
+      console.warn("No se pudo consultar el ranking mundial de TIKITEXTO.", error);
+      if (!modalStats.hidden) pintarStats();
+      return false;
+    }
+  }
+
+  async function reclamarJugadorMundial(nombre) {
+    const resultado = await llamarFuncionRankingGlobal("reclamar_nombre", {
+      p_nombre: nombre,
+      p_token: tokenGlobalPara(nombre)
+    });
+    return resultado;
+  }
+
+  function aplicarPuntosGlobales(nombre, puntos) {
+    if (datosJ.actual !== nombre || !datosJ.perfiles[nombre]) return;
+    datosJ.perfiles[nombre].pts = Math.max(0, Number(puntos) || 0);
+    guardarJ();
+    pintarTikis();
+    if (!modalStats.hidden) pintarStats();
+  }
+
+  async function prepararJugadorMundial(nombre, mostrarMensajes) {
+    try {
+      const resultado = await reclamarJugadorMundial(nombre);
+      if (resultado && resultado.estado === "ok") {
+        nombreGlobalValidado = nombre;
+        estadoConexionRanking = "ok";
+        aplicarPuntosGlobales(nombre, resultado.pts);
+        await cargarRankingMundial();
+        return true;
+      }
+      nombreGlobalValidado = null;
+      estadoConexionRanking = resultado && resultado.estado ? resultado.estado : "error";
+      if (mostrarMensajes) {
+        if (estadoConexionRanking === "ocupado") {
+          mostrarAviso("Ese nombre ya pertenece a otro jugador. Elige otro.");
+        } else if (estadoConexionRanking === "invalido") {
+          mostrarAviso("El nombre debe tener 3-14 caracteres válidos.");
+        } else {
+          mostrarAviso("No se pudo registrar el jugador en el ranking mundial.");
+        }
+      }
+      return false;
+    } catch (error) {
+      estadoConexionRanking = "error";
+      nombreGlobalValidado = null;
+      console.warn("No se pudo registrar el jugador en Supabase.", error);
+      if (mostrarMensajes) mostrarAviso("No se pudo conectar al ranking mundial.");
+      return false;
+    }
+  }
+
+  function publicarAciertoMundial(nombre) {
+    // Encola aciertos para evitar perder una actualización si dos eventos coinciden.
+    colaPuntosGlobales = colaPuntosGlobales.then(async function () {
+      try {
+        const reclamo = await reclamarJugadorMundial(nombre);
+        if (!reclamo || reclamo.estado !== "ok") {
+          nombreGlobalValidado = null;
+          estadoConexionRanking = reclamo && reclamo.estado ? reclamo.estado : "error";
+          if (estadoConexionRanking === "ocupado") mostrarAviso("Ese nombre está ocupado en el ranking mundial. Elige otro.");
+          else mostrarAviso("No se pudo validar el jugador para el ranking mundial.");
+          return;
+        }
+        nombreGlobalValidado = nombre;
+        estadoConexionRanking = "ok";
+        const puntosAntes = Math.max(0, Number(reclamo.pts) || 0);
+        const resultado = await llamarFuncionRankingGlobal("registrar_acierto", {
+          p_nombre: nombre,
+          p_token: tokenGlobalPara(nombre)
+        });
+        if (resultado && resultado.estado === "ok") {
+          aplicarPuntosGlobales(nombre, resultado.pts);
+        } else if (resultado && resultado.estado === "rapido") {
+          // Supabase no aceptó el punto porque aún no han pasado 10 segundos.
+          aplicarPuntosGlobales(nombre, puntosAntes);
+          mostrarAviso("Espera 10 segundos entre puntos del ranking mundial.");
+        } else {
+          aplicarPuntosGlobales(nombre, puntosAntes);
+          mostrarAviso("No se pudo registrar el punto mundial.");
+        }
+        await cargarRankingMundial();
+      } catch (error) {
+        estadoConexionRanking = "error";
+        console.warn("Error al publicar un punto mundial.", error);
+        mostrarAviso("No se pudo guardar el punto en el ranking mundial.");
+      }
+    }).catch(function (error) {
+      console.warn("Error en la cola del ranking mundial.", error);
+    });
+    return colaPuntosGlobales;
+  }
+
   function ranking() {
+    if (rankingMundialDisponible) {
+      return rankingMundialDatos.map(function (x) { return [x[0], x[1]]; });
+    }
     return Object.keys(datosJ.perfiles).map(function (n) { return [n, datosJ.perfiles[n]]; })
       .sort(function (a, b) { return b[1].pts - a[1].pts || b[1].aciertos - a[1].aciertos; });
   }
@@ -3544,6 +3719,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (suma) {
       textoPunto = "⚡ +1 tikitexto · " + p.pts + " en total · puesto #" + puesto() + " · Ver ranking";
       mostrarPunto();
+      publicarAciertoMundial(datosJ.actual);
     }
   }
 
@@ -3562,24 +3738,53 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       '<div class="stats__rejilla">' + casillas.map(function (c) { return "<div><b>" + c[0] + "</b><span>" + c[1] + "</span></div>"; }).join("") + "</div>" +
       '<h3 class="stats__sub">Intentos para acertar</h3>' +
       p.dist.map(function (v, i) { return '<div class="dist"><span>' + (i + 1) + '</span><i style="width:' + Math.max(10, v / max * 100) + '%">' + v + "</i></div>"; }).join("") +
-      '<h3 class="stats__sub">🏆 Ranking · Top jugadores</h3><ol class="rank">' +
-      ranking().slice(0, 10).map(function (x, i) {
-        return '<li class="' + (x[0] === datosJ.actual ? "rank--yo" : "") + '"><span>' + (["🥇", "🥈", "🥉"][i] || (i + 1)) + "</span><em>" + esc(x[0]) + "</em><b>" + x[1].pts + " ⚡</b></li>";
+      '<h3 class="stats__sub">🏆 Ranking mundial · Top 20</h3><ol class="rank">' +
+      ranking().slice(0, 20).map(function (x, i) {
+        return '<li class="' + (x[0].toLowerCase() === datosJ.actual.toLowerCase() ? "rank--yo" : "") + '"><span>' + (["🥇", "🥈", "🥉"][i] || (i + 1)) + "</span><em>" + esc(x[0]) + "</em><b>" + x[1].pts + " ⚡</b></li>";
       }).join("") + "</ol>" +
-      '<form class="nuevo" id="formJugador"><input maxlength="14" placeholder="Nombre de jugador" autocomplete="off" aria-label="Nombre de jugador"><button class="boton boton--primario">Cambiar o crear jugador</button></form>' +
-      '<p class="stats__nota">El ranking reúne a los jugadores de este dispositivo.</p>';
+      '<form class="nuevo" id="formJugador"><input maxlength="14" placeholder="Nombre de jugador (3-14 caracteres)" autocomplete="off" aria-label="Nombre de jugador"><button class="boton boton--primario">Cambiar o crear jugador</button></form>' +
+      '<p class="stats__nota">' +
+        (rankingMundialDisponible
+          ? (nombreGlobalValidado === datosJ.actual
+              ? '🌍 Ranking mundial conectado: todos los dispositivos consultan esta misma clasificación.'
+              : '🌍 Ranking mundial visible. Para puntuar globalmente, reclama un nombre disponible de 3 a 14 caracteres.')
+          : '⚠️ No se pudo cargar el ranking mundial. Comprueba la conexión y la configuración de Supabase.') +
+      '</p>';
   }
 
-  document.addEventListener("submit", function (e) {
+  document.addEventListener("submit", async function (e) {
     if (e.target.id !== "formJugador") return;
     e.preventDefault();
     const nombre = e.target.querySelector("input").value.trim().slice(0, 14);
     if (!nombre) return;
-    if (!datosJ.perfiles[nombre]) datosJ.perfiles[nombre] = nuevoPerfil();
-    datosJ.actual = nombre;
-    guardarJ();
-    pintarTikis();
-    pintarStats();
+    if (nombre.length < 3 || nombre.length > 14 || !/^[A-Za-z0-9ÁÉÍÓÚÜÑáéíóúüñ _.-]+$/.test(nombre)) {
+      mostrarAviso("Usa 3-14 caracteres: letras, números, espacios, punto, guion o guion bajo.");
+      return;
+    }
+    const boton = e.target.querySelector("button");
+    if (boton) boton.disabled = true;
+    try {
+      const resultado = await reclamarJugadorMundial(nombre);
+      if (!resultado || resultado.estado !== "ok") {
+        if (resultado && resultado.estado === "ocupado") mostrarAviso("Ese nombre ya pertenece a otro jugador. Elige otro.");
+        else mostrarAviso("No se pudo registrar el nombre. Comprueba Supabase e inténtalo de nuevo.");
+        return;
+      }
+      if (!datosJ.perfiles[nombre]) datosJ.perfiles[nombre] = nuevoPerfil();
+      datosJ.actual = nombre;
+      datosJ.perfiles[nombre].pts = Math.max(0, Number(resultado.pts) || 0);
+      nombreGlobalValidado = nombre;
+      estadoConexionRanking = "ok";
+      guardarJ();
+      pintarTikis();
+      await cargarRankingMundial();
+      pintarStats();
+    } catch (error) {
+      console.warn("No se pudo cambiar el jugador global.", error);
+      mostrarAviso("No se pudo conectar con el ranking mundial.");
+    } finally {
+      if (boton) boton.disabled = false;
+    }
   });
 
   /* ============================================================
@@ -3696,6 +3901,11 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   aplicarTema(document.documentElement.dataset.tema || "claro");
   pintarInicio();
   pintarTikis();
+  // Reclama el jugador guardado y carga el Top 20 mundial al arrancar.
+  prepararJugadorMundial(datosJ.actual, false).then(function (ok) {
+    if (!ok) console.warn("El jugador actual todavía no está conectado al ranking mundial.");
+  });
+  cargarRankingMundial();
   recuperarPartida();
 })();
 </script>
