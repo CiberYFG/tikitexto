@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TIKITEXTO · Adivina el jugador del día</title>
-<meta name="description" content="Juego diario de fútbol estilo Wordle: adivina jugadores, equipos y entrenadores en seis intentos. Modo claro y oscuro, gratis y sin registro.">
+<meta name="description" content="Juego diario de fútbol: adivina jugadores, equipos y entrenadores en seis intentos. Modo claro y oscuro, gratis y sin registro.">
 <meta name="theme-color" content="#f2f5fa">
 <meta name="color-scheme" content="light dark">
 <meta property="og:type" content="website">
@@ -1270,6 +1270,50 @@ body {
 
 .confeti { position: fixed; top: -40px; z-index: 99; pointer-events: none; animation: caer 2.6s ease-in forwards; }
 @keyframes caer { to { transform: translateY(110vh) rotate(540deg); opacity: 0; } }
+
+/* ---------- Logo vivo, tikitextos y ranking ---------- */
+button.marca { background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; color: inherit; font: inherit; }
+.marca__icono { position: relative; overflow: hidden; width: 42px; height: 42px; border-radius: 14px; animation: flotar 3.6s ease-in-out infinite, ladeo 6s ease-in-out infinite; }
+.marca__icono svg { width: 100%; height: 100%; }
+.marca__icono::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .6) 50%, transparent 62%); transform: translateX(-130%); animation: barrido 4.5s ease-in-out infinite; }
+.logo-balon { transform-origin: 20px 20px; animation: giro 14s linear infinite; }
+.logo-ficha { transform-origin: 31px 31px; animation: ficha 2.4s ease-in-out infinite; }
+button.marca:active .marca__icono { transform: scale(.9); }
+@keyframes giro { to { transform: rotate(360deg); } }
+@keyframes ficha { 0%, 100% { transform: rotate(-7deg) scale(1); } 50% { transform: rotate(7deg) scale(1.12); } }
+@keyframes barrido { 0%, 55% { transform: translateX(-130%); } 100% { transform: translateX(130%); } }
+@keyframes ladeo { 0%, 100% { rotate: -3deg; } 50% { rotate: 3deg; } }
+@keyframes pulso { 50% { box-shadow: 0 0 0 12px rgba(255, 200, 61, 0), 0 10px 36px rgba(255, 150, 40, .75); } }
+@keyframes latido { 50% { transform: scale(1.08); } }
+@media (prefers-reduced-motion: reduce) { .marca__icono, .marca__icono *, .tikis, .stats__num { animation: none !important; } }
+
+.tikis { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; width: 100%; margin: 14px 0 4px; padding: 13px 18px; border: 0; border-radius: 18px; cursor: pointer; font: inherit; font-weight: 800; color: #2b2000; background: linear-gradient(90deg, #ffc83d, #ff9f3d, #ffc83d); background-size: 200% 100%; animation: brillo 3s linear infinite, pulso 2s ease-in-out infinite; box-shadow: 0 0 0 0 rgba(255, 200, 61, .6), 0 10px 28px rgba(255, 170, 40, .5); }
+.tikis b { font-size: 1.6rem; line-height: 1; } .tikis em { font-style: normal; padding: 2px 9px; border-radius: 99px; background: rgba(0, 0, 0, .15); font-size: .72rem; }
+.tikis span:last-child { margin-left: auto; font-size: .8rem; }
+.modal__puntos { display: block; width: 100%; margin: 6px 0 10px; padding: 11px; border: 0; border-radius: 14px; font: inherit; font-weight: 800; cursor: pointer; color: #2b2000; background: linear-gradient(90deg, #ffc83d, #ff9f3d); box-shadow: 0 0 26px rgba(255, 190, 50, .65); }
+#modalStats .modal__caja { max-height: 90dvh; overflow-y: auto; }
+.stats__heroe { text-align: center; padding: 18px 14px; border-radius: 22px; background: radial-gradient(circle at 50% 0, rgba(255, 200, 61, .38), transparent 70%), var(--superficie-2); }
+.stats__nombre { font-weight: 800; color: var(--acento); }
+.stats__num { font-size: 4.6rem; font-weight: 900; line-height: 1.05; background: linear-gradient(180deg, #fff2b0, #ffc83d 55%, #ff8a3d); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 16px rgba(255, 200, 61, .8)); animation: latido 2.2s ease-in-out infinite; }
+.stats__etq { letter-spacing: .3em; font-size: .7rem; font-weight: 800; color: var(--texto-suave); }
+.barra-nivel { height: 11px; border-radius: 9px; background: var(--borde); margin: 12px 0 6px; overflow: hidden; }
+.barra-nivel i { display: block; height: 100%; border-radius: 9px; background: linear-gradient(90deg, #3ee0a4, #ffc83d); box-shadow: 0 0 14px #ffc83d; transition: width .8s; }
+.stats__sig, .stats__nota { font-size: .78rem; color: var(--texto-suave); }
+.stats__rejilla { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 14px 0; text-align: center; }
+.stats__rejilla b { display: block; font-size: 1.5rem; } .stats__rejilla span { font-size: .66rem; color: var(--texto-suave); }
+.stats__sub { margin: 16px 0 8px; font-size: .95rem; }
+.dist { display: flex; align-items: center; gap: 8px; margin: 4px 0; font-size: .8rem; }
+.dist i { font-style: normal; padding: 3px 8px; border-radius: 7px; background: var(--degradado); color: #04261a; font-weight: 800; text-align: right; }
+.rank { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.rank li { display: flex; align-items: center; gap: 10px; padding: 10px 13px; border-radius: 13px; background: var(--superficie-2); }
+.rank em { flex: 1; font-style: normal; font-weight: 700; }
+.rank li:first-child b { color: #ffb300; text-shadow: 0 0 12px rgba(255, 200, 61, .9); }
+.rank--yo { background: linear-gradient(90deg, rgba(255, 200, 61, .38), transparent) !important; box-shadow: inset 0 0 0 2px #ffc83d, 0 0 20px rgba(255, 200, 61, .55); }
+.nuevo { display: grid; gap: 8px; margin-top: 16px; }
+.nuevo input { padding: 13px; border-radius: 13px; border: 2px solid var(--borde); background: var(--superficie); color: var(--texto); font: inherit; }
+.punto { position: fixed; left: 50%; top: 36%; z-index: 120; opacity: 0; pointer-events: none; font-size: clamp(1.4rem, 7vw, 2.2rem); font-weight: 900; white-space: nowrap; color: #2b2000; padding: 14px 28px; border-radius: 99px; background: linear-gradient(90deg, #ffc83d, #ff8a3d); box-shadow: 0 0 60px rgba(255, 200, 61, .95); transform: translate(-50%, 0) scale(.4); }
+.punto--ver { animation: subir 2.4s cubic-bezier(.2, .9, .3, 1.2) forwards; }
+@keyframes subir { 15% { opacity: 1; transform: translate(-50%, 0) scale(1.18); } 30% { transform: translate(-50%, 0) scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -110px) scale(1); } }
 </style>
 </head>
 <body>
@@ -1279,11 +1323,7 @@ body {
   <div class="inicio__barra">
     <div class="marca">
       <span class="marca__icono" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M12 7.4l3.6 2.6-1.4 4.2H9.8L8.4 10z"/>
-          <path d="M12 3.1v4.3M20.7 9.9l-3.5 2.5M16.9 20.2l-1.2-4.2M7.1 20.2l1.2-4.2M3.3 9.9l3.5 2.5"/>
-        </svg>
+        <svg viewBox="0 0 40 40"><g class="logo-balon"><circle cx="20" cy="20" r="12" fill="#fff"/><path d="M20 13l5.2 3.8-2 6.1h-6.4l-2-6.1z" fill="#0b1f17"/><path d="M20 8v5M32 17l-6.8-.2M27.5 30.5l-4.7-7.6M12.5 30.5l4.7-7.6M8 17l6.8-.2" stroke="#0b1f17" stroke-width="1.7" stroke-linecap="round"/></g><g class="logo-ficha"><rect x="24" y="24" width="14" height="14" rx="4.5" fill="#ffc83d" stroke="#fff" stroke-width="1.5"/><text x="31" y="35" text-anchor="middle" font-size="11" font-weight="900" fill="#2b2000" font-family="system-ui,sans-serif">T</text></g></svg>
       </span>
       <div class="marca__textos">
         <p class="marca__titulo">TIKI<span>TEXTO</span></p>
@@ -1305,6 +1345,7 @@ body {
     <p class="inicio__etiqueta">El juego diario de fútbol</p>
     <h1 class="inicio__titulo">Adivina el nombre<br><span>del día</span></h1>
     <p class="inicio__descripcion">Seis intentos para descubrir el jugador oculto. Cada letra te dice si está en la posición correcta, si aparece en otro sitio o si no forma parte del nombre.</p>
+    <button type="button" class="tikis" data-stats aria-label="Ver estadísticas y ranking"><span>⚡</span><b id="tikisNum">0</b> tikitextos <em id="tikisNivel">Cantera</em><span>Ver ranking ›</span></button>
 
     <button type="button" class="tarjeta" data-modo="diario">
       <span class="tarjeta__icono" aria-hidden="true">
@@ -1314,7 +1355,7 @@ body {
         </svg>
       </span>
       <span class="tarjeta__cuerpo">
-        <span class="tarjeta__titulo">Wordle diario</span>
+        <span class="tarjeta__titulo">Tikitexto diario</span>
         <span class="tarjeta__texto">Un jugador nuevo cada día. El mismo reto para todo el mundo, sin repetir hasta agotar la lista.</span>
       </span>
       <span class="tarjeta__pie">
@@ -1353,19 +1394,15 @@ body {
   <header class="cabecera">
     <div class="cabecera__interior">
       <div class="cabecera__fila">
-        <div class="marca">
+        <button type="button" class="marca" id="botonLogo" aria-label="TIKITEXTO, volver al menú principal">
           <span class="marca__icono" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="9"/>
-              <path d="M12 7.4l3.6 2.6-1.4 4.2H9.8L8.4 10z"/>
-              <path d="M12 3.1v4.3M20.7 9.9l-3.5 2.5M16.9 20.2l-1.2-4.2M7.1 20.2l1.2-4.2M3.3 9.9l3.5 2.5"/>
-            </svg>
-          </span>
+        <svg viewBox="0 0 40 40"><g class="logo-balon"><circle cx="20" cy="20" r="12" fill="#fff"/><path d="M20 13l5.2 3.8-2 6.1h-6.4l-2-6.1z" fill="#0b1f17"/><path d="M20 8v5M32 17l-6.8-.2M27.5 30.5l-4.7-7.6M12.5 30.5l4.7-7.6M8 17l6.8-.2" stroke="#0b1f17" stroke-width="1.7" stroke-linecap="round"/></g><g class="logo-ficha"><rect x="24" y="24" width="14" height="14" rx="4.5" fill="#ffc83d" stroke="#fff" stroke-width="1.5"/><text x="31" y="35" text-anchor="middle" font-size="11" font-weight="900" fill="#2b2000" font-family="system-ui,sans-serif">T</text></g></svg>
+      </span>
           <div class="marca__textos">
             <p class="marca__titulo">TIKI<span>TEXTO</span></p>
-            <p class="marca__subtitulo" id="subtituloModo">Wordle diario</p>
+            <p class="marca__subtitulo" id="subtituloModo">Tikitexto diario</p>
           </div>
-        </div>
+        </button>
 
         <div class="cabecera__acciones">
           <button type="button" class="boton-pista" id="botonPista" aria-pressed="false">Pista</button>
@@ -1428,6 +1465,7 @@ body {
     <p class="modal__etiqueta" id="modalEtiqueta">Partida terminada</p>
     <h2 class="modal__titulo" id="modalTitulo">¡Enhorabuena!</h2>
     <p class="modal__texto" id="modalTexto"></p>
+    <button type="button" class="modal__puntos" id="modalPuntos" data-stats hidden></button>
     <p class="modal__meta" id="modalMeta"></p>
 
     <div class="modal__respuesta" id="modalRespuesta" hidden>
@@ -1459,6 +1497,29 @@ body {
   </div>
 </div>
 
+<div class="modal" id="modalStats" role="dialog" aria-modal="true" aria-label="Estadísticas y ranking" hidden>
+  <div class="modal__velo" data-cerrar-stats></div>
+  <div class="modal__caja">
+    <button type="button" class="modal__cerrar" data-cerrar-stats aria-label="Cerrar">✕</button>
+    <p class="modal__etiqueta">Estadísticas y ranking</p>
+    <div id="statsContenido"></div>
+  </div>
+</div>
+
+<div class="modal" id="modalSalir" role="dialog" aria-modal="true" aria-labelledby="tituloSalir" hidden>
+  <div class="modal__velo" data-cerrar-salir></div>
+  <div class="modal__caja">
+    <p class="modal__etiqueta">TIKITEXTO</p>
+    <h2 class="modal__titulo" id="tituloSalir">¿Volver al menú principal?</h2>
+    <p class="modal__texto">Si sales, perderás el progreso de esta partida.</p>
+    <div class="modal__acciones">
+      <button type="button" class="boton boton--primario" id="botonSalirSi">Sí, volver al menú</button>
+      <button type="button" class="boton boton--secundario" data-cerrar-salir>No, seguir jugando</button>
+    </div>
+  </div>
+</div>
+
+<div class="punto" id="punto" aria-hidden="true">⚡ +1 TIKITEXTO</div>
 <div class="aviso" id="aviso" role="status" aria-live="assertive"></div>
 
 <script>
@@ -2394,7 +2455,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   const MODOS = [
-    { id: "diario", nombre: "Wordle diario", tipo: "Jugador", unidad: "jugadores", icono: "jugador", fuente: function () { return JUGADORES; } },
+    { id: "diario", nombre: "Tikitexto diario", tipo: "Jugador", unidad: "jugadores", icono: "jugador", fuente: function () { return JUGADORES; } },
     { id: "jugadores", nombre: "Jugadores", tipo: "Jugador", unidad: "jugadores", icono: "jugador", fuente: function () { return JUGADORES; } },
     { id: "porteros", nombre: "Porteros", tipo: "Portero", unidad: "porteros", icono: "portero", fuente: function () { return porPosicion("portero"); } },
     { id: "defensas", nombre: "Defensas", tipo: "Defensa", unidad: "defensas", icono: "defensa", fuente: function () { return porPosicion("defensa"); } },
@@ -2481,6 +2542,14 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   const pistaLetras = $("#pistaLetras");
   const modalEstadios = $("#modalEstadios");
   const subModos = $("#subModos");
+  const modalStats = $("#modalStats");
+  const statsContenido = $("#statsContenido");
+  const modalSalir = $("#modalSalir");
+  const modalPuntos = $("#modalPuntos");
+  const punto = $("#punto");
+  const tikisNum = $("#tikisNum");
+  const tikisNivel = $("#tikisNivel");
+  let textoPunto = "";
   const botonInicio = $("#botonInicio");
   const avisoCaja = $("#aviso");
   const fechaDiaria = $("#fechaDiaria");
@@ -2783,6 +2852,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
 
     cancelarTemporizadores();
     estado.sesion++;
+    textoPunto = "";
     cerrarModal(true);
 
     const anterior = estado.respuesta ? estado.respuesta.nombre : null;
@@ -2918,7 +2988,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   function pulsarTecla(tecla) {
-    if (estado.terminado || estado.animando) return;
+    if (estado.terminado || estado.animando || !modalSalir.hidden) return;
 
     if (tecla === "ENVIAR") {
       comprobarIntento();
@@ -2950,7 +3020,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   /* ============================================================
-     MECÁNICA WORDLE
+     MECÁNICA Tikitexto
      ============================================================ */
 
   /* Devuelve "correcta", "presente" o "ausente" por letra.
@@ -3094,6 +3164,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
 
   function terminarPartida() {
     if (estado.gano) lanzarConfeti();
+    registrarFin();
     const intentos = estado.intentos.length;
 
     botonPista.disabled = true;
@@ -3111,7 +3182,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     abrirResumen();
   }
 
-  /* Rejilla de bloques de colores, igual que en Wordle */
+  /* Rejilla de bloques de colores, igual que en Tikitexto */
   function rejillaEmoji() {
     const simbolos = { correcta: "🟩", presente: "🟨", ausente: "⬜" };
 
@@ -3147,6 +3218,8 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   function abrirResumen() {
     const intentos = estado.intentos.length;
 
+    modalPuntos.hidden = !(estado.gano && textoPunto);
+    modalPuntos.textContent = textoPunto;
     modalEtiqueta.textContent = estado.gano ? "Partida completada" : "Partida terminada";
     modalTitulo.textContent = estado.gano ? "¡Enhorabuena!" : "Se acabaron los intentos";
 
@@ -3400,6 +3473,109 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   /* ============================================================
+     TIKITEXTOS, ESTADÍSTICAS Y RANKING (guardado en este dispositivo)
+     ============================================================ */
+  const CLAVE_JUG = "tikitexto:jugadores";
+  const NIVELES = [[0, "Cantera"], [10, "Titular"], [25, "Crack"], [50, "Estrella"], [100, "Leyenda"]];
+
+  function nuevoPerfil() { return { pts: 0, jugadas: 0, aciertos: 0, racha: 0, mejor: 0, dist: [0, 0, 0, 0, 0, 0], diario: "" }; }
+  function cargarJ() {
+    try {
+      const d = JSON.parse(localStorage.getItem(CLAVE_JUG));
+      if (d && d.perfiles && d.perfiles[d.actual]) return d;
+    } catch (error) { /* sin datos */ }
+    const d = { actual: "Jugador 1", perfiles: {} };
+    d.perfiles["Jugador 1"] = nuevoPerfil();
+    return d;
+  }
+  let datosJ = cargarJ();
+  function guardarJ() { try { localStorage.setItem(CLAVE_JUG, JSON.stringify(datosJ)); } catch (error) { /* sin almacenamiento */ } }
+  function perfil() { return datosJ.perfiles[datosJ.actual]; }
+  function ranking() {
+    return Object.keys(datosJ.perfiles).map(function (n) { return [n, datosJ.perfiles[n]]; })
+      .sort(function (a, b) { return b[1].pts - a[1].pts || b[1].aciertos - a[1].aciertos; });
+  }
+  function puesto() { return ranking().findIndex(function (x) { return x[0] === datosJ.actual; }) + 1; }
+  function nivel(pts) {
+    let actual = NIVELES[0], sig = NIVELES[1];
+    NIVELES.forEach(function (n, i) { if (pts >= n[0]) { actual = n; sig = NIVELES[i + 1] || null; } });
+    return { nombre: actual[1], base: actual[0], sig: sig };
+  }
+  function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return "&#" + c.charCodeAt(0) + ";"; }); }
+
+  function pintarTikis() {
+    tikisNum.textContent = perfil().pts;
+    tikisNivel.textContent = nivel(perfil().pts).nombre;
+  }
+
+  function mostrarPunto() {
+    punto.classList.remove("punto--ver");
+    void punto.offsetWidth;
+    punto.classList.add("punto--ver");
+  }
+
+  /* +1 tikitexto por cada acierto. El diario solo puntúa una vez al día. */
+  function registrarFin() {
+    const p = perfil();
+    const repetido = estado.modo === "diario" && p.diario === claveDelDia();
+    if (estado.modo === "diario") p.diario = claveDelDia();
+    p.jugadas++;
+    let suma = false;
+
+    if (estado.gano) {
+      p.aciertos++;
+      p.racha++;
+      p.mejor = Math.max(p.mejor, p.racha);
+      p.dist[estado.intentos.length - 1]++;
+      if (!repetido) { p.pts++; suma = true; }
+    } else {
+      p.racha = 0;
+    }
+
+    guardarJ();
+    pintarTikis();
+    if (suma) {
+      textoPunto = "⚡ +1 tikitexto · " + p.pts + " en total · puesto #" + puesto() + " · Ver ranking";
+      mostrarPunto();
+    }
+  }
+
+  function pintarStats() {
+    const p = perfil();
+    const n = nivel(p.pts);
+    const pct = n.sig ? Math.round((p.pts - n.base) / (n.sig[0] - n.base) * 100) : 100;
+    const max = Math.max(1, Math.max.apply(null, p.dist));
+    const casillas = [[p.jugadas, "Jugadas"], [(p.jugadas ? Math.round(p.aciertos / p.jugadas * 100) : 0) + "%", "Aciertos"], [p.racha, "Racha"], [p.mejor, "Mejor racha"]];
+
+    statsContenido.innerHTML =
+      '<div class="stats__heroe"><span class="stats__nombre">' + esc(datosJ.actual) + " · " + n.nombre + "</span>" +
+      '<div class="stats__num">' + p.pts + '</div><div class="stats__etq">TIKITEXTOS</div>' +
+      '<div class="barra-nivel"><i style="width:' + pct + '%"></i></div>' +
+      '<div class="stats__sig">' + (n.sig ? "Te faltan " + (n.sig[0] - p.pts) + " para " + n.sig[1] : "Nivel máximo ⭐") + "</div></div>" +
+      '<div class="stats__rejilla">' + casillas.map(function (c) { return "<div><b>" + c[0] + "</b><span>" + c[1] + "</span></div>"; }).join("") + "</div>" +
+      '<h3 class="stats__sub">Intentos para acertar</h3>' +
+      p.dist.map(function (v, i) { return '<div class="dist"><span>' + (i + 1) + '</span><i style="width:' + Math.max(10, v / max * 100) + '%">' + v + "</i></div>"; }).join("") +
+      '<h3 class="stats__sub">🏆 Ranking · Top jugadores</h3><ol class="rank">' +
+      ranking().slice(0, 10).map(function (x, i) {
+        return '<li class="' + (x[0] === datosJ.actual ? "rank--yo" : "") + '"><span>' + (["🥇", "🥈", "🥉"][i] || (i + 1)) + "</span><em>" + esc(x[0]) + "</em><b>" + x[1].pts + " ⚡</b></li>";
+      }).join("") + "</ol>" +
+      '<form class="nuevo" id="formJugador"><input maxlength="14" placeholder="Nombre de jugador" autocomplete="off" aria-label="Nombre de jugador"><button class="boton boton--primario">Cambiar o crear jugador</button></form>' +
+      '<p class="stats__nota">El ranking reúne a los jugadores de este dispositivo.</p>';
+  }
+
+  document.addEventListener("submit", function (e) {
+    if (e.target.id !== "formJugador") return;
+    e.preventDefault();
+    const nombre = e.target.querySelector("input").value.trim().slice(0, 14);
+    if (!nombre) return;
+    if (!datosJ.perfiles[nombre]) datosJ.perfiles[nombre] = nuevoPerfil();
+    datosJ.actual = nombre;
+    guardarJ();
+    pintarTikis();
+    pintarStats();
+  });
+
+  /* ============================================================
      EVENTOS
      ============================================================ */
   document.querySelectorAll("[data-tema-boton]").forEach(function (boton) {
@@ -3412,6 +3588,11 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     const objetivo = evento.target;
     if (!objetivo || !objetivo.closest) return;
 
+    if (objetivo.closest("[data-stats]")) { pintarStats(); modalStats.hidden = false; return; }
+    if (objetivo.closest("[data-cerrar-stats]")) { modalStats.hidden = true; return; }
+    if (objetivo.closest("#botonLogo, #botonInicio")) { modalSalir.hidden = false; return; }
+    if (objetivo.closest("[data-cerrar-salir]")) { modalSalir.hidden = true; return; }
+    if (objetivo.closest("#botonSalirSi")) { modalSalir.hidden = true; borrarPartida(); irAlInicio(); return; }
     if (objetivo.closest("[data-estadios]")) {
       modalEstadios.hidden = false;
       document.body.classList.add("sin-desplazamiento");
@@ -3448,24 +3629,15 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     irAlInicio();
   });
 
-  botonInicio.addEventListener("click", function () {
-    if (!estado.terminado && estado.intentos.length > 0) {
-      const salir = window.confirm("¿Quieres salir de la partida? Se perderá el progreso de este intento.");
-      if (!salir) return;
-    }
-    borrarPartida();
-    irAlInicio();
-  });
 
   document.querySelectorAll("[data-cerrar]").forEach(function (elemento) {
     elemento.addEventListener("click", function () { cerrarModal(); });
   });
 
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && !modalEstadios.hidden) {
-      modalEstadios.hidden = true;
-      document.body.classList.remove("sin-desplazamiento");
-    }
+    if (e.key !== "Escape") return;
+    [modalSalir, modalStats, modalEstadios].forEach(function (m) { m.hidden = true; });
+    document.body.classList.remove("sin-desplazamiento");
   });
 
   /* Teclado físico: letras, Enter y Retroceso */
@@ -3516,11 +3688,9 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
      ============================================================ */
   aplicarTema(document.documentElement.dataset.tema || "claro");
   pintarInicio();
+  pintarTikis();
   recuperarPartida();
 })();
-</script>
-</body>
-</html>
 </script>
 </body>
 </html>
