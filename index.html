@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="google-site-verification" content="0-9yU5filWc6hjiEvhBLQdo5eB0q31N9IW_iuh-ljB8" />
 <title>TIKITEXTO · Adivina el jugador del día</title>
 <meta name="description" content="Juego diario de fútbol estilo Wordle: adivina jugadores, equipos y entrenadores en seis intentos. Modo claro y oscuro, gratis y sin registro.">
 <meta name="theme-color" content="#f2f5fa">
@@ -1191,6 +1190,86 @@ body.sin-desplazamiento { overflow: hidden; }
   .modal__velo, .modal__cerrar, .modal__acciones { display: none !important; }
   .modal__caja { box-shadow: none; border: 1px solid #ccc; max-height: none; }
 }
+
+/* ============================================================
+   REDISEÑO · noche de estadio: césped vivo, luces y rebotes
+   ============================================================ */
+:root {
+  --acento: #0c9b66; --acento-suave: #d9f7e8; --acento-brillo: rgba(12, 155, 102, .28);
+  --verde: #14b374; --amarillo: #ffc83d; --amarillo-texto: #2b2000;
+  --lima: #c6ff3d; --cielo: #3d8bff;
+  --degradado: linear-gradient(135deg, #0c9b66, #3dd6a0 55%, #c6ff3d);
+}
+:root[data-tema="oscuro"] {
+  --acento: #3ee0a4; --acento-suave: #0f3a2d; --acento-brillo: rgba(62, 224, 164, .3);
+  --verde: #17b377; --fondo: #070d14; --superficie: #111c28; --superficie-2: #172536;
+  --degradado: linear-gradient(135deg, #1fbf86, #3ee0a4 55%, #d4ff5a);
+}
+body {
+  background:
+    radial-gradient(700px 420px at 10% -10%, var(--acento-brillo), transparent 65%),
+    radial-gradient(640px 380px at 110% 8%, rgba(61, 139, 255, .16), transparent 62%),
+    radial-gradient(520px 320px at 50% 115%, rgba(255, 200, 61, .14), transparent 60%),
+    var(--fondo);
+  background-attachment: fixed;
+}
+@keyframes flotar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes brillo { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+@keyframes entrada { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+
+.marca__icono { background: var(--degradado); color: #04261a; animation: flotar 3.6s ease-in-out infinite; }
+.marca__titulo span, .inicio__titulo span {
+  background: linear-gradient(90deg, #0c9b66, #3d8bff, #ffc83d, #0c9b66);
+  background-size: 200% 100%; -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent; animation: brillo 6s linear infinite;
+}
+.inicio__contenido > * { animation: entrada .55s cubic-bezier(.2, .8, .2, 1) backwards; }
+.inicio__contenido > :nth-child(2) { animation-delay: .06s; } .inicio__contenido > :nth-child(3) { animation-delay: .12s; }
+.inicio__contenido > :nth-child(4) { animation-delay: .18s; } .inicio__contenido > :nth-child(5) { animation-delay: .24s; }
+
+.tarjeta {
+  background: linear-gradient(140deg, var(--superficie), var(--superficie-2)) padding-box, var(--degradado) border-box;
+  border: 2px solid transparent; border-radius: 20px; box-shadow: 0 14px 34px var(--acento-brillo);
+  transition: transform .18s cubic-bezier(.3, 1.6, .5, 1), box-shadow .18s;
+}
+.tarjeta:hover { transform: translateY(-3px) scale(1.012); } .tarjeta:active { transform: scale(.97); }
+.tarjeta__icono, .modo__icono { background: var(--degradado); color: #04261a; border-radius: 14px; }
+.modo {
+  border-radius: 18px; border: 2px solid var(--borde); background: var(--superficie);
+  transition: transform .18s cubic-bezier(.3, 1.6, .5, 1), border-color .15s, box-shadow .15s;
+}
+.modo:hover { transform: translateY(-4px) rotate(-.6deg); border-color: var(--acento); box-shadow: 0 12px 26px var(--acento-brillo); }
+.modo:active { transform: scale(.94); }
+
+.cabecera { background: color-mix(in srgb, var(--fondo) 70%, transparent); backdrop-filter: blur(20px) saturate(180%); }
+.boton-pista, .boton-icono { border-radius: 14px; transition: transform .15s, background .15s; }
+.boton-pista:hover:not(:disabled), .boton-icono:hover { transform: translateY(-2px); background: var(--acento-suave); }
+.boton-pista[aria-pressed="true"] { background: var(--amarillo); color: var(--amarillo-texto); border-color: transparent; }
+
+.celda { border-radius: 14px; border-width: 2px; }
+.celda--rellena { border-color: var(--acento); transform: scale(1.06); transition: transform .1s; }
+.celda--correcta { background: linear-gradient(160deg, #1ed08a, #0c9b66); box-shadow: 0 6px 16px rgba(12, 155, 102, .4); }
+.celda--presente { background: linear-gradient(160deg, #ffd75e, #f2a900); box-shadow: 0 6px 16px rgba(242, 169, 0, .35); }
+.tecla { border-radius: 12px; box-shadow: 0 3px 0 var(--borde-fuerte); transition: transform .08s, box-shadow .08s, background .15s; }
+.tecla:active { transform: translateY(3px) scale(.96); box-shadow: 0 0 0 var(--borde-fuerte); }
+.tecla[data-estado="correcta"] { background: var(--verde); box-shadow: 0 3px 0 #0a7a52; }
+
+.boton--primario { background: var(--degradado); color: #04261a; border: 0; border-radius: 16px; font-weight: 800; box-shadow: 0 10px 22px var(--acento-brillo); transition: transform .15s; }
+.boton--primario:hover { transform: translateY(-2px); } .boton--primario:active { transform: scale(.96); }
+.modal__caja { border-radius: 24px; animation: entrada .3s cubic-bezier(.2, .9, .3, 1.2); }
+
+.pista { flex-wrap: wrap; border-radius: 16px; animation: entrada .3s ease; }
+.pista__letras { flex: 1 0 100%; display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.pl { width: 28px; height: 32px; display: grid; place-items: center; border-radius: 9px; border: 2px dashed var(--pista-borde); font-weight: 800; color: #fff; transition: all .2s; }
+.pl--ok { background: var(--verde); border: 2px solid transparent; animation: entrada .3s; }
+
+.sub-modos { display: grid; gap: 10px; margin-top: 14px; }
+.sub-modo { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px; border-radius: 16px; border: 2px solid var(--borde); background: var(--superficie-2); cursor: pointer; font-size: 1rem; transition: transform .15s, border-color .15s; }
+.sub-modo:hover { transform: translateX(4px); border-color: var(--acento); }
+.sub-modo span { font-size: .8rem; color: var(--texto-suave); }
+
+.confeti { position: fixed; top: -40px; z-index: 99; pointer-events: none; animation: caer 2.6s ease-in forwards; }
+@keyframes caer { to { transform: translateY(110vh) rotate(540deg); opacity: 0; } }
 </style>
 </head>
 <body>
@@ -1323,6 +1402,7 @@ body.sin-desplazamiento { overflow: hidden; }
       <div class="pista" id="pistaCaja" hidden>
         <span class="pista__etiqueta" id="pistaEtiqueta">Pista</span>
         <span id="pistaTexto"></span>
+        <div class="pista__letras" id="pistaLetras" aria-label="Letras acertadas"></div>
       </div>
 
       <div class="tablero" id="tablero" role="group" aria-label="Tablero de intentos"></div>
@@ -1366,6 +1446,16 @@ body.sin-desplazamiento { overflow: hidden; }
       </div>
       <button type="button" class="boton-enlace" id="botonCambiarModo">Elegir otro modo</button>
     </div>
+  </div>
+</div>
+
+<div class="modal" id="modalEstadios" role="dialog" aria-modal="true" aria-labelledby="tituloEstadios" hidden>
+  <div class="modal__velo" data-cerrar-estadios></div>
+  <div class="modal__caja">
+    <button type="button" class="modal__cerrar" data-cerrar-estadios aria-label="Cerrar">✕</button>
+    <p class="modal__etiqueta">Modo estadios</p>
+    <h2 class="modal__titulo" id="tituloEstadios">¿De qué estadios?</h2>
+    <div class="sub-modos" id="subModos"></div>
   </div>
 </div>
 
@@ -2163,6 +2253,108 @@ body.sin-desplazamiento { overflow: hidden; }
   ];
 
   /* ============================================================
+     LEYENDAS (50) y ESTADIOS (zonas: es, en, fr, it, de, eu, mu)
+     ============================================================ */
+  const LEYENDAS = `PELE|Brasil · Tres Mundiales y más de mil goles
+MARADONA|Argentina · La 'Mano de Dios' y el Nápoles
+CRUYFF|Países Bajos · Inventó un giro y el 'fútbol total'
+MESSI|Argentina · Campeón del mundo en 2022
+CRISTIANO|Portugal · Máximo goleador de la historia del fútbol
+RONALDO|Brasil · 'El Fenómeno', dos Mundiales
+ZIDANE|Francia · Volea en Glasgow y cabezazo en una final
+BECKENBAUER|Alemania · 'El Káiser', libero y campeón como jugador y técnico
+DI STEFANO|Argentina-España · La 'Saeta Rubia' de cinco Copas de Europa
+PLATINI|Francia · Tres Balones de Oro seguidos
+VAN BASTEN|Países Bajos · Volea de Eurocopa 88 y lesión de tobillo
+RONALDINHO|Brasil · Sonrisa, regates y magia en el Barça
+XAVI|España · Cerebro del tiki-taka
+INIESTA|España · Gol en la final del Mundial 2010
+HENRY|Francia · Leyenda del Arsenal de los 'Invencibles'
+MALDINI|Italia · Un solo club toda su carrera
+BARESI|Italia · Capitán y líbero del Milan
+CASILLAS|España · Capitán de la Roja campeona del mundo
+BUFFON|Italia · Portero de la Juve y campeón en 2006
+RAUL|España · 'El Siete' del Real Madrid
+ROBERTO CARLOS|Brasil · Lateral con un zurdazo imposible
+KAKA|Brasil · Balón de Oro 2007
+PIRLO|Italia · 'El Arquitecto' del centro del campo
+TOTTI|Italia · Capitán romano de toda la vida
+PUYOL|España · Melena y casta, central del Barça
+CAFU|Brasil · Lateral, capitán del pentacampeón
+ROMARIO|Brasil · Delantero del Mundial de 1994
+RIVALDO|Brasil · Chilena decisiva en el Camp Nou
+EUSEBIO|Portugal · 'La Pantera Negra' del Benfica
+YASHIN|Unión Soviética · 'La Araña Negra' bajo palos
+BEST|Irlanda del Norte · Genio del Manchester United de los 60
+CHARLTON|Inglaterra · Campeón del mundo en 1966
+GULLIT|Países Bajos · Rastas y el Milan de Sacchi
+MATTHAUS|Alemania · Capitán en Italia 90
+BAGGIO|Italia · Coleta y penalti en Pasadena
+STOICHKOV|Bulgaria · Pichichi y cuarto puesto en 1994
+BATISTUTA|Argentina · 'Batigol' de la Fiorentina
+BERGKAMP|Países Bajos · Miedo a volar y gol de ensueño en 1998
+FIGO|Portugal · Cabeza de cerdo en el Camp Nou
+KROOS|Alemania · Pases largos y cinco Champions con el Madrid
+MODRIC|Croacia · Balón de Oro 2018
+IBRAHIMOVIC|Suecia · Delantero sueco, seis ligas en cuatro países
+GERRARD|Inglaterra · Capitán del Liverpool en Estambul
+SCHOLES|Inglaterra · Pelirrojo centrocampista de los 'Red Devils'
+DROGBA|Costa de Marfil · Delantero del Chelsea de 2012
+GARRINCHA|Brasil · Extremo de 'piernas torcidas'
+ZICO|Brasil · 'El Pelé blanco' del Flamengo
+ROONEY|Inglaterra · Goleador histórico del Manchester United
+SHEVCHENKO|Ucrania · Balón de Oro 2004
+LAHM|Alemania · Lateral y capitán campeón en 2014`.split("\n").map(function (l) { const p = l.split("|"); return { nombre: p[0], pista: p[1] }; });
+  const ESTADIOS = `BERNABEU|es|Madrid · Final del Mundial de 1982
+CAMP NOU|es|Barcelona · Gran capacidad inaugurado en 1957
+METROPOLITANO|es|Madrid · Final de Champions 2019
+MESTALLA|es|Valencia · Campo histórico de 1923
+SAN MAMES|es|Bilbao · Apodado 'La Catedral'
+SANCHEZ PIZJUAN|es|Sevilla · Semifinal Alemania-Francia de 1982
+VILLAMARIN|es|Sevilla · Campo verdiblanco con nombre de presidente
+ANOETA|es|San Sebastián · Nombre de barrio
+RIAZOR|es|A Coruña · Junto a una playa urbana
+MONTJUIC|es|Barcelona · Colina de los Juegos de 1992
+LA CARTUJA|es|Sevilla · Estadio olímpico de una isla
+EL SADAR|es|Pamplona · Cerca de los Sanfermines
+WEMBLEY|en|Londres · Final del Mundial de 1966
+OLD TRAFFORD|en|Mánchester · 'Teatro de los Sueños'
+ANFIELD|en|Liverpool · Su grada Kop recuerda una colina
+ETIHAD|en|Mánchester · Nació para los Juegos de 2002
+EMIRATES|en|Londres · Sustituyó a Highbury
+STAMFORD BRIDGE|en|Londres · Antes fue pista de atletismo
+ST JAMES PARK|en|Newcastle · Colina sobre el centro
+GOODISON PARK|en|Liverpool · Histórico campo, Mundial de 1966
+PARC DES PRINCES|fr|París · Final de la Eurocopa de 1984
+STADE DE FRANCE|fr|Saint-Denis · Final del Mundial de 1998
+VELODROME|fr|Marsella · Nombre de pista ciclista
+SAN SIRO|it|Milán · Dos clubes rivales
+OLIMPICO|it|Roma · Final del Mundial de 1990
+ALLIANZ STADIUM|it|Turín · Inaugurado en 2011
+ALLIANZ ARENA|de|Múnich · Fachada que cambia de color
+OLYMPIASTADION|de|Berlín · Juegos de 1936 y final de 2006
+SIGNAL IDUNA|de|Dortmund · 'Muro Amarillo' enorme
+ESTADIO DA LUZ|eu|Lisboa · Final de Champions 2014
+CELTIC PARK|eu|Glasgow · Apodado 'Paradise'
+ATATURK|eu|Estambul · Final de Champions de 2005
+MARACANA|mu|Río de Janeiro · Final de 1950 y de 2014
+LA BOMBONERA|mu|Buenos Aires · Grada que 'tiembla'
+ESTADIO AZTECA|mu|Ciudad de México · Dos finales mundiales
+MONUMENTAL|mu|Buenos Aires · Final del Mundial de 1978
+CENTENARIO|mu|Montevideo · Primera final de un Mundial
+SOCCER CITY|mu|Johannesburgo · Final de 2010, forma de calabaza
+LUSAIL STADIUM|mu|Catar · Final del Mundial de 2022
+METLIFE STADIUM|mu|Nueva Jersey · Dos equipos de la NFL
+MORUMBI|mu|São Paulo · Nombre de barrio
+NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(function (l) { const p = l.split("|"); return { nombre: p[0], zona: p[1], pista: p[2] }; });
+  const ZONAS = {
+    es: ["es"], en: ["en"],
+    eu: ["es", "en", "fr", "it", "de", "eu"],
+    mu: ["es", "en", "fr", "it", "de", "eu", "mu"]
+  };
+  function estadiosDe(z) { return ESTADIOS.filter(function (e) { return ZONAS[z].indexOf(e.zona) >= 0; }); }
+
+  /* ============================================================
      CONFIGURACIÓN
      ============================================================ */
   const MAX_INTENTOS = 6;
@@ -2189,6 +2381,8 @@ body.sin-desplazamiento { overflow: hidden; }
     equipo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v5.5c0 4.6-3.2 8.2-8 9.5-4.8-1.3-8-4.9-8-9.5V6z"/><path d="M12 8l1.2 2.5 2.8.3-2.1 1.9.6 2.7-2.5-1.4-2.5 1.4.6-2.7-2.1-1.9 2.8-.3z"/></svg>',
     seleccion: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4.5"/><path d="M5 5c4-2 6 2 10 0v7c-4 2-6-2-10 0z"/></svg>',
     balon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5.5a4 4 0 0 1-8 0z"/><path d="M8 5.5H5.5v2a3 3 0 0 0 3 3M16 5.5h2.5v2a3 3 0 0 1-3 3"/><path d="M12 13.5V17M8.5 20.5h7"/></svg>',
+    leyenda: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.3l6-.8z"/></svg>',
+    estadio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="9" rx="8" ry="3.5"/><path d="M4 9v7c0 2 3.6 3.5 8 3.5s8-1.5 8-3.5V9M8 10.5v7M16 10.5v7"/></svg>',
     bota: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h5v6c0 2 1.4 3 3.4 3.4l3 .6c1.6.3 2.6 1.4 2.6 3V20H5z"/><path d="M5 17h14"/></svg>'
   };
 
@@ -2210,7 +2404,12 @@ body.sin-desplazamiento { overflow: hidden; }
     { id: "equipos", nombre: "Equipos", tipo: "Equipo", unidad: "equipos", icono: "equipo", fuente: function () { return EQUIPOS; } },
     { id: "selecciones", nombre: "Selecciones", tipo: "Selección", unidad: "selecciones", icono: "seleccion", fuente: function () { return SELECCIONES; } },
     { id: "balones", nombre: "Balón de Oro", tipo: "Balón de Oro", unidad: "ganadores", icono: "balon", fuente: function () { return BALONES; } },
-    { id: "botas", nombre: "Bota de Oro", tipo: "Bota de Oro", unidad: "ganadores", icono: "bota", fuente: function () { return BOTAS; } }
+    { id: "botas", nombre: "Bota de Oro", tipo: "Bota de Oro", unidad: "ganadores", icono: "bota", fuente: function () { return BOTAS; } },
+    { id: "leyendas", nombre: "Leyendas", tipo: "Leyenda", unidad: "leyendas", icono: "leyenda", max: 13, fuente: function () { return LEYENDAS; } },
+    { id: "estadios_es", nombre: "Estadios · Liga española", tipo: "Estadio", unidad: "estadios", icono: "estadio", max: 14, oculto: true, fuente: function () { return estadiosDe("es"); } },
+    { id: "estadios_en", nombre: "Estadios · Liga inglesa", tipo: "Estadio", unidad: "estadios", icono: "estadio", max: 14, oculto: true, fuente: function () { return estadiosDe("en"); } },
+    { id: "estadios_eu", nombre: "Estadios · Europa", tipo: "Estadio", unidad: "estadios", icono: "estadio", max: 14, oculto: true, fuente: function () { return estadiosDe("eu"); } },
+    { id: "estadios_mu", nombre: "Estadios · Resto del mundo", tipo: "Estadio", unidad: "estadios", icono: "estadio", max: 14, oculto: true, fuente: function () { return estadiosDe("mu"); } }
   ];
 
   const MODOS_POR_ID = {};
@@ -2230,7 +2429,7 @@ body.sin-desplazamiento { overflow: hidden; }
     modo.fuente().forEach(function (entrada) {
       const clave = normalizar(entrada.nombre);
       const largo = letrasDe(entrada.nombre).length;
-      if (largo < MIN_LETRAS || largo > MAX_LETRAS) return;
+      if (largo < MIN_LETRAS || largo > (modo.max || MAX_LETRAS)) return;
       if (vistos[clave]) return;
       vistos[clave] = true;
       lista.push(entrada);
@@ -2279,6 +2478,9 @@ body.sin-desplazamiento { overflow: hidden; }
   const pistaCaja = $("#pistaCaja");
   const pistaEtiqueta = $("#pistaEtiqueta");
   const pistaTexto = $("#pistaTexto");
+  const pistaLetras = $("#pistaLetras");
+  const modalEstadios = $("#modalEstadios");
+  const subModos = $("#subModos");
   const botonInicio = $("#botonInicio");
   const avisoCaja = $("#aviso");
   const fechaDiaria = $("#fechaDiaria");
@@ -2405,7 +2607,7 @@ body.sin-desplazamiento { overflow: hidden; }
     const fragmento = document.createDocumentFragment();
 
     MODOS.forEach(function (modo) {
-      if (modo.id === "diario") return;
+      if (modo.id === "diario" || modo.oculto) return;
 
       const total = poolDe(modo.id).length;
 
@@ -2427,6 +2629,24 @@ body.sin-desplazamiento { overflow: hidden; }
       boton.appendChild(icono);
       boton.appendChild(titulo);
       fragmento.appendChild(boton);
+    });
+
+    const est = document.createElement("button");
+    est.type = "button";
+    est.className = "modo";
+    est.dataset.estadios = "1";
+    est.setAttribute("aria-label", "Elegir competición de estadios");
+    est.innerHTML = '<span class="modo__icono" aria-hidden="true">' + ICONOS.estadio + '</span><span class="modo__titulo">Estadios</span>';
+    fragmento.appendChild(est);
+
+    subModos.innerHTML = "";
+    [["estadios_es", "Liga española"], ["estadios_en", "Liga inglesa"], ["estadios_eu", "Europa"], ["estadios_mu", "Resto del mundo"]].forEach(function (m) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "sub-modo";
+      b.dataset.modo = m[0];
+      b.innerHTML = "<b>" + m[1] + "</b><span>" + poolDe(m[0]).length + " estadios</span>";
+      subModos.appendChild(b);
     });
 
     rejillaModos.appendChild(fragmento);
@@ -2841,6 +3061,7 @@ body.sin-desplazamiento { overflow: hidden; }
 
       estado.animando = false;
       estado.fila = fila + 1;
+      if (estado.pistaVisible) aplicarPista();
 
       if (acertado || esUltima) {
         estado.terminado = true;
@@ -2858,7 +3079,21 @@ body.sin-desplazamiento { overflow: hidden; }
   /* ============================================================
      FIN DE PARTIDA Y RESUMEN
      ============================================================ */
+  function lanzarConfeti() {
+    for (let i = 0; i < 28; i++) {
+      const c = document.createElement("span");
+      c.className = "confeti";
+      c.textContent = ["⚽", "🏆", "⭐"][i % 3];
+      c.style.left = Math.random() * 100 + "vw";
+      c.style.animationDelay = Math.random() * 0.6 + "s";
+      c.style.fontSize = 16 + Math.random() * 18 + "px";
+      document.body.appendChild(c);
+      setTimeout(function () { c.remove(); }, 3200);
+    }
+  }
+
   function terminarPartida() {
+    if (estado.gano) lanzarConfeti();
     const intentos = estado.intentos.length;
 
     botonPista.disabled = true;
@@ -3035,6 +3270,15 @@ body.sin-desplazamiento { overflow: hidden; }
 
     pistaEtiqueta.textContent = etiquetaDe(modo, estado.respuesta) + " · " + estado.columnas + " letras";
     pistaTexto.textContent = estado.respuesta.pista;
+    pistaLetras.innerHTML = "";
+    for (let i = 0; i < estado.columnas; i++) {
+      let letra = "";
+      estado.resultados.forEach(function (r, k) { if (r[i] === "correcta") letra = estado.intentos[k][i]; });
+      const c = document.createElement("span");
+      c.className = "pl" + (letra ? " pl--ok" : "");
+      c.textContent = letra;
+      pistaLetras.appendChild(c);
+    }
   }
 
   function alternarPista() {
@@ -3168,7 +3412,16 @@ body.sin-desplazamiento { overflow: hidden; }
     const objetivo = evento.target;
     if (!objetivo || !objetivo.closest) return;
 
+    if (objetivo.closest("[data-estadios]")) {
+      modalEstadios.hidden = false;
+      document.body.classList.add("sin-desplazamiento");
+      return;
+    }
     const boton = objetivo.closest("[data-modo]");
+    if (boton || objetivo.closest("[data-cerrar-estadios]")) {
+      modalEstadios.hidden = true;
+      if (modal.hidden) document.body.classList.remove("sin-desplazamiento");
+    }
     if (boton) iniciarPartida(boton.dataset.modo);
   });
 
@@ -3206,6 +3459,13 @@ body.sin-desplazamiento { overflow: hidden; }
 
   document.querySelectorAll("[data-cerrar]").forEach(function (elemento) {
     elemento.addEventListener("click", function () { cerrarModal(); });
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !modalEstadios.hidden) {
+      modalEstadios.hidden = true;
+      document.body.classList.remove("sin-desplazamiento");
+    }
   });
 
   /* Teclado físico: letras, Enter y Retroceso */
@@ -3258,6 +3518,9 @@ body.sin-desplazamiento { overflow: hidden; }
   pintarInicio();
   recuperarPartida();
 })();
+</script>
+</body>
+</html>
 </script>
 </body>
 </html>
