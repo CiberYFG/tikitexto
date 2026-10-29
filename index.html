@@ -12,6 +12,12 @@
 <meta property="og:description" content="Seis intentos para adivinar el nombre del día: leyendas, jugadores actuales, equipos y entrenadores.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%232e9e6b'/><circle cx='50' cy='50' r='30' fill='%23fff'/><path d='M50 34l14 10-5 16H41l-5-16z' fill='%23151d2b'/></svg>">
 
+<!-- Configuración de Supabase para el Ranking Mundial -->
+<script>
+  const RANKING_URL = "https://dvybttkqvprzvpnszxc.supabase.co";
+  const RANKING_KEY = "sb_publishable_W1zyXp7qXcelrPM-380hcg_sIH7e..";
+</script>
+
 <!-- Aplica el tema guardado antes de pintar para evitar destellos -->
 <script>
 (function () {
@@ -2339,7 +2345,7 @@ RAUL|España · 'El Siete' del Real Madrid
 ROBERTO CARLOS|Brasil · Lateral con un zurdazo imposible
 KAKA|Brasil · Balón de Oro 2007
 PIRLO|Italia · 'El Arquitecto' del centro del campo
-TOTTI|Italia · Capitán romano de toda la vida
+TOTTI|Italia · Capitán romano de toda su vida
 PUYOL|España · Melena y casta, central del Barça
 CAFU|Brasil · Lateral, capitán del pentacampeón
 ROMARIO|Brasil · Delantero del Mundial de 1994
@@ -2781,6 +2787,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   function guardarPartida() {
     if (!estado.modo || !estado.respuesta) return;
 
+    /* Sincronización con Supabase / Guardado de partidas con el ranking */
     try {
       localStorage.setItem(CLAVE_PARTIDA, JSON.stringify({
         version: 2,
@@ -3691,6 +3698,9 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   pintarTikis();
   recuperarPartida();
 })();
+</script>
+</body>
+</html>
 </script>
 </body>
 </html>
