@@ -1370,6 +1370,12 @@ button.marca:active .marca__icono { transform: scale(.9); }
 .enlace { display: block; width: 100%; padding: 12px 0 2px; border: 0; background: none; color: var(--acento); font: inherit; font-weight: 700; cursor: pointer; text-align: center; }
 .codigo { display: block; width: 100%; margin: 12px 0; padding: 14px 10px; border-radius: 14px; border: 2px dashed var(--acento); background: var(--superficie-2); color: var(--texto); font-family: ui-monospace, Menlo, monospace; font-weight: 800; font-size: 1rem; letter-spacing: .06em; text-align: center; word-break: break-all; -webkit-user-select: text; user-select: text; }
 #modalCuenta .boton, #botonCodigo { width: 100%; margin-top: 8px; }
+
+.pie-legal { text-align: center; margin: 18px 0 6px; font-size: .8rem; }
+.pie-legal a, .legal-nota a, .stats__pie a { color: var(--texto-suave); text-decoration: underline; }
+.legal-nota, .stats__pie { text-align: center; font-size: .78rem; color: var(--texto-suave); margin: 10px 0 0; }
+.enlace--peligro { color: #ff6b6b; }
+.cuenta-atras { font-size: 2.6rem; font-weight: 900; text-align: center; margin: 12px 0 18px; font-variant-numeric: tabular-nums; background: var(--degradado); -webkit-background-clip: text; background-clip: text; color: transparent; }
 </style>
 </head>
 <body>
@@ -1437,6 +1443,8 @@ button.marca:active .marca__icono { transform: scale(.9); }
         <span class="leyenda__ejemplo"><span class="muestra muestra--gris">R</span> Letra que no está</span>
       </div>
     </div>
+
+    <p class="pie-legal"><a href="privacidad.html">Política de privacidad</a></p>
   </main>
 
   <footer class="inicio__pie">
@@ -1575,6 +1583,18 @@ button.marca:active .marca__icono { transform: scale(.9); }
   </div>
 </div>
 
+<div class="modal" id="modalDiario" role="dialog" aria-modal="true" aria-labelledby="tituloDiario" hidden>
+  <div class="modal__velo" data-cerrar-diario></div>
+  <div class="modal__caja">
+    <button type="button" class="modal__cerrar" data-cerrar-diario aria-label="Cerrar">✕</button>
+    <p class="modal__etiqueta">Reto diario</p>
+    <h2 class="modal__titulo" id="tituloDiario">Ya lo has completado hoy ✅</h2>
+    <p class="modal__texto">¡Vuelve mañana! El próximo reto estará disponible en:</p>
+    <div class="cuenta-atras" id="diarioCuenta">00:00:00</div>
+    <button type="button" class="boton boton--primario" data-cerrar-diario>Jugar otro modo</button>
+  </div>
+</div>
+
 <div class="modal" id="modalCuenta" role="dialog" aria-modal="true" aria-labelledby="tituloCuenta" hidden>
   <div class="modal__velo"></div>
   <div class="modal__caja">
@@ -1587,6 +1607,7 @@ button.marca:active .marca__icono { transform: scale(.9); }
         <p class="cuenta__error" id="cuentaError" role="alert"></p>
         <button class="boton boton--primario" id="cuentaBoton">Crear mi cuenta</button>
       </form>
+      <p class="legal-nota">Al crear tu cuenta aceptas la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a>.</p>
       <button type="button" class="enlace" id="verRecuperar">¿Ya tienes cuenta? Recupérala</button>
     </div>
     <div id="pasoRecuperar" hidden>
@@ -2664,6 +2685,8 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   const cuentaError = $("#cuentaError");
   const cuentaBoton = $("#cuentaBoton");
   const intro = $("#intro");
+  const modalDiario = $("#modalDiario");
+  const diarioCuenta = $("#diarioCuenta");
   let introActiva = false;
   let textoPunto = "";
   const botonInicio = $("#botonInicio");
@@ -2962,9 +2985,31 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   /* ============================================================
      INICIO DE PARTIDA
      ============================================================ */
+  /* ---------- Reto diario: una sola vez al día ---------- */
+  let diarioTimer = 0;
+  function diarioHecho() {
+    const p = perfil();
+    return Boolean(p.diario) && p.diario === claveDelDia();
+  }
+  function mostrarDiarioHecho() {
+    modalDiario.hidden = false;
+    function pintar() {
+      const ahora = new Date();
+      const manana = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + 1);
+      const s = Math.max(0, Math.floor((manana - ahora) / 1000));
+      const dos = function (n) { return String(n).padStart(2, "0"); };
+      diarioCuenta.textContent = dos(Math.floor(s / 3600)) + ":" + dos(Math.floor(s % 3600 / 60)) + ":" + dos(s % 60);
+      if (modalDiario.hidden) clearInterval(diarioTimer);
+    }
+    pintar();
+    clearInterval(diarioTimer);
+    diarioTimer = setInterval(pintar, 1000);
+  }
+
   function iniciarPartida(idModo, respuestaMantenida) {
     const modo = MODOS_POR_ID[idModo];
     if (!modo) return;
+    if (idModo === "diario" && diarioHecho()) { mostrarDiarioHecho(); return; }
 
     cancelarTemporizadores();
     estado.sesion++;
@@ -3685,8 +3730,9 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       ranking().slice(0, 10).map(function (x, i) {
         return '<li class="' + (x[0] === datosJ.actual ? "rank--yo" : "") + '"><span>' + (["🥇", "🥈", "🥉"][i] || (i + 1)) + "</span><em>" + esc(x[0]) + "</em><b>" + x[1].pts + " ⚡</b></li>";
       }).join("") + "</ol>" +
-      (ONLINE ? '<button type="button" class="boton boton--secundario" id="botonCodigo">🔑 Ver mi código de recuperación</button>' : "") +
-      '<p class="stats__nota">Cada navegador o app instalada tiene su propia cuenta. Guarda tu código para poder recuperarla.</p>';
+      (ONLINE ? '<button type="button" class="boton boton--secundario" id="botonCodigo">🔑 Ver mi código de recuperación</button><button type="button" class="enlace enlace--peligro" id="botonEliminar">🗑 Eliminar mi cuenta</button>' : "") +
+      '<p class="stats__nota">Cada navegador o app instalada tiene su propia cuenta. Guarda tu código para poder recuperarla.</p>' +
+      '<p class="stats__pie"><a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a></p>';
     if (ONLINE) cargarMundial();
   }
 
@@ -3750,6 +3796,23 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   const REGEX_NOMBRE = /^[A-Za-z0-9ÁÉÍÓÚÜÑáéíóúüñ _.-]{3,14}$/;
+
+  /* ---------- Filtro básico de nicknames (el servidor repite la parte fuerte) ---------- */
+  const NICK_FUERTES = ["hijoputa", "hijodeputa", "hijueputa", "putamadre", "gilipollas", "cabron", "mierda", "joder", "follar", "pendejo", "maricon", "negrata", "mamon", "porno", "violador", "pedofilo", "pedofila", "retrasado", "subnormal", "mongolo", "suicidate", "hitler", "fuck", "shit", "bitch", "nigger", "nigga", "faggot", "whore"];
+  const NICK_EXACTAS = ["puta", "puto", "polla", "verga", "culo", "pene", "cono", "zorra", "marica", "perra", "cunt", "rape", "kys"];
+  const NICK_RESERVADAS = ["tikitexto", "admin", "moderador", "soporte"];
+  const LEET = { "0": "o", "1": "i", "3": "e", "4": "a", "5": "s", "7": "t", "8": "b", "@": "a", "$": "s", "!": "i" };
+
+  function nickPermitido(nombre) {
+    const n = nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[0134578@$!]/g, function (c) { return LEET[c]; });
+    const junto = n.replace(/[^a-z]/g, "");
+    const palabras = n.split(/[^a-z]+/).filter(Boolean);
+    if (NICK_FUERTES.concat(NICK_RESERVADAS).some(function (w) { return junto.indexOf(w) >= 0; })) return false;
+    return !NICK_EXACTAS.some(function (w) {
+      return junto === w || palabras.indexOf(w) >= 0 || (w.length >= 5 && junto.slice(-w.length) === w);
+    });
+  }
 
   function tieneCuenta() { return Boolean(datosJ.actual) && (!ONLINE || perfil().online); }
 
@@ -3815,6 +3878,25 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     }).catch(function () { return false; });
   }
 
+  /* Elimina la cuenta en el servidor y en este dispositivo (derecho de supresión) */
+  function eliminarCuenta() {
+    const nombre = datosJ.actual, p = perfil();
+    return api("eliminar_cuenta", { p_nombre: nombre, p_token: p.token }).then(function (r) {
+      if (r.estado !== "ok") throw new Error(r.estado);
+      try { localStorage.removeItem(CLAVE_JUG); localStorage.removeItem(CLAVE_PARTIDA); } catch (error) { /* sin almacenamiento */ }
+      datosJ = cargarJ();
+      pintarTikis();
+      modalStats.hidden = true;
+      borrarPartida();
+      irAlInicio();
+      $("#pasoCrear").hidden = false; $("#pasoRecuperar").hidden = true; $("#pasoCodigo").hidden = true;
+      $("#tituloCuenta").textContent = "Crea tu cuenta";
+      cuentaInput.value = "";
+      mostrarCuenta();
+      mostrarAviso("Tu cuenta se ha eliminado");
+    });
+  }
+
   function cargarMundial() {
     const ol = statsContenido.querySelector(".rank");
     const titulo = ol.previousElementSibling;
@@ -3870,11 +3952,13 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       cuentaError.textContent = "Usa de 3 a 14 caracteres: letras, números, espacio, punto, guion o guion bajo.";
       return;
     }
+    if (!nickPermitido(nombre)) { cuentaError.textContent = "Ese nickname no está permitido. Elige otro."; return; }
     cuentaError.textContent = "";
     cuentaBoton.disabled = true;
     cuentaBoton.textContent = "Creando…";
     crearCuenta(nombre).catch(function (err) {
       cuentaError.textContent = err.message === "ocupado" ? "Ese nombre ya está en uso. Elige otro."
+        : err.message === "no_permitido" ? "Ese nickname no está permitido. Elige otro."
         : err.message === "invalido" ? "Nombre no válido. Elige otro."
         : "No se pudo conectar con el ranking. Revisa tu conexión e inténtalo de nuevo.";
     }).then(function () { cuentaBoton.disabled = false; cuentaBoton.textContent = "Crear mi cuenta"; });
@@ -4028,6 +4112,19 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     const objetivo = evento.target;
     if (!objetivo || !objetivo.closest) return;
 
+    if (objetivo.closest("[data-cerrar-diario]")) { modalDiario.hidden = true; return; }
+    if (objetivo.closest("#botonEliminar")) {
+      const b = $("#botonEliminar");
+      if (!b.dataset.armado) {
+        b.dataset.armado = "1";
+        b.textContent = "¿Seguro? Pulsa otra vez para borrarla para siempre";
+        setTimeout(function () { if (b.isConnected) { delete b.dataset.armado; b.textContent = "🗑 Eliminar mi cuenta"; } }, 6000);
+        return;
+      }
+      b.disabled = true;
+      eliminarCuenta().catch(function () { b.disabled = false; mostrarAviso("No se pudo eliminar. Revisa tu conexión"); });
+      return;
+    }
     if (objetivo.closest("#botonCodigo")) {
       const b = $("#botonCodigo"), t = perfil().token;
       b.textContent = formatoCodigo(t); b.classList.add("codigo");
@@ -4091,7 +4188,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
 
   document.addEventListener("keydown", function (e) {
     if (e.key !== "Escape") return;
-    [modalSalir, modalStats, modalEstadios].forEach(function (m) { m.hidden = true; });
+    [modalSalir, modalStats, modalEstadios, modalDiario].forEach(function (m) { m.hidden = true; });
     document.body.classList.remove("sin-desplazamiento");
   });
 
