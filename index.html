@@ -1336,6 +1336,36 @@ button.marca:active .marca__icono { transform: scale(.9); }
 #modalCuenta { z-index: 300; }
 #modalCuenta .modal__velo { background: rgba(5, 10, 16, .82); backdrop-filter: blur(10px); }
 .cuenta__error { color: #ff6b6b; font-size: .85rem; min-height: 1.2em; margin: 0; }
+
+/* ---------- Intro ---------- */
+.intro { position: fixed; inset: 0; z-index: 500; display: grid; place-items: center; overflow: hidden; cursor: pointer; color: #fff; background: radial-gradient(900px 620px at 50% 42%, #0f4a37, #070d14 72%); transition: opacity .5s; }
+.intro[hidden] { display: none; }
+.intro--salir { opacity: 0; pointer-events: none; }
+.intro__luces { position: absolute; inset: 0; background: conic-gradient(from 195deg at 50% -12%, transparent 0 9%, rgba(255, 255, 255, .1) 11% 13%, transparent 15% 30%, rgba(255, 255, 255, .08) 32% 34%, transparent 36% 64%, rgba(255, 255, 255, .08) 66% 68%, transparent 70% 85%, rgba(255, 255, 255, .1) 87% 89%, transparent 91%); animation: luces 7s ease-in-out infinite alternate; transform-origin: 50% 0; }
+@keyframes luces { to { transform: rotate(5deg); opacity: .6; } }
+.intro__escena { position: relative; display: grid; justify-items: center; gap: 30px; }
+.intro__balon { position: relative; width: min(58vw, 260px); aspect-ratio: 1; opacity: 0; transform: scale(.1); }
+.intro__giro, .intro__giro svg { width: 100%; height: 100%; display: block; }
+.intro__giro svg { filter: drop-shadow(0 20px 44px rgba(62, 224, 164, .6)); }
+.intro__destello { position: absolute; inset: -45%; border-radius: 50%; opacity: 0; pointer-events: none; background: radial-gradient(circle, rgba(255, 255, 255, .95), rgba(255, 200, 61, .5) 30%, transparent 62%); }
+.intro__t { position: absolute; right: -9%; bottom: -11%; width: 40%; aspect-ratio: 1; display: grid; place-items: center; border-radius: 26%; background: #ffc83d; border: 4px solid #fff; color: #2b2000; font-weight: 900; font-size: calc(min(58vw, 260px) * .27); line-height: 1; box-shadow: 0 10px 30px rgba(255, 200, 61, .65); transform: scale(0) rotate(-35deg); }
+.intro__titulo { margin: 0; font-size: clamp(2.2rem, 11vw, 3.6rem); font-weight: 900; letter-spacing: .06em; opacity: 0; }
+.intro__titulo span { background: linear-gradient(90deg, #3ee0a4, #ffc83d); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.intro__tocar { position: absolute; bottom: 14%; margin: 0; font-weight: 800; letter-spacing: .25em; text-transform: uppercase; font-size: .85rem; animation: parpadeo 1.6s ease-in-out infinite; }
+@keyframes parpadeo { 50% { opacity: .25; } }
+.intro__saltar { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 14px); right: 16px; padding: 8px 14px; border: 0; border-radius: 99px; background: rgba(255, 255, 255, .14); color: #fff; font: inherit; font-weight: 700; opacity: 0; pointer-events: none; }
+.intro--play .intro__tocar { animation: none; opacity: 0; }
+.intro--play .intro__saltar { opacity: 1; transition: opacity .4s .6s; }
+.intro--play .intro__balon { animation: acercar 2s cubic-bezier(.2, .7, .2, 1) forwards; }
+.intro--play .intro__giro { animation: girar 3s forwards; }
+.intro--play .intro__destello { animation: destello .9s ease-out 3s; }
+.intro--play .intro__t { animation: popT .6s cubic-bezier(.3, 1.9, .5, 1) 3s forwards; }
+.intro--play .intro__titulo { animation: aparecer 3.7s forwards; }
+@keyframes acercar { 0% { transform: scale(.1); opacity: 0; } 15% { opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes girar { 0% { transform: rotate(0); animation-timing-function: ease-in; } 67% { transform: rotate(720deg); animation-timing-function: cubic-bezier(.05, .7, .2, 1); } 100% { transform: rotate(3240deg); } }
+@keyframes destello { 0% { opacity: .95; transform: scale(.3); } 100% { opacity: 0; transform: scale(1.4); } }
+@keyframes popT { to { transform: scale(1) rotate(-6deg); } }
+@keyframes aparecer { 0%, 80% { opacity: 0; transform: translateY(14px); } 100% { opacity: 1; transform: none; } }
 </style>
 </head>
 <body>
@@ -1553,6 +1583,27 @@ button.marca:active .marca__icono { transform: scale(.9); }
       <button class="boton boton--primario" id="cuentaBoton">Crear mi cuenta</button>
     </form>
   </div>
+</div>
+
+<div class="intro" id="intro" role="dialog" aria-label="TIKITEXTO">
+  <div class="intro__luces"></div>
+  <div class="intro__escena">
+    <div class="intro__balon">
+      <div class="intro__giro">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <defs><radialGradient id="introBalon" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#fff"/><stop offset=".7" stop-color="#eef2f5"/><stop offset="1" stop-color="#b9c4cc"/></radialGradient></defs>
+          <circle cx="100" cy="100" r="92" fill="url(#introBalon)" stroke="#0b1f17" stroke-width="3"/>
+          <path d="M100 62l36.1 26.2-13.8 42.4H77.7L63.9 88.2z" fill="#0b1f17"/>
+          <path d="M100 62V12M136.1 88.2l47.6-15.4M122.3 130.6l29.4 40.6M77.7 130.6l-29.4 40.6M63.9 88.2L16.3 72.8" stroke="#0b1f17" stroke-width="5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <div class="intro__destello"></div>
+      <div class="intro__t">T</div>
+    </div>
+    <p class="intro__titulo">TIKI<span>TEXTO</span></p>
+  </div>
+  <p class="intro__tocar">Toca para empezar</p>
+  <button type="button" class="intro__saltar" tabindex="-1">Saltar ›</button>
 </div>
 
 <div class="punto" id="punto" aria-hidden="true">⚡ +1 TIKITEXTO</div>
@@ -2589,6 +2640,8 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   const cuentaInput = $("#cuentaInput");
   const cuentaError = $("#cuentaError");
   const cuentaBoton = $("#cuentaBoton");
+  const intro = $("#intro");
+  let introActiva = false;
   let textoPunto = "";
   const botonInicio = $("#botonInicio");
   const avisoCaja = $("#aviso");
@@ -3219,7 +3272,12 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     }
 
     resaltarFilaActiva();
-    abrirResumen();
+    if (estado.gano) {
+      const sesion = estado.sesion;
+      setTimeout(function () { if (estado.sesion === sesion && estado.terminado) abrirResumen(); }, 2700);
+    } else {
+      abrirResumen();
+    }
   }
 
   /* Rejilla de bloques de colores, igual que en Tikitexto */
@@ -3656,7 +3714,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   function mostrarCuenta() {
     modalCuenta.hidden = false;
     document.body.classList.add("sin-desplazamiento");
-    setTimeout(function () { cuentaInput.focus(); }, 80);
+    setTimeout(function () { if (!introActiva) cuentaInput.focus(); }, 80);
   }
 
   function aceptarCuenta(nombre, token, pts, puesto) {
@@ -3729,6 +3787,141 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
         : err.message === "invalido" ? "Nombre no válido. Elige otro."
         : "No se pudo conectar con el ranking. Revisa tu conexión e inténtalo de nuevo.";
     }).then(function () { cuentaBoton.disabled = false; cuentaBoton.textContent = "Crear mi cuenta"; });
+  });
+
+  /* ============================================================
+     INTRO CON SONIDO (todo sintetizado con Web Audio, sin archivos)
+     ============================================================ */
+  let introFase = 0, introTimer = 0, introAudio = null, introInicio = 0;
+
+  function sonidoIntro() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    const ctx = new AC();
+    if (ctx.resume) ctx.resume();
+    const t0 = ctx.currentTime + 0.05;
+    const master = ctx.createGain();
+    master.gain.value = 0.85;
+    const comp = ctx.createDynamicsCompressor();
+    master.connect(comp);
+    comp.connect(ctx.destination);
+
+    /* Eco de estadio */
+    const largo = Math.floor(ctx.sampleRate * 1.9);
+    const ir = ctx.createBuffer(2, largo, ctx.sampleRate);
+    for (let c = 0; c < 2; c++) {
+      const d = ir.getChannelData(c);
+      for (let i = 0; i < largo; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / largo, 2.5);
+    }
+    const eco = ctx.createConvolver(); eco.buffer = ir;
+    const humedo = ctx.createGain(); humedo.gain.value = 0.45;
+    eco.connect(humedo); humedo.connect(master);
+    const bus = ctx.createGain();
+    bus.connect(master); bus.connect(eco);
+
+    /* Murmullo de la grada: ruido filtrado que va creciendo */
+    const rb = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+    const rd = rb.getChannelData(0);
+    for (let i = 0; i < rd.length; i++) rd[i] = Math.random() * 2 - 1;
+    function capa(frec, q, base, pico) {
+      const src = ctx.createBufferSource(); src.buffer = rb; src.loop = true;
+      const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = frec; bp.Q.value = q;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, t0);
+      g.gain.linearRampToValueAtTime(base, t0 + 1.8);
+      g.gain.linearRampToValueAtTime(base * 1.3, t0 + 2.7);
+      g.gain.linearRampToValueAtTime(pico, t0 + 3.4);
+      g.gain.linearRampToValueAtTime(pico * 0.8, t0 + 4.2);
+      g.gain.linearRampToValueAtTime(0, t0 + 5.3);
+      const lfo = ctx.createOscillator(); lfo.frequency.value = 0.6 + Math.random() * 0.7;
+      const lg = ctx.createGain(); lg.gain.value = base * 0.3;
+      lfo.connect(lg); lg.connect(g.gain);
+      src.connect(bp); bp.connect(g); g.connect(bus);
+      src.start(t0); lfo.start(t0); src.stop(t0 + 5.4); lfo.stop(t0 + 5.4);
+    }
+    capa(650, 0.6, 0.22, 0.6);
+    capa(1500, 0.8, 0.12, 0.38);
+    capa(3200, 1, 0.05, 0.2);
+
+    /* "GOOOL": coro de 10 voces con formantes de vocal "o" */
+    const tg = t0 + 2.85;
+    for (let k = 0; k < 10; k++) {
+      const t = tg + Math.random() * 0.09;
+      const f0 = 125 + Math.random() * 120;
+      const o = ctx.createOscillator(); o.type = "sawtooth";
+      o.detune.value = (Math.random() - 0.5) * 45;
+      o.frequency.setValueAtTime(f0 * 0.9, t);
+      o.frequency.linearRampToValueAtTime(f0 * 1.12, t + 0.35);
+      o.frequency.linearRampToValueAtTime(f0, t + 1.2);
+      o.frequency.linearRampToValueAtTime(f0 * 0.82, t + 1.6);
+      const v = ctx.createOscillator(); v.frequency.value = 5 + Math.random() * 2;
+      const vg = ctx.createGain(); vg.gain.value = f0 * 0.012;
+      v.connect(vg); vg.connect(o.frequency);
+      const env = ctx.createGain();
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(0.05, t + 0.07);
+      env.gain.linearRampToValueAtTime(0.1, t + 0.45);
+      env.gain.setValueAtTime(0.1, t + 1.15);
+      env.gain.linearRampToValueAtTime(0, t + 1.7);
+      [[480, 1], [900, 0.7], [2500, 0.25]].forEach(function (fm, i) {
+        const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 7;
+        bp.frequency.setValueAtTime(i === 0 ? 300 : fm[0] * 0.8, t);
+        bp.frequency.linearRampToValueAtTime(fm[0], t + 0.18);
+        bp.frequency.setValueAtTime(fm[0], t + 1.2);
+        bp.frequency.linearRampToValueAtTime(i === 0 ? 360 : fm[0] * (i === 1 ? 1.35 : 1), t + 1.6);
+        const g = ctx.createGain(); g.gain.value = fm[1];
+        o.connect(bp); bp.connect(g); g.connect(env);
+      });
+      env.connect(bus);
+      o.start(t); v.start(t); o.stop(t + 1.8); v.stop(t + 1.8);
+    }
+
+    return {
+      parar: function () {
+        const ahora = ctx.currentTime;
+        master.gain.cancelScheduledValues(ahora);
+        master.gain.setValueAtTime(master.gain.value, ahora);
+        master.gain.linearRampToValueAtTime(0, ahora + 0.35);
+        setTimeout(function () { if (ctx.close) ctx.close().catch(function () {}); }, 500);
+      }
+    };
+  }
+
+  function prepararIntro() {
+    const reducir = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let visto = false;
+    try { visto = Boolean(sessionStorage.getItem("tikitexto:intro")); } catch (error) { /* sin almacenamiento */ }
+    if (reducir || visto) { intro.hidden = true; return; }
+    introActiva = true;
+  }
+
+  function cerrarIntro() {
+    if (!introActiva) return;
+    introActiva = false;
+    clearTimeout(introTimer);
+    try { sessionStorage.setItem("tikitexto:intro", "1"); } catch (error) { /* sin almacenamiento */ }
+    if (introAudio) { introAudio.parar(); introAudio = null; }
+    intro.classList.add("intro--salir");
+    setTimeout(function () { intro.hidden = true; }, 540);
+    if (!modalCuenta.hidden) cuentaInput.focus();
+  }
+
+  /* Primer toque: arranca (y activa el sonido). Segundo toque: salta. */
+  function pulsarIntro() {
+    if (!introActiva) return;
+    if (introFase === 0) {
+      introFase = 1;
+      introInicio = Date.now();
+      intro.classList.add("intro--play");
+      try { introAudio = sonidoIntro(); } catch (error) { introAudio = null; }
+      introTimer = setTimeout(cerrarIntro, 5000);
+    } else if (Date.now() - introInicio > 700) {
+      cerrarIntro();
+    }
+  }
+  intro.addEventListener("click", pulsarIntro);
+  document.addEventListener("keydown", function (e) {
+    if (introActiva && (e.key === "Enter" || e.key === " " || e.key === "Escape")) { e.preventDefault(); pulsarIntro(); }
   });
 
   /* ============================================================
@@ -3854,6 +4047,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   aplicarTema(document.documentElement.dataset.tema || "claro");
   pintarInicio();
   pintarTikis();
+  prepararIntro();
   if (tieneCuenta()) { enviarPend(); recuperarPartida(); } else { mostrarCuenta(); }
 })();
 </script>
