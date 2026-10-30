@@ -1366,6 +1366,10 @@ button.marca:active .marca__icono { transform: scale(.9); }
 @keyframes destello { 0% { opacity: .95; transform: scale(.3); } 100% { opacity: 0; transform: scale(1.4); } }
 @keyframes popT { to { transform: scale(1) rotate(-6deg); } }
 @keyframes aparecer { 0%, 80% { opacity: 0; transform: translateY(14px); } 100% { opacity: 1; transform: none; } }
+
+.enlace { display: block; width: 100%; padding: 12px 0 2px; border: 0; background: none; color: var(--acento); font: inherit; font-weight: 700; cursor: pointer; text-align: center; }
+.codigo { display: block; width: 100%; margin: 12px 0; padding: 14px 10px; border-radius: 14px; border: 2px dashed var(--acento); background: var(--superficie-2); color: var(--texto); font-family: ui-monospace, Menlo, monospace; font-weight: 800; font-size: 1rem; letter-spacing: .06em; text-align: center; word-break: break-all; -webkit-user-select: text; user-select: text; }
+#modalCuenta .boton, #botonCodigo { width: 100%; margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -1576,12 +1580,31 @@ button.marca:active .marca__icono { transform: scale(.9); }
   <div class="modal__caja">
     <p class="modal__etiqueta">Bienvenido a TIKITEXTO</p>
     <h2 class="modal__titulo" id="tituloCuenta">Crea tu cuenta</h2>
-    <p class="modal__texto">Elige tu nickname. Será tu nombre en el ranking mundial y no podrás cambiarlo.</p>
-    <form class="nuevo" id="formCuenta" autocomplete="off">
-      <input id="cuentaInput" maxlength="14" placeholder="Tu nickname" aria-label="Tu nickname" autocapitalize="off" autocorrect="off" spellcheck="false">
-      <p class="cuenta__error" id="cuentaError" role="alert"></p>
-      <button class="boton boton--primario" id="cuentaBoton">Crear mi cuenta</button>
-    </form>
+    <div id="pasoCrear">
+      <p class="modal__texto">Elige tu nickname. Será tu nombre en el ranking mundial y no podrás cambiarlo.</p>
+      <form class="nuevo" id="formCuenta" autocomplete="off">
+        <input id="cuentaInput" maxlength="14" placeholder="Tu nickname" aria-label="Tu nickname" autocapitalize="off" autocorrect="off" spellcheck="false">
+        <p class="cuenta__error" id="cuentaError" role="alert"></p>
+        <button class="boton boton--primario" id="cuentaBoton">Crear mi cuenta</button>
+      </form>
+      <button type="button" class="enlace" id="verRecuperar">¿Ya tienes cuenta? Recupérala</button>
+    </div>
+    <div id="pasoRecuperar" hidden>
+      <p class="modal__texto">Escribe tu nickname y el código de recuperación que te mostramos al crear la cuenta.</p>
+      <form class="nuevo" id="formRecuperar" autocomplete="off">
+        <input id="recNombre" maxlength="14" placeholder="Tu nickname" aria-label="Tu nickname" autocapitalize="off" autocorrect="off" spellcheck="false">
+        <input id="recCodigo" placeholder="Código de recuperación" aria-label="Código de recuperación" autocapitalize="characters" autocorrect="off" spellcheck="false">
+        <p class="cuenta__error" id="recError" role="alert"></p>
+        <button class="boton boton--primario" id="recBoton">Recuperar mi cuenta</button>
+      </form>
+      <button type="button" class="enlace" id="verCrear">‹ Crear una cuenta nueva</button>
+    </div>
+    <div id="pasoCodigo" hidden>
+      <p class="modal__texto">Este es tu <b>código de recuperación</b>. Guárdalo (captura de pantalla o nota): si borras la app o cambias de móvil, con él recuperas tu cuenta y tus tikitextos.</p>
+      <div class="codigo" id="codigoTexto"></div>
+      <button type="button" class="boton boton--secundario" id="codigoCopiar">Copiar código</button>
+      <button type="button" class="boton boton--primario" id="codigoOk">Lo he guardado, ¡a jugar!</button>
+    </div>
   </div>
 </div>
 
@@ -3662,7 +3685,8 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       ranking().slice(0, 10).map(function (x, i) {
         return '<li class="' + (x[0] === datosJ.actual ? "rank--yo" : "") + '"><span>' + (["🥇", "🥈", "🥉"][i] || (i + 1)) + "</span><em>" + esc(x[0]) + "</em><b>" + x[1].pts + " ⚡</b></li>";
       }).join("") + "</ol>" +
-      '<p class="stats__nota">Una cuenta por dispositivo.</p>';
+      (ONLINE ? '<button type="button" class="boton boton--secundario" id="botonCodigo">🔑 Ver mi código de recuperación</button>' : "") +
+      '<p class="stats__nota">Cada navegador o app instalada tiene su propia cuenta. Guarda tu código para poder recuperarla.</p>';
     if (ONLINE) cargarMundial();
   }
 
@@ -3677,9 +3701,27 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
   }
 
+  const ALFABETO = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   function nuevoToken() {
-    return (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
-      : "t" + Math.random().toString(36).slice(2) + Date.now().toString(36) + Math.random().toString(36).slice(2);
+    const b = new Uint8Array(20);
+    if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(b);
+    else for (let i = 0; i < 20; i++) b[i] = Math.floor(Math.random() * 256);
+    return Array.prototype.map.call(b, function (x) { return ALFABETO[x % 32]; }).join("");
+  }
+  function formatoCodigo(t) { return /^[A-Z2-9]{20}$/.test(t) ? t.match(/.{4}/g).join("-") : t; }
+  function normalizarCodigo(c) {
+    const t = String(c).trim(), limpio = t.replace(/[\s-]/g, "").toUpperCase();
+    if (/^[A-Z2-9]{20}$/.test(limpio)) return limpio;
+    if (/^[0-9A-F]{32}$/.test(limpio)) {
+      const l = limpio.toLowerCase();
+      return l.slice(0, 8) + "-" + l.slice(8, 12) + "-" + l.slice(12, 16) + "-" + l.slice(16, 20) + "-" + l.slice(20);
+    }
+    return t;
+  }
+  function copiarCodigo(t) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(formatoCodigo(t)).then(function () { mostrarAviso("Código copiado"); }).catch(function () {});
+    }
   }
 
   /* Envía de uno en uno los aciertos pendientes (el servidor admite 1 cada 10 s) */
@@ -3717,27 +3759,60 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     setTimeout(function () { if (!introActiva) cuentaInput.focus(); }, 80);
   }
 
-  function aceptarCuenta(nombre, token, pts, puesto) {
+  function aceptarCuenta(nombre, token, pts, puesto, conCodigo) {
     const p = nuevoPerfil();
     p.token = token; p.online = ONLINE; p.pts = pts; p.puesto = puesto || 0;
     datosJ = { actual: nombre, perfiles: {} };
     datosJ.perfiles[nombre] = p;
     guardarJ();
     pintarTikis();
+    try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (error) { /* opcional */ }
+    if (conCodigo) {
+      $("#pasoCrear").hidden = true;
+      $("#pasoRecuperar").hidden = true;
+      $("#pasoCodigo").hidden = false;
+      $("#tituloCuenta").textContent = "¡Cuenta creada!";
+      $("#codigoTexto").textContent = formatoCodigo(token);
+    } else {
+      terminarCuenta();
+    }
+  }
+
+  function terminarCuenta() {
     modalCuenta.hidden = true;
     document.body.classList.remove("sin-desplazamiento");
-    mostrarAviso("¡Bienvenido, " + nombre + "!");
+    mostrarAviso("¡Bienvenido, " + datosJ.actual + "!");
+    enviarPend();
     recuperarPartida();
   }
 
-  /* Crea la única cuenta del dispositivo; el nombre es único en todo el mundo */
+  /* Crea la cuenta del dispositivo; el nombre es único en todo el mundo */
   function crearCuenta(nombre) {
     const token = nuevoToken();
-    if (!ONLINE) { aceptarCuenta(nombre, token, 0, 0); return Promise.resolve(); }
+    if (!ONLINE) { aceptarCuenta(nombre, token, 0, 0, false); return Promise.resolve(); }
     return api("reclamar_nombre", { p_nombre: nombre, p_token: token }).then(function (r) {
       if (r.estado !== "ok") throw new Error(r.estado);
-      aceptarCuenta(nombre, token, r.pts, r.puesto);
+      aceptarCuenta(nombre, token, r.pts, r.puesto, true);
     });
+  }
+
+  /* Recupera una cuenta que ya existe en el servidor (reinstalación, otro móvil...) */
+  function recuperarCuenta(nombre, codigo) {
+    return api("recuperar_cuenta", { p_nombre: nombre, p_token: codigo }).then(function (r) {
+      if (r.estado !== "ok") throw new Error(r.estado);
+      aceptarCuenta(r.nombre, codigo, r.pts, r.puesto, false);
+    });
+  }
+
+  /* Cuenta guardada en el dispositivo pero aún no registrada en el servidor */
+  function reclamarGuardada() {
+    const p = perfil();
+    if (!p.token) p.token = nuevoToken();
+    return api("reclamar_nombre", { p_nombre: datosJ.actual, p_token: p.token }).then(function (r) {
+      if (r.estado !== "ok") return false;
+      p.online = true; p.pts = r.pts; guardarJ();
+      return true;
+    }).catch(function () { return false; });
   }
 
   function cargarMundial() {
@@ -3768,6 +3843,22 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       ol.innerHTML = local;
     });
   }
+
+  document.addEventListener("submit", function (e) {
+    if (e.target.id !== "formRecuperar") return;
+    e.preventDefault();
+    const nombre = $("#recNombre").value.trim(), codigo = normalizarCodigo($("#recCodigo").value);
+    const err = $("#recError"), boton = $("#recBoton");
+    if (!nombre || codigo.length < 16) { err.textContent = "Escribe tu nickname y tu código de recuperación completo."; return; }
+    err.textContent = "";
+    boton.disabled = true;
+    boton.textContent = "Comprobando…";
+    recuperarCuenta(nombre, codigo).catch(function (error) {
+      err.textContent = error.message === "no_existe" ? "No existe ninguna cuenta con ese nickname."
+        : error.message === "codigo_incorrecto" ? "El código no es correcto. Revísalo."
+        : "No se pudo comprobar. Revisa tu conexión (y que el SQL actualizado esté ejecutado en Supabase).";
+    }).then(function () { boton.disabled = false; boton.textContent = "Recuperar mi cuenta"; });
+  });
 
   document.addEventListener("visibilitychange", function () { if (!document.hidden) enviarPend(); });
 
@@ -3937,6 +4028,21 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     const objetivo = evento.target;
     if (!objetivo || !objetivo.closest) return;
 
+    if (objetivo.closest("#botonCodigo")) {
+      const b = $("#botonCodigo"), t = perfil().token;
+      b.textContent = formatoCodigo(t); b.classList.add("codigo");
+      copiarCodigo(t);
+      return;
+    }
+    if (objetivo.closest("#codigoCopiar")) { copiarCodigo(perfil().token); return; }
+    if (objetivo.closest("#codigoOk")) { terminarCuenta(); return; }
+    if (objetivo.closest("#verRecuperar") || objetivo.closest("#verCrear")) {
+      const rec = Boolean(objetivo.closest("#verRecuperar"));
+      $("#pasoCrear").hidden = rec;
+      $("#pasoRecuperar").hidden = !rec;
+      $("#tituloCuenta").textContent = rec ? "Recupera tu cuenta" : "Crea tu cuenta";
+      return;
+    }
     if (objetivo.closest("[data-stats]")) { pintarStats(); modalStats.hidden = false; return; }
     if (objetivo.closest("[data-cerrar-stats]")) { modalStats.hidden = true; return; }
     if (objetivo.closest("#botonLogo, #botonInicio")) { modalSalir.hidden = false; return; }
@@ -4048,7 +4154,16 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   pintarInicio();
   pintarTikis();
   prepararIntro();
-  if (tieneCuenta()) { enviarPend(); recuperarPartida(); } else { mostrarCuenta(); }
+  if (tieneCuenta()) {
+    enviarPend();
+    recuperarPartida();
+  } else if (ONLINE && datosJ.actual) {
+    reclamarGuardada().then(function (ok) {
+      if (ok) { pintarTikis(); enviarPend(); recuperarPartida(); } else { mostrarCuenta(); }
+    });
+  } else {
+    mostrarCuenta();
+  }
 })();
 </script>
 </body>
