@@ -44,6 +44,7 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 
 ## SEO
 - `tools/seo.py` genera las páginas de búsqueda (`en/`, `pt/`, `fr/`, `it/`, `de/` y `adivina-el-jugador/`, `-equipo/`, `-seleccion/`, `-entrenador/`, `-estadio/`) y `sitemap.xml` (con `hreflang`). Ejecutarlo tras tocar textos o añadir modos/idiomas; no editar a mano esos `index.html`.
+- También genera guías por modo en inglés (`en/guess-the-player/`…) y alemán (`de/fussballer-raten/`…); su contenido está en `tools/seo_en_de.py` y llevan `hreflang` es/en/de.
 - Los botones de esas páginas enlazan a `../?lang=xx&modo=yy` (el juego arranca directamente ese modo).
 - `index.html` lleva título/descripción optimizados, `hreflang`, datos estructurados (WebSite, WebApplication, FAQPage) y un bloque visible «¿Qué es TIKITEXTO?» con modos y preguntas frecuentes. Si se cambia el título o la descripción, añadir su traducción a `fuente.txt`.
 - Evitar repetir palabras clave sin sentido: Google penaliza el relleno; mantener textos naturales.

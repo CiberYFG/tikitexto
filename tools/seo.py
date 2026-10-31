@@ -46,6 +46,9 @@ LANDING = {
  "it": dict(titulo="Gioco quotidiano di calcio: indovina giocatore, squadra e stadio | TIKITEXTO", desc="Gioco di calcio gratuito ogni giorno: indovina giocatore, squadra, stadio o nazionale in 6 tentativi. Classifica mondiale, senza registrazione.", h1="Gioco quotidiano di calcio da indovinare", lead="Ogni giorno un nuovo nome nascosto: un giocatore, una squadra, uno stadio, una nazionale o un allenatore. Sei tentativi, indizi a colori dopo ognuno e classifica mondiale. Gratis e senza registrazione."),
  "de": dict(titulo="Tägliches Fußballspiel: Spieler, Team und Stadion erraten | TIKITEXTO", desc="Kostenloses tägliches Fußballspiel: Errate Spieler, Team, Stadion oder Nationalmannschaft in 6 Versuchen. Weltrangliste, ohne Anmeldung.", h1="Tägliches Fußball-Ratespiel", lead="Jeden Tag ein neuer versteckter Name: ein Spieler, ein Team, ein Stadion, eine Nationalmannschaft oder ein Trainer. Sechs Versuche, Farbhinweise nach jedem und eine Weltrangliste. Kostenlos und ohne Anmeldung."),
 }
+import sys as _sys
+_sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from seo_en_de import MODOS_EN, MODOS_DE, LABELS as LABELS_ED
 MODOS_LISTA = [("Adivina el jugador", "jugadores"), ("Adivina el equipo", "equipos"), ("Adivina la selección", "selecciones"), ("Adivina el entrenador", "entrenadores"), ("Adivina el estadio", "estadios_es")]
 
 # ---- páginas por modo (español) ----
@@ -164,10 +167,23 @@ urls = [("", "es")]
 for lang in LANGS[1:]:
     L = LANDING[lang]; u = UI[lang]
     modos = "".join('<li><a href="../?lang=%s&modo=%s">%s</a></li>' % (lang, m, esc(T(n, lang))) for n, m in MODOS_LISTA)
+    if lang in ("en", "de"):
+        _lista = MODOS_EN if lang == "en" else MODOS_DE
+        modos = "".join('<li><a href="%s/">%s</a></li>' % (g["slug"], esc(g["h1"])) for g in _lista)
     bloques = "<h2>%s</h2><ul class=\"g\">%s</ul>" % (esc(u["modos"]), modos)
     faq = [(T(FAQ_CLAVES[i], lang), T(FAQ_RESP[i], lang)) for i in range(6)]
     escribir(lang, pagina(lang, lang + "/", L["titulo"], L["desc"], L["h1"], L["lead"], None, bloques, faq, alternates(), 1))
     urls.append((lang + "/", lang))
+# alternates entre las páginas de modo en es / en / de (mismo modo)
+MODO_SLUGS = {}
+for _m in MODOS_ES: MODO_SLUGS.setdefault(_m["modo"], {})["es"] = _m["slug"]
+for _m in MODOS_EN: MODO_SLUGS.setdefault(_m["modo"], {})["en"] = _m["slug"]
+for _m in MODOS_DE: MODO_SLUGS.setdefault(_m["modo"], {})["de"] = _m["slug"]
+def alts_modo(modo):
+    d = MODO_SLUGS[modo]
+    out = ['<link rel="alternate" hreflang="%s" href="%s%s%s/">' % (HREFLANG[c], DOM, "" if c == "es" else c + "/", d[c]) for c in ("es", "en", "de")]
+    out.append('<link rel="alternate" hreflang="x-default" href="%s%s/">' % (DOM, d["es"]))
+    return "\n".join(out)
 # páginas de modo (español)
 for m in MODOS_ES:
     u = UI["es"]
@@ -176,14 +192,29 @@ for m in MODOS_ES:
     faq = m["qa"] + [(FAQ_CLAVES[1], FAQ_RESP[1]), (FAQ_CLAVES[2], FAQ_RESP[2])]
     migas = [("TIKITEXTO", DOM), (m["h1"], DOM + m["slug"] + "/")]
     escribir(m["slug"], pagina("es", m["slug"] + "/", m["titulo"], m["desc"], m["h1"], m["lead"], m["modo"], bloques, faq,
-                               '<link rel="alternate" hreflang="es" href="%s%s/">' % (DOM, m["slug"]), 1, migas))
+                               alts_modo(m["modo"]), 1, migas))
     urls.append((m["slug"] + "/", "es"))
+
+for lang, lista in (("en", MODOS_EN), ("de", MODOS_DE)):
+    for m in lista:
+        otros_t, todos_t = LABELS_ED[lang]
+        otros = "".join('<li><a href="../%s/">%s</a></li>' % (o["slug"], esc(o["h1"])) for o in lista if o["slug"] != m["slug"])
+        bloques = '<h2>%s</h2><ul class="g">%s<li><a href="../">%s</a></li></ul>' % (otros_t, otros, todos_t)
+        faq = m["qa"] + [(T(FAQ_CLAVES[1], lang), T(FAQ_RESP[1], lang)), (T(FAQ_CLAVES[2], lang), T(FAQ_RESP[2], lang))]
+        ruta = lang + "/" + m["slug"] + "/"
+        migas = [("TIKITEXTO", DOM + lang + "/"), (m["h1"], DOM + ruta)]
+        escribir(ruta, pagina(lang, ruta, m["titulo"], m["desc"], m["h1"], m["lead"], m["modo"], bloques, faq, alts_modo(m["modo"]), 2, migas))
+        urls.append((ruta, lang))
 
 # ---- sitemap ----
 home_alts = "".join('<xhtml:link rel="alternate" hreflang="%s" href="%s%s"/>' % (HREFLANG[c], DOM, "" if c == "es" else c + "/") for c in LANGS) + '<xhtml:link rel="alternate" hreflang="x-default" href="%s"/>' % DOM
 sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">']
 for ruta, lang in urls:
     extra = home_alts if (ruta == "" or ruta.rstrip("/") in LANGS) else ""
+    _sl = ruta.rstrip("/").split("/")[-1]
+    for _modo, _d in MODO_SLUGS.items():
+        if _sl in _d.values():
+            extra = "".join('<xhtml:link rel="alternate" hreflang="%s" href="%s%s%s/"/>' % (HREFLANG[c], DOM, "" if c == "es" else c + "/", _d[c]) for c in ("es", "en", "de")) + '<xhtml:link rel="alternate" hreflang="x-default" href="%s%s/"/>' % (DOM, _d["es"])
     sm.append("  <url><loc>%s%s</loc>%s</url>" % (DOM, ruta, extra))
 for sub in ("curiosidades/", "curiosidades/campeones/", "curiosidades/ligas/", "curiosidades/trofeos/"):
     alts = "".join('<xhtml:link rel="alternate" hreflang="%s" href="%s%s%s"/>' % (HREFLANG[c], DOM, "" if c == "es" else c + "/", sub) for c in LANGS) + '<xhtml:link rel="alternate" hreflang="x-default" href="%s%s"/>' % (DOM, sub)

@@ -202,7 +202,7 @@ with sync_playwright() as p:
     print("3e) Páginas de búsqueda (SEO) y enlaces directos")
     try:
         import re as _re
-        paginas = ["en/", "pt/", "fr/", "it/", "de/", "adivina-el-jugador/", "adivina-el-equipo/", "adivina-la-seleccion/", "adivina-el-entrenador/", "adivina-el-estadio/"]
+        paginas = ["en/", "pt/", "fr/", "it/", "de/", "adivina-el-jugador/", "adivina-el-equipo/", "adivina-la-seleccion/", "adivina-el-entrenador/", "adivina-el-estadio/", "en/guess-the-player/", "en/guess-the-team/", "en/guess-the-national-team/", "en/guess-the-manager/", "en/guess-the-stadium/", "de/fussballer-raten/", "de/fussballverein-raten/", "de/nationalmannschaft-raten/", "de/trainer-raten/", "de/stadion-raten/"]
         for ruta in paginas:
             r = ctx.request.get(BASE + ruta)
             h = r.text() if r.ok else ""
@@ -221,6 +221,11 @@ with sync_playwright() as p:
         pe.wait_for_load_state("networkidle")
         pe.wait_for_timeout(1000)
         check("el botón de la página en inglés abre el juego en inglés", pe.evaluate("document.documentElement.lang") == "en" and pe.is_visible("#pantallaInicio"))
+        pe.goto(BASE + "de/stadion-raten/", wait_until="networkidle")
+        pe.click("a.cta")
+        pe.wait_for_load_state("networkidle")
+        pe.wait_for_timeout(1500)
+        check("el enlace de la guía en alemán empieza el modo en alemán", pe.evaluate("document.documentElement.lang") == "de" and "?" not in pe.url)
         pe.goto(BASE + "adivina-el-equipo/", wait_until="networkidle")
         pe.click("a.cta")
         pe.wait_for_load_state("networkidle")
