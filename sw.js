@@ -2,7 +2,7 @@
    - La página se pide SIEMPRE a la red primero: así nadie se queda con una versión antigua.
    - Si no hay conexión, se usa la última copia guardada.
    - Sube VERSION solo si cambias la lista SHELL o quieres vaciar la caché. */
-const VERSION = "v3";
+const VERSION = "v4";
 const CACHE = "tikitexto-" + VERSION;
 const BASE = self.registration.scope; /* termina en "/", incluye el nombre del repositorio */
 const INDEX = new URL("index.html", BASE).href;
@@ -41,6 +41,17 @@ self.addEventListener("fetch", function (e) {
           return res;
         })
         .catch(function () { return caches.match(req.url).then(function (hit) { return hit || caches.match(INDEX); }); })
+    );
+    return;
+  }
+
+  /* Diccionarios de idioma: red primero (para ver siempre las traducciones nuevas), caché de respaldo */
+  if (req.url.indexOf("/i18n/") >= 0) {
+    e.respondWith(
+      fetch(req).then(function (res) {
+        if (res.ok) { const copia = res.clone(); caches.open(CACHE).then(function (c) { c.put(req, copia); }); }
+        return res;
+      }).catch(function () { return caches.match(req); })
     );
     return;
   }
