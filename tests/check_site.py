@@ -263,6 +263,38 @@ with sync_playwright() as p:
     except Exception as e:
         check("aviso de consentimiento", False, str(e)[:150])
 
+    print("3g) Racha diaria y compartir")
+    try:
+        cg = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+        errs_g = []
+        pgg = cg.new_page()
+        pgg.on("pageerror", lambda e: errs_g.append(str(e)))
+        pgg.route("**/rest/v1/rpc/*", lambda r: r.abort())
+        perf = {"pts": 0, "jugadas": 0, "aciertos": 0, "racha": 0, "mejor": 0, "dist": [0] * 6, "diario": "", "token": "T" * 24, "online": True, "pend": 0, "diaD": 2, "diaMejor": 2, "diaUlt": "AYER"}
+        pgg.add_init_script("var d=new Date();d.setDate(d.getDate()-1);var a=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();var p=" + json.dumps(perf) + ";p.diaUlt=a;"
+            "localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');sessionStorage.setItem('tikitexto:intro','1');"
+            "localStorage.setItem('tikitexto:jugadores',JSON.stringify({actual:'BotRacha',perfiles:{BotRacha:p}}));")
+        pgg.goto(BASE, wait_until="networkidle", timeout=60000)
+        pgg.click('[data-modo="diario"]')
+        pgg.wait_for_selector(".celda", timeout=10000)
+        n = pgg.locator(".celda").count() // 6
+        for _ in range(6):
+            pgg.keyboard.type("A" * n)
+            pgg.keyboard.press("Enter")
+            pgg.wait_for_timeout(1800)
+        pgg.wait_for_selector("#modalRacha:not([hidden])", timeout=8000)
+        check("racha diaria suma un día y se muestra", "3" in pgg.inner_text("#modalRacha"), pgg.inner_text("#modalRacha"))
+        check("el botón dice Compartir resultado", "Compartir" in pgg.inner_text("#botonCopiar"))
+        pgg.evaluate("window.__t=''; Object.defineProperty(navigator,'clipboard',{value:{writeText:function(t){window.__t=t;return Promise.resolve();}},configurable:true});")
+        pgg.click("#botonCopiar")
+        pgg.wait_for_timeout(400)
+        txt = pgg.evaluate("window.__t")
+        check("el texto compartido lleva la rejilla y el enlace", "tikitexto.com" in txt and "⬜" in txt, txt[:80])
+        check("sin errores de JavaScript en racha/compartir", not errs_g, "; ".join(errs_g)[:200])
+        cg.close()
+    except Exception as e:
+        check("racha diaria y compartir", False, str(e)[:150])
+
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:
         print("  (omitido)")

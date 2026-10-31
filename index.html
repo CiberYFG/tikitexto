@@ -1339,7 +1339,7 @@ button.marca:active .marca__icono { transform: scale(.9); }
 .barra-nivel { height: 11px; border-radius: 9px; background: var(--borde); margin: 12px 0 6px; overflow: hidden; }
 .barra-nivel i { display: block; height: 100%; border-radius: 9px; background: linear-gradient(90deg, #3ee0a4, #ffc83d); box-shadow: 0 0 14px #ffc83d; transition: width .8s; }
 .stats__sig, .stats__nota { font-size: .78rem; color: var(--texto-suave); }
-.stats__rejilla { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 14px 0; text-align: center; }
+.stats__rejilla { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0; text-align: center; }
 .stats__rejilla b { display: block; font-size: 1.5rem; } .stats__rejilla span { font-size: .66rem; color: var(--texto-suave); }
 .stats__sub { margin: 16px 0 8px; font-size: .95rem; }
 .dist { display: flex; align-items: center; gap: 8px; margin: 4px 0; font-size: .8rem; }
@@ -1938,6 +1938,7 @@ button.marca:active .marca__icono { transform: scale(.9); }
     <h2 class="modal__titulo" id="modalTitulo">¡Enhorabuena!</h2>
     <p class="modal__texto" id="modalTexto"></p>
     <button type="button" class="modal__puntos" id="modalPuntos" data-stats hidden></button>
+    <p class="modal__meta" id="modalRacha" hidden></p>
     <p class="modal__meta" id="modalMeta"></p>
 
     <div class="modal__respuesta" id="modalRespuesta" hidden>
@@ -1952,7 +1953,7 @@ button.marca:active .marca__icono { transform: scale(.9); }
       <button type="button" class="boton boton--primario" id="botonReintentar">Volver a intentar</button>
       <div class="modal__acciones-secundarias">
         <button type="button" class="boton boton--secundario" id="botonMostrar">Mostrar respuesta</button>
-        <button type="button" class="boton boton--secundario" id="botonCopiar">Copiar resumen</button>
+        <button type="button" class="boton boton--secundario" id="botonCopiar">Compartir resultado</button>
       </div>
       <button type="button" class="boton-enlace" id="botonCambiarModo">Elegir otro modo</button>
     </div>
@@ -3538,6 +3539,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   const statsContenido = $("#statsContenido");
   const modalSalir = $("#modalSalir");
   const modalPuntos = $("#modalPuntos");
+  const modalRacha = $("#modalRacha");
   const punto = $("#punto");
   const tikisNum = $("#tikisNum");
   const tikisNivel = $("#tikisNivel");
@@ -4231,7 +4233,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     return "TIKITEXTO ⚽ · " + nombreDelModo() + "\n" +
       formatearFecha(estado.inicio) + " · " + formatearHora(estado.inicio) + "\n" +
       marca + "\n\n" +
-      rejillaEmoji();
+      rejillaEmoji() + "\n\nhttps://tikitexto.com/";
   }
 
   function mostrarRespuestaEnModal() {
@@ -4247,6 +4249,9 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
 
     modalPuntos.hidden = !(estado.gano && textoPunto);
     modalPuntos.textContent = textoPunto;
+    const pr = perfil(), dd = (pr.diaUlt === claveDelDia()) ? (pr.diaD || 0) : 0;
+    modalRacha.hidden = !(estado.modo === "diario" && dd > 1);
+    if (!modalRacha.hidden) modalRacha.textContent = TIKI.t("🔥 Racha diaria") + ": " + dd + " " + TIKI.t("días");
     modalEtiqueta.textContent = estado.gano ? "Partida completada" : "Partida terminada";
     modalTitulo.textContent = estado.gano ? "¡Enhorabuena!" : "Se acabaron los intentos";
 
@@ -4340,6 +4345,13 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   function copiarResumen() {
     const texto = textoResumen();
 
+    if (navigator.share) {
+      navigator.share({ text: texto }).catch(function (e) { if (e && e.name === "AbortError") return; copiarConPortapapeles(); });
+      return;
+    }
+    copiarConPortapapeles();
+
+    function copiarConPortapapeles() {
     function avisar(correcto) {
       if (correcto) {
         mostrarAviso("Resumen copiado");
@@ -4355,6 +4367,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
         .catch(function () { avisar(copiarConSeleccion(texto)); });
     } else {
       avisar(copiarConSeleccion(texto));
+    }
     }
   }
 
@@ -4510,7 +4523,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   const ONLINE = Boolean(RANKING_URL && RANKING_KEY);
   const NIVELES = [[0, "Cantera"], [10, "Titular"], [25, "Crack"], [50, "Estrella"], [100, "Leyenda"]];
 
-  function nuevoPerfil() { return { pts: 0, jugadas: 0, aciertos: 0, racha: 0, mejor: 0, dist: [0, 0, 0, 0, 0, 0], diario: "", token: "", online: false, pend: 0 }; }
+  function nuevoPerfil() { return { pts: 0, jugadas: 0, aciertos: 0, racha: 0, mejor: 0, dist: [0, 0, 0, 0, 0, 0], diario: "", token: "", online: false, pend: 0, diaD: 0, diaMejor: 0, diaUlt: "" }; }
   function cargarJ() {
     try {
       const d = JSON.parse(localStorage.getItem(CLAVE_JUG));
@@ -4545,11 +4558,25 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     punto.classList.add("punto--ver");
   }
 
+  /* Racha de días seguidos jugando el reto diario */
+  function diaAnterior() {
+    const d = new Date(); d.setDate(d.getDate() - 1);
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  }
+  function actualizarRachaDiaria(p) {
+    const hoy = claveDelDia();
+    if (p.diaUlt === hoy) return;
+    p.diaD = p.diaUlt === diaAnterior() ? (p.diaD || 0) + 1 : 1;
+    p.diaMejor = Math.max(p.diaMejor || 0, p.diaD);
+    p.diaUlt = hoy;
+  }
+
   /* +1 tikitexto por cada acierto. El diario solo puntúa una vez al día. */
   function registrarFin() {
     const p = perfil();
     const repetido = estado.modo === "diario" && p.diario === claveDelDia();
     if (estado.modo === "diario") p.diario = claveDelDia();
+    if (estado.modo === "diario" && !repetido) actualizarRachaDiaria(p);
     p.jugadas++;
     let suma = false;
 
@@ -4578,7 +4605,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     const n = nivel(p.pts);
     const pct = n.sig ? Math.round((p.pts - n.base) / (n.sig[0] - n.base) * 100) : 100;
     const max = Math.max(1, Math.max.apply(null, p.dist));
-    const casillas = [[p.jugadas, "Jugadas"], [(p.jugadas ? Math.round(p.aciertos / p.jugadas * 100) : 0) + "%", "Aciertos"], [p.racha, "Racha"], [p.mejor, "Mejor racha"]];
+    const casillas = [[p.jugadas, "Jugadas"], [(p.jugadas ? Math.round(p.aciertos / p.jugadas * 100) : 0) + "%", "Aciertos"], [p.racha, "Racha"], [p.mejor, "Mejor racha"], [(p.diaUlt === claveDelDia() || p.diaUlt === diaAnterior()) ? (p.diaD || 0) : 0, "Días seguidos"], [p.diaMejor || 0, "Mejor en días"]];
 
     statsContenido.innerHTML =
       '<div class="stats__heroe"><span class="stats__nombre">' + esc(datosJ.actual) + " · " + n.nombre + "</span>" +
