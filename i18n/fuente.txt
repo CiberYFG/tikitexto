@@ -118,6 +118,10 @@ Defensas ||| Defenders ||| Defensores ||| Défenseurs ||| Difensori ||| Verteidi
 Mediocentros ||| Midfielders ||| Meio-campistas ||| Milieux ||| Centrocampisti ||| Mittelfeldspieler
 Delanteros ||| Strikers ||| Atacantes ||| Attaquants ||| Attaccanti ||| Stürmer
 Entrenadores ||| Managers ||| Treinadores ||| Entraîneurs ||| Allenatori ||| Trainer
+Jugadores y entrenadores ||| Players and managers ||| Jogadores e treinadores ||| Joueurs et entraîneurs ||| Giocatori e allenatori ||| Spieler und Trainer
+Premios ||| Awards ||| Prêmios ||| Récompenses ||| Premi ||| Auszeichnungen
+Clubes y selecciones ||| Clubs and national teams ||| Clubes e seleções ||| Clubs et sélections ||| Club e nazionali ||| Vereine und Nationalmannschaften
+Jugadores por posición: ||| Players by position: ||| Jogadores por posição: ||| Joueurs par poste : ||| Giocatori per ruolo: ||| Spieler nach Position:
 Equipos ||| Teams ||| Times ||| Équipes ||| Squadre ||| Teams
 Selecciones ||| National teams ||| Seleções ||| Sélections ||| Nazionali ||| Nationalteams
 Leyendas ||| Legends ||| Lendas ||| Légendes ||| Leggende ||| Legenden
