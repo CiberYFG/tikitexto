@@ -1380,7 +1380,7 @@ button.marca:active .marca__icono { transform: scale(.9); }
 .codigo { display: block; width: 100%; margin: 12px 0; padding: 14px 10px; border-radius: 14px; border: 2px dashed var(--acento); background: var(--superficie-2); color: var(--texto); font-family: ui-monospace, Menlo, monospace; font-weight: 800; font-size: 1rem; letter-spacing: .06em; text-align: center; word-break: break-all; -webkit-user-select: text; user-select: text; }
 #modalCuenta .boton, #botonCodigo { width: 100%; margin-top: 8px; }
 
-.pie-legal { text-align: center; margin: 18px 0 6px; font-size: .8rem; }
+.pie-legal { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; margin: 18px 0 6px; font-size: .8rem; }
 .pie-legal a, .legal-nota a, .stats__pie a { color: var(--texto-suave); text-decoration: underline; }
 .legal-nota, .stats__pie { text-align: center; font-size: .78rem; color: var(--texto-suave); margin: 10px 0 0; }
 .enlace--peligro { color: #ff6b6b; }
@@ -1453,7 +1453,7 @@ button.marca:active .marca__icono { transform: scale(.9); }
       </div>
     </div>
 
-    <p class="pie-legal"><a href="privacidad.html">Política de privacidad</a></p>
+    <nav class="pie-legal" aria-label="Información legal"><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a><a href="accesibilidad.html">Accesibilidad</a><a href="cookies.html#configurar">Configurar cookies</a></nav>
   </main>
 
   <footer class="inicio__pie">
@@ -1616,7 +1616,7 @@ button.marca:active .marca__icono { transform: scale(.9); }
         <p class="cuenta__error" id="cuentaError" role="alert"></p>
         <button class="boton boton--primario" id="cuentaBoton">Crear mi cuenta</button>
       </form>
-      <p class="legal-nota">Al crear tu cuenta aceptas la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a>.</p>
+      <p class="legal-nota">Al crear tu cuenta aceptas la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a> y el <a href="aviso-legal.html" target="_blank" rel="noopener">aviso legal</a>.</p>
       <button type="button" class="enlace" id="verRecuperar">¿Ya tienes cuenta? Recupérala</button>
     </div>
     <div id="pasoRecuperar" hidden>
@@ -3874,7 +3874,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       }).join("") + "</ol>" +
       (ONLINE ? '<button type="button" class="boton boton--secundario" id="botonCodigo">🔑 Ver mi código de recuperación</button><button type="button" class="enlace enlace--peligro" id="botonEliminar">🗑 Eliminar mi cuenta</button>' : "") +
       '<p class="stats__nota">Cada navegador o app instalada tiene su propia cuenta. Guarda tu código para poder recuperarla.</p>' +
-      '<p class="stats__pie"><a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a></p>';
+      '<p class="stats__pie"><a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a> · <a href="aviso-legal.html" target="_blank" rel="noopener">Aviso legal</a> · <a href="cookies.html" target="_blank" rel="noopener">Cookies</a></p>';
     if (ONLINE) cargarMundial();
   }
 

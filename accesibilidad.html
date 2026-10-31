@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accesibilidad · TIKITEXTO</title>
+<meta name="description" content="Declaración de accesibilidad de TIKITEXTO: medidas adoptadas, limitaciones conocidas y cómo comunicar problemas.">
+<link rel="canonical" href="https://tikitexto.com/accesibilidad.html">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<style>
+:root { --fondo: #f2f5fa; --texto: #14202e; --suave: #55657a; --acento: #0c9b66; --caja: #fff; }
+@media (prefers-color-scheme: dark) { :root { --fondo: #0d131a; --texto: #e8eef5; --suave: #9fb0c3; --acento: #3ee0a4; --caja: #131d29; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fondo); color: var(--texto); font: 16px/1.65 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 760px; margin: 0 auto; padding: 24px 18px 60px; }
+a { color: var(--acento); }
+h1 { font-size: 1.8rem; margin: 18px 0 4px; }
+h2 { font-size: 1.15rem; margin: 30px 0 6px; }
+.fecha { color: var(--suave); font-size: .9rem; margin: 0 0 18px; }
+.caja { background: var(--caja); border-radius: 14px; padding: 14px 18px; margin: 14px 0; }
+li { margin: 4px 0; }
+table { width: 100%; border-collapse: collapse; background: var(--caja); border-radius: 14px; overflow: hidden; font-size: .92rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid rgba(128,140,160,.25); vertical-align: top; }
+th { color: var(--suave); font-weight: 600; }
+button { font: inherit; cursor: pointer; border: 0; border-radius: 10px; padding: 10px 16px; background: var(--acento); color: #04150e; font-weight: 600; }
+button:focus-visible, a:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+.legal-nav { margin: 40px 0 0; padding-top: 18px; border-top: 1px solid rgba(128,140,160,.3); font-size: .9rem; display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.legal-nav a { color: var(--suave); }
+</style>
+</head>
+<body>
+<main>
+  <p><a href="./">‹ Volver al juego</a></p>
+  <h1>Accesibilidad</h1>
+  <p class="fecha">Última actualización: 31 de octubre de 2026</p>
+
+  <div class="caja">Queremos que TIKITEXTO pueda usarlo cuanta más gente mejor. Esta declaración describe lo que se ha hecho y lo que todavía puede mejorar.</div>
+
+  <h2>1. Compromiso</h2>
+  <p>TIKITEXTO es un proyecto personal. No se ha sometido a una auditoría formal de accesibilidad ni se declara conforme a un nivel concreto de las pautas WCAG; la intención es acercarse al nivel AA y mejorar de forma continua.</p>
+
+  <h2>2. Medidas adoptadas</h2>
+  <ul>
+    <li>Página en español con el idioma correctamente declarado.</li>
+    <li>Diseño adaptable a móvil, tableta y ordenador, y a distintos tamaños de texto.</li>
+    <li>Tema claro y oscuro, que se puede cambiar dentro del juego.</li>
+    <li>Etiquetas accesibles (<code>aria-label</code>) en botones y controles, y avisos dinámicos para lectores de pantalla en los mensajes del juego.</li>
+    <li>Se puede jugar con teclado físico (escribir, borrar con retroceso y confirmar con Intro) y con el teclado en pantalla.</li>
+    <li>Respeto de la preferencia del sistema «reducir movimiento» en las animaciones.</li>
+    <li>No hace falta escribir tildes, y el juego no depende solo del sonido: el sonido de la intro es opcional y puede saltarse.</li>
+  </ul>
+
+  <h2>3. Limitaciones conocidas</h2>
+  <ul>
+    <li>El juego usa colores (verde, amarillo, gris) para indicar aciertos; se está trabajando en reforzarlo con indicadores que no dependan solo del color.</li>
+    <li>La navegación por teclado y el orden de foco en ventanas emergentes pueden mejorarse.</li>
+    <li>Algunas animaciones y la intro pueden no ser cómodas para todo el mundo.</li>
+  </ul>
+
+  <h2>4. Comunicar un problema</h2>
+  <p>Si encuentras una barrera de accesibilidad, avísanos abriendo una incidencia en <a href="https://github.com/CiberYFG/tikitexto/issues" target="_blank" rel="noopener">github.com/CiberYFG/tikitexto/issues</a> indicando la página, el dispositivo y la tecnología de apoyo que usas. Se revisará lo antes posible.</p>
+
+  <nav class="legal-nav" aria-label="Información legal">
+    <a href="aviso-legal.html">Aviso legal</a>
+    <a href="privacidad.html">Privacidad</a>
+    <a href="cookies.html">Cookies</a>
+    <a href="accesibilidad.html">Accesibilidad</a>
+    <a href="cookies.html#configurar">Configurar cookies</a>
+  </nav>
+  <p class="fecha">TIKITEXTO no está afiliado a clubes, jugadores, federaciones ni competiciones. Los nombres se usan solo como referencia informativa.</p>
+</main>
+</body>
+</html>
