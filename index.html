@@ -1701,6 +1701,22 @@ button.marca:active .marca__icono { transform: scale(.9); }
    SELECTOR DE IDIOMA
    ============================================================ */
 .inicio__acciones { display: flex; align-items: center; gap: 8px; }
+/* ---- Panel de ajustes ---- */
+.idioma__caja.ajustes__caja { text-align: left; }
+.ajustes__caja .idioma__titulo { margin-bottom: 14px; padding-right: 34px; }
+.ajustes__sec { margin: 4px 0 10px; font-size: .78rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--texto-suave, #5b6b64); }
+.ajuste { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-top: 1px solid rgba(127, 127, 127, .25); }
+.ajuste:first-of-type { margin-top: 14px; }
+.ajuste__txt { flex: 1; min-width: 0; }
+.ajuste__txt b { display: block; font-size: 1rem; }
+.ajuste__txt span { display: block; margin-top: 2px; font-size: .8rem; color: var(--texto-suave, #5b6b64); }
+.interruptor { flex: none; position: relative; width: 54px; height: 32px; padding: 0; cursor: pointer; background: #8b97a3; border: 0; border-radius: 999px; transition: background .18s ease; }
+.interruptor::after { content: ""; position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; background: #fff; border-radius: 50%; box-shadow: 0 1px 3px rgba(0, 0, 0, .35); transition: transform .18s ease; }
+.interruptor[aria-checked="true"] { background: var(--acento, #2e9e6b); }
+.interruptor[aria-checked="true"]::after { transform: translateX(22px); }
+.interruptor:focus-visible { outline: 3px solid var(--acento, #2e9e6b); outline-offset: 3px; }
+.interruptor:disabled { opacity: .45; cursor: not-allowed; }
+@media (prefers-reduced-motion: reduce) { .interruptor, .interruptor::after { transition: none; } }
 .boton-idioma { width: auto; min-width: 36px; padding: 0 10px; gap: 5px; }
 .boton-idioma svg { width: 17px; height: 17px; flex: none; }
 .boton-idioma__cod { font-size: .72rem; font-weight: 900; letter-spacing: .06em; }
@@ -1774,9 +1790,8 @@ button.marca:active .marca__icono { transform: scale(.9); }
     </div>
 
     <div class="inicio__acciones">
-      <button type="button" class="boton-icono boton-idioma" id="botonIdioma" aria-label="Cambiar de idioma" title="Idioma · Language">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.9 5.6 3.9 9s-1.3 6.4-3.9 9c-2.6-2.6-3.9-5.6-3.9-9S9.4 5.6 12 3Z"/></svg>
-        <span class="boton-idioma__cod" data-no-t>ES</span>
+      <button type="button" class="boton-icono" id="botonAjustes" aria-label="Ajustes" title="Ajustes" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
       </button>
       <button type="button" class="boton-icono" data-tema-boton aria-label="Cambiar de tema">
         <svg class="icono--luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -2412,13 +2427,114 @@ button.marca:active .marca__icono { transform: scale(.9); }
   }
   TIKI.abrirSelector = abrirSelector;
 
-  function arrancar() {
-    var b = document.getElementById("botonIdioma");
-    if (b) {
-      var cod = b.querySelector(".boton-idioma__cod"); if (cod) cod.textContent = IDIOMAS[pos][2];
+
+  /* ---------- Ajustes (sonido y vibración) ---------- */
+  var AJ_CLAVE = "tikitexto:ajustes";
+  function ajLeer() {
+    try { var o = JSON.parse(localStorage.getItem(AJ_CLAVE) || "{}") || {}; return { sonido: o.sonido !== false, vibracion: o.vibracion !== false }; }
+    catch (e) { return { sonido: true, vibracion: true }; }
+  }
+  function ajGuardar(k, v) {
+    var o = ajLeer(); o[k] = v;
+    try { localStorage.setItem(AJ_CLAVE, JSON.stringify(o)); } catch (e) { /* sin almacenamiento */ }
+  }
+  var reducir = function () { return Boolean(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches); };
+  var puedeVibrar = function () { return typeof navigator.vibrate === "function"; };
+  TIKI.ajustes = {
+    sonido: function () { return ajLeer().sonido; },
+    vibracion: function () { return ajLeer().vibracion; },
+    vibrar: function (patron) {
+      try { if (puedeVibrar() && ajLeer().vibracion && !reducir()) navigator.vibrate(patron); } catch (e) { /* sin vibración */ }
     }
+  };
+  function pitido() {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+      var ctx = new AC(); if (ctx.resume) ctx.resume();
+      var o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime;
+      o.type = "triangle"; o.frequency.setValueAtTime(660, t); o.frequency.linearRampToValueAtTime(990, t + 0.12);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.22, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
+      o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + 0.22);
+      setTimeout(function () { if (ctx.close) ctx.close().catch(function () {}); }, 400);
+    } catch (e) { /* sin audio */ }
+  }
+
+  var panelAj = null;
+  function cerrarAjustes() {
+    if (!panelAj) return;
+    panelAj.remove(); panelAj = null;
+    document.body.classList.remove("sin-desplazamiento");
+    if (TIKI.foco && TIKI.foco.focus) { try { TIKI.foco.focus(); } catch (e) { /* sin foco */ } }
+  }
+  function filaAjuste(titulo, descripcion, clave, disponible) {
+    var fila = document.createElement("div"); fila.className = "ajuste";
+    var txt = document.createElement("div"); txt.className = "ajuste__txt";
+    var b = document.createElement("b"); b.textContent = titulo;
+    var sp = document.createElement("span"); sp.textContent = disponible ? descripcion : "No disponible en este dispositivo";
+    txt.appendChild(b); txt.appendChild(sp);
+    var sw = document.createElement("button"); sw.type = "button"; sw.className = "interruptor"; sw.id = "ajuste-" + clave;
+    sw.setAttribute("role", "switch"); sw.setAttribute("aria-label", titulo);
+    var activo = disponible && ajLeer()[clave];
+    sw.setAttribute("aria-checked", activo ? "true" : "false");
+    if (!disponible) sw.disabled = true;
+    sw.addEventListener("click", function () {
+      var nuevo = sw.getAttribute("aria-checked") !== "true";
+      sw.setAttribute("aria-checked", nuevo ? "true" : "false");
+      ajGuardar(clave, nuevo);
+      if (nuevo && clave === "sonido") pitido();
+      if (nuevo && clave === "vibracion") { try { navigator.vibrate(60); } catch (e) { /* sin vibración */ } }
+    });
+    fila.appendChild(txt); fila.appendChild(sw);
+    return fila;
+  }
+  function abrirAjustes() {
+    if (panelAj || selector) return;
+    TIKI.foco = document.activeElement;
+    var c = document.createElement("div");
+    c.className = "idioma ajustes"; c.setAttribute("role", "dialog"); c.setAttribute("aria-modal", "true"); c.setAttribute("aria-labelledby", "ajustesTitulo");
+    var caja = document.createElement("div"); caja.className = "idioma__caja ajustes__caja";
+    var tit = document.createElement("h2"); tit.id = "ajustesTitulo"; tit.className = "idioma__titulo"; tit.textContent = "Ajustes";
+    var sec = document.createElement("p"); sec.className = "ajustes__sec"; sec.textContent = "Idioma";
+    var rej = document.createElement("div"); rej.className = "idioma__rejilla";
+    IDIOMAS.forEach(function (i) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "idioma__op" + (i[0] === lang ? " idioma__op--sel" : "");
+      b.lang = i[0]; b.setAttribute("translate", "no"); b.setAttribute("data-no-t", ""); b.dataset.idioma = i[0];
+      var cod = document.createElement("span"); cod.className = "idioma__cod"; cod.textContent = i[2];
+      var nom = document.createElement("span"); nom.className = "idioma__nom"; nom.textContent = i[1];
+      b.appendChild(cod); b.appendChild(nom);
+      if (i[0] === lang) b.setAttribute("aria-current", "true");
+      b.addEventListener("click", function () { elegir(i[0]); });
+      rej.appendChild(b);
+    });
+    caja.appendChild(tit); caja.appendChild(sec); caja.appendChild(rej);
+    var sec2 = document.createElement("p"); sec2.className = "ajustes__sec"; sec2.style.marginTop = "22px"; sec2.textContent = "Sonido y vibración";
+    caja.appendChild(sec2);
+    caja.appendChild(filaAjuste("Sonido", "Música de la intro y fanfarria al acertar", "sonido", true));
+    caja.appendChild(filaAjuste("Vibración", "Vibración corta al acertar y al equivocarte", "vibracion", puedeVibrar()));
+    var x = document.createElement("button"); x.type = "button"; x.className = "idioma__cerrar"; x.textContent = "✕"; x.setAttribute("aria-label", "Cerrar · Close");
+    x.addEventListener("click", cerrarAjustes); caja.appendChild(x);
+    c.addEventListener("click", function (e) { if (e.target === c) cerrarAjustes(); });
+    c.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { cerrarAjustes(); return; }
+      if (e.key !== "Tab") return;
+      var f = c.querySelectorAll("button:not([disabled])"); if (!f.length) return;
+      var p = f[0], u = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === p) { e.preventDefault(); u.focus(); }
+      else if (!e.shiftKey && document.activeElement === u) { e.preventDefault(); p.focus(); }
+    });
+    c.appendChild(caja);
+    document.body.appendChild(c);
+    document.body.classList.add("sin-desplazamiento");
+    panelAj = c;
+    setTimeout(function () { var f = c.querySelector(".idioma__op--sel") || c.querySelector("button"); if (f) f.focus(); }, 30);
+  }
+  TIKI.abrirAjustes = abrirAjustes;
+
+  function arrancar() {
     document.addEventListener("click", function (e) {
-      if (e.target.closest && e.target.closest("#botonIdioma, #abrirIdioma")) abrirSelector(false);
+      if (!e.target.closest) return;
+      if (e.target.closest("#abrirIdioma")) abrirSelector(false);
+      else if (e.target.closest("#botonAjustes")) abrirAjustes();
     });
     if (col >= 0) iniciarTraductor();
     if (!guardado && !/bot|crawl|spider|slurp|lighthouse|pagespeed/i.test(navigator.userAgent)) abrirSelector(true);
@@ -4076,6 +4192,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   function sacudirFila() {
+    TIKI.ajustes.vibrar(30);
     const celdas = celdasDeFila(estado.fila);
     celdas.forEach(function (celda) { celda.classList.remove("celda--sacudir"); });
     void tablero.offsetWidth; /* reinicia la animación */
@@ -4236,10 +4353,8 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   function terminarPartida() {
     if (estado.gano) {
       lanzarConfeti();
-      /* Pequeña vibración al acertar (solo móviles que la permiten y sin «reducir movimiento») */
-      try {
-        if (navigator.vibrate && !(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) navigator.vibrate([40, 60, 40]);
-      } catch (e) { /* sin vibración */ }
+      /* Vibración corta al acertar (si el móvil la permite, está activada en Ajustes y no se pidió «reducir movimiento») */
+      TIKI.ajustes.vibrar([40, 60, 40]);
     }
     registrarFin();
     const intentos = estado.intentos.length;
@@ -4914,6 +5029,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   let introFase = 0, introTimer = 0, introAudio = null, introInicio = 0;
 
   function sonidoIntro() {
+    if (!TIKI.ajustes.sonido()) return null;
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
     const ctx = new AC();
@@ -4981,6 +5097,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   let audioVictoria = null;
   function sonidoVictoria() {
     try {
+      if (!TIKI.ajustes.sonido()) return;
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return;
       if (!audioVictoria) audioVictoria = new AC();

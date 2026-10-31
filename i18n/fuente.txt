@@ -1437,3 +1437,10 @@ De la FA Cup al Balón de Oro: el origen de las copas y los premios. ||| From th
 Ver todas las curiosidades → ||| See all the trivia → ||| Ver todas as curiosidades → ||| Voir toutes les curiosités → ||| Vedi tutte le curiosità → ||| Alle Wissenswertes ansehen →
 📲 Instalar la app ||| 📲 Install the app ||| 📲 Instalar o app ||| 📲 Installer l'appli ||| 📲 Installa l'app ||| 📲 App installieren
 Juega en un toque desde tu pantalla de inicio ||| Play in one tap from your home screen ||| Jogue com um toque na tela inicial ||| Joue en un clic depuis ton écran d'accueil ||| Gioca con un tocco dalla schermata iniziale ||| Spiele mit einem Tipp vom Startbildschirm
+Ajustes ||| Settings ||| Configurações ||| Paramètres ||| Impostazioni ||| Einstellungen
+Sonido y vibración ||| Sound and vibration ||| Som e vibração ||| Son et vibration ||| Suono e vibrazione ||| Ton und Vibration
+Sonido ||| Sound ||| Som ||| Son ||| Suono ||| Ton
+Vibración ||| Vibration ||| Vibração ||| Vibration ||| Vibrazione ||| Vibration
+Música de la intro y fanfarria al acertar ||| Intro music and a fanfare when you win ||| Música da introdução e fanfarra ao acertar ||| Musique d'intro et fanfare quand tu gagnes ||| Musica dell'intro e fanfara quando vinci ||| Intro-Musik und Fanfare beim Gewinnen
+Vibración corta al acertar y al equivocarte ||| Short vibration when you win or miss ||| Vibração curta ao acertar e ao errar ||| Courte vibration quand tu gagnes ou te trompes ||| Breve vibrazione quando vinci o sbagli ||| Kurze Vibration bei Treffer und Fehler
+No disponible en este dispositivo ||| Not available on this device ||| Indisponível neste dispositivo ||| Indisponible sur cet appareil ||| Non disponibile su questo dispositivo ||| Auf diesem Gerät nicht verfügbar
