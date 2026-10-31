@@ -2,12 +2,12 @@
    - La página se pide SIEMPRE a la red primero: así nadie se queda con una versión antigua.
    - Si no hay conexión, se usa la última copia guardada.
    - Sube VERSION solo si cambias la lista SHELL o quieres vaciar la caché. */
-const VERSION = "v4";
+const VERSION = "v5";
 const CACHE = "tikitexto-" + VERSION;
 const BASE = self.registration.scope; /* termina en "/", incluye el nombre del repositorio */
 const INDEX = new URL("index.html", BASE).href;
 const SHELL = ["", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png",
-  "icons/icon-maskable-512.png", "icons/apple-touch-icon.png", "icons/favicon-32.png", "privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html"]
+  "icons/icon-maskable-512.png", "icons/apple-touch-icon.png", "icons/favicon-32.png", "privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html", "contacto.html"]
   .map(function (p) { return new URL(p, BASE).href; });
 
 self.addEventListener("install", function (e) {

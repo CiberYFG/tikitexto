@@ -183,7 +183,7 @@ sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitem
 for ruta, lang in urls:
     extra = home_alts if (ruta == "" or ruta.rstrip("/") in LANGS) else ""
     sm.append("  <url><loc>%s%s</loc>%s</url>" % (DOM, ruta, extra))
-for p in ("privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html"):
+for p in ("privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html", "contacto.html"):
     sm.append("  <url><loc>%s%s</loc></url>" % (DOM, p))
 sm.append("</urlset>")
 open(os.path.join(RAIZ, "sitemap.xml"), "w", encoding="utf-8").write("\n".join(sm) + "\n")

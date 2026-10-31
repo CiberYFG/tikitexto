@@ -1409,3 +1409,4 @@ Sesión, estadísticas, partida, tema e idioma. Siempre activo: sin él el juego
 Medición de visitas ||| Visit measurement ||| Medição de visitas ||| Mesure des visites ||| Misurazione delle visite ||| Besuchsmessung
 Estadísticas anónimas y agregadas (Cloudflare Web Analytics, sin cookies). ||| Anonymous, aggregated statistics (Cloudflare Web Analytics, no cookies). ||| Estatísticas anónimas e agregadas (Cloudflare Web Analytics, sem cookies). ||| Statistiques anonymes et agrégées (Cloudflare Web Analytics, sans cookies). ||| Statistiche anonime e aggregate (Cloudflare Web Analytics, senza cookie). ||| Anonyme, aggregierte Statistiken (Cloudflare Web Analytics, ohne Cookies).
 Guardar elección ||| Save choice ||| Guardar escolha ||| Enregistrer mon choix ||| Salva la scelta ||| Auswahl speichern
+Contacto ||| Contact ||| Contato ||| Contact ||| Contatti ||| Kontakt

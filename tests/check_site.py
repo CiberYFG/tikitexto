@@ -24,7 +24,7 @@ with sync_playwright() as p:
     api = ctx.request
 
     print("1) Archivos publicados")
-    for ruta in ["", "manifest.webmanifest", "sw.js", "privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html", "sitemap.xml", "robots.txt",
+    for ruta in ["", "manifest.webmanifest", "sw.js", "privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html", "contacto.html", "sitemap.xml", "robots.txt",
                  "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png"]:
         try:
             r = api.get(BASE + ruta, timeout=30000)
