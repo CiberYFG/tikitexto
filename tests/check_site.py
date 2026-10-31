@@ -19,6 +19,8 @@ def check(nombre, condicion, detalle=""):
 with sync_playwright() as p:
     br = p.chromium.launch()
     ctx = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+    # Las pruebas del juego van en español; el selector de idioma se prueba aparte (3d)
+    ctx.add_init_script("if(!localStorage.getItem('tikitexto:idioma'))localStorage.setItem('tikitexto:idioma','es');")
     api = ctx.request
 
     print("1) Archivos publicados")
@@ -146,6 +148,56 @@ with sync_playwright() as p:
     except Exception as e:
         check("modos de novedad", False, str(e)[:150])
     check("sin errores de JavaScript en novedad", not errores_nv, "; ".join(errores_nv)[:200])
+
+    print("3d) Idiomas")
+    try:
+        ctx2 = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+        errores_id = []
+        pi = ctx2.new_page()
+        pi.on("pageerror", lambda e: errores_id.append(str(e)))
+        pi.route("**/rest/v1/rpc/*", lambda r: r.abort())
+        pi.add_init_script("sessionStorage.setItem('tikitexto:intro','1');")
+        pi.goto(BASE, wait_until="networkidle", timeout=60000)
+        pi.wait_for_timeout(500)
+        check("primera visita: aparece el selector de idioma", pi.is_visible(".idioma"))
+        check("el selector ofrece 6 idiomas", pi.locator(".idioma__op").count() == 6)
+        check("el selector no se cierra con Escape (es obligatorio)", (pi.keyboard.press("Escape") or True) and pi.is_visible(".idioma"))
+        pi.click(".idioma__op[data-idioma=en]")
+        pi.wait_for_load_state("networkidle")
+        pi.wait_for_timeout(800)
+        check("al elegir inglés se guarda y recarga", pi.evaluate("localStorage.getItem('tikitexto:idioma')") == "en" and pi.evaluate("document.documentElement.lang") == "en")
+        check("ya no aparece el selector", not pi.is_visible(".idioma"))
+        texto = pi.inner_text("body")
+        check("la portada está en inglés", "Guess the name" in texto and "Choose a mode" in texto.replace("CHOOSE A MODE", "Choose a mode"))
+        check("el menú de modos está traducido", "Goalkeepers" in texto and "Porteros" not in texto)
+        for cod, frase in (("pt", "Escolha um modo"), ("fr", "Choisis un mode"), ("it", "Scegli una modalità"), ("de", "Wähle einen Modus")):
+            pi.evaluate("localStorage.setItem('tikitexto:idioma','%s')" % cod)
+            pi.reload(wait_until="networkidle")
+            pi.wait_for_timeout(500)
+            check(f"portada en {cod}", frase.lower() in pi.inner_text("body").lower())
+        perfil_en = {"pts": 0, "jugadas": 0, "aciertos": 0, "racha": 0, "mejor": 0, "dist": [0] * 6, "diario": "", "token": "T" * 24, "online": True, "pend": 0}
+        pi.evaluate("localStorage.setItem('tikitexto:jugadores'," + json.dumps(json.dumps({"actual": "BotEn", "perfiles": {"BotEn": perfil_en}})) + ")")
+        pi.evaluate("localStorage.setItem('tikitexto:idioma','es')")
+        pi.reload(wait_until="networkidle")
+        pi.wait_for_timeout(400)
+        pi.click("#botonIdioma")
+        pi.wait_for_timeout(200)
+        check("el botón de idioma abre el selector y se puede cerrar", pi.is_visible(".idioma") and (pi.keyboard.press("Escape") or True) and not pi.is_visible(".idioma"))
+        # partida en inglés: el juego funciona con respuestas localizadas
+        pi.evaluate("localStorage.setItem('tikitexto:idioma','en')")
+        pi.reload(wait_until="networkidle")
+        pi.click("[data-modo=selecciones]")
+        pi.wait_for_timeout(500)
+        resp = pi.evaluate("JSON.parse(localStorage.getItem('tikitexto:partida')).respuesta.nombre")
+        check("selecciones en inglés: la respuesta está en inglés (sin tildes ni ñ)", bool(resp) and resp.isascii() and resp.upper() == resp)
+        pi.keyboard.type(resp)
+        pi.keyboard.press("Enter")
+        pi.wait_for_timeout(3500)
+        check("acertar en inglés muestra el resultado traducido", "solved in 1 attempt" in pi.inner_text("body").lower())
+        ctx2.close()
+    except Exception as e:
+        check("idiomas", False, str(e)[:150])
+    check("sin errores de JavaScript con idiomas", not errores_id, "; ".join(errores_id)[:200])
 
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:

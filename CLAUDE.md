@@ -28,3 +28,12 @@ Web: https://tikitexto.com · Repositorio: CiberYFG/tikitexto · Alojamiento: Gi
 ## Probar en local
 `python -m http.server 8000` en la raíz y abrir http://localhost:8000/ .
 Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.py` (requiere `pip install playwright` y `playwright install chromium`).
+
+## Idiomas (es, en, pt-BR, fr, it, de)
+- El juego está escrito en **español** (idioma base). Hay un selector de idioma (botón 🌐 en la portada y enlace en el pie); la primera visita obliga a elegir. El idioma se guarda en `localStorage` (`tikitexto:idioma`) y al cambiarlo la página se recarga (se descarta la partida en curso).
+- Traducción: script «IDIOMAS» justo antes del script principal de `index.html`. Diccionario `TD` (texto en español → [en, pt, fr, it, de]), patrones con números/nombres `TP` (regex con `$1`, `$2`) y nombres de respuesta localizados `TN` (selecciones y algunos equipos, en MAYÚSCULAS sin tildes). Un observador del DOM traduce el texto que aparece; si falta una entrada, se muestra el español.
+- **Regla: cualquier texto nuevo de interfaz (o pista nueva) necesita su entrada en `TD` en los 5 idiomas.** Si se construye con números o nombres dinámicos, añadir un patrón en `TP`. `data-no-t` en un elemento evita que se traduzca su contenido. Los textos fijos del script usan `TIKI.t()` si hace falta traducir a mano; `TIKI.locale` da el locale para `Intl`/`toLocaleString`.
+- Los nombres de jugadores no se traducen. Las pistas nuevas (`pista:` y las líneas de LEYENDAS/ESTADIOS) también van en `TD`.
+- Páginas legales (`aviso-legal`, `privacidad`, `cookies`, `accesibilidad`): solo en español, con una nota multilingüe arriba.
+- El filtro de nicknames del cliente incluye términos de los 6 idiomas; el del servidor (SQL) lo mantiene el titular.
+- Las pruebas fijan el idioma en español (`tests/check_site.py`, sección 3d prueba el selector y cada idioma).
