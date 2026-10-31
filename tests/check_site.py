@@ -467,6 +467,39 @@ with sync_playwright() as p:
     except Exception as e:
         check("invitado e intro", False, str(e)[:150])
 
+    print("3m) ¿Quién tiene más tarjetas? (cifras exactas)")
+    try:
+        ct = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+        pt = ct.new_page()
+        errs_t = []
+        pt.on("pageerror", lambda e: errs_t.append(str(e)))
+        pt.add_init_script("localStorage.setItem('tikitexto:idioma','es');sessionStorage.setItem('tikitexto:intro','1');")
+        pt.goto(BASE, wait_until="networkidle", timeout=60000)
+        pt.wait_for_timeout(500)
+        pt.click("[data-novedad=tarjetas]"); pt.wait_for_timeout(300)
+        pt.keyboard.press("Escape")
+        pt.dispatch_event("#nvEmpezar", "click")
+        validos = True; mismas = 0; rondas = 0
+        for _ in range(12):
+            pt.keyboard.press("Escape")
+            pt.wait_for_selector(".nv-jug:not([disabled])", timeout=8000)
+            bt = pt.query_selector_all(".nv-jug")
+            pos = [x.query_selector(".nv-jug__meta").inner_text().split(" · ")[0] for x in bt]
+            bt[0].dispatch_event("click"); pt.wait_for_timeout(150)
+            tot = [int(re.match(r"(\d+)", x.query_selector(".nv-jug__nivel").inner_text()).group(1)) for x in bt]
+            if abs(tot[0] - tot[1]) < max(15, round(max(tot) * 0.25)): validos = False
+            rondas += 1
+            mismas += pos[0] == pos[1]
+            pt.wait_for_timeout(2900)
+            if pt.query_selector(".nv-fin"):
+                pt.dispatch_event(".nv-fin .boton--primario", "click")
+        check("tarjetas: se muestra el número exacto de cada jugador", rondas > 0)
+        check("tarjetas: todos los duelos tienen una diferencia clara", validos)
+        check("tarjetas: sin errores de JavaScript", not errs_t, "; ".join(errs_t)[:150])
+        ct.close()
+    except Exception as e:
+        check("tarjetas exactas", False, str(e)[:150])
+
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:
         print("  (omitido)")
