@@ -6163,9 +6163,9 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
 </script>
 <!-- Aviso informativo (cookies y medición). La medición sin cookies (Cloudflare Web Analytics) está activa salvo que el usuario la desactive. -->
 <style>
-.cmp { position: fixed; left: 0; right: 0; bottom: 0; z-index: 800; display: flex; justify-content: center; padding: 12px; pointer-events: none; }
+.cmp { position: fixed; left: 0; right: 0; bottom: 0; z-index: 800; display: flex; justify-content: center; padding: 6px; pointer-events: none; }
 .cmp[hidden] { display: none; }
-.cmp__caja { pointer-events: auto; width: min(560px, 100%); max-height: 90vh; overflow: auto; background: var(--superficie); color: var(--texto); border: 1px solid var(--borde-fuerte); border-radius: var(--radio); box-shadow: var(--sombra-media); padding: 16px 18px; font-size: .88rem; line-height: 1.45; }
+.cmp__caja { pointer-events: auto; width: min(560px, 100%); max-height: 90vh; overflow: auto; background: var(--superficie); color: var(--texto); border: 1px solid var(--borde-fuerte); border-radius: var(--radio); box-shadow: var(--sombra-media); padding: 10px 14px; font-size: .88rem; line-height: 1.45; }
 .cmp__caja h2 { margin: 0 0 6px; font-size: 1rem; }
 .cmp__caja p { margin: 0 0 10px; }
 .cmp__caja a { color: var(--acento); text-decoration: underline; }
@@ -6176,13 +6176,17 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
 .cmp__opcion { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; padding: 10px; background: var(--superficie-2); border: 1px solid var(--borde); border-radius: 10px; }
 .cmp__opcion input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--acento); }
 .cmp__opcion small { display: block; color: var(--texto-suave); }
+.cmp__barra { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.cmp__barra p { flex: 1 1 240px; margin: 0; font-size: .8rem; line-height: 1.35; color: var(--texto-suave); }
+.cmp__barra .cmp__fila { flex: 0 1 auto; flex-wrap: nowrap; gap: 6px; }
+.cmp__barra .cmp__fila button { flex: 0 0 auto; min-height: 36px; padding: 6px 12px; font-size: .8rem; font-weight: 600; }
+.cmp__barra #cmpAceptar { background: var(--acento); color: var(--sobre-acento); border-color: var(--acento); }
 </style>
 <div class="cmp" id="cmp" role="dialog" aria-modal="false" aria-labelledby="cmpTitulo" hidden>
   <div class="cmp__caja">
-    <div id="cmpPrincipal">
-      <h2 id="cmpTitulo">Tu privacidad</h2>
-      <p>TIKITEXTO guarda en tu dispositivo lo imprescindible para jugar (tu sesión, estadísticas, partida e idioma). Además cuenta las visitas de forma anónima y agregada, sin cookies. No hay publicidad ni rastreo entre webs. Puedes desactivarlo cuando quieras. <a href="cookies.html">Más información</a></p>
-      <div class="cmp__fila"><button type="button" id="cmpRechazar">Desactivar medición</button><button type="button" id="cmpConfig">Configurar</button><button type="button" id="cmpAceptar">Entendido</button></div>
+    <div id="cmpPrincipal" class="cmp__barra">
+      <p id="cmpTitulo">Contamos las visitas de forma anónima y sin cookies; no hay publicidad ni rastreo. <a href="cookies.html">Más información</a></p>
+      <div class="cmp__fila"><button type="button" id="cmpRechazar">Desactivar</button><button type="button" id="cmpConfig">Configurar</button><button type="button" id="cmpAceptar">Entendido</button></div>
     </div>
     <div id="cmpAjustes" hidden>
       <h2>Configurar cookies</h2>

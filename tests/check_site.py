@@ -246,7 +246,7 @@ with sync_playwright() as p:
         check("el aviso informativo aparece en la primera visita", pc.is_visible("#cmp"))
         check("la medición sin cookies está activa por defecto", len(cf) > 0)
         cf.clear()
-        check("los botones del aviso se ven y se pueden pulsar", pc.locator("#cmpRechazar").bounding_box()["height"] >= 40 and pc.locator("#cmpAceptar").bounding_box()["height"] >= 40)
+        check("los botones del aviso se ven y se pueden pulsar", pc.locator("#cmpRechazar").bounding_box()["height"] >= 30 and pc.locator("#cmpAceptar").bounding_box()["height"] >= 30)
         pc.click("#cmpRechazar")
         check("desactivar guarda 'no' y oculta el aviso", pc.evaluate("localStorage.getItem('tikitexto:consentimiento')") == "no" and not pc.is_visible("#cmp"))
         pc.reload(wait_until="networkidle")
