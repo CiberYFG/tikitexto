@@ -20,7 +20,7 @@ with sync_playwright() as p:
     br = p.chromium.launch()
     ctx = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
     # Las pruebas del juego van en español; el selector de idioma se prueba aparte (3d)
-    ctx.add_init_script("if(!localStorage.getItem('tikitexto:idioma'))localStorage.setItem('tikitexto:idioma','es');")
+    ctx.add_init_script("if(!localStorage.getItem('tikitexto:idioma'))localStorage.setItem('tikitexto:idioma','es');if(!localStorage.getItem('tikitexto:consentimiento'))localStorage.setItem('tikitexto:consentimiento','no');")
     api = ctx.request
 
     print("1) Archivos publicados")
@@ -230,6 +230,36 @@ with sync_playwright() as p:
         pe.close()
     except Exception as e:
         check("páginas de búsqueda", False, str(e)[:150])
+
+    print("3f) Aviso de consentimiento")
+    try:
+        cc = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+        cc.add_init_script("if(!localStorage.getItem('tikitexto:idioma'))localStorage.setItem('tikitexto:idioma','es');sessionStorage.setItem('tikitexto:intro','1');")
+        errs_c, cf = [], []
+        pc = cc.new_page()
+        pc.on("pageerror", lambda e: errs_c.append(str(e)))
+        pc.on("request", lambda r: cf.append(r.url) if "cloudflareinsights" in r.url else None)
+        pc.route("**/rest/v1/rpc/*", lambda r: r.abort())
+        pc.route("**/static.cloudflareinsights.com/**", lambda r: r.fulfill(status=200, content_type="text/javascript", body=""))
+        pc.goto(BASE, wait_until="networkidle", timeout=60000)
+        pc.wait_for_timeout(500)
+        check("el aviso aparece en la primera visita", pc.is_visible("#cmp"))
+        check("sin consentimiento no se carga la medición", not cf)
+        check("Rechazar y Aceptar con el mismo peso", pc.locator("#cmpRechazar").bounding_box()["height"] == pc.locator("#cmpAceptar").bounding_box()["height"])
+        pc.click("#cmpRechazar")
+        check("rechazar guarda 'no' y oculta el aviso", pc.evaluate("localStorage.getItem('tikitexto:consentimiento')") == "no" and not pc.is_visible("#cmp"))
+        pc.reload(wait_until="networkidle")
+        check("tras rechazar no vuelve a salir ni mide", not pc.is_visible("#cmp") and not cf)
+        pc.evaluate("document.getElementById('abrirCookies').click()")
+        check("Configurar cookies reabre el panel", pc.is_visible("#cmpAjustes"))
+        pc.check("#cmpMed")
+        pc.click("#cmpGuardar")
+        pc.wait_for_timeout(500)
+        check("aceptar activa la medición", pc.evaluate("localStorage.getItem('tikitexto:consentimiento')") == "si" and len(cf) > 0)
+        check("sin errores de JavaScript con el aviso", not errs_c, "; ".join(errs_c)[:200])
+        cc.close()
+    except Exception as e:
+        check("aviso de consentimiento", False, str(e)[:150])
 
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:

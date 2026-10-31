@@ -17,7 +17,8 @@ Web: https://tikitexto.com · Repositorio: CiberYFG/tikitexto · Alojamiento: Gi
 2. Antes de editar: `git pull`. Un commit por cambio, con mensaje claro. Subir a `main` publica la web en 1-2 minutos: probar antes.
 3. No romper juegos, diseño ni archivos existentes. Comprobar que el JS compila y, si se puede, probar en un navegador.
 4. Las referencias a clubes/jugadores son solo texto. **No** usar escudos, fotos ni logos (derechos de autor).
-5. Si se añaden anuncios o cookies no técnicas: actualizar `privacidad.html` y `cookies.html` y añadir antes un aviso de consentimiento. Ya hay medición de visitas **sin cookies** (Cloudflare Web Analytics, token público al final de `index.html`; se puede desactivar con `tikitexto:sin-medicion` en `localStorage`). Cualquier otra analítica requiere actualizar los textos legales.
+5. Si se añaden anuncios o cookies no técnicas: actualizar `privacidad.html` y `cookies.html` y añadir antes un aviso de consentimiento. La medición de visitas **sin cookies** (Cloudflare Web Analytics, token público al final de `index.html`) es **opt-in**: solo se carga si el usuario acepta en el aviso de consentimiento (`#cmp`, clave `tikitexto:consentimiento` = `si`/`no`; `tikitexto:sin-medicion=1` se respeta como rechazo). Se reabre desde «Configurar cookies» (`#abrirCookies`). Cualquier otra analítica requiere actualizar los textos legales. Antes de AdSense hará falta una CMP certificada por Google (TCF) y actualizar los textos legales. Contacto público: admin.tikitexto@gmail.com (no publicar nombre del titular salvo obligación legal).
+7. Seguridad: `index.html`, páginas legales y `tools/seo.py` llevan una meta CSP (+ referrer). Si se añade un dominio externo (scripts, conexiones), ampliar la CSP en esos tres sitios. Los textos del banner están en `i18n/fuente.txt`.
 6. No subir secretos. La URL y la clave **pública** (publishable) de Supabase están en `index.html` a propósito; la `service_role` jamás.
 
 ## Ranking (Supabase)

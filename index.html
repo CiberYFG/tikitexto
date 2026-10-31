@@ -2,6 +2,8 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Juego diario de fútbol: adivina el jugador, equipo y estadio | TIKITEXTO</title>
 <meta name="description" content="Juego de fútbol gratis cada día: adivina el jugador, el equipo, el estadio o la selección en 6 intentos. Con ranking mundial y sin registro.">
@@ -1850,7 +1852,7 @@ button.marca:active .marca__icono { transform: scale(.9); }
     </section>
 
     <nav class="pie-legal" aria-label="Información legal"><button type="button" id="abrirTutorial">Tutorial: ¿cómo se juega?</button>
-      <button type="button" id="abrirTutNv">Tutoriales: modos de novedad</button><button type="button" id="abrirIdioma" aria-label="Cambiar de idioma">🌐 Idioma · Language</button><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a><a href="accesibilidad.html">Accesibilidad</a><a href="cookies.html#configurar">Configurar cookies</a></nav>
+      <button type="button" id="abrirTutNv">Tutoriales: modos de novedad</button><button type="button" id="abrirIdioma" aria-label="Cambiar de idioma">🌐 Idioma · Language</button><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a><a href="accesibilidad.html">Accesibilidad</a><button type="button" id="abrirCookies">Configurar cookies</button></nav>
   </main>
 
   <footer class="inicio__pie">
@@ -4774,10 +4776,10 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       const filas = res[0], yo = res[1], mio = datosJ.actual.toLowerCase();
       if (yo.estado === "ok") { p.pts = yo.pts; p.puesto = yo.puesto; guardarJ(); pintarTikis(); }
       let html = filas.map(function (x, i) {
-        return '<li class="' + (x.nombre.toLowerCase() === mio ? "rank--yo" : "") + '"><span>' + (["🥇", "🥈", "🥉"][i] || (i + 1)) + "</span><em>" + esc(x.nombre) + "</em><b>" + x.pts + " ⚡</b></li>";
+        return '<li class="' + (x.nombre.toLowerCase() === mio ? "rank--yo" : "") + '"><span>' + (["🥇", "🥈", "🥉"][i] || (i + 1)) + "</span><em>" + esc(x.nombre) + "</em><b>" + (Number(x.pts) || 0) + " ⚡</b></li>";
       }).join("") || "<li><em>Sé el primero en entrar 🚀</em></li>";
       if (yo.estado === "ok" && !filas.some(function (x) { return x.nombre.toLowerCase() === mio; })) {
-        html += '<li class="rank--yo"><span>#' + yo.puesto + "</span><em>" + esc(datosJ.actual) + "</em><b>" + yo.pts + " ⚡</b></li>";
+        html += '<li class="rank--yo"><span>#' + (Number(yo.puesto) || 0) + "</span><em>" + esc(datosJ.actual) + "</em><b>" + (Number(yo.pts) || 0) + " ⚡</b></li>";
       }
       ol.innerHTML = html;
       const num = statsContenido.querySelector(".stats__num");
@@ -6159,17 +6161,87 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   });
 })();
 </script>
-<!-- Medición de visitas sin cookies (Cloudflare Web Analytics). Se puede desactivar en cookies.html#configurar -->
+<!-- Aviso de consentimiento (cookies y medición). La medición (Cloudflare Web Analytics) solo se carga si la aceptas. -->
+<style>
+.cmp { position: fixed; left: 0; right: 0; bottom: 0; z-index: 800; display: flex; justify-content: center; padding: 12px; pointer-events: none; }
+.cmp[hidden] { display: none; }
+.cmp__caja { pointer-events: auto; width: min(560px, 100%); max-height: 90vh; overflow: auto; background: var(--superficie); color: var(--texto); border: 1px solid var(--borde-fuerte); border-radius: var(--radio); box-shadow: var(--sombra-media); padding: 16px 18px; font-size: .88rem; line-height: 1.45; }
+.cmp__caja h2 { margin: 0 0 6px; font-size: 1rem; }
+.cmp__caja p { margin: 0 0 10px; }
+.cmp__caja a { color: var(--acento); text-decoration: underline; }
+.cmp__fila { display: flex; flex-wrap: wrap; gap: 8px; }
+.cmp__fila button { flex: 1 1 140px; min-height: 44px; padding: 10px 14px; font: inherit; font-weight: 700; color: var(--texto); background: var(--superficie-2); border: 1.5px solid var(--borde-fuerte); border-radius: 10px; cursor: pointer; }
+.cmp__fila button:hover { border-color: var(--acento); }
+.cmp__fila button:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+.cmp__opcion { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; padding: 10px; background: var(--superficie-2); border: 1px solid var(--borde); border-radius: 10px; }
+.cmp__opcion input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--acento); }
+.cmp__opcion small { display: block; color: var(--texto-suave); }
+</style>
+<div class="cmp" id="cmp" role="dialog" aria-modal="false" aria-labelledby="cmpTitulo" hidden>
+  <div class="cmp__caja">
+    <div id="cmpPrincipal">
+      <h2 id="cmpTitulo">Tu privacidad</h2>
+      <p>TIKITEXTO guarda en tu dispositivo lo imprescindible para jugar (tu sesión, estadísticas, partida e idioma). Además, con tu permiso, mide las visitas de forma anónima y agregada. No hay publicidad ni rastreo entre webs. <a href="cookies.html">Más información</a></p>
+      <div class="cmp__fila"><button type="button" id="cmpRechazar">Rechazar</button><button type="button" id="cmpConfig">Configurar</button><button type="button" id="cmpAceptar">Aceptar</button></div>
+    </div>
+    <div id="cmpAjustes" hidden>
+      <h2>Configurar cookies</h2>
+      <div class="cmp__opcion"><input type="checkbox" checked disabled id="cmpNec"><label for="cmpNec">Almacenamiento necesario<small>Sesión, estadísticas, partida, tema e idioma. Siempre activo: sin él el juego no funciona.</small></label></div>
+      <div class="cmp__opcion"><input type="checkbox" id="cmpMed"><label for="cmpMed">Medición de visitas<small>Estadísticas anónimas y agregadas (Cloudflare Web Analytics, sin cookies).</small></label></div>
+      <div class="cmp__fila"><button type="button" id="cmpGuardar">Guardar elección</button><button type="button" id="cmpTodo">Aceptar</button></div>
+    </div>
+  </div>
+</div>
 <script>
 (function () {
-  var off = false;
-  try { off = localStorage.getItem("tikitexto:sin-medicion") === "1"; } catch (error) { /* sin almacenamiento */ }
-  if (off) return;
-  var s = document.createElement("script");
-  s.type = "module";
-  s.src = "https://static.cloudflareinsights.com/beacon.min.js";
-  s.setAttribute("data-cf-beacon", '{"token": "dab3fe665e7c48fb81d093154d9bd1ea"}');
-  document.head.appendChild(s);
+  var K = "tikitexto:consentimiento", cargado = false;
+  function leer() {
+    try {
+      var v = localStorage.getItem(K);
+      if (v === "si" || v === "no") return v;
+      if (localStorage.getItem("tikitexto:sin-medicion") === "1") return "no"; // elección anterior
+    } catch (e) { /* sin almacenamiento */ }
+    return null;
+  }
+  function guardar(v) {
+    try { localStorage.setItem(K, v); if (v === "si") localStorage.removeItem("tikitexto:sin-medicion"); else localStorage.setItem("tikitexto:sin-medicion", "1"); } catch (e) { /* sin almacenamiento */ }
+  }
+  function medir() {
+    if (cargado) return;
+    cargado = true;
+    var s = document.createElement("script");
+    s.defer = true;
+    s.src = "https://static.cloudflareinsights.com/beacon.min.js";
+    s.setAttribute("data-cf-beacon", '{"token": "dab3fe665e7c48fb81d093154d9bd1ea"}');
+    document.head.appendChild(s);
+  }
+  var c = document.getElementById("cmp"), p = document.getElementById("cmpPrincipal"), a = document.getElementById("cmpAjustes"), m = document.getElementById("cmpMed");
+  function mostrar(ajustes) {
+    m.checked = leer() === "si";
+    p.hidden = !!ajustes; a.hidden = !ajustes; c.hidden = false;
+    var b = document.getElementById(ajustes ? "cmpGuardar" : "cmpRechazar"); if (b && ajustes) b.focus();
+  }
+  function decidir(v) {
+    guardar(v); c.hidden = true;
+    if (v === "si") medir();
+  }
+  document.getElementById("cmpAceptar").addEventListener("click", function () { decidir("si"); });
+  document.getElementById("cmpTodo").addEventListener("click", function () { decidir("si"); });
+  document.getElementById("cmpRechazar").addEventListener("click", function () { decidir("no"); });
+  document.getElementById("cmpConfig").addEventListener("click", function () { mostrar(true); });
+  document.getElementById("cmpGuardar").addEventListener("click", function () { decidir(m.checked ? "si" : "no"); });
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest && e.target.closest("#abrirCookies");
+    if (t) { e.preventDefault(); mostrar(true); }
+  });
+  var v = leer();
+  if (v === "si") medir();
+  else if (v === null) {
+    var ua = navigator.userAgent || "";
+    var idi = true; try { idi = !!localStorage.getItem("tikitexto:idioma"); } catch (e) { /* sin almacenamiento */ }
+    if (idi && !/bot|crawl|spider/i.test(ua)) c.hidden = false;
+  }
+  window.TIKI_CMP = { abrir: function () { mostrar(true); } };
 })();
 </script>
 </body>
