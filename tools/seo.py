@@ -128,6 +128,9 @@ def pagina(lang, ruta, titulo, desc, h1, lead, modo_cta, bloques, faq, hreflang_
 <meta property="og:locale" content="%(loc)s">
 <meta property="og:image" content="https://tikitexto.com/icons/icon-512.png">
 <meta name="twitter:card" content="summary">
+<link rel="icon" href="%(base)sfavicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="48x48" href="%(base)sicons/favicon-48.png">
+<link rel="icon" type="image/png" sizes="96x96" href="%(base)sicons/favicon-96.png">
 <link rel="icon" type="image/png" sizes="32x32" href="%(base)sicons/favicon-32.png">
 <link rel="apple-touch-icon" href="%(base)sicons/apple-touch-icon.png">
 <script type="application/ld+json">%(ld)s</script>

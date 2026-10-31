@@ -243,6 +243,9 @@ def cabecera(L, titulo, desc, ruta, h1):
 <meta property="og:description" content="{e(desc)}">
 <meta property="og:type" content="article">
 <meta property="og:url" content="{DOM}{L.prefix}{ruta}">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
 <style>
 {CSS}.idiomas {{ font-size: .85rem; color: var(--suave); margin: 0 0 14px; }}
