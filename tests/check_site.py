@@ -99,6 +99,54 @@ with sync_playwright() as p:
         check("tutorial interactivo", False, str(e)[:150])
     check("sin errores de JavaScript en el tutorial", not errores_js, "; ".join(errores_js)[:200])
 
+    print("3c) Modos de novedad")
+    try:
+        errores_nv = []
+        pg3 = ctx.new_page()
+        pg3.on("pageerror", lambda e: errores_nv.append(str(e)))
+        perfil3 = dict(perfil, nv={"t": 0, "f": 0, "tut": {}})
+        pg3.route("**/rest/v1/rpc/*", lambda r: r.abort())
+        pg3.add_init_script(
+            "if(!sessionStorage.getItem('nvt')){sessionStorage.setItem('nvt','1');localStorage.removeItem('tikitexto:partida');sessionStorage.setItem('tikitexto:intro','1');"
+            "localStorage.setItem('tikitexto:jugadores'," + json.dumps(json.dumps({"actual": "BotNv", "perfiles": {"BotNv": perfil3}})) + ");}")
+        pg3.goto(BASE, wait_until="networkidle", timeout=60000)
+        pg3.wait_for_timeout(600)
+        check("la sección NOVEDAD se ve en el menú", pg3.is_visible(".novedad"))
+        pg3.click("[data-novedad=fichajes]")
+        pg3.wait_for_timeout(400)
+        check("primera vez: tutorial obligatorio del modo", pg3.is_visible("#modalTutorial") and not pg3.is_visible("#tutCerrar"))
+        for _ in range(3):
+            pg3.click("#tutSiguiente")
+            pg3.wait_for_timeout(250)
+        check("tras el tutorial aparece el panel de inicio", pg3.is_visible("#nvEmpezar"))
+        pg3.click("#nvEmpezar")
+        pg3.fill("#nvInput", "50")
+        check("barra y cuadro van sincronizados", pg3.eval_on_selector("#nvSlider", "e => e.value") == "50")
+        pg3.click("#nvComprobar")
+        pg3.wait_for_timeout(200)
+        check("se muestra el resultado", pg3.is_visible(".nv-res"))
+        pg3.click("#nvInicio")
+        pg3.wait_for_timeout(300)
+        if pg3.is_visible("#modalSalirNv"):
+            pg3.click("#botonSalirNvSi")
+            pg3.wait_for_timeout(200)
+        pg3.click("[data-novedad=fichajes]")
+        pg3.wait_for_timeout(300)
+        check("el tutorial del modo no vuelve a salir", not pg3.is_visible("#modalTutorial"))
+        pg3.click("#nvInicio")
+        pg3.wait_for_timeout(200)
+        if pg3.is_visible("#modalSalirNv"):
+            pg3.click("#botonSalirNvSi")
+            pg3.wait_for_timeout(200)
+        pg3.click("#abrirTutNv")
+        pg3.click("[data-tutnv=tarjetas]")
+        pg3.wait_for_timeout(300)
+        check("el pie abre los tutoriales de novedad", pg3.is_visible("#modalTutorial") and pg3.is_visible("#tutCerrar"))
+        pg3.close()
+    except Exception as e:
+        check("modos de novedad", False, str(e)[:150])
+    check("sin errores de JavaScript en novedad", not errores_nv, "; ".join(errores_nv)[:200])
+
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:
         print("  (omitido)")
