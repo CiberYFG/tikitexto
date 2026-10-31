@@ -1,0 +1,37 @@
+name: Comprobar tikitexto.com
+
+on:
+  schedule:
+    - cron: "23 */6 * * *"   # cada 6 horas
+  workflow_dispatch:          # también se puede lanzar a mano desde la pestaña Actions
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar Playwright
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
+      - name: Ejecutar comprobaciones
+        run: python tests/check_site.py
+      - name: Avisar con un issue si algo falla
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create sitio-caido --color B60205 --description "Fallo en la comprobación automática" 2>/dev/null || true
+          if [ -z "$(gh issue list --label sitio-caido --state open --json number -q '.[0].number')" ]; then
+            gh issue create --label sitio-caido \
+              --title "Fallo en la comprobación automática de tikitexto.com" \
+              --body "La comprobación programada ha fallado. Detalles: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
