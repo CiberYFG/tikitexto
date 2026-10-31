@@ -4,7 +4,7 @@ Juego diario de fútbol (adivinar el nombre en 6 intentos) con ranking mundial. 
 Web: https://tikitexto.com · Repositorio: CiberYFG/tikitexto · Alojamiento: GitHub Pages (rama `main`).
 
 ## Estructura
-- `index.html`: **todo el juego en un solo archivo** (HTML + CSS + JS + datos). No lo partas en varios sin que se pida.
+- `index.html`: **todo el juego en un solo archivo** (HTML + CSS + JS + datos). No lo partas en varios sin que se pida. Excepción pedida: los diccionarios de idioma viven en `i18n/` (ver «Idiomas»).
 - `sw.js`: service worker (red primero para la página, caché de respaldo). Si cambias la lista `SHELL` o quieres vaciar caché, sube `VERSION`.
 - `manifest.webmanifest` e `icons/`: PWA instalable. Todas las rutas son **relativas**.
 - `privacidad.html`: política de privacidad (borrador, sin datos personales del titular a propósito).
@@ -30,10 +30,15 @@ Web: https://tikitexto.com · Repositorio: CiberYFG/tikitexto · Alojamiento: Gi
 Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.py` (requiere `pip install playwright` y `playwright install chromium`).
 
 ## Idiomas (es, en, pt-BR, fr, it, de)
-- El juego está escrito en **español** (idioma base). Hay un selector de idioma (botón 🌐 en la portada y enlace en el pie); la primera visita obliga a elegir. El idioma se guarda en `localStorage` (`tikitexto:idioma`) y al cambiarlo la página se recarga (se descarta la partida en curso).
-- Traducción: script «IDIOMAS» justo antes del script principal de `index.html`. Diccionario `TD` (texto en español → [en, pt, fr, it, de]), patrones con números/nombres `TP` (regex con `$1`, `$2`) y nombres de respuesta localizados `TN` (selecciones y algunos equipos, en MAYÚSCULAS sin tildes). Un observador del DOM traduce el texto que aparece; si falta una entrada, se muestra el español.
-- **Regla: cualquier texto nuevo de interfaz (o pista nueva) necesita su entrada en `TD` en los 5 idiomas.** Si se construye con números o nombres dinámicos, añadir un patrón en `TP`. `data-no-t` en un elemento evita que se traduzca su contenido. Los textos fijos del script usan `TIKI.t()` si hace falta traducir a mano; `TIKI.locale` da el locale para `Intl`/`toLocaleString`.
-- Los nombres de jugadores no se traducen. Las pistas nuevas (`pista:` y las líneas de LEYENDAS/ESTADIOS) también van en `TD`.
-- Páginas legales (`aviso-legal`, `privacidad`, `cookies`, `accesibilidad`): solo en español, con una nota multilingüe arriba.
+- El juego está escrito en **español** (idioma base). Selector de idioma: botón 🌐 en la portada y enlace en el pie; la primera visita obliga a elegir. Se guarda en `localStorage` (`tikitexto:idioma`); al cambiarlo la página se recarga (se descarta la partida en curso). También vale `?lang=xx` en la URL.
+- **Fuente de las traducciones: `i18n/fuente.txt`** (español ||| en ||| pt ||| fr ||| it ||| de; líneas `P` = patrones con `$1`/`$2`; líneas `N` = nombres de respuesta localizados). Tras editarlo: `python3 tools/i18n.py` genera `i18n/en.js`, `pt.js`, `fr.js`, `it.js`, `de.js` (se suben al repo). Solo se descarga el del idioma elegido (el español no descarga nada).
+- El script «IDIOMAS» de `index.html` traduce el DOM con un observador. Si falta una entrada se muestra el español. **Regla: todo texto nuevo de interfaz (o pista nueva) necesita su línea en `fuente.txt` en los 5 idiomas**; si lleva números o nombres dinámicos, un patrón `P`. `data-no-t` evita traducir un elemento. `TIKI.t()` / `TIKI.nombre()` / `TIKI.locale` están disponibles en el script principal.
+- Los nombres de jugadores no se traducen. Páginas legales: solo en español, con una nota multilingüe arriba.
 - El filtro de nicknames del cliente incluye términos de los 6 idiomas; el del servidor (SQL) lo mantiene el titular.
-- Las pruebas fijan el idioma en español (`tests/check_site.py`, sección 3d prueba el selector y cada idioma).
+
+## SEO
+- `tools/seo.py` genera las páginas de búsqueda (`en/`, `pt/`, `fr/`, `it/`, `de/` y `adivina-el-jugador/`, `-equipo/`, `-seleccion/`, `-entrenador/`, `-estadio/`) y `sitemap.xml` (con `hreflang`). Ejecutarlo tras tocar textos o añadir modos/idiomas; no editar a mano esos `index.html`.
+- Los botones de esas páginas enlazan a `../?lang=xx&modo=yy` (el juego arranca directamente ese modo).
+- `index.html` lleva título/descripción optimizados, `hreflang`, datos estructurados (WebSite, WebApplication, FAQPage) y un bloque visible «¿Qué es TIKITEXTO?» con modos y preguntas frecuentes. Si se cambia el título o la descripción, añadir su traducción a `fuente.txt`.
+- Evitar repetir palabras clave sin sentido: Google penaliza el relleno; mantener textos naturales.
+- Pruebas: `tests/check_site.py` (3d idiomas, 3e páginas de búsqueda y enlaces directos). Se fijan en español salvo en esas secciones.

@@ -42,7 +42,7 @@ with sync_playwright() as p:
         check("manifest válido", False, str(e)[:120])
 
     html = api.get(BASE).text()
-    check("título correcto", "<title>TIKITEXTO" in html)
+    check("título correcto", "<title>" in html and "TIKITEXTO" in html.split("</title>")[0])
     check("sin referencias a 'wordle'", "wordle" not in html.lower())
 
     print("3) Juego en un móvil (sin tocar el servidor)")
@@ -198,6 +198,38 @@ with sync_playwright() as p:
     except Exception as e:
         check("idiomas", False, str(e)[:150])
     check("sin errores de JavaScript con idiomas", not errores_id, "; ".join(errores_id)[:200])
+
+    print("3e) Páginas de búsqueda (SEO) y enlaces directos")
+    try:
+        import re as _re
+        paginas = ["en/", "pt/", "fr/", "it/", "de/", "adivina-el-jugador/", "adivina-el-equipo/", "adivina-la-seleccion/", "adivina-el-entrenador/", "adivina-el-estadio/"]
+        for ruta in paginas:
+            r = ctx.request.get(BASE + ruta)
+            h = r.text() if r.ok else ""
+            bien = r.ok and "<title>" in h and 'rel="canonical"' in h and "application/ld+json" in h and "<h1>" in h and "hreflang" in h
+            check(f"página {ruta} con título, canónica, datos estructurados y h1", bien)
+        mapa = ctx.request.get(BASE + "sitemap.xml").text()
+        check("el sitemap lista todas las páginas nuevas", all(("/" + r) in mapa for r in paginas))
+        pe = ctx.new_page()
+        errs_e = []
+        pe.on("pageerror", lambda e: errs_e.append(str(e)))
+        pe.route("**/rest/v1/rpc/*", lambda r: r.abort())
+        pe.add_init_script("sessionStorage.setItem('tikitexto:intro','1');")
+        pe.goto(BASE + "en/", wait_until="networkidle")
+        pe.evaluate("localStorage.setItem('tikitexto:jugadores'," + json.dumps(json.dumps({"actual": "BotSeo", "perfiles": {"BotSeo": perfil}})) + ")")
+        pe.click("a.cta")
+        pe.wait_for_load_state("networkidle")
+        pe.wait_for_timeout(1000)
+        check("el botón de la página en inglés abre el juego en inglés", pe.evaluate("document.documentElement.lang") == "en" and pe.is_visible("#pantallaInicio"))
+        pe.goto(BASE + "adivina-el-equipo/", wait_until="networkidle")
+        pe.click("a.cta")
+        pe.wait_for_load_state("networkidle")
+        pe.wait_for_timeout(1200)
+        check("el enlace del modo empieza la partida directamente", pe.is_visible("#pantallaJuego") and "?" not in pe.url)
+        check("sin errores de JavaScript en las páginas nuevas", not errs_e, "; ".join(errs_e)[:200])
+        pe.close()
+    except Exception as e:
+        check("páginas de búsqueda", False, str(e)[:150])
 
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:

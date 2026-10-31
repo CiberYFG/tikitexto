@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /i18n/fuente.txt
+Disallow: /tools/
+Disallow: /tests/
 
 Sitemap: https://tikitexto.com/sitemap.xml
