@@ -696,6 +696,24 @@ body.sin-desplazamiento { overflow: hidden; }
   color: var(--texto-suave);
 }
 
+.grupo-titulo {
+  grid-column: 1 / -1;
+  margin: 10px 2px 0;
+  font-size: .78rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--acento);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.grupo-titulo::after { content: ""; flex: 1; height: 1px; background: var(--borde); }
+.grupo-titulo:first-child { margin-top: 0; }
+.filtros { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+.filtros__etq { font-size: .72rem; font-weight: 800; color: var(--texto-suave); margin-right: 2px; }
+.chip-pos { padding: 7px 13px; font-size: .78rem; font-weight: 800; color: var(--texto); background: var(--superficie); border: 1px solid var(--borde); border-radius: 999px; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.chip-pos:hover { border-color: var(--acento); color: var(--acento); }
 .rejilla-modos {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1916,15 +1934,6 @@ button.marca:active .marca__icono { transform: scale(.9); }
       </span>
     </button>
 
-    <button type="button" class="ah-card" data-ahorcado>
-      <span class="ah-card__dib" aria-hidden="true"><svg viewBox="0 0 120 140" class="ah-svg ah-svg--bucle" aria-hidden="true"><g class="ah-horca"><path d="M12 128H72M30 128V14H84M30 36L52 14"/></g><g class="ah-fig"><path class="ah-cuerda" d="M84 14V30"/><circle class="ah-p ah-p1" pathLength="1" cx="84" cy="40" r="10"/><path class="ah-p ah-p2" pathLength="1" d="M84 50V88"/><path class="ah-p ah-p3" pathLength="1" d="M68 76L84 60L100 76"/><path class="ah-p ah-p4" pathLength="1" d="M84 88L71 114"/><path class="ah-p ah-p5" pathLength="1" d="M84 88L97 114"/><path class="ah-x" d="M78.5 35.5l4 4m0-4l-4 4M85.5 35.5l4 4m0-4l-4 4"/></g></svg></span>
-      <span>
-        <span class="ah-card__sello">MODO ESPECIAL</span>
-        <span class="ah-card__titulo ah-arco">AHORCADO TIKITEXTO</span>
-        <span class="ah-card__desc">Adivina al crack letra a letra antes de que se complete el muñeco. 5 fallos y sin pistas.</span>
-        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-      </span>
-    </button>
 
         <section class="novedad" aria-labelledby="tituloNovedad">
       <span class="novedad__brillo" aria-hidden="true"></span>
@@ -1957,6 +1966,16 @@ button.marca:active .marca__icono { transform: scale(.9); }
         </button>
       </div>
     </section>
+
+    <button type="button" class="ah-card" data-ahorcado>
+      <span class="ah-card__dib" aria-hidden="true"><svg viewBox="0 0 120 140" class="ah-svg ah-svg--bucle" aria-hidden="true"><g class="ah-horca"><path d="M12 128H72M30 128V14H84M30 36L52 14"/></g><g class="ah-fig"><path class="ah-cuerda" d="M84 14V30"/><circle class="ah-p ah-p1" pathLength="1" cx="84" cy="40" r="10"/><path class="ah-p ah-p2" pathLength="1" d="M84 50V88"/><path class="ah-p ah-p3" pathLength="1" d="M68 76L84 60L100 76"/><path class="ah-p ah-p4" pathLength="1" d="M84 88L71 114"/><path class="ah-p ah-p5" pathLength="1" d="M84 88L97 114"/><path class="ah-x" d="M78.5 35.5l4 4m0-4l-4 4M85.5 35.5l4 4m0-4l-4 4"/></g></svg></span>
+      <span>
+        <span class="ah-card__sello">MODO ESPECIAL</span>
+        <span class="ah-card__titulo ah-arco">AHORCADO TIKITEXTO</span>
+        <span class="ah-card__desc">Adivina al crack letra a letra antes de que se complete el muñeco. 5 fallos y sin pistas.</span>
+        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </button>
 
 
     <section class="inicio__seccion" aria-labelledby="tituloModos">
@@ -3765,12 +3784,12 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
      MODOS DE JUEGO
      ============================================================ */
   function porPosicion(posicion) {
-    return JUGADORES.filter(function (jugador) { return jugador.posicion === posicion; });
+    return JUGADORES.filter(function (jugador) { return jugador.posicion === posicion && jugador.epoca === "actual"; });
   }
 
   const MODOS = [
     { id: "diario", nombre: "Tikitexto diario", tipo: "Jugador", unidad: "jugadores", icono: "jugador", fuente: function () { return JUGADORES; } },
-    { id: "jugadores", nombre: "Jugadores", tipo: "Jugador", unidad: "jugadores", icono: "jugador", fuente: function () { return JUGADORES; } },
+    { id: "jugadores", nombre: "Jugadores", tipo: "Jugador", unidad: "jugadores", icono: "jugador", fuente: function () { return JUGADORES.filter(function (j) { return j.epoca === "actual"; }); } },
     { id: "porteros", nombre: "Porteros", tipo: "Portero", unidad: "porteros", icono: "portero", fuente: function () { return porPosicion("portero"); } },
     { id: "defensas", nombre: "Defensas", tipo: "Defensa", unidad: "defensas", icono: "defensa", fuente: function () { return porPosicion("defensa"); } },
     { id: "medios", nombre: "Mediocentros", tipo: "Centrocampista", unidad: "mediocentros", icono: "medio", fuente: function () { return porPosicion("medio"); } },
@@ -4001,38 +4020,66 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
 
     const fragmento = document.createDocumentFragment();
 
-    MODOS.forEach(function (modo) {
-      if (modo.id === "diario" || modo.oculto) return;
-
+    function tarjetaModo(modo) {
       const total = poolDe(modo.id).length;
-
       const boton = document.createElement("button");
       boton.type = "button";
       boton.className = "modo";
       boton.dataset.modo = modo.id;
       boton.setAttribute("aria-label", "Jugar al modo " + modo.nombre + ", " + total + " respuestas");
-
       const icono = document.createElement("span");
       icono.className = "modo__icono";
       icono.setAttribute("aria-hidden", "true");
       icono.innerHTML = ICONOS[modo.icono] || ICONOS.jugador;
-
       const titulo = document.createElement("span");
       titulo.className = "modo__titulo";
       titulo.textContent = modo.nombre;
-
       boton.appendChild(icono);
       boton.appendChild(titulo);
-      fragmento.appendChild(boton);
-    });
+      return boton;
+    }
+    function grupo(titulo) {
+      const h = document.createElement("h3");
+      h.className = "grupo-titulo";
+      h.textContent = titulo;
+      fragmento.appendChild(h);
+    }
+    function tarjetaEstadios() {
+      const est = document.createElement("button");
+      est.type = "button";
+      est.className = "modo";
+      est.dataset.estadios = "1";
+      est.setAttribute("aria-label", "Elegir competición de estadios");
+      est.innerHTML = '<span class="modo__icono" aria-hidden="true">' + ICONOS.estadio + '</span><span class="modo__titulo">Estadios</span>';
+      return est;
+    }
 
-    const est = document.createElement("button");
-    est.type = "button";
-    est.className = "modo";
-    est.dataset.estadios = "1";
-    est.setAttribute("aria-label", "Elegir competición de estadios");
-    est.innerHTML = '<span class="modo__icono" aria-hidden="true">' + ICONOS.estadio + '</span><span class="modo__titulo">Estadios</span>';
-    fragmento.appendChild(est);
+    grupo("Jugadores y entrenadores");
+    ["jugadores", "leyendas", "entrenadores"].forEach(function (id) { fragmento.appendChild(tarjetaModo(MODOS_POR_ID[id])); });
+    const filtros = document.createElement("div");
+    filtros.className = "filtros";
+    const etq = document.createElement("span");
+    etq.className = "filtros__etq";
+    etq.textContent = "Jugadores por posición:";
+    filtros.appendChild(etq);
+    ["porteros", "defensas", "medios", "delanteros"].forEach(function (id) {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip-pos";
+      chip.dataset.modo = id;
+      chip.textContent = MODOS_POR_ID[id].nombre;
+      chip.setAttribute("aria-label", "Jugar al modo " + MODOS_POR_ID[id].nombre + ", " + poolDe(id).length + " respuestas");
+      filtros.appendChild(chip);
+    });
+    fragmento.appendChild(filtros);
+
+    grupo("Premios");
+    ["balones", "botas"].forEach(function (id) { fragmento.appendChild(tarjetaModo(MODOS_POR_ID[id])); });
+
+    grupo("Clubes y selecciones");
+    fragmento.appendChild(tarjetaModo(MODOS_POR_ID.equipos));
+    fragmento.appendChild(tarjetaModo(MODOS_POR_ID.selecciones));
+    fragmento.appendChild(tarjetaEstadios());
 
     subModos.innerHTML = "";
     [["estadios_es", "Liga española"], ["estadios_en", "Liga inglesa"], ["estadios_eu", "Europa"], ["estadios_us", "Estados Unidos"], ["estadios_mu", "Resto del mundo"]].forEach(function (m) {
