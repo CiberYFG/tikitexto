@@ -1687,6 +1687,10 @@ button.marca:active .marca__icono { transform: scale(.9); }
 }
 .idioma__cerrar:hover { background: rgba(127, 127, 127, .15); }
 .sin-desplazamiento { overflow: hidden; }
+.idioma__caja { animation: idioma-entra .22s ease-out; }
+.idioma__op--sel::after { content: "✓"; margin-left: auto; font-weight: 900; color: var(--acento, #2e9e6b); }
+@keyframes idioma-entra { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .idioma__caja { animation: none; } .idioma__op { transition: none; } }
 @media (max-width: 340px) { .idioma__rejilla { grid-template-columns: 1fr; } }
 </style>
 </head>
