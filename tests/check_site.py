@@ -319,6 +319,27 @@ with sync_playwright() as p:
     except Exception as e:
         check("curiosidades en idiomas", False, str(e)[:150])
 
+    print("3i) Botón de instalar la app e imagen para compartir")
+    try:
+        ci = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+        pi2 = ci.new_page()
+        errs_i = []
+        pi2.on("pageerror", lambda e: errs_i.append(str(e)))
+        pi2.add_init_script("sessionStorage.setItem('tikitexto:intro','1');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');")
+        pi2.goto(BASE, wait_until="networkidle", timeout=60000)
+        check("instalar app: oculto por defecto", pi2.evaluate("document.getElementById('instalarCaja').hidden"))
+        pi2.evaluate("(()=>{const e=new Event('beforeinstallprompt');e.prompt=()=>{window.__p=1};window.dispatchEvent(e)})()")
+        check("instalar app: aparece cuando el navegador lo permite", not pi2.evaluate("document.getElementById('instalarCaja').hidden"))
+        pi2.evaluate("document.getElementById('instalarApp').click()")
+        check("instalar app: lanza el aviso del navegador y se oculta", pi2.evaluate("window.__p === 1 && document.getElementById('instalarCaja').hidden") and not errs_i, "; ".join(errs_i)[:120])
+        og = api.get(BASE + "icons/og-image.png")
+        check("imagen para compartir existe", og.status == 200 and len(og.body()) > 5000, str(og.status))
+        html_i = api.get(BASE).text()
+        check("portada usa la imagen grande para compartir", "icons/og-image.png" in html_i and "summary_large_image" in html_i)
+        ci.close()
+    except Exception as e:
+        check("instalar app e imagen social", False, str(e)[:150])
+
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:
         print("  (omitido)")

@@ -49,11 +49,13 @@
 <meta property="og:url" content="https://tikitexto.com/">
 <meta property="og:site_name" content="TIKITEXTO">
 <meta property="og:locale" content="es_ES">
-<meta property="og:image" content="https://tikitexto.com/icons/icon-512.png">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://tikitexto.com/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:description" content="Juego diario de fútbol gratis: adivina el jugador, equipo, estadio o selección en 6 intentos. Con ranking mundial, historia, datos y estadísticas del fútbol.">
 <meta name="twitter:title" content="Juego diario de fútbol: adivina el jugador, equipo y estadio | TIKITEXTO">
-<meta name="twitter:image" content="https://tikitexto.com/icons/icon-512.png">
+<meta name="twitter:image" content="https://tikitexto.com/icons/og-image.png">
 
 <!-- Aplica el tema guardado antes de pintar para evitar destellos -->
 <script>
@@ -1426,6 +1428,13 @@ button.marca:active .marca__icono { transform: scale(.9); }
 :root[data-tema="oscuro"] .curio__lista em { color: #b9ae92; }
 :root[data-tema="oscuro"] .curio__todo a { color: #e0cf94; }
 :root[data-tema="oscuro"] .curio__lista li { border-color: #5d5238; }
+.instalar { display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 22px 0 4px; }
+.instalar[hidden] { display: none; }
+.instalar__boton { padding: 11px 22px; font: inherit; font-weight: 700; color: #fff; background: var(--verde, #2e9e6b); border: 0; border-radius: 999px; cursor: pointer; box-shadow: 0 2px 0 rgba(0,0,0,.18); transition: transform .12s ease; }
+.instalar__boton:hover { transform: translateY(-1px); }
+.instalar__boton:active { transform: translateY(1px); box-shadow: none; }
+.instalar__boton:focus-visible { outline: 3px solid var(--texto, #151d2b); outline-offset: 3px; }
+.instalar__nota { font-size: .78rem; color: var(--texto-suave); }
 .pie-legal { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; margin: 18px 0 6px; font-size: .8rem; }
 .pie-legal a, .legal-nota a, .stats__pie a { color: var(--texto-suave); text-decoration: underline; }
 .legal-nota, .stats__pie { text-align: center; font-size: .78rem; color: var(--texto-suave); margin: 10px 0 0; }
@@ -1888,6 +1897,7 @@ button.marca:active .marca__icono { transform: scale(.9); }
       <p class="curio__todo"><a data-curio="" href="curiosidades/">Ver todas las curiosidades →</a></p>
     </section>
 
+    <div class="instalar" id="instalarCaja" hidden><button type="button" id="instalarApp" class="instalar__boton">📲 Instalar la app</button><span class="instalar__nota">Juega en un toque desde tu pantalla de inicio</span></div>
     <nav class="pie-legal" aria-label="Información legal"><button type="button" id="abrirTutorial">Tutorial: ¿cómo se juega?</button>
       <button type="button" id="abrirTutNv">Tutoriales: modos de novedad</button><button type="button" id="abrirIdioma" aria-label="Cambiar de idioma">🌐 Idioma · Language</button><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a><a href="accesibilidad.html">Accesibilidad</a><a href="contacto.html">Contacto</a><button type="button" id="abrirCookies">Configurar cookies</button></nav>
   </main>
@@ -4224,7 +4234,13 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   function terminarPartida() {
-    if (estado.gano) lanzarConfeti();
+    if (estado.gano) {
+      lanzarConfeti();
+      /* Pequeña vibración al acertar (solo móviles que la permiten y sin «reducir movimiento») */
+      try {
+        if (navigator.vibrate && !(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) navigator.vibrate([40, 60, 40]);
+      } catch (e) { /* sin vibración */ }
+    }
     registrarFin();
     const intentos = estado.intentos.length;
 
@@ -6318,6 +6334,29 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (idi && !/bot|crawl|spider/i.test(ua)) c.hidden = false;
   }
   window.TIKI_CMP = { abrir: function () { mostrar(true); } };
+})();
+</script>
+<script>
+/* Botón «Instalar la app»: solo aparece si el navegador permite instalar (Chrome/Edge/Android). Sin cookies ni datos. */
+(function () {
+  "use strict";
+  var evento = null;
+  var caja = document.getElementById("instalarCaja");
+  var boton = document.getElementById("instalarApp");
+  if (!caja || !boton) return;
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    evento = e;
+    caja.hidden = false;
+  });
+  boton.addEventListener("click", function () {
+    if (!evento) return;
+    var ev = evento;
+    evento = null;
+    caja.hidden = true;
+    try { ev.prompt(); } catch (err) { /* sin soporte */ }
+  });
+  window.addEventListener("appinstalled", function () { caja.hidden = true; evento = null; });
 })();
 </script>
 </body>

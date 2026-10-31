@@ -40,7 +40,7 @@ UI = {
             pasos=["Gib einen Namen mit der Anzahl Buchstaben ein, die die Felder zeigen.", "Drücke Enter: grün = Buchstabe an der richtigen Stelle, gelb = kommt woanders im Namen vor, grau = nicht im Namen.", "Du hast 6 Versuche. Wenn du nicht weiterkommst, nutze den Hinweis."]),
 }
 LANDING = {
- "en": dict(titulo="Daily football game: guess the player, team & stadium | TIKITEXTO", desc="Free daily football game: guess the player, team, stadium or national team in 6 tries. World ranking, no sign-up.", h1="Daily football guessing game", lead="A new hidden name every day: a player, a team, a stadium, a national team or a manager. Six attempts, colour clues after each one and a world ranking. Free and with no sign-up."),
+ "en": dict(titulo="Daily football (soccer) game: guess the player, team & stadium | TIKITEXTO", desc="Free daily football (soccer) game: guess the player, team, stadium or national team in 6 tries. World ranking, no sign-up.", h1="Daily football (soccer) guessing game", lead="A new hidden name every day from the world of football, or soccer as it is called in the US: a player, a team, a stadium, a national team or a manager. Six attempts, colour clues after each one and a world ranking. Free and with no sign-up."),
  "pt": dict(titulo="Jogo diário de futebol: adivinhe o jogador, o time e o estádio | TIKITEXTO", desc="Jogo de futebol grátis todo dia: adivinhe o jogador, o time, o estádio ou a seleção em 6 tentativas. Com ranking mundial e sem cadastro.", h1="Jogo diário de adivinhar futebol", lead="Todo dia um nome novo escondido: um jogador, um time, um estádio, uma seleção ou um treinador. Seis tentativas, pistas em cores a cada uma e ranking mundial. Grátis e sem cadastro."),
  "fr": dict(titulo="Jeu quotidien de football : devine le joueur, l'équipe et le stade | TIKITEXTO", desc="Jeu de football gratuit chaque jour : devine le joueur, l'équipe, le stade ou la sélection en 6 essais. Classement mondial, sans inscription.", h1="Jeu quotidien de football à deviner", lead="Chaque jour, un nouveau nom caché : un joueur, une équipe, un stade, une sélection ou un entraîneur. Six essais, des indices en couleurs après chacun et un classement mondial. Gratuit et sans inscription."),
  "it": dict(titulo="Gioco quotidiano di calcio: indovina giocatore, squadra e stadio | TIKITEXTO", desc="Gioco di calcio gratuito ogni giorno: indovina giocatore, squadra, stadio o nazionale in 6 tentativi. Classifica mondiale, senza registrazione.", h1="Gioco quotidiano di calcio da indovinare", lead="Ogni giorno un nuovo nome nascosto: un giocatore, una squadra, uno stadio, una nazionale o un allenatore. Sei tentativi, indizi a colori dopo ognuno e classifica mondiale. Gratis e senza registrazione."),
@@ -126,8 +126,10 @@ def pagina(lang, ruta, titulo, desc, h1, lead, modo_cta, bloques, faq, hreflang_
 <meta property="og:url" content="%(canon)s">
 <meta property="og:site_name" content="TIKITEXTO">
 <meta property="og:locale" content="%(loc)s">
-<meta property="og:image" content="https://tikitexto.com/icons/icon-512.png">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://tikitexto.com/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="%(base)sfavicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="48x48" href="%(base)sicons/favicon-48.png">
 <link rel="icon" type="image/png" sizes="96x96" href="%(base)sicons/favicon-96.png">

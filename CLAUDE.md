@@ -49,3 +49,9 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 - `index.html` lleva título/descripción optimizados, `hreflang`, datos estructurados (WebSite, WebApplication, FAQPage) y un bloque visible «¿Qué es TIKITEXTO?» con modos y preguntas frecuentes. Si se cambia el título o la descripción, añadir su traducción a `fuente.txt`.
 - Evitar repetir palabras clave sin sentido: Google penaliza el relleno; mantener textos naturales.
 - Pruebas: `tests/check_site.py` (3d idiomas, 3e páginas de búsqueda y enlaces directos). Se fijan en español salvo en esas secciones.
+
+## Alcance internacional
+- `icons/og-image.png` (1200×630, propia, sin escudos ni fotos) es la imagen al compartir en redes; va en `og:image`/`twitter:image` (portada, `tools/seo.py`, `tools/curiosidades.py`) con `summary_large_image`.
+- Las páginas y descripciones en inglés dicen «football (soccer)» a propósito, para búsquedas de EE. UU. Mantener el texto natural.
+- Botón «Instalar la app» (`#instalarCaja`/`#instalarApp`): oculto hasta que el navegador lanza `beforeinstallprompt`; sin cookies ni datos. Sus textos están en `fuente.txt`.
+- Al acertar, vibración corta si el móvil la permite y no se pidió «reducir movimiento».
