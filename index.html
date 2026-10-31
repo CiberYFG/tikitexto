@@ -4494,7 +4494,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     const t0 = ctx.currentTime + 0.05;
     const DUR = 3.2;
     const master = ctx.createGain();
-    master.gain.value = 0.5;
+    master.gain.value = 0.35;
     const comp = ctx.createDynamicsCompressor();
     master.connect(comp);
     comp.connect(ctx.destination);
@@ -4512,51 +4512,32 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     const bus = ctx.createGain();
     bus.connect(master); bus.connect(eco);
 
-    /* Grada: ruido suave filtrado que sube y estalla en un aplauso/ovación */
-    const rb = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
-    const rd = rb.getChannelData(0);
-    for (let i = 0; i < rd.length; i++) rd[i] = Math.random() * 2 - 1;
-    function capa(frec, q, base, pico) {
-      const src = ctx.createBufferSource(); src.buffer = rb; src.loop = true;
-      const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = frec; bp.Q.value = q;
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(0, t0);
-      g.gain.linearRampToValueAtTime(base, t0 + 1.1);
-      g.gain.linearRampToValueAtTime(pico, t0 + 1.9);
-      g.gain.linearRampToValueAtTime(pico * 0.7, t0 + 2.6);
-      g.gain.linearRampToValueAtTime(0, t0 + DUR);
-      const lfo = ctx.createOscillator(); lfo.frequency.value = 0.8 + Math.random() * 0.8;
-      const lg = ctx.createGain(); lg.gain.value = base * 0.3;
-      lfo.connect(lg); lg.connect(g.gain);
-      src.connect(bp); bp.connect(g); g.connect(bus);
-      src.start(t0); lfo.start(t0); src.stop(t0 + DUR + 0.1); lfo.stop(t0 + DUR + 0.1);
-    }
-    capa(600, 0.6, 0.12, 0.3);
-    capa(1400, 0.8, 0.07, 0.2);
-    capa(3000, 1, 0.03, 0.1);
-
-    /* Bocinas de afición: dos pitidos de trompeta de plástico (sin estridencias) */
+    /* Bocinas de afición con una mini melodía pegadiza (sin grada, volumen suave) */
     function bocina(t, f, dur, vol) {
       const env = ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(vol, t + 0.05);
-      env.gain.setValueAtTime(vol, t + dur - 0.12);
+      env.gain.linearRampToValueAtTime(vol, t + 0.03);
+      env.gain.setValueAtTime(vol, t + Math.max(0.04, dur - 0.1));
       env.gain.linearRampToValueAtTime(0, t + dur);
-      const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 1500; lp.Q.value = 0.7;
+      const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 1300; lp.Q.value = 0.7;
       [1, 1.005, 2.01].forEach(function (m, i) {
         const o = ctx.createOscillator(); o.type = i === 2 ? "triangle" : "sawtooth";
-        o.frequency.setValueAtTime(f * m * 0.96, t);
-        o.frequency.linearRampToValueAtTime(f * m, t + 0.08);
+        o.frequency.setValueAtTime(f * m * 0.97, t);
+        o.frequency.linearRampToValueAtTime(f * m, t + 0.05);
         const g = ctx.createGain(); g.gain.value = i === 2 ? 0.4 : 1;
         o.connect(g); g.connect(lp);
         o.start(t); o.stop(t + dur + 0.05);
       });
       lp.connect(env); env.connect(bus);
     }
-    bocina(t0 + 1.05, 233, 0.42, 0.07);
-    bocina(t0 + 1.05, 349, 0.42, 0.05);
-    bocina(t0 + 1.6, 233, 0.8, 0.08);
-    bocina(t0 + 1.6, 349, 0.8, 0.055);
+    /* Melodía en sol mayor: "ta-ta-ta-TAA · ta-ta-ta-TA-TAAA" */
+    const G4 = 392, B4 = 493.88, D5 = 587.33, E5 = 659.25, G5 = 783.99;
+    const V = 0.04;
+    [[0.00, G4, 0.14], [0.17, G4, 0.14], [0.34, B4, 0.14], [0.51, D5, 0.34],
+     [0.95, B4, 0.14], [1.12, D5, 0.14], [1.29, E5, 0.14], [1.46, D5, 0.2],
+     [1.72, E5, 0.14], [1.89, G5, 0.14]].forEach(function (n) { bocina(t0 + 0.1 + n[0], n[1], n[2], V); });
+    /* Final en acorde, que se queda sonando y se apaga */
+    [[196, 1.0, 0.05], [G4, 1.0, 0.04], [B4, 1.0, 0.035], [D5, 1.0, 0.035], [G5, 1.0, 0.045]].forEach(function (n) { bocina(t0 + 2.1, n[0], n[1], n[2]); });
 
     return {
       parar: function () {
