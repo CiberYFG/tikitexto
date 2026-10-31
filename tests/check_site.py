@@ -370,6 +370,58 @@ with sync_playwright() as p:
     except Exception as e:
         check("estadios EE. UU.", False, str(e)[:150])
 
+    print("3k) Ahorcado TIKITEXTO")
+    try:
+        ca = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+        pa = ca.new_page()
+        errs_a = []
+        pa.on("pageerror", lambda e: errs_a.append(str(e)))
+        pa.route("**/rest/v1/rpc/*", lambda r: r.abort())
+        perfil_a = dict(perfil, nv={"t": 0, "f": 0, "tut": {}})
+        pa.add_init_script(
+            "if(!sessionStorage.getItem('aht')){sessionStorage.setItem('aht','1');sessionStorage.setItem('tikitexto:intro','1');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');"
+            "localStorage.setItem('tikitexto:jugadores'," + json.dumps(json.dumps({"actual": "BotAh", "perfiles": {"BotAh": perfil_a}})) + ");}")
+        pa.goto(BASE, wait_until="networkidle", timeout=60000)
+        pa.wait_for_timeout(500)
+        check("ahorcado: tarjeta en el menú", pa.is_visible(".ah-card"))
+        pa.click(".ah-card")
+        pa.wait_for_timeout(400)
+        check("ahorcado: tutorial obligatorio la primera vez (3 pasos)", pa.is_visible("#modalTutorial") and not pa.is_visible("#tutCerrar"))
+        pa.click("#tutSiguiente"); pa.click("#tutSiguiente"); pa.click("#tutSiguiente")
+        pa.wait_for_timeout(300)
+        check("ahorcado: panel de inicio", pa.is_visible("#ahEmpezar"))
+        pa.click("#ahEmpezar")
+        pa.wait_for_timeout(300)
+        n_cel = pa.locator("#ahNombre .ah-cel").count()
+        check("ahorcado: el nombre se muestra en cuadrados", n_cel >= 4, str(n_cel))
+        # una letra que no esté en ningún nombre de la lista: fuerza fallos con Q, W, X, Z, K y J hasta perder
+        pa.evaluate("window.__fallos = 0")
+        for l in "QWXZ":
+            pa.keyboard.press(l)
+        pa.wait_for_timeout(300)
+        malas = pa.locator("#ahMalas .ah-mala").count()
+        quitadas = pa.locator(".ah-tecla--fuera").count()
+        check("ahorcado: las letras falladas salen tachadas y se quitan del teclado", malas >= 1 and quitadas >= 4, f"{malas}/{quitadas}")
+        pa.keyboard.press("E")
+        pa.wait_for_timeout(200)
+        check("ahorcado: sin pistas en el juego", pa.locator(".pista, #pista").count() == 0 or not pa.is_visible("#pista"))
+        for l in "BCDFGHIJKLMNOPRSTUVY":
+            if pa.is_visible("#ahResultado .ah-res"):
+                break
+            pa.keyboard.press(l)
+            pa.wait_for_timeout(60)
+        pa.wait_for_timeout(1600)
+        check("ahorcado: la partida termina y se ofrece seguir", pa.is_visible("#ahResultado .ah-res") or pa.locator("#ahResultado .ah-res").count() == 1)
+        check("ahorcado: sin errores de JavaScript", not errs_a, "; ".join(errs_a)[:150])
+        pe = ca.new_page()
+        pe.add_init_script("localStorage.setItem('tikitexto:idioma','en');")
+        pe.goto(BASE, wait_until="networkidle", timeout=60000)
+        pe.wait_for_timeout(500)
+        check("ahorcado: tarjeta traducida al inglés", "TIKITEXTO HANGMAN" in (pe.inner_text(".ah-card") or ""))
+        ca.close()
+    except Exception as e:
+        check("ahorcado", False, str(e)[:150])
+
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:
         print("  (omitido)")

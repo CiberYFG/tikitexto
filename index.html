@@ -1654,6 +1654,89 @@ button.marca:active .marca__icono { transform: scale(.9); }
 @media (max-width: 400px) { .nv-jug { min-height: 214px; padding: 14px 6px 12px; } .nv-jug__nombre { font-size: .95rem; } .nv-avatar { width: 56px; height: 56px; font-size: 1.15rem; } .nv-fich__nombre { font-size: 1.5rem; } .nv-lectura b { font-size: 2.2rem; } }
 @media (prefers-reduced-motion: reduce) { .novedad, .novedad__brillo, .novedad__sello, .novedad__chispa, .nvi-a, .nvi-b, .nvi-moneda, .nv-aviso-rec { animation: none !important; } .novedad__chispa { opacity: .8; } }
 
+/* ---------- AHORCADO TIKITEXTO · modo especial ---------- */
+@keyframes ahHue { to { filter: hue-rotate(360deg); } }
+@keyframes ahBalanceo { from { transform: rotate(-3.5deg); } to { transform: rotate(3.5deg); } }
+@keyframes ahBalanceoFuerte { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+@keyframes ahDibuja { 0% { stroke-dashoffset: 1; opacity: 0; } 4% { opacity: 1; } 14% { stroke-dashoffset: 0; } 84% { stroke-dashoffset: 0; opacity: 1; } 94%, 100% { stroke-dashoffset: 1; opacity: 0; } }
+@keyframes ahPop { 0% { transform: scale(.4); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
+@keyframes ahSale { to { transform: scale(.2); opacity: 0; visibility: hidden; } }
+@keyframes ahTiembla { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } }
+@keyframes ahLatido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.035); } }
+.ah-arco { font-family: "Bradley Hand", "Segoe Print", "Chalkboard SE", "Marker Felt", "Comic Sans MS", fantasy; font-weight: 900; letter-spacing: .05em; text-transform: uppercase; color: #ff2d6f; text-shadow: 0 2px 14px rgba(255, 255, 255, .22); animation: ahHue 5s linear infinite; }
+.ah-svg { display: block; width: 100%; height: 100%; overflow: visible; animation: ahHue 9s linear infinite; }
+.ah-svg .ah-horca { fill: none; stroke: #ff4f81; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.ah-svg .ah-fig { transform-origin: 84px 14px; animation: ahBalanceo 3s ease-in-out infinite alternate; }
+.ah-svg .ah-fig path, .ah-svg .ah-fig circle { fill: none; stroke: #25c7ff; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.ah-svg .ah-cuerda { stroke: #ffe135; stroke-width: 3; }
+.ah-svg .ah-p { opacity: 0; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .5s ease, opacity .15s; }
+.ah-svg .ah-p.ah-on { opacity: 1; stroke-dashoffset: 0; }
+.ah-svg .ah-x { opacity: 0; stroke-width: 2.4 !important; stroke: #ffe135 !important; transition: opacity .3s; }
+.ah-muerto .ah-svg .ah-x { opacity: 1; }
+.ah-muerto .ah-svg .ah-fig { animation: ahBalanceoFuerte 1.3s ease-in-out infinite alternate; }
+.ah-svg--bucle .ah-p { opacity: 1; animation: ahDibuja 7s ease-in-out infinite both; }
+.ah-svg--bucle .ah-p2 { animation-delay: .25s; } .ah-svg--bucle .ah-p3 { animation-delay: .5s; } .ah-svg--bucle .ah-p4 { animation-delay: .75s; } .ah-svg--bucle .ah-p5 { animation-delay: 1s; }
+
+.ah-card { position: relative; isolation: isolate; overflow: hidden; display: grid; grid-template-columns: 92px 1fr; align-items: center; gap: 14px; width: 100%; margin: 22px 0 6px; padding: 16px 16px 14px; text-align: left; color: #f4f1ff; background: linear-gradient(145deg, #1a1030, #0c1b2e); border: 2px solid transparent; border-radius: 26px; cursor: pointer; box-shadow: 0 14px 40px rgba(122, 92, 255, .28); background-clip: padding-box; transition: transform .15s ease; font: inherit; }
+.ah-card::before { content: ""; position: absolute; inset: 0; z-index: -1; margin: -2px; border-radius: inherit; background: conic-gradient(from 0deg, #ff2d6f, #ff9a1f, #ffe135, #38e07b, #25c7ff, #7a5cff, #ff2d6f); animation: ahHue 6s linear infinite; }
+.ah-card::after { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: linear-gradient(145deg, #1a1030, #0c1b2e); }
+.ah-card:hover { transform: translateY(-2px); } .ah-card:active { transform: scale(.985); }
+.ah-card__dib { width: 92px; height: 108px; }
+.ah-card__sello { display: inline-block; padding: 3px 11px; font-size: .66rem; font-weight: 900; letter-spacing: .16em; color: #14101f; background: linear-gradient(90deg, #ff2d6f, #ffe135, #25c7ff); border-radius: 99px; animation: ahHue 5s linear infinite; }
+.ah-card__titulo { display: block; margin: 6px 0 4px; font-size: clamp(1.25rem, 6vw, 1.7rem); line-height: 1.05; }
+.ah-card__desc { display: block; font-size: .82rem; line-height: 1.4; color: #c9c4e6; }
+.ah-card__accion { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: .86rem; font-weight: 800; color: #ffe135; }
+.ah-card__accion svg { width: 16px; height: 16px; }
+
+.ah { flex: 1 1 auto; width: 100%; max-width: 560px; margin: 0 auto; padding: 14px clamp(12px, 3vw, 22px) 30px; }
+.ah-juego { display: grid; gap: 14px; justify-items: center; animation: entrada .3s ease both; }
+.ah-dibujo { width: min(44vw, 176px); aspect-ratio: 120 / 140; }
+.ah-juego.ah-sacude .ah-dibujo { animation: ahTiembla .4s ease; }
+.ah-fallos { display: flex; align-items: center; gap: 10px; font-size: .8rem; font-weight: 800; color: var(--texto-suave); }
+.ah-vidas { display: inline-flex; gap: 5px; }
+.ah-vida { width: 12px; height: 12px; border-radius: 50%; background: var(--borde-fuerte); transition: background .25s, transform .25s; }
+.ah-vida--perdida { background: #e5484d; transform: scale(1.2); }
+.ah-nombre { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 30px; width: 100%; }
+.ah-palabra { display: flex; gap: 5px; }
+.ah-cel { display: grid; place-items: center; width: var(--ah-c, 32px); height: var(--ah-c, 32px); font-size: calc(var(--ah-c, 32px) * .56); font-weight: 900; color: var(--texto); background: var(--superficie); border: 2px solid var(--borde-fuerte); border-bottom-width: 4px; border-radius: 8px; }
+.ah-cel--ok { background: var(--acento-suave); border-color: var(--acento); animation: ahPop .35s ease both; }
+.ah-cel--falta { color: #e5484d; border-color: #e5484d; animation: ahPop .35s ease both; }
+.ah-malas { display: grid; justify-items: center; gap: 6px; width: 100%; }
+.ah-malas__etq { font-size: .62rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; color: var(--texto-suave); }
+.ah-malas__fila { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; min-height: 36px; align-items: center; }
+.ah-malas__vacio { font-size: .78rem; color: var(--texto-suave); opacity: .7; }
+.ah-mala { display: grid; place-items: center; width: 32px; height: 36px; font-size: 1.05rem; font-weight: 900; color: #e5484d; text-decoration: line-through; text-decoration-thickness: 3px; background: rgba(229, 72, 77, .1); border: 2px solid rgba(229, 72, 77, .5); border-radius: 9px; animation: ahPop .3s ease both; }
+.ah-teclado { display: grid; gap: 7px; width: 100%; }
+.ah-teclado__fila { display: flex; justify-content: center; gap: 5px; }
+.ah-tecla { flex: 1 1 0; max-width: 42px; height: 50px; padding: 0; font: inherit; font-size: 1rem; font-weight: 800; color: var(--texto); background: var(--superficie); border: 1px solid var(--borde-fuerte); border-bottom-width: 3px; border-radius: 10px; cursor: pointer; transition: transform .1s, background .15s; touch-action: manipulation; }
+.ah-tecla:hover { background: var(--superficie-2); } .ah-tecla:active { transform: scale(.92); }
+.ah-tecla--fuera { animation: ahSale .25s ease forwards; pointer-events: none; }
+.ah-res { display: grid; gap: 10px; width: 100%; padding: 18px 16px; text-align: center; background: var(--superficie); border: 1px solid var(--borde); border-radius: 20px; animation: entrada .3s ease both; }
+.ah-res__titulo { font-size: 1.6rem; line-height: 1.1; }
+.ah-res--perdido .ah-res__titulo { color: #e5484d; text-shadow: none; animation: none; }
+.ah-res__nombre { font-size: 1.05rem; font-weight: 800; }
+.ah-res__tiki { font-size: .9rem; font-weight: 900; color: #8a5a00; }
+.ah-res .boton { width: 100%; }
+.ah-gana .ah-dibujo { animation: ahLatido .8s ease 3; }
+.ah-inicio .ah-dibujo { margin: 0 auto 6px; }
+.ah-inicio .nv-panel__titulo { font-size: 1.7rem; text-align: center; margin-bottom: 8px; }
+.ah-inicio .nv-panel__etq, .ah-inicio .nv-record { display: table; margin-left: auto; margin-right: auto; }
+
+.ah-t-dib { width: 84px; height: 98px; }
+.ah-nombre--mini { gap: 8px 22px; --ah-c: 24px; }
+.ah-nombre--mini .ah-cel { border-radius: 6px; }
+.ah-nombre--hueco .ah-palabra:first-child { animation: ahLatido .7s ease 3; }
+.ah-t-nota { min-height: 1.3em; font-size: .78rem; font-weight: 800; color: var(--acento); transition: opacity .3s; }
+.ah-t-teclas { display: flex; gap: 6px; }
+.ah-t-teclas .ah-tecla { flex: none; width: 34px; height: 38px; }
+.ah-t-malas { min-height: 32px; display: flex; gap: 6px; }
+.ah-t-malas .ah-mala { width: 28px; height: 30px; font-size: .9rem; }
+@media (prefers-reduced-motion: reduce) {
+  .ah-arco, .ah-svg, .ah-card::before, .ah-card__sello, .ah-svg .ah-fig, .ah-muerto .ah-svg .ah-fig, .ah-gana .ah-dibujo, .ah-cel--ok, .ah-cel--falta, .ah-mala, .ah-juego.ah-sacude .ah-dibujo, .ah-nombre--hueco .ah-palabra:first-child { animation: none !important; }
+  .ah-svg--bucle .ah-p { animation: none !important; opacity: 1; stroke-dashoffset: 0; }
+  .ah-tecla--fuera { animation: none; visibility: hidden; }
+}
+
 /* Tutoriales de los modos nuevos */
 .tut-duelo { display: flex; gap: 10px; width: 100%; max-width: 300px; position: relative; }
 .tut-jug { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 6px; background: var(--superficie); border: 2px solid var(--borde); border-radius: 16px; transition: border-color .25s, box-shadow .25s, transform .25s, background .25s, opacity .3s; }
@@ -1829,6 +1912,16 @@ button.marca:active .marca__icono { transform: scale(.9); }
             <path d="M5 12h14M13 6l6 6-6 6"/>
           </svg>
         </span>
+      </span>
+    </button>
+
+    <button type="button" class="ah-card" data-ahorcado>
+      <span class="ah-card__dib" aria-hidden="true"><svg viewBox="0 0 120 140" class="ah-svg ah-svg--bucle" aria-hidden="true"><g class="ah-horca"><path d="M12 128H72M30 128V14H84M30 36L52 14"/></g><g class="ah-fig"><path class="ah-cuerda" d="M84 14V30"/><circle class="ah-p ah-p1" pathLength="1" cx="84" cy="40" r="10"/><path class="ah-p ah-p2" pathLength="1" d="M84 50V88"/><path class="ah-p ah-p3" pathLength="1" d="M68 76L84 60L100 76"/><path class="ah-p ah-p4" pathLength="1" d="M84 88L71 114"/><path class="ah-p ah-p5" pathLength="1" d="M84 88L97 114"/><path class="ah-x" d="M78.5 35.5l4 4m0-4l-4 4M85.5 35.5l4 4m0-4l-4 4"/></g></svg></span>
+      <span>
+        <span class="ah-card__sello">MODO ESPECIAL</span>
+        <span class="ah-card__titulo ah-arco">AHORCADO TIKITEXTO</span>
+        <span class="ah-card__desc">Adivina al crack letra a letra antes de que se complete el muñeco. 5 fallos y sin pistas.</span>
+        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </span>
     </button>
 
@@ -2155,6 +2248,44 @@ button.marca:active .marca__icono { transform: scale(.9); }
   </main>
 </div>
 
+<!-- ============ PANTALLA DEL AHORCADO ============ -->
+<div class="partida" id="pantallaAhorcado" hidden>
+  <header class="cabecera">
+    <div class="cabecera__interior">
+      <div class="cabecera__fila">
+        <button type="button" class="marca" id="ahLogo" aria-label="TIKITEXTO, volver al menú principal">
+          <span class="marca__icono" aria-hidden="true">
+        <svg viewBox="0 0 40 40"><g class="logo-balon"><circle cx="20" cy="20" r="12" fill="#fff"/><path d="M20 13l5.2 3.8-2 6.1h-6.4l-2-6.1z" fill="#0b1f17"/><path d="M20 8v5M32 17l-6.8-.2M27.5 30.5l-4.7-7.6M12.5 30.5l4.7-7.6M8 17l6.8-.2" stroke="#0b1f17" stroke-width="1.7" stroke-linecap="round"/></g><g class="logo-ficha"><rect x="24" y="24" width="14" height="14" rx="4.5" fill="#ffc83d" stroke="#fff" stroke-width="1.5"/><text x="31" y="35" text-anchor="middle" font-size="11" font-weight="900" fill="#2b2000" font-family="system-ui,sans-serif">T</text></g></svg>
+      </span>
+          <div class="marca__textos">
+            <p class="marca__titulo">TIKI<span>TEXTO</span></p>
+            <p class="marca__subtitulo" id="ahSubtitulo">Modo especial</p>
+          </div>
+        </button>
+        <div class="cabecera__acciones">
+          <button type="button" class="boton-icono" data-tema-boton aria-label="Cambiar de tema">
+            <svg class="icono--luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+            <svg class="icono--sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          </button>
+          <button type="button" class="boton-icono" id="ahInicio" aria-label="Volver al inicio" title="Volver al inicio">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7"/><path d="M6 9.8V20h12V9.8"/><path d="M10 20v-5h4v5"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main class="ah">
+    <div class="nv__estado" id="ahEstado" hidden>
+      <span class="nv-chip">Racha <b id="ahRacha">0</b></span>
+      <span class="nv-chip">Récord <b id="ahRecord">0</b></span>
+      <span class="nv-pips" id="ahPips" role="img" aria-label="Progreso hacia el próximo tikitexto"></span>
+      <span class="nv-chip nv-chip--tiki">⚡ <b id="ahTikis">0</b></span>
+    </div>
+    <div id="ahCuerpo"></div>
+    <div class="nv-pie-nv"><button type="button" id="ahVerTutorial">Ver el tutorial de este modo</button></div>
+  </main>
+</div>
+
 <div class="modal" id="modalSalirNv" role="dialog" aria-modal="true" aria-labelledby="tituloSalirNv" hidden>
   <div class="modal__velo" data-cerrar-salirnv></div>
   <div class="modal__caja">
@@ -2177,6 +2308,7 @@ button.marca:active .marca__icono { transform: scale(.9); }
     <div class="modal__lista-tut">
       <button type="button" data-tutnv="tarjetas"><b>¿Quién tiene más tarjetas?</b><span>Cómo funciona el duelo y la racha</span></button>
       <button type="button" data-tutnv="fichajes"><b>¿Cuánto costó?</b><span>Cómo acertar el precio de un fichaje</span></button>
+      <button type="button" data-tutnv="ahorcado"><b>AHORCADO TIKITEXTO</b><span>Letras, fallos y racha</span></button>
     </div>
   </div>
 </div>
@@ -5736,8 +5868,10 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     nvLimpiarTimer();
     nv.sesion++;
     nv.modo = null; nv.enCurso = false;
+    ah.sesion++; ah.activo = false;
     modalSalirNv.hidden = true;
     pantallaNv.hidden = true;
+    pantallaAh.hidden = true;
     pantallaInicio.hidden = false;
     document.title = "TIKITEXTO · Adivina el nombre del día";
     window.scrollTo({ top: 0, behavior: "auto" });
@@ -5759,10 +5893,10 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   function abrirTutNv(modo, obligatorio) {
-    abrirTutorial(obligatorio, modo === "tarjetas" ? TUT_TARJ : TUT_FICH, function () {
+    abrirTutorial(obligatorio, modo === "ahorcado" ? TUT_AH : modo === "tarjetas" ? TUT_TARJ : TUT_FICH, function () {
       nvDatos().tut[modo] = 1;
       guardarJ();
-      const b = $("#nvEmpezar");
+      const b = $(modo === "ahorcado" ? "#ahEmpezar" : "#nvEmpezar");
       if (b) b.focus();
     }, "Novedad");
   }
@@ -6064,6 +6198,374 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     res.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
 
+  /* ============================================================
+     AHORCADO TIKITEXTO · modo especial (sin pistas, 5 fallos)
+     50 de los futbolistas más famosos del mundo. Las letras se
+     comparan sin tildes (A-Z) y los espacios se muestran como huecos.
+     ============================================================ */
+  const AH_FALLOS = 5;          /* fallos permitidos */
+  const AH_PARA_TIKI = 3;       /* victorias seguidas para +1 tikitexto */
+  const AH_JUGADORES = [
+    "Lionel Messi", "Cristiano Ronaldo", "Neymar", "Kylian Mbappé", "Erling Haaland",
+    "Diego Maradona", "Pelé", "Zinedine Zidane", "Ronaldinho", "Andrés Iniesta",
+    "Xavi Hernández", "Luka Modrić", "Karim Benzema", "Robert Lewandowski", "Mohamed Salah",
+    "Kevin De Bruyne", "Vinícius Júnior", "Jude Bellingham", "Lamine Yamal", "Pedri",
+    "Zlatan Ibrahimović", "Thierry Henry", "David Beckham", "Johan Cruyff", "Franz Beckenbauer",
+    "Michel Platini", "Paolo Maldini", "Andrea Pirlo", "Francesco Totti", "Gianluigi Buffon",
+    "Iker Casillas", "Sergio Ramos", "Gerard Piqué", "Carles Puyol", "Raúl González",
+    "Luis Suárez", "Sadio Mané", "Eden Hazard", "Antoine Griezmann", "Paul Pogba",
+    "Harry Kane", "Gareth Bale", "Roberto Carlos", "Cafú", "Kaká",
+    "Roberto Baggio", "Manuel Neuer", "Virgil van Dijk", "Alfredo Di Stéfano", "Ángel Di María"
+  ];
+  const AH_TECLAS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
+  const AH_SVG = '<g class="ah-horca"><path d="M12 128H72M30 128V14H84M30 36L52 14"/></g>' +
+    '<g class="ah-fig"><path class="ah-cuerda" d="M84 14V30"/>' +
+    '<circle class="ah-p ah-p1" pathLength="1" cx="84" cy="40" r="10"/>' +
+    '<path class="ah-p ah-p2" pathLength="1" d="M84 50V88"/>' +
+    '<path class="ah-p ah-p3" pathLength="1" d="M68 76L84 60L100 76"/>' +
+    '<path class="ah-p ah-p4" pathLength="1" d="M84 88L71 114"/>' +
+    '<path class="ah-p ah-p5" pathLength="1" d="M84 88L97 114"/>' +
+    '<path class="ah-x" d="M78.5 35.5l4 4m0-4l-4 4M85.5 35.5l4 4m0-4l-4 4"/></g>';
+
+  const pantallaAh = $("#pantallaAhorcado");
+  const ahCuerpo = $("#ahCuerpo");
+  const ahEstado = $("#ahEstado");
+  let ah = { cola: [], jugador: "", palabras: [], necesarias: null, acertadas: null, usadas: null, fallos: 0, racha: 0, activo: false, fin: false, sesion: 0, esRecord: false, ultimo: "" };
+
+  function ahDatos() {
+    const d = nvDatos();
+    if (typeof d.a !== "number") d.a = 0;
+    return d;
+  }
+  function ahSVG(clase) {
+    const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    s.setAttribute("viewBox", "0 0 120 140");
+    s.setAttribute("aria-hidden", "true");
+    s.setAttribute("class", "ah-svg" + (clase ? " " + clase : ""));
+    s.innerHTML = AH_SVG;
+    return s;
+  }
+  function ahPartes(svg, n) {
+    for (let k = 1; k <= AH_FALLOS; k++) {
+      const p = svg.querySelector(".ah-p" + k);
+      if (p) p.classList.toggle("ah-on", k <= n);
+    }
+  }
+  function ahElegir() {
+    if (!ah.cola.length) {
+      ah.cola = AH_JUGADORES.slice();
+      for (let i = ah.cola.length - 1; i > 0; i--) { const j = nvAzar(i + 1); const t = ah.cola[i]; ah.cola[i] = ah.cola[j]; ah.cola[j] = t; }
+      if (ah.ultimo && ah.cola[ah.cola.length - 1] === ah.ultimo) ah.cola.unshift(ah.cola.pop());
+    }
+    return ah.cola.pop();
+  }
+  function ahTamano(palabras) {
+    const mayor = palabras.reduce(function (m, p) { return Math.max(m, p.length); }, 1);
+    const ancho = Math.min(window.innerWidth - 44, 520);
+    return Math.max(22, Math.min(40, Math.floor((ancho - (mayor - 1) * 5) / mayor)));
+  }
+  function ahMostrarNombre(contenedor, palabras, celdas) {
+    palabras.forEach(function (letras) {
+      const w = tEl("div", "ah-palabra");
+      letras.forEach(function (l) {
+        const c = tEl("span", "ah-cel");
+        c.dataset.l = l;
+        w.appendChild(c);
+        celdas.push(c);
+      });
+      contenedor.appendChild(w);
+    });
+  }
+
+  function ahActualizarEstado() {
+    const d = ahDatos();
+    $("#ahRacha").textContent = ah.racha;
+    $("#ahRecord").textContent = d.a;
+    $("#ahTikis").textContent = perfil().pts;
+    const pips = $("#ahPips");
+    pips.innerHTML = "";
+    const llenos = ah.racha % AH_PARA_TIKI;
+    for (let i = 0; i < AH_PARA_TIKI; i++) pips.appendChild(tEl("span", "nv-pip" + (i < llenos ? " nv-pip--on" : "")));
+    pips.setAttribute("aria-label", llenos + " de " + AH_PARA_TIKI + " para el próximo tikitexto");
+  }
+
+  function irAAhorcado() {
+    pantallaInicio.hidden = true;
+    pantallaJuego.hidden = true;
+    pantallaNv.hidden = true;
+    pantallaAh.hidden = false;
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+
+  function abrirAhorcado() {
+    if (!tieneCuenta()) { mostrarCuenta(); return; }
+    ah.sesion++;
+    ah.activo = false; ah.fin = false; ah.racha = 0;
+    document.title = "TIKITEXTO · AHORCADO TIKITEXTO";
+    irAAhorcado();
+    ahPintarInicio();
+    if (!nvDatos().tut.ahorcado) abrirTutNv("ahorcado", true);
+  }
+
+  function ahPintarInicio() {
+    const d = ahDatos();
+    ahEstado.hidden = true;
+    ahCuerpo.innerHTML = "";
+    const panel = tEl("section", "nv-panel ah-inicio");
+    const dib = tEl("div", "ah-dibujo");
+    dib.appendChild(ahSVG("ah-svg--bucle"));
+    panel.appendChild(dib);
+    panel.appendChild(tEl("p", "nv-panel__etq", "Modo especial"));
+    panel.appendChild(tEl("h2", "nv-panel__titulo ah-arco", "AHORCADO TIKITEXTO"));
+    panel.appendChild(tEl("span", "nv-record", "Tu mejor racha: " + d.a));
+    const lista = tEl("ul", "nv-lista");
+    [
+      "Hay un jugador famoso escondido: cada cuadrado es una letra de su nombre.",
+      "Toca letras del teclado. Si fallas, la letra sale tachada y el muñeco avanza.",
+      "Tienes 5 fallos. No hay pistas.",
+      "⚡ Cada 3 victorias seguidas ganas +1 tikitexto."
+    ].forEach(function (t) { lista.appendChild(tEl("li", "", t)); });
+    panel.appendChild(lista);
+    const b = tEl("button", "boton boton--primario", "¡Empezar!");
+    b.type = "button"; b.id = "ahEmpezar";
+    b.addEventListener("click", ahEmpezar);
+    panel.appendChild(b);
+    ahCuerpo.appendChild(panel);
+  }
+
+  function ahEmpezar() {
+    ah.sesion++;
+    ah.activo = true; ah.racha = 0; ah.esRecord = false;
+    ahEstado.hidden = false;
+    ahSiguiente();
+  }
+
+  function ahSiguiente() {
+    ah.sesion++;
+    const sesion = ah.sesion;
+    ah.jugador = ahElegir();
+    ah.ultimo = ah.jugador;
+    ah.palabras = ah.jugador.split(/\s+/).map(letrasDe).filter(function (l) { return l.length; });
+    ah.necesarias = new Set(); ah.acertadas = new Set(); ah.usadas = new Set();
+    ah.palabras.forEach(function (w) { w.forEach(function (l) { ah.necesarias.add(l); }); });
+    ah.fallos = 0; ah.fin = false;
+    ahActualizarEstado();
+    ahCuerpo.innerHTML = "";
+
+    const juego = tEl("section", "ah-juego"); juego.id = "ahJuego";
+    juego.style.setProperty("--ah-c", ahTamano(ah.palabras) + "px");
+    const dib = tEl("div", "ah-dibujo"); dib.id = "ahDibujo";
+    dib.appendChild(ahSVG());
+    juego.appendChild(dib);
+
+    const fal = tEl("div", "ah-fallos");
+    const ftxt = tEl("span", "", "Fallos: 0 de " + AH_FALLOS); ftxt.id = "ahFallosTxt";
+    ftxt.setAttribute("aria-live", "polite");
+    const vidas = tEl("span", "ah-vidas"); vidas.id = "ahVidas";
+    for (let i = 0; i < AH_FALLOS; i++) vidas.appendChild(tEl("span", "ah-vida"));
+    fal.appendChild(ftxt); fal.appendChild(vidas);
+    juego.appendChild(fal);
+
+    const nombre = tEl("div", "ah-nombre"); nombre.id = "ahNombre";
+    nombre.setAttribute("role", "group");
+    nombre.setAttribute("aria-label", "Nombre oculto");
+    ah.celdas = [];
+    ahMostrarNombre(nombre, ah.palabras, ah.celdas);
+    juego.appendChild(nombre);
+
+    const malas = tEl("div", "ah-malas");
+    malas.appendChild(tEl("p", "ah-malas__etq", "Letras que no están"));
+    const fila = tEl("div", "ah-malas__fila"); fila.id = "ahMalas";
+    fila.appendChild(tEl("span", "ah-malas__vacio", "Aquí irán las letras falladas"));
+    malas.appendChild(fila);
+    juego.appendChild(malas);
+
+    const tec = tEl("div", "ah-teclado"); tec.id = "ahTeclado";
+    tec.setAttribute("role", "group"); tec.setAttribute("aria-label", "Teclado en pantalla");
+    AH_TECLAS.forEach(function (fl) {
+      const f = tEl("div", "ah-teclado__fila");
+      fl.split("").forEach(function (l) {
+        const b = tEl("button", "ah-tecla", l); b.type = "button"; b.dataset.l = l;
+        b.setAttribute("aria-label", "Tecla " + l);
+        b.addEventListener("click", function () { ahLetra(l); });
+        f.appendChild(b);
+      });
+      tec.appendChild(f);
+    });
+    juego.appendChild(tec);
+    const zona = tEl("div", ""); zona.id = "ahResultado"; zona.style.width = "100%";
+    juego.appendChild(zona);
+    ahCuerpo.appendChild(juego);
+    if (ah.sesion !== sesion) return;
+  }
+
+  function ahLetra(l) {
+    if (!ah.activo || ah.fin || ah.usadas.has(l)) return;
+    ah.usadas.add(l);
+    const tecla = $("#ahTeclado") && $("#ahTeclado").querySelector('[data-l="' + l + '"]');
+    if (tecla) { tecla.classList.add("ah-tecla--fuera"); tecla.disabled = true; tecla.setAttribute("aria-hidden", "true"); tecla.tabIndex = -1; }
+    const juego = $("#ahJuego");
+    if (ah.necesarias.has(l)) {
+      ah.acertadas.add(l);
+      let k = 0;
+      ah.celdas.forEach(function (c) {
+        if (c.dataset.l !== l) return;
+        c.textContent = l;
+        c.className = "ah-cel ah-cel--ok";
+        c.style.animationDelay = (k++ * 90) + "ms";
+      });
+      if (ah.acertadas.size === ah.necesarias.size) ahFin(true);
+    } else {
+      ah.fallos++;
+      const fila = $("#ahMalas");
+      const vacio = fila.querySelector(".ah-malas__vacio");
+      if (vacio) vacio.remove();
+      fila.appendChild(tEl("span", "ah-mala", l));
+      ahPartes($("#ahDibujo").querySelector("svg"), ah.fallos);
+      $("#ahFallosTxt").textContent = "Fallos: " + ah.fallos + " de " + AH_FALLOS;
+      Array.prototype.forEach.call($("#ahVidas").children, function (v, i) { v.classList.toggle("ah-vida--perdida", i < ah.fallos); });
+      juego.classList.remove("ah-sacude"); void juego.offsetWidth; juego.classList.add("ah-sacude");
+      TIKI.ajustes.vibrar(30);
+      if (ah.fallos >= AH_FALLOS) ahFin(false);
+    }
+  }
+
+  function ahFin(gana) {
+    ah.fin = true;
+    const sesion = ah.sesion;
+    const d = ahDatos();
+    const juego = $("#ahJuego");
+    let tiki = false;
+    if (gana) {
+      ah.racha++;
+      if (ah.racha > d.a) { d.a = ah.racha; ah.esRecord = true; guardarJ(); }
+      if (ah.racha % AH_PARA_TIKI === 0) tiki = true;
+      juego.classList.add("ah-gana");
+      sonidoVictoria();
+      TIKI.ajustes.vibrar([40, 60, 40]);
+    } else {
+      ah.racha = 0;
+      juego.classList.add("ah-muerto");
+      let k = 0;
+      ah.celdas.forEach(function (c) {
+        if (c.textContent) return;
+        c.textContent = c.dataset.l;
+        c.className = "ah-cel ah-cel--falta";
+        c.style.animationDelay = (k++ * 70) + "ms";
+      });
+      TIKI.ajustes.vibrar([60, 40, 60]);
+    }
+    $("#ahTeclado").style.display = "none";
+    setTimeout(function () {
+      if (ah.sesion !== sesion) return;
+      if (tiki) nvSumarTikitexto();
+      ahActualizarEstado();
+      const res = tEl("div", "ah-res" + (gana ? "" : " ah-res--perdido"));
+      if (gana && ah.esRecord) res.appendChild(tEl("div", "nv-aviso-rec", "🏆 ¡Nuevo récord!"));
+      res.appendChild(tEl("h2", "ah-res__titulo ah-arco", gana ? "¡Salvado!" : "¡Te han colgado!"));
+      res.appendChild(tEl("p", "ah-res__nombre", "Era " + ah.jugador));
+      if (tiki) res.appendChild(tEl("p", "ah-res__tiki", "⚡ +1 tikitexto"));
+      const sig = tEl("button", "boton boton--primario", "Siguiente jugador"); sig.type = "button";
+      sig.addEventListener("click", function () { ahSiguiente(); });
+      const menu = tEl("button", "boton boton--secundario", "Volver al menú"); menu.type = "button";
+      menu.addEventListener("click", salirNovedad);
+      res.appendChild(sig); res.appendChild(menu);
+      $("#ahResultado").appendChild(res);
+      ah.esRecord = false;
+      sig.focus();
+      res.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }, gana ? 900 : 1100);
+  }
+
+  /* Teclado físico */
+  document.addEventListener("keydown", function (e) {
+    if (pantallaAh.hidden || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!modalTutorial.hidden || !modalSalirNv.hidden || !modalTutNv.hidden) return;
+    if (!/^[a-zA-Z]$/.test(e.key)) return;
+    e.preventDefault();
+    ahLetra(e.key.toUpperCase());
+  });
+
+  document.addEventListener("click", function (e) {
+    const o = e.target;
+    if (o.closest && o.closest("[data-ahorcado]")) { abrirAhorcado(); return; }
+    if (o.closest && o.closest("#ahLogo, #ahInicio")) {
+      if (ah.activo && ah.racha > 0 && !ah.fin) modalSalirNv.hidden = false; else salirNovedad();
+      return;
+    }
+    if (o.closest && o.closest("#ahVerTutorial")) { abrirTutNv("ahorcado", false); return; }
+  });
+
+  /* ---------- Tutorial del Ahorcado ---------- */
+  function ahTutBase(cont, opciones) {
+    const o = opciones || {};
+    const r = {};
+    if (o.dibujo) { const d = tEl("div", "ah-t-dib"); r.svg = ahSVG(); d.appendChild(r.svg); cont.appendChild(d); }
+    if (o.malas) { r.malas = tEl("div", "ah-t-malas"); cont.appendChild(r.malas); }
+    if (o.nombre) {
+      r.nombre = tEl("div", "ah-nombre ah-nombre--mini"); r.celdas = [];
+      ahMostrarNombre(r.nombre, [["D", "I"], ["M", "A", "R", "I", "A"]], r.celdas);
+      cont.appendChild(r.nombre);
+    }
+    return r;
+  }
+  function ahTutRellenar(celdas, l) {
+    celdas.forEach(function (c) { if (c.dataset.l === l) { c.textContent = l; c.className = "ah-cel ah-cel--ok"; } });
+  }
+
+  function ahTutEscNombre(cont) {
+    const b = ahTutBase(cont, { dibujo: true, nombre: true });
+    const nota = tEl("p", "ah-t-nota", ""); cont.appendChild(nota);
+    function reiniciar() { b.celdas.forEach(function (c) { c.textContent = ""; c.className = "ah-cel"; }); b.nombre.classList.remove("ah-nombre--hueco"); nota.textContent = ""; }
+    function hueco() { b.nombre.classList.add("ah-nombre--hueco"); nota.textContent = "El hueco grande separa nombre y apellido"; }
+    return { reposo: function () { reiniciar(); hueco(); }, pasos: [
+      [600, reiniciar], [900, hueco], [3200, tNada]
+    ] };
+  }
+
+  function ahTutEscLetras(cont) {
+    const b = ahTutBase(cont, { dibujo: true, malas: true, nombre: true });
+    const teclas = tEl("div", "ah-t-teclas"); cont.appendChild(teclas);
+    const mapa = {};
+    ["A", "X", "I"].forEach(function (l) { const t = tEl("span", "ah-tecla", l); mapa[l] = t; teclas.appendChild(t); });
+    function reiniciar() {
+      b.celdas.forEach(function (c) { c.textContent = ""; c.className = "ah-cel"; });
+      b.malas.innerHTML = ""; ahPartes(b.svg, 0);
+      Object.keys(mapa).forEach(function (l) { mapa[l].className = "ah-tecla"; });
+    }
+    function acierto(l) { mapa[l].className = "ah-tecla ah-tecla--fuera"; ahTutRellenar(b.celdas, l); }
+    function fallo(l) { mapa[l].className = "ah-tecla ah-tecla--fuera"; b.malas.appendChild(tEl("span", "ah-mala", l)); ahPartes(b.svg, 1); }
+    return { reposo: function () { reiniciar(); acierto("A"); fallo("X"); acierto("I"); }, pasos: [
+      [500, reiniciar], [900, function () { acierto("A"); }], [1100, function () { fallo("X"); }], [1100, function () { acierto("I"); }], [2600, tNada]
+    ] };
+  }
+
+  function ahTutEscFallos(cont) {
+    const b = ahTutBase(cont, { dibujo: true });
+    const cnt = tEl("p", "ah-t-nota", ""); cont.appendChild(cnt);
+    const pasos = [[500, function () { ahPartes(b.svg, 0); cont.classList.remove("ah-muerto"); cnt.textContent = "Fallos: 0 de 5"; }]];
+    for (let k = 1; k <= AH_FALLOS; k++) (function (n) {
+      pasos.push([750, function () { ahPartes(b.svg, n); cnt.textContent = "Fallos: " + n + " de 5"; if (n === AH_FALLOS) { cont.classList.add("ah-muerto"); cnt.textContent = "¡Te han colgado!"; } }]);
+    })(k);
+    pasos.push([2400, tNada]);
+    return { reposo: function () { ahPartes(b.svg, AH_FALLOS); cont.classList.add("ah-muerto"); cnt.textContent = "¡Te han colgado!"; }, pasos: pasos };
+  }
+
+  const TUT_AH = [
+    { titulo: "Es el juego del ahorcado",
+      texto: "Hay un jugador famoso escondido. Cada cuadrado es una letra de su nombre, y el hueco grande separa el nombre del apellido.",
+      lista: ["No hay pistas: solo cuentan las letras.", "Son 50 de los futbolistas más famosos del mundo."],
+      escena: ahTutEscNombre },
+    { titulo: "Toca letras para descubrirlo",
+      texto: "Si la letra está en el nombre, se escribe en su sitio. Si no, aparece tachada arriba y el muñeco empieza a dibujarse.",
+      lista: ["Las letras ya usadas desaparecen del teclado.", "También puedes escribir con el teclado del ordenador."],
+      escena: ahTutEscLetras },
+    { titulo: "Solo 5 fallos",
+      texto: "Con el quinto fallo el muñeco queda completo y pierdes. Si descubres el nombre antes, ¡te salvas!",
+      lista: ["⚡ Cada 3 victorias seguidas ganas +1 tikitexto.", "Si pierdes, la racha vuelve a cero, pero puedes seguir jugando."],
+      escena: ahTutEscFallos }
+  ];
+
   /* ---------- Eventos de los modos nuevos ---------- */
   document.addEventListener("click", function (e) {
     const o = e.target;
@@ -6360,6 +6862,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     try { m = new URLSearchParams(location.search).get("modo"); } catch (error) { /* opcional */ }
     if (!m) return;
     try { history.replaceState(null, "", location.pathname + location.hash); } catch (error) { /* opcional */ }
+    if (m === "ahorcado" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirAhorcado(); return; }
     if (MODOS_POR_ID[m] && m !== "diario" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) iniciarPartida(m);
   })();
   window.addEventListener("hashchange", function () {

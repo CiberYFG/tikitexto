@@ -59,3 +59,9 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 ## Ajustes y estadios de EE. UU.
 - Botón ⚙ (`#botonAjustes`) abre el panel de ajustes: idioma, sonido y vibración. Se guardan en `localStorage` `tikitexto:ajustes` (`{sonido,vibracion}`); la API es `TIKI.ajustes` (`sonido()`, `vibracion()`, `vibrar()`). Todo sonido o vibración nuevo debe respetarla.
 - Estadios: zona `us` (10 estadios de EE. UU.) y modo `estadios_us`; `mu` también la incluye. Pistas traducidas en `fuente.txt`.
+
+## Ahorcado TIKITEXTO (modo especial)
+- Tarjeta `.ah-card` en la portada (encima de NOVEDAD), pantalla propia `#pantallaAhorcado`, lógica en el bloque «AHORCADO TIKITEXTO» de `index.html` (`abrirAhorcado`, `ahLetra`, `ahFin`, `TUT_AH`). Enlace directo: `?modo=ahorcado`.
+- 5 fallos, sin pistas, 50 jugadores en `AH_JUGADORES` (nombres con tildes; se juega sobre A–Z; un hueco = espacio entre palabras). Cada 3 victorias seguidas, +1 tikitexto (`AH_PARA_TIKI`). Mejor racha en `perfil().nv.a`; tutorial visto en `perfil().nv.tut.ahorcado`.
+- Título y dibujo «arcoíris» con `filter: hue-rotate` (clases `.ah-arco`, `.ah-svg`); respeta `prefers-reduced-motion`, sonido y vibración de ajustes.
+- Textos nuevos en `i18n/fuente.txt`; tests en `tests/check_site.py` (3k).
