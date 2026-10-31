@@ -5779,7 +5779,9 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     ["Rasmus Højlund", "Atalanta", "Manchester United", 2023, 75, "€", "A"], ["Benjamin Šeško", "RB Leipzig", "Manchester United", 2025, 76.5, "€", "A"],
     ["Victor Osimhen", "Nápoles", "Galatasaray", 2025, 75, "€", "A"]
   ];
-  const NV_MARGEN = 0.10;   /* 10 % de margen para dar por bueno un importe */
+  /* Margen para dar por bueno un importe (en millones, por arriba o por abajo), según lo que costó:
+     hasta 25 → ±4 · de 25 a 50 → ±5 · de 50 a 100 → ±10 · más de 100 → ±15 */
+  function nvMargen(real) { return real <= 25 ? 4 : real <= 50 ? 5 : real <= 100 ? 10 : 15; }
 
   const pantallaNv = $("#pantallaNovedad");
   const nvCuerpo = $("#nvCuerpo");
@@ -5900,7 +5902,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     ] : [
       "Te decimos <b>un jugador y su traspaso</b>. Tú indicas cuánto costó.",
       "Desliza la barra de <b>0 al máximo</b> o toca el cuadro y <b>escribe la cifra exacta</b>.",
-      "No hace falta clavarlo: aceptamos un <b>margen del 10 %</b>.",
+      "No hace falta clavarlo: aceptamos un <b>margen de ±4 a ±15 millones</b>, según el precio.",
       "⚡ <b>Cada 4 aciertos seguidos</b> ganas <b>+1 tikitexto</b>."
     ];
     items.forEach(function (h) { const li = document.createElement("li"); li.innerHTML = h; lista.appendChild(li); });
@@ -6131,7 +6133,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (tu < 0) tu = 0;
     nv.bloqueado = true;
     inp.disabled = true; sl.disabled = true; $("#nvComprobar").hidden = true;
-    const margen = Math.max(real * NV_MARGEN, 0.5);
+    const margen = nvMargen(real);
     const dif = tu - real, pct = dif / real * 100;
     const ok = Math.abs(dif) <= margen + 1e-9;
     const casi = !ok && Math.abs(dif) <= Math.max(real * 0.2, 1);
@@ -6676,7 +6678,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   function tutEscMargen(cont) {
     const esca = tEl("div", "tut-escala");
     esca.appendChild(tEl("div", "tut-escala__base"));
-    const real = 222, max = 250, m = real * NV_MARGEN;
+    const real = 222, max = 250, m = nvMargen(real);
     const banda = tEl("div", "tut-escala__banda");
     banda.style.left = ((real - m) / max * 100) + "%"; banda.style.width = (2 * m / max * 100) + "%";
     esca.appendChild(banda);
@@ -6691,7 +6693,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     function intento(v, ok) {
       mt.className = "tut-escala__marca tut-escala__marca--" + (ok ? "ok" : "mal") + " tut-escala__marca--on";
       mt.firstChild.textContent = v + (ok ? " ✔" : " ✘"); mt.style.left = (v / max * 100) + "%";
-      ver.textContent = ok ? v + " M€: dentro del margen de ±10 %" : v + " M€: demasiado lejos";
+      ver.textContent = ok ? v + " M€: dentro del margen de ±15 M€" : v + " M€: demasiado lejos";
       ver.className = "tut-veredicto tut-veredicto--" + (ok ? "ok" : "mal");
     }
     function reiniciar() { mr.classList.remove("tut-escala__marca--on"); mt.className = "tut-escala__marca tut-escala__marca--tuya"; ver.textContent = ""; ver.className = "tut-veredicto"; }
@@ -6729,7 +6731,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       lista: ["Puedes usar decimales, por ejemplo 7,5."],
       escena: tutEscEscribe },
     { titulo: "Un margen de acierto",
-      texto: "No hace falta clavar la cifra: aceptamos un margen del 10 %. Con 218 millones aciertas un fichaje de 222; con 180, no.",
+      texto: "No hace falta clavar la cifra: aceptamos un margen según el precio: ±4 millones hasta 25, ±5 hasta 50, ±10 hasta 100 y ±15 por encima. Con 218 millones aciertas un fichaje de 222; con 180, no.",
       lista: ["⚡ Cada 4 aciertos seguidos ganas +1 tikitexto.", "Si fallas, la racha vuelve a cero, pero puedes seguir jugando."],
       escena: tutEscMargen }
   ];

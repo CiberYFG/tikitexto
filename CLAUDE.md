@@ -73,3 +73,7 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 - Intro: arranca sola (`.intro--play` en el HTML), dura ~1,5 s, sin sonido ni «Toca para empezar»; un toque la salta; se ve una vez por sesión.
 - Tutorial general: ya no sale al entrar; sale (y se puede cerrar) la primera vez que se toca un juego (`tutorialPendiente`, `PRIMERA_VEZ`, en `iniciarPartida`). Primera visita = solo selector de idioma.
 - Tests: `tests/check_site.py` 3l.
+
+## ¿Cuánto costó? (margen)
+- Margen para dar por bueno un importe, en millones (`nvMargen`): hasta 25 → ±4 · 25-50 → ±5 · 50-100 → ±10 · más de 100 → ±15. Textos del tutorial y del panel actualizados en `fuente.txt`.
+- «¿Quién tiene más tarjetas?» sigue con niveles 1-5 (estimaciones). Pendiente: cifras exactas por jugador (Transfermarkt no es accesible desde las herramientas de la sesión; los agregadores probados dan cifras incoherentes entre sí).
