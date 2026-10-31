@@ -6161,7 +6161,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   });
 })();
 </script>
-<!-- Aviso de consentimiento (cookies y medición). La medición (Cloudflare Web Analytics) solo se carga si la aceptas. -->
+<!-- Aviso informativo (cookies y medición). La medición sin cookies (Cloudflare Web Analytics) está activa salvo que el usuario la desactive. -->
 <style>
 .cmp { position: fixed; left: 0; right: 0; bottom: 0; z-index: 800; display: flex; justify-content: center; padding: 12px; pointer-events: none; }
 .cmp[hidden] { display: none; }
@@ -6181,14 +6181,14 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   <div class="cmp__caja">
     <div id="cmpPrincipal">
       <h2 id="cmpTitulo">Tu privacidad</h2>
-      <p>TIKITEXTO guarda en tu dispositivo lo imprescindible para jugar (tu sesión, estadísticas, partida e idioma). Además, con tu permiso, mide las visitas de forma anónima y agregada. No hay publicidad ni rastreo entre webs. <a href="cookies.html">Más información</a></p>
-      <div class="cmp__fila"><button type="button" id="cmpRechazar">Rechazar</button><button type="button" id="cmpConfig">Configurar</button><button type="button" id="cmpAceptar">Aceptar</button></div>
+      <p>TIKITEXTO guarda en tu dispositivo lo imprescindible para jugar (tu sesión, estadísticas, partida e idioma). Además cuenta las visitas de forma anónima y agregada, sin cookies. No hay publicidad ni rastreo entre webs. Puedes desactivarlo cuando quieras. <a href="cookies.html">Más información</a></p>
+      <div class="cmp__fila"><button type="button" id="cmpRechazar">Desactivar medición</button><button type="button" id="cmpConfig">Configurar</button><button type="button" id="cmpAceptar">Entendido</button></div>
     </div>
     <div id="cmpAjustes" hidden>
       <h2>Configurar cookies</h2>
       <div class="cmp__opcion"><input type="checkbox" checked disabled id="cmpNec"><label for="cmpNec">Almacenamiento necesario<small>Sesión, estadísticas, partida, tema e idioma. Siempre activo: sin él el juego no funciona.</small></label></div>
-      <div class="cmp__opcion"><input type="checkbox" id="cmpMed"><label for="cmpMed">Medición de visitas<small>Estadísticas anónimas y agregadas (Cloudflare Web Analytics, sin cookies).</small></label></div>
-      <div class="cmp__fila"><button type="button" id="cmpGuardar">Guardar elección</button><button type="button" id="cmpTodo">Aceptar</button></div>
+      <div class="cmp__opcion"><input type="checkbox" checked id="cmpMed"><label for="cmpMed">Medición de visitas<small>Estadísticas anónimas y agregadas (Cloudflare Web Analytics, sin cookies). Activa por defecto; puedes desactivarla.</small></label></div>
+      <div class="cmp__fila"><button type="button" id="cmpGuardar">Guardar elección</button><button type="button" id="cmpTodo">Entendido</button></div>
     </div>
   </div>
 </div>
@@ -6217,7 +6217,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
   var c = document.getElementById("cmp"), p = document.getElementById("cmpPrincipal"), a = document.getElementById("cmpAjustes"), m = document.getElementById("cmpMed");
   function mostrar(ajustes) {
-    m.checked = leer() === "si";
+    m.checked = leer() !== "no";
     p.hidden = !!ajustes; a.hidden = !ajustes; c.hidden = false;
     var b = document.getElementById(ajustes ? "cmpGuardar" : "cmpRechazar"); if (b && ajustes) b.focus();
   }
@@ -6235,8 +6235,8 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (t) { e.preventDefault(); mostrar(true); }
   });
   var v = leer();
-  if (v === "si") medir();
-  else if (v === null) {
+  if (v !== "no") medir();
+  if (v === null) {
     var ua = navigator.userAgent || "";
     var idi = true; try { idi = !!localStorage.getItem("tikitexto:idioma"); } catch (e) { /* sin almacenamiento */ }
     if (idi && !/bot|crawl|spider/i.test(ua)) c.hidden = false;
