@@ -1586,7 +1586,8 @@ button.marca:active .marca__icono { transform: scale(.9); }
 .nv-mini { width: 12px; height: 17px; background: linear-gradient(160deg, #ffd75e, #f2a900); border-radius: 3px; transform: rotate(-6deg); box-shadow: 0 2px 5px rgba(0, 0, 0, .22); animation: entrada .35s ease both; }
 .nv-mini:nth-child(even) { transform: rotate(5deg); }
 .nv-mini--roja { background: linear-gradient(160deg, #ff7a7a, #e5484d); }
-.nv-jug__nivel { font-size: .76rem; font-weight: 800; color: var(--texto); }
+.nv-jug__nivel { font-size: .95rem; font-weight: 900; color: var(--texto); }
+.nv-jug__desglose { font-size: .7rem; font-weight: 700; color: var(--texto-suave, var(--texto)); opacity: .8; }
 .nv-jug--mas { border-color: var(--verde); background: linear-gradient(180deg, color-mix(in srgb, var(--verde) 14%, var(--superficie)), var(--superficie)); }
 .nv-jug--ok { border-color: var(--verde); box-shadow: 0 0 0 4px color-mix(in srgb, var(--verde) 35%, transparent), 0 14px 34px rgba(12, 155, 102, .45); transform: scale(1.03); }
 .nv-jug--mal { border-color: #e5484d; background: linear-gradient(180deg, color-mix(in srgb, #e5484d 13%, var(--superficie)), var(--superficie)); box-shadow: 0 0 0 4px rgba(229, 72, 77, .3); animation: sacudir 420ms ease; }
@@ -5712,37 +5713,25 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
      MODOS NOVEDAD · «¿Quién tiene más tarjetas?» y «¿Cuánto costó?»
      ============================================================ */
 
-  /* TARJETAS: [nombre, perfil, nivel, tipo]
-     El nivel (1 = muy pocas … 5 = muchísimas) es una ESTIMACIÓN del total de tarjetas de carrera
-     (amarillas + rojas): 1 < 35 · 2 = 35-70 · 3 = 70-110 · 4 = 110-160 · 5 > 160.
-     Solo se enfrentan jugadores con 2 o más niveles de diferencia, para que un error de un nivel no cambie el resultado.
-     Anclas comprobadas (Planet Football, nov. 2025): Messi 103 amarillas + 4 rojas (nivel 3); Cristiano Ronaldo 162 + 13 (nivel 5).
-     PENDIENTE: verificar el resto con Transfermarkt (no era accesible al crear el modo). */
+  /* TARJETAS: [nombre, perfil, amarillas, rojas, grupo de posición (P portero · D defensa · M medio · F delantero)]
+     Cifras de CARRERA (clubes, copas, competiciones internacionales y selección), sumando las filas «Total» de cada
+     apartado de las fichas de Soccerway (consultadas el 31-10-2026). Excepciones tomadas de Planet Football (nov. 2025):
+     Messi 103 + 4 y Cristiano Ronaldo 162 + 13 (Transfermarkt). Soccerway puede diferir unas pocas tarjetas de otras fuentes
+     y en jugadores con temporadas antiguas incompletas puede quedarse corto: por eso solo se enfrentan jugadores con una
+     diferencia clara (ver nvElegirPar). Descartados por datos dudosos: Benzema, Salah y los veteranos anteriores a 2000. */
   const NV_TARJ = [
-    ["Gennaro Gattuso", "Mediocentro · Italia", 4, "L"], ["Roy Keane", "Mediocentro · Irlanda", 4, "L"], ["Carles Puyol", "Defensa · España", 3, "L"],
-    ["Xavi Hernández", "Mediocentro · España", 3, "L"], ["Andrés Iniesta", "Mediocentro · España", 2, "L"], ["Zinedine Zidane", "Mediocentro · Francia", 3, "L"],
-    ["Paolo Maldini", "Defensa · Italia", 3, "L"], ["Fabio Cannavaro", "Defensa · Italia", 3, "L"], ["Ronaldo Nazário", "Delantero · Brasil", 1, "L"],
-    ["Ronaldinho", "Delantero · Brasil", 2, "L"], ["Kaká", "Mediapunta · Brasil", 1, "L"], ["Iker Casillas", "Portero · España", 1, "L"],
-    ["Gianluigi Buffon", "Portero · Italia", 2, "L"], ["Raúl González", "Delantero · España", 3, "L"], ["David Beckham", "Centrocampista · Inglaterra", 3, "L"],
-    ["Steven Gerrard", "Mediocentro · Inglaterra", 4, "L"], ["Francesco Totti", "Mediapunta · Italia", 3, "L"], ["Andrea Pirlo", "Mediocentro · Italia", 3, "L"],
-    ["Roberto Carlos", "Lateral · Brasil", 4, "L"], ["Patrick Vieira", "Mediocentro · Francia", 4, "L"],
-    ["Sergio Ramos", "Defensa · España", 5, "A"], ["Pepe", "Defensa · Portugal", 5, "A"], ["Cristiano Ronaldo", "Delantero · Portugal", 5, "A"],
-    ["Casemiro", "Mediocentro · Brasil", 4, "A"], ["Sergio Busquets", "Mediocentro · España", 4, "A"], ["Gerard Piqué", "Defensa · España", 4, "A"],
-    ["Dani Carvajal", "Lateral · España", 4, "A"], ["Antonio Rüdiger", "Defensa · Alemania", 4, "A"], ["Luis Suárez", "Delantero · Uruguay", 4, "A"],
-    ["Diego Costa", "Delantero · España", 4, "A"], ["Marcelo", "Lateral · Brasil", 4, "A"], ["Zlatan Ibrahimović", "Delantero · Suecia", 4, "A"],
-    ["Lionel Messi", "Delantero · Argentina", 3, "A"], ["Luka Modrić", "Mediocentro · Croacia", 3, "A"], ["Toni Kroos", "Mediocentro · Alemania", 3, "A"],
-    ["Vinícius Jr.", "Extremo · Brasil", 3, "A"], ["Antoine Griezmann", "Delantero · Francia", 3, "A"], ["Rodri", "Mediocentro · España", 3, "A"],
-    ["Declan Rice", "Mediocentro · Inglaterra", 3, "A"], ["Neymar", "Delantero · Brasil", 3, "A"],
-    ["Karim Benzema", "Delantero · Francia", 2, "A"], ["Robert Lewandowski", "Delantero · Polonia", 2, "A"], ["Harry Kane", "Delantero · Inglaterra", 2, "A"],
-    ["Kylian Mbappé", "Delantero · Francia", 2, "A"], ["Mohamed Salah", "Extremo · Egipto", 2, "A"], ["Kevin De Bruyne", "Mediocentro · Bélgica", 2, "A"],
-    ["Virgil van Dijk", "Defensa · Países Bajos", 2, "A"], ["Eden Hazard", "Extremo · Bélgica", 2, "A"], ["Jude Bellingham", "Mediocentro · Inglaterra", 2, "A"],
-    ["Gareth Bale", "Extremo · Gales", 2, "A"],
-    ["Erling Haaland", "Delantero · Noruega", 1, "A"], ["Manuel Neuer", "Portero · Alemania", 1, "A"], ["Thibaut Courtois", "Portero · Bélgica", 1, "A"],
-    ["Marc-André ter Stegen", "Portero · Alemania", 1, "A"], ["Pedri", "Mediocentro · España", 1, "A"], ["Lamine Yamal", "Extremo · España", 1, "A"],
-    ["Phil Foden", "Extremo · Inglaterra", 1, "A"], ["Bukayo Saka", "Extremo · Inglaterra", 1, "A"], ["Alisson Becker", "Portero · Brasil", 1, "A"],
-    ["Jan Oblak", "Portero · Eslovenia", 1, "A"]
+    ["Manuel Neuer", "Portero · Alemania", 24, 1, "P"], ["Thibaut Courtois", "Portero · Bélgica", 21, 3, "P"], ["Marc-André ter Stegen", "Portero · Alemania", 18, 0, "P"],
+    ["Jan Oblak", "Portero · Eslovenia", 16, 1, "P"], ["Sergio Ramos", "Defensa · España", 284, 29, "D"], ["Pepe", "Defensa · Portugal", 169, 13, "D"],
+    ["Gerard Piqué", "Defensa · España", 172, 10, "D"], ["Dani Carvajal", "Lateral · España", 149, 5, "D"], ["Antonio Rüdiger", "Defensa · Alemania", 103, 7, "D"],
+    ["Carles Puyol", "Defensa · España", 84, 3, "D"], ["Virgil van Dijk", "Defensa · Países Bajos", 79, 7, "D"], ["Sergio Busquets", "Mediocentro · España", 222, 4, "M"],
+    ["Casemiro", "Mediocentro · Brasil", 197, 6, "M"], ["Luka Modrić", "Mediocentro · Croacia", 121, 2, "M"], ["Toni Kroos", "Mediocentro · Alemania", 98, 1, "M"],
+    ["Rodri", "Mediocentro · España", 82, 2, "M"], ["Jude Bellingham", "Mediocentro · Inglaterra", 78, 4, "M"], ["Andrés Iniesta", "Mediocentro · España", 67, 0, "M"],
+    ["Pedri", "Mediocentro · España", 22, 1, "M"], ["Luis Suárez", "Delantero · Uruguay", 196, 3, "F"], ["Neymar", "Delantero · Brasil", 174, 12, "F"],
+    ["Cristiano Ronaldo", "Delantero · Portugal", 162, 13, "F"], ["Zlatan Ibrahimović", "Delantero · Suecia", 139, 14, "F"], ["Diego Costa", "Delantero · España", 137, 8, "F"],
+    ["Lionel Messi", "Delantero · Argentina", 103, 4, "F"], ["Antoine Griezmann", "Delantero · Francia", 97, 2, "F"], ["Kylian Mbappé", "Delantero · Francia", 68, 4, "F"],
+    ["Gareth Bale", "Extremo · Gales", 65, 3, "F"], ["Bukayo Saka", "Extremo · Inglaterra", 36, 0, "F"], ["Eden Hazard", "Extremo · Bélgica", 33, 1, "F"],
+    ["Erling Haaland", "Delantero · Noruega", 34, 0, "F"]
   ];
-  const NV_NIVEL = ["Muy pocas tarjetas", "Pocas tarjetas", "Bastantes tarjetas", "Muchas tarjetas", "Muchísimas tarjetas"];
 
   /* FICHAJES: [nombre, de, a, año, importe (millones), divisa, tipo]
      Fuente: Wikipedia, «List of most expensive association football transfers» (cifras nominales, sin variables)
@@ -5895,7 +5884,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     panel.appendChild(rec);
     const lista = tEl("ul", "nv-lista");
     const items = t ? [
-      "Verás <b>dos jugadores</b>. Toca al que ha recibido <b>más tarjetas</b> (amarillas y rojas) a lo largo de su carrera.",
+      "Verás <b>dos jugadores</b>, a menudo de la misma posición. Toca al que ha recibido <b>más tarjetas</b> (amarillas y rojas) a lo largo de su carrera.",
       "Si aciertas, pasas a la <b>siguiente ronda</b> con otros dos jugadores.",
       "⚡ <b>Cada 5 rondas acertadas</b> ganas <b>+1 tikitexto</b>.",
       "Si te equivocas, <b>se acaba la partida</b>: verás en qué ronda has caído y tu récord."
@@ -5912,7 +5901,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     b.addEventListener("click", nvEmpezar);
     panel.appendChild(b);
     panel.appendChild(tEl("p", "nv-nota", t
-      ? "Los niveles de tarjetas son estimaciones sobre el historial de carrera de cada jugador y pueden no ser exactos."
+      ? "Cifras de carrera (amarillas y rojas, todas las competiciones) según Soccerway. Pueden diferir levemente de otras fuentes."
       : "Importes de traspaso sin variables (Wikipedia y prensa). En épocas anteriores al euro, el importe está en libras (£)."));
     nvCuerpo.appendChild(panel);
   }
@@ -5926,11 +5915,21 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   /* ---------- ¿Quién tiene más tarjetas? ---------- */
+  function nvTotalTarj(j) { return j[2] + j[3]; }
+  /* Un duelo solo es válido si la diferencia es clara (al menos 15 tarjetas y un 25 % del mayor),
+     para que pequeñas discrepancias entre fuentes no cambien quién gana. */
+  function nvParValido(a, b) {
+    const x = nvTotalTarj(a), y = nvTotalTarj(b);
+    return a !== b && Math.abs(x - y) >= Math.max(15, Math.round(Math.max(x, y) * 0.25));
+  }
+  /* La mitad de las rondas enfrentan a jugadores de la misma posición. */
   function nvElegirPar() {
+    const mismo = Math.random() < 0.5;
     let a, b;
-    for (let i = 0; i < 600; i++) {
+    for (let i = 0; i < 800; i++) {
       a = NV_TARJ[nvAzar(NV_TARJ.length)]; b = NV_TARJ[nvAzar(NV_TARJ.length)];
-      if (a === b || Math.abs(a[2] - b[2]) < 2) continue;
+      if (!nvParValido(a, b)) continue;
+      if (i < 600 && mismo !== (a[4] === b[4])) continue;
       if (i < 400 && (nv.ultimos.indexOf(a[0]) >= 0 || nv.ultimos.indexOf(b[0]) >= 0)) continue;
       break;
     }
@@ -5960,12 +5959,10 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       b.type = "button";
       b.appendChild(nvAvatar(j[0]));
       b.appendChild(tEl("span", "nv-jug__nombre", j[0]));
-      b.appendChild(tEl("span", "nv-jug__meta", j[1] + (j[3] === "L" ? " · leyenda" : "")));
+      b.appendChild(tEl("span", "nv-jug__meta", j[1]));
       const res = tEl("span", "nv-jug__res");
-      const minis = tEl("span", "nv-minis");
-      for (let k = 0; k < j[2]; k++) minis.appendChild(tEl("span", "nv-mini" + (k === j[2] - 1 && j[2] === 5 ? " nv-mini--roja" : "")));
-      res.appendChild(minis);
-      res.appendChild(tEl("span", "nv-jug__nivel", NV_NIVEL[j[2] - 1]));
+      res.appendChild(tEl("span", "nv-jug__nivel", nvTotalTarj(j) + " tarjetas"));
+      res.appendChild(tEl("span", "nv-jug__desglose", j[2] + " amarillas · " + j[3] + (j[3] === 1 ? " roja" : " rojas")));
       b.appendChild(res);
       b.addEventListener("click", function () { nvElegirTarjetas(i); });
       duelo.appendChild(b);
@@ -5979,7 +5976,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (nv.bloqueado || !nv.enCurso) return;
     nv.bloqueado = true;
     const a = nv.par[0], b = nv.par[1];
-    const ganador = a[2] > b[2] ? 0 : 1;
+    const ganador = nvTotalTarj(a) > nvTotalTarj(b) ? 0 : 1;
     const ok = idx === ganador;
     const botones = nvCuerpo.querySelectorAll(".nv-jug");
     botones.forEach(function (bt, i) {
@@ -6026,7 +6023,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     });
     panel.appendChild(stats);
     const det = tEl("p", "nv-detalle");
-    det.innerHTML = "<b>" + esc(nv.par[ganador][0]) + "</b> tiene más tarjetas (" + NV_NIVEL[nv.par[ganador][2] - 1].toLowerCase() + ") que <b>" + esc(nv.par[1 - ganador][0]) + "</b> (" + NV_NIVEL[nv.par[1 - ganador][2] - 1].toLowerCase() + ").";
+    det.textContent = nv.par[ganador][0] + " tiene más tarjetas (" + nvTotalTarj(nv.par[ganador]) + ") que " + nv.par[1 - ganador][0] + " (" + nvTotalTarj(nv.par[1 - ganador]) + ").";
     panel.appendChild(det);
     const otra = tEl("button", "boton boton--primario", "Jugar otra vez"); otra.type = "button";
     otra.addEventListener("click", nvEmpezar);
@@ -6710,7 +6707,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   const TUT_TARJ = [
     { titulo: "Dos jugadores, un duelo",
       texto: "En cada ronda te mostramos a dos jugadores. Toca al que creas que ha recibido más tarjetas, amarillas y rojas, a lo largo de su carrera.",
-      lista: ["Al tocar, verás cuántas tarjetas tiene cada uno.", "Hay leyendas históricas y jugadores actuales."],
+      lista: ["Al tocar, verás el número exacto de tarjetas de cada uno.", "Muchas veces serán dos jugadores de la misma posición."],
       escena: tutEscDuelo },
     { titulo: "Cada acierto cuenta",
       texto: "Si aciertas, pasas a la siguiente ronda con otros dos jugadores. La racha no tiene límite.",
