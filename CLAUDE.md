@@ -54,21 +54,22 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 - `icons/og-image.png` (1200×630, propia, sin escudos ni fotos) es la imagen al compartir en redes; va en `og:image`/`twitter:image` (portada, `tools/seo.py`, `tools/curiosidades.py`) con `summary_large_image`.
 - Las páginas y descripciones en inglés dicen «football (soccer)» a propósito, para búsquedas de EE. UU. Mantener el texto natural.
 - Botón «Instalar la app» (`#instalarCaja`/`#instalarApp`): oculto hasta que el navegador lanza `beforeinstallprompt`; sin cookies ni datos. Sus textos están en `fuente.txt`.
-- Al acertar, vibración corta si el móvil la permite y no se pidió «reducir movimiento».
+- **No hay vibración** en ningún sitio (se quitó a petición del titular); no volver a añadirla.
 
 ## Ajustes y estadios de EE. UU.
-- Botón ⚙ (`#botonAjustes`) abre el panel de ajustes: idioma, sonido y vibración. Se guardan en `localStorage` `tikitexto:ajustes` (`{sonido,vibracion}`); la API es `TIKI.ajustes` (`sonido()`, `vibracion()`, `vibrar()`). Todo sonido o vibración nuevo debe respetarla.
+- Botón ⚙ (`#botonAjustes`) abre el panel de ajustes: idioma, sonido y «Mi cuenta». Se guardan en `localStorage` `tikitexto:ajustes` (`{sonido}`); la API es `TIKI.ajustes.sonido()`. Todo sonido nuevo debe respetarla.
 - Estadios: zona `us` (10 estadios de EE. UU.) y modo `estadios_us`; `mu` también la incluye. Pistas traducidas en `fuente.txt`.
 
 ## Ahorcado TIKITEXTO (modo especial)
 - Tarjeta `.ah-card` en la portada (encima de NOVEDAD), pantalla propia `#pantallaAhorcado`, lógica en el bloque «AHORCADO TIKITEXTO» de `index.html` (`abrirAhorcado`, `ahLetra`, `ahFin`, `TUT_AH`). Enlace directo: `?modo=ahorcado`.
 - 5 fallos, sin pistas, 50 jugadores en `AH_JUGADORES` (nombres con tildes; se juega sobre A–Z; un hueco = espacio entre palabras). Cada 3 victorias seguidas, +1 tikitexto (`AH_PARA_TIKI`). Mejor racha en `perfil().nv.a`; tutorial visto en `perfil().nv.tut.ahorcado`.
-- Título y dibujo «arcoíris» con `filter: hue-rotate` (clases `.ah-arco`, `.ah-svg`); respeta `prefers-reduced-motion`, sonido y vibración de ajustes.
+- Título y dibujo «arcoíris» con `filter: hue-rotate` (clases `.ah-arco`, `.ah-svg`); respeta `prefers-reduced-motion` y el sonido de ajustes.
 - Textos nuevos en `i18n/fuente.txt`; tests en `tests/check_site.py` (3k).
 
 ## Invitado, nickname e intro
-- **Sin cuenta se juega como invitado** (perfil local con clave `""`; `esInvitado()`, `tieneCuenta()` es verdadero para invitados). El nickname se pide con `pedirNickname()` cuando el invitado llega a 1, 4 y 10 tikitextos (`NICK_UMBRALES`), desde «Ver ranking» (`#botonNick`) o desde Ajustes. El modal `#modalCuenta` se puede cerrar (X / Esc) para invitados.
+- **Sin cuenta se juega como invitado** (perfil local con clave `""`; `esInvitado()`, `tieneCuenta()` es verdadero para invitados). El nickname se pide una sola vez con `pedirNickname()` tras el primer acierto (`NICK_UMBRALES`), y siempre se puede elegir desde el aviso gris «Estás jugando como invitado» (`#chipInvitado`, lleva a Ajustes), desde «Ver ranking» (`#botonNick`) o desde Ajustes. El modal `#modalCuenta` se puede cerrar (X / Esc) para invitados.
 - Al crear la cuenta, el perfil de invitado se hereda (`aceptarCuenta(..., heredar)`): estadísticas, récords y tikitextos (hasta 10 se envían al servidor con `pend`).
 - **No hay pantalla «guarda tu código»**: el código de recuperación se ve en Ajustes → «Mi cuenta» → «¿Cuál es mi código?» (`TIKI.cuenta`, definido en el script principal) y en el ranking (`#botonCodigo`).
-- Intro: arranca sola (`.intro--play` en el HTML), dura ~1 s, sin sonido ni «Toca para empezar»; un toque la salta; se ve una vez por sesión. Primera visita: tutorial obligatorio (`PRIMERA_VEZ`).
+- Intro: arranca sola (`.intro--play` en el HTML), dura ~1,5 s, sin sonido ni «Toca para empezar»; un toque la salta; se ve una vez por sesión.
+- Tutorial general: ya no sale al entrar; sale (y se puede cerrar) la primera vez que se toca un juego (`tutorialPendiente`, `PRIMERA_VEZ`, en `iniciarPartida`). Primera visita = solo selector de idioma.
 - Tests: `tests/check_site.py` 3l.

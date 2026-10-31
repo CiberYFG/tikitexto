@@ -1374,6 +1374,9 @@ button.marca:active .marca__icono { transform: scale(.9); }
 .cuenta__error { color: #ff6b6b; font-size: .85rem; min-height: 1.2em; margin: 0; }
 
 /* ---------- Intro ---------- */
+.chip-invitado { position: absolute; z-index: 150; top: calc(env(safe-area-inset-top, 0px) + 64px); right: 10px; padding: 3px 10px; font: inherit; font-size: .68rem; font-weight: 600; color: var(--texto-suave); background: transparent; border: 0; border-radius: 99px; opacity: .75; cursor: pointer; }
+.chip-invitado:hover, .chip-invitado:focus-visible { opacity: 1; text-decoration: underline; }
+.chip-invitado[hidden] { display: none; }
 .intro { position: fixed; inset: 0; z-index: 500; display: grid; place-items: center; overflow: hidden; cursor: pointer; color: #fff; background: radial-gradient(900px 620px at 50% 42%, #0f4a37, #070d14 72%); transition: opacity .25s; }
 .intro[hidden] { display: none; }
 .intro--salir { opacity: 0; pointer-events: none; }
@@ -1387,11 +1390,11 @@ button.marca:active .marca__icono { transform: scale(.9); }
 .intro__t { position: absolute; right: -9%; bottom: -11%; width: 40%; aspect-ratio: 1; display: grid; place-items: center; border-radius: 26%; background: #ffc83d; border: 4px solid #fff; color: #2b2000; font-weight: 900; font-size: calc(min(58vw, 260px) * .27); line-height: 1; box-shadow: 0 10px 30px rgba(255, 200, 61, .65); transform: scale(0) rotate(-35deg); }
 .intro__titulo { margin: 0; font-size: clamp(2.2rem, 11vw, 3.6rem); font-weight: 900; letter-spacing: .06em; opacity: 0; }
 .intro__titulo span { background: linear-gradient(90deg, #3ee0a4, #ffc83d); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.intro--play .intro__balon { animation: acercar .5s cubic-bezier(.2, .7, .2, 1) forwards; }
-.intro--play .intro__giro { animation: girar .85s forwards; }
-.intro--play .intro__destello { animation: destello .35s ease-out .5s; }
-.intro--play .intro__t { animation: popT .3s cubic-bezier(.3, 1.9, .5, 1) .5s forwards; }
-.intro--play .intro__titulo { animation: introTitulo .45s ease-out .3s forwards; }
+.intro--play .intro__balon { animation: acercar .75s cubic-bezier(.2, .7, .2, 1) forwards; }
+.intro--play .intro__giro { animation: girar 1.3s forwards; }
+.intro--play .intro__destello { animation: destello .5s ease-out .75s; }
+.intro--play .intro__t { animation: popT .45s cubic-bezier(.3, 1.9, .5, 1) .75s forwards; }
+.intro--play .intro__titulo { animation: introTitulo .65s ease-out .45s forwards; }
 @keyframes acercar { 0% { transform: scale(.1); opacity: 0; } 15% { opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 @keyframes girar { 0% { transform: rotate(0); animation-timing-function: ease-in; } 67% { transform: rotate(720deg); animation-timing-function: cubic-bezier(.05, .7, .2, 1); } 100% { transform: rotate(3240deg); } }
 @keyframes destello { 0% { opacity: .95; transform: scale(.3); } 100% { opacity: 0; transform: scale(1.4); } }
@@ -2306,6 +2309,8 @@ button.marca:active .marca__icono { transform: scale(.9); }
 </div>
 
 
+<button type="button" class="chip-invitado" id="chipInvitado" hidden>Estás jugando como invitado</button>
+
 <div class="intro intro--play" id="intro" role="dialog" aria-label="TIKITEXTO">
   <div class="intro__luces"></div>
   <div class="intro__escena">
@@ -2550,24 +2555,18 @@ button.marca:active .marca__icono { transform: scale(.9); }
   TIKI.abrirSelector = abrirSelector;
 
 
-  /* ---------- Ajustes (sonido y vibración) ---------- */
+  /* ---------- Ajustes (sonido) ---------- */
   var AJ_CLAVE = "tikitexto:ajustes";
   function ajLeer() {
-    try { var o = JSON.parse(localStorage.getItem(AJ_CLAVE) || "{}") || {}; return { sonido: o.sonido !== false, vibracion: o.vibracion !== false }; }
-    catch (e) { return { sonido: true, vibracion: true }; }
+    try { var o = JSON.parse(localStorage.getItem(AJ_CLAVE) || "{}") || {}; return { sonido: o.sonido !== false }; }
+    catch (e) { return { sonido: true }; }
   }
   function ajGuardar(k, v) {
     var o = ajLeer(); o[k] = v;
     try { localStorage.setItem(AJ_CLAVE, JSON.stringify(o)); } catch (e) { /* sin almacenamiento */ }
   }
-  var reducir = function () { return Boolean(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches); };
-  var puedeVibrar = function () { return typeof navigator.vibrate === "function"; };
   TIKI.ajustes = {
-    sonido: function () { return ajLeer().sonido; },
-    vibracion: function () { return ajLeer().vibracion; },
-    vibrar: function (patron) {
-      try { if (puedeVibrar() && ajLeer().vibracion && !reducir()) navigator.vibrate(patron); } catch (e) { /* sin vibración */ }
-    }
+    sonido: function () { return ajLeer().sonido; }
   };
   function pitido() {
     try {
@@ -2604,7 +2603,6 @@ button.marca:active .marca__icono { transform: scale(.9); }
       sw.setAttribute("aria-checked", nuevo ? "true" : "false");
       ajGuardar(clave, nuevo);
       if (nuevo && clave === "sonido") pitido();
-      if (nuevo && clave === "vibracion") { try { navigator.vibrate(60); } catch (e) { /* sin vibración */ } }
     });
     fila.appendChild(txt); fila.appendChild(sw);
     return fila;
@@ -2629,10 +2627,9 @@ button.marca:active .marca__icono { transform: scale(.9); }
       rej.appendChild(b);
     });
     caja.appendChild(tit); caja.appendChild(sec); caja.appendChild(rej);
-    var sec2 = document.createElement("p"); sec2.className = "ajustes__sec"; sec2.style.marginTop = "22px"; sec2.textContent = "Sonido y vibración";
+    var sec2 = document.createElement("p"); sec2.className = "ajustes__sec"; sec2.style.marginTop = "22px"; sec2.textContent = "Sonido";
     caja.appendChild(sec2);
     caja.appendChild(filaAjuste("Sonido", "Fanfarria al acertar", "sonido", true));
-    caja.appendChild(filaAjuste("Vibración", "Vibración corta al acertar y al equivocarte", "vibracion", puedeVibrar()));
     if (TIKI.cuenta) {
       var sec3 = document.createElement("p"); sec3.className = "ajustes__sec"; sec3.style.marginTop = "22px"; sec3.textContent = "Mi cuenta";
       caja.appendChild(sec3);
@@ -4199,6 +4196,8 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     const modo = MODOS_POR_ID[idModo];
     if (!modo) return;
     if (idModo === "diario" && diarioHecho()) { mostrarDiarioHecho(); return; }
+    /* Primera vez que se toca un juego: tutorial general (se puede cerrar y no vuelve a salir) */
+    if (perfil().tutorialPendiente && modalTutorial.hidden) setTimeout(function () { if (modalTutorial.hidden) abrirTutorial(false); }, 300);
 
     cancelarTemporizadores();
     estado.sesion++;
@@ -4355,7 +4354,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   function sacudirFila() {
-    TIKI.ajustes.vibrar(30);
     const celdas = celdasDeFila(estado.fila);
     celdas.forEach(function (celda) { celda.classList.remove("celda--sacudir"); });
     void tablero.offsetWidth; /* reinicia la animación */
@@ -4516,8 +4514,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   function terminarPartida() {
     if (estado.gano) {
       lanzarConfeti();
-      /* Vibración corta al acertar (si el móvil la permite, está activada en Ajustes y no se pidió «reducir movimiento») */
-      TIKI.ajustes.vibrar([40, 60, 40]);
     }
     registrarFin();
     const intentos = estado.intentos.length;
@@ -5044,6 +5040,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     pedir: function () { pedirNickname(true); },
     recuperar: function () { mostrarCuenta(true); }
   };
+  function actualizarInvitado() { const c = $("#chipInvitado"); if (c) c.hidden = !esInvitado(); }
   /* Sin nickname se juega como invitado (perfil local ""); el nickname se pide tras el primer acierto */
   function esInvitado() { return !datosJ.actual; }
   function tieneCuenta() { return esInvitado() || (Boolean(datosJ.actual) && (!ONLINE || perfil().online)); }
@@ -5075,6 +5072,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     datosJ.perfiles[nombre] = p;
     guardarJ();
     pintarTikis();
+    actualizarInvitado();
     try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (error) { /* opcional */ }
     terminarCuenta(Boolean(heredar));
   }
@@ -5087,8 +5085,8 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (!continuar) recuperarPartida();
   }
 
-  /* Pide el nickname tras un acierto (invitados): a los 1, 4 y 10 tikitextos; o cuando se pide a mano */
-  const NICK_UMBRALES = [1, 4, 10];
+  /* Pide el nickname tras un acierto (invitados): al primer acierto; o cuando se pide a mano */
+  const NICK_UMBRALES = [1];
   function pedirNickname(forzar) {
     if (!esInvitado()) return;
     const p = perfil();
@@ -5147,6 +5145,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       borrarPartida();
       irAlInicio();
       cuentaInput.value = "";
+      actualizarInvitado();
       mostrarAviso("Tu cuenta se ha eliminado");
     });
   }
@@ -5275,7 +5274,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     try { visto = Boolean(sessionStorage.getItem("tikitexto:intro")); } catch (error) { /* sin almacenamiento */ }
     if (reducir || visto) { intro.hidden = true; return; }
     introActiva = true;
-    introTimer = setTimeout(cerrarIntro, 950);
+    introTimer = setTimeout(cerrarIntro, 1450);
   }
 
   function cerrarIntro() {
@@ -6406,7 +6405,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       $("#ahFallosTxt").textContent = "Fallos: " + ah.fallos + " de " + AH_FALLOS;
       Array.prototype.forEach.call($("#ahVidas").children, function (v, i) { v.classList.toggle("ah-vida--perdida", i < ah.fallos); });
       juego.classList.remove("ah-sacude"); void juego.offsetWidth; juego.classList.add("ah-sacude");
-      TIKI.ajustes.vibrar(30);
       if (ah.fallos >= AH_FALLOS) ahFin(false);
     }
   }
@@ -6423,7 +6421,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       if (ah.racha % AH_PARA_TIKI === 0) tiki = true;
       juego.classList.add("ah-gana");
       sonidoVictoria();
-      TIKI.ajustes.vibrar([40, 60, 40]);
     } else {
       ah.racha = 0;
       juego.classList.add("ah-muerto");
@@ -6434,7 +6431,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
         c.className = "ah-cel ah-cel--falta";
         c.style.animationDelay = (k++ * 70) + "ms";
       });
-      TIKI.ajustes.vibrar([60, 40, 60]);
     }
     $("#ahTeclado").style.display = "none";
     setTimeout(function () {
@@ -6820,6 +6816,8 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   });
 
   prepararIntro();
+  actualizarInvitado();
+  $("#chipInvitado").addEventListener("click", function () { if (TIKI.abrirAjustes) TIKI.abrirAjustes(); });
   if (PRIMERA_VEZ && esInvitado()) { perfil().tutorialPendiente = true; guardarJ(); }
   if (tieneCuenta()) {
     enviarPend();
@@ -6836,7 +6834,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   if (tieneCuenta()) {
     const pendiente = Boolean(perfil().tutorialPendiente);
     if (location.hash === "#tutorial") { try { history.replaceState(null, "", location.pathname + location.search); } catch (error) { /* opcional */ } }
-    if (pendiente || location.hash === "#tutorial") abrirTutorial(pendiente);
+    if (location.hash === "#tutorial") abrirTutorial(false);
   }
   /* Enlace directo a un modo (?modo=jugadores), usado por las páginas de búsqueda */
   (function () {
