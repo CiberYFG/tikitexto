@@ -16,12 +16,13 @@ for l in open(os.path.join(RAIZ, "i18n", "fuente.txt"), encoding="utf-8"):
     if len(q) == 6 and not l.startswith("#") and q[0] not in ("P", "N"): D[q[0]] = dict(zip(LANGS[1:], q[1:]))
 def T(clave, lang): return clave if lang == "es" else D[clave][lang]
 
-FAQ_CLAVES = ["¿Cómo se juega a TIKITEXTO?", "¿Es gratis? ¿Hay que registrarse?", "¿Cada cuánto hay un reto nuevo?", "¿En qué idiomas está disponible?", "¿Se puede instalar en el móvil?"]
+FAQ_CLAVES = ["¿Cómo se juega a TIKITEXTO?", "¿Es gratis? ¿Hay que registrarse?", "¿Cada cuánto hay un reto nuevo?", "¿En qué idiomas está disponible?", "¿Se puede instalar en el móvil?", "¿Solo es un juego?"]
 FAQ_RESP = ["Escribe un nombre con el mismo número de letras que las casillas y pulsa Intro. Verde: letra bien colocada; amarillo: está en otra posición; gris: no está en el nombre. Tienes 6 intentos.",
             "Es gratis y no pide correo ni contraseña: solo eliges un nickname para el ranking mundial. Se guarda un código de recuperación por si cambias de dispositivo.",
             "El Tikitexto diario cambia cada día y es el mismo para todo el mundo. Los demás modos puedes jugarlos tantas veces como quieras.",
             "En español, inglés, portugués, francés, italiano y alemán.",
-            "Sí. Es una app web (PWA): desde el navegador, elige «Añadir a la pantalla de inicio»."]
+            "Sí. Es una app web (PWA): desde el navegador, elige «Añadir a la pantalla de inicio».",
+            "No. Además del juego diario, TIKITEXTO tiene una sección de curiosidades del fútbol con historia, datos y estadísticas: los campeones de la Champions y del Mundial, cómo se fundaron las principales ligas y cómo nacieron los trofeos más importantes."]
 
 # ---- textos por idioma de las páginas de idioma ----
 UI = {
@@ -164,7 +165,7 @@ for lang in LANGS[1:]:
     L = LANDING[lang]; u = UI[lang]
     modos = "".join('<li><a href="../?lang=%s&modo=%s">%s</a></li>' % (lang, m, esc(T(n, lang))) for n, m in MODOS_LISTA)
     bloques = "<h2>%s</h2><ul class=\"g\">%s</ul>" % (esc(u["modos"]), modos)
-    faq = [(T(FAQ_CLAVES[i], lang), T(FAQ_RESP[i], lang)) for i in range(5)]
+    faq = [(T(FAQ_CLAVES[i], lang), T(FAQ_RESP[i], lang)) for i in range(6)]
     escribir(lang, pagina(lang, lang + "/", L["titulo"], L["desc"], L["h1"], L["lead"], None, bloques, faq, alternates(), 1))
     urls.append((lang + "/", lang))
 # páginas de modo (español)
