@@ -21,6 +21,9 @@ Web: https://tikitexto.com · Repositorio: CiberYFG/tikitexto · Alojamiento: Gi
 7. Seguridad: `index.html`, páginas legales y `tools/seo.py` llevan una meta CSP (+ referrer). Si se añade un dominio externo (scripts, conexiones), ampliar la CSP en esos tres sitios. Los textos del banner están en `i18n/fuente.txt`.
 6. No subir secretos. La URL y la clave **pública** (publishable) de Supabase están en `index.html` a propósito; la `service_role` jamás.
 
+## Curiosidades (contenido)
+- `tools/curiosidades.py` genera `curiosidades/` (índice, `campeones/`, `ligas/`, `trofeos/`): solo español, ilustraciones SVG propias (sin fotos ni escudos). No editar a mano esos `index.html`; los datos están en el script. Tras cambiarlo: ejecutarlo y luego `tools/seo.py` (sitemap). Revisar siempre los datos con fuentes oficiales antes de publicar.
+
 ## Ranking (Supabase)
 - Tabla `jugadores` con RLS sin políticas; todo pasa por funciones RPC (`reclamar_nombre`, `registrar_acierto`, `ranking_top`, `recuperar_cuenta`, `eliminar_cuenta`).
 - El SQL (`ranking-supabase.sql`) **no está en el repositorio**: lo guarda el titular. Pedirlo antes de tocar el servidor; cualquier cambio de SQL lo ejecuta él en Supabase → SQL Editor → Run.
