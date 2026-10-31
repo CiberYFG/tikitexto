@@ -1385,6 +1385,78 @@ button.marca:active .marca__icono { transform: scale(.9); }
 .legal-nota, .stats__pie { text-align: center; font-size: .78rem; color: var(--texto-suave); margin: 10px 0 0; }
 .enlace--peligro { color: #ff6b6b; }
 .cuenta-atras { font-size: 2.6rem; font-weight: 900; text-align: center; margin: 12px 0 18px; font-variant-numeric: tabular-nums; background: var(--degradado); -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* ---------- Tutorial interactivo ---------- */
+#modalTutorial { z-index: 350; }
+#modalTutorial .modal__velo { background: rgba(5, 10, 16, .84); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.tut { max-width: 440px; }
+.tut__escena { display: grid; place-items: center; align-content: center; gap: 10px; min-height: 280px; margin: 14px 0 8px; padding: 14px 10px; background: var(--superficie-2); border: 1px solid var(--borde); border-radius: 18px; overflow: hidden; }
+.tut .modal__titulo { outline: none; padding-right: 30px; }
+.tut__lista { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 7px; }
+.tut__lista li { position: relative; padding-left: 20px; font-size: .84rem; line-height: 1.45; color: var(--texto-suave); }
+.tut__lista li::before { content: ""; position: absolute; left: 3px; top: .5em; width: 8px; height: 8px; border-radius: 50%; background: var(--acento); }
+.tut__puntos { display: flex; justify-content: center; gap: 8px; margin: 16px 0 4px; }
+.tut__punto { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 99px; background: var(--borde-fuerte); cursor: pointer; transition: width .25s, background .25s; }
+.tut__punto[aria-current="step"] { width: 26px; background: var(--acento); }
+.tut__nav { position: sticky; bottom: -18px; display: flex; gap: 10px; margin: 8px -20px -18px; padding: 12px 20px 18px; background: var(--superficie); }
+.tut__nav .boton { margin: 0; width: auto; flex: 1; }
+.tut__nav #tutAtras { flex: 0 0 auto; padding-left: 18px; padding-right: 18px; }
+
+.tut-fila { display: flex; gap: 5px; justify-content: center; }
+.tut-tablero { display: grid; gap: 5px; }
+.tut-celda { display: grid; place-items: center; width: 34px; height: 34px; font-size: 1rem; font-weight: 900; color: var(--texto); background: var(--superficie); border: 2px solid var(--borde-fuerte); border-radius: 10px; transition: background .15s, border-color .15s, transform .12s; }
+.tut-celda--rellena { border-color: var(--acento); transform: scale(1.06); }
+.tut-celda--giro { animation: tutGiro .5s ease; }
+.tut-celda--v { color: var(--verde-texto); background: linear-gradient(160deg, #1ed08a, #0c9b66); border-color: transparent; transform: none; }
+.tut-celda--a { color: var(--amarillo-texto); background: linear-gradient(160deg, #ffd75e, #f2a900); border-color: transparent; transform: none; }
+.tut-celda--g { color: var(--ausente-texto); background: var(--ausente); border-color: transparent; transform: none; }
+.tut-estado { min-height: 1.3em; margin: 0; font-size: .8rem; font-weight: 700; color: var(--texto-suave); text-align: center; transition: color .2s; }
+.tut-estado--ok { color: var(--verde); }
+@keyframes tutGiro { 0% { transform: rotateX(0); } 50% { transform: rotateX(90deg); } 100% { transform: rotateX(0); } }
+
+.tut-leyenda { display: grid; gap: 7px; width: 100%; max-width: 300px; margin: 0; padding: 0; list-style: none; }
+.tut-leyenda__item { display: flex; align-items: center; gap: 10px; padding: 7px 10px; font-size: .82rem; font-weight: 600; color: var(--texto-suave); border: 2px solid transparent; border-radius: 12px; opacity: .45; transition: opacity .3s, border-color .3s, background .3s; }
+.tut-leyenda__item--on { opacity: 1; color: var(--texto); border-color: var(--borde-fuerte); background: var(--superficie); }
+.tut-leyenda__item .tut-celda { width: 26px; height: 26px; font-size: .8rem; border-radius: 8px; flex: none; }
+
+.tut-teclado { display: grid; gap: 5px; justify-items: center; width: 100%; }
+.tut-teclas { display: flex; gap: 3px; justify-content: center; }
+.tut-tecla { display: grid; place-items: center; min-width: 22px; height: 30px; padding: 0 4px; font-size: .68rem; font-weight: 800; color: var(--texto); background: var(--superficie); border: 1px solid var(--borde-fuerte); border-radius: 7px; box-shadow: 0 2px 0 var(--borde-fuerte); transition: background .2s, transform .1s; }
+.tut-tecla--ancha { min-width: 38px; }
+.tut-tecla--on { transform: translateY(2px); box-shadow: none; background: var(--acento-suave); }
+.tut-tecla--v { color: var(--verde-texto); background: var(--verde); border-color: transparent; }
+.tut-tecla--a { color: var(--amarillo-texto); background: var(--amarillo); border-color: transparent; }
+.tut-tecla--g { color: var(--ausente-texto); background: var(--ausente); border-color: transparent; }
+
+.tut-barra { display: flex; justify-content: flex-end; width: 100%; max-width: 300px; }
+.tut-boton-pista { padding: 7px 16px; font-size: .78rem; font-weight: 800; color: var(--texto); background: var(--superficie); border: 1px solid var(--borde-fuerte); border-radius: 14px; transition: transform .15s, background .2s, color .2s; }
+.tut-boton-pista--on { transform: scale(.94); color: var(--amarillo-texto); background: var(--amarillo); border-color: transparent; }
+.tut-pista { width: 100%; max-width: 300px; padding: 10px 12px; font-size: .8rem; color: var(--texto); background: var(--superficie); border: 1px solid var(--borde); border-radius: 14px; opacity: 0; transform: translateY(-6px); transition: opacity .3s, transform .3s; }
+.tut-pista--ver { opacity: 1; transform: none; }
+.tut-pista__etiqueta { display: block; margin-bottom: 2px; font-size: .6rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; color: var(--texto-suave); }
+.tut-pista__letras { display: flex; gap: 5px; margin-top: 8px; }
+.tut-pl { display: grid; place-items: center; width: 28px; height: 32px; font-weight: 800; color: #fff; border: 2px dashed var(--borde-fuerte); border-radius: 9px; transition: all .2s; }
+.tut-pl--ok { background: var(--verde); border: 2px solid transparent; animation: entrada .3s; }
+
+.tut-contador { font-family: var(--fuente-titulo); font-size: 2.2rem; font-weight: 900; letter-spacing: -.03em; }
+.tut-pop { margin: 0; padding: 7px 18px; font-size: .9rem; font-weight: 900; color: #2b2000; white-space: nowrap; background: linear-gradient(90deg, #ffc83d, #ff8a3d); border-radius: 99px; box-shadow: 0 0 26px rgba(255, 200, 61, .7); opacity: 0; transform: scale(.5); }
+.tut-pop--ver { animation: tutPop 1.2s ease forwards; }
+@keyframes tutPop { 0% { opacity: 0; transform: scale(.5); } 20% { opacity: 1; transform: scale(1.12); } 35% { transform: scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: scale(1) translateY(-6px); } }
+.tut-rank { display: grid; gap: 6px; width: 100%; max-width: 280px; margin: 0; padding: 0; list-style: none; }
+.tut-rank li { display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 6px; padding: 7px 12px; font-size: .84rem; background: var(--superficie); border: 1px solid var(--borde); border-radius: 12px; }
+.tut-rank li em { font-style: normal; font-weight: 700; }
+.tut-rank li b { font-weight: 800; }
+.tut-rank .tut-rank--yo { border-color: var(--acento); background: var(--acento-suave); }
+.tut-rank .tut-rank--sube { animation: entrada .45s; }
+
+@media (max-height: 700px) {
+  .tut__escena { min-height: 240px; padding: 10px; }
+  .tut-celda { width: 30px; height: 30px; font-size: .92rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tut-celda--giro, .tut-pop--ver, .tut-rank .tut-rank--sube, .tut-pl--ok { animation: none; }
+  .tut-pop--ver { opacity: 1; transform: none; }
+}
+.pie-legal button { padding: 0; font: inherit; color: var(--texto-suave); text-decoration: underline; background: none; border: 0; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -1453,7 +1525,7 @@ button.marca:active .marca__icono { transform: scale(.9); }
       </div>
     </div>
 
-    <nav class="pie-legal" aria-label="Información legal"><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a><a href="accesibilidad.html">Accesibilidad</a><a href="cookies.html#configurar">Configurar cookies</a></nav>
+    <nav class="pie-legal" aria-label="Información legal"><button type="button" id="abrirTutorial">Tutorial: ¿cómo se juega?</button><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a><a href="accesibilidad.html">Accesibilidad</a><a href="cookies.html#configurar">Configurar cookies</a></nav>
   </main>
 
   <footer class="inicio__pie">
@@ -1634,6 +1706,23 @@ button.marca:active .marca__icono { transform: scale(.9); }
       <div class="codigo" id="codigoTexto"></div>
       <button type="button" class="boton boton--secundario" id="codigoCopiar">Copiar código</button>
       <button type="button" class="boton boton--primario" id="codigoOk">Lo he guardado, ¡a jugar!</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalTutorial" role="dialog" aria-modal="true" aria-labelledby="tutTitulo" hidden>
+  <div class="modal__velo" id="tutVelo"></div>
+  <div class="modal__caja tut">
+    <button type="button" class="modal__cerrar" id="tutCerrar" aria-label="Cerrar tutorial" hidden>✕</button>
+    <p class="modal__etiqueta" id="tutEtiqueta">Tutorial</p>
+    <h2 class="modal__titulo" id="tutTitulo" tabindex="-1"></h2>
+    <div class="tut__escena" id="tutEscena" aria-hidden="true"></div>
+    <p class="modal__texto" id="tutTexto" aria-live="polite"></p>
+    <ul class="tut__lista" id="tutLista"></ul>
+    <div class="tut__puntos" id="tutPuntos"></div>
+    <div class="tut__nav">
+      <button type="button" class="boton boton--secundario" id="tutAtras">Anterior</button>
+      <button type="button" class="boton boton--primario" id="tutSiguiente">Siguiente</button>
     </div>
   </div>
 </div>
@@ -3964,9 +4053,10 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     setTimeout(function () { if (!introActiva) cuentaInput.focus(); }, 80);
   }
 
-  function aceptarCuenta(nombre, token, pts, puesto, conCodigo) {
+  function aceptarCuenta(nombre, token, pts, puesto, conCodigo, nueva) {
     const p = nuevoPerfil();
     p.token = token; p.online = ONLINE; p.pts = pts; p.puesto = puesto || 0;
+    if (nueva) p.tutorialPendiente = true;
     datosJ = { actual: nombre, perfiles: {} };
     datosJ.perfiles[nombre] = p;
     guardarJ();
@@ -3989,15 +4079,16 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     mostrarAviso("¡Bienvenido, " + datosJ.actual + "!");
     enviarPend();
     recuperarPartida();
+    if (perfil() && perfil().tutorialPendiente) abrirTutorial(true);
   }
 
   /* Crea la cuenta del dispositivo; el nombre es único en todo el mundo */
   function crearCuenta(nombre) {
     const token = nuevoToken();
-    if (!ONLINE) { aceptarCuenta(nombre, token, 0, 0, false); return Promise.resolve(); }
+    if (!ONLINE) { aceptarCuenta(nombre, token, 0, 0, false, true); return Promise.resolve(); }
     return api("reclamar_nombre", { p_nombre: nombre, p_token: token }).then(function (r) {
       if (r.estado !== "ok") throw new Error(r.estado);
-      aceptarCuenta(nombre, token, r.pts, r.puesto, true);
+      aceptarCuenta(nombre, token, r.pts, r.puesto, true, true);
     });
   }
 
@@ -4392,6 +4483,345 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   aplicarTema(document.documentElement.dataset.tema || "claro");
   pintarInicio();
   pintarTikis();
+  /* ============================================================
+     TUTORIAL INTERACTIVO
+     Obligatorio la primera vez (al crear la cuenta); después, solo
+     desde el enlace del pie de página.
+     ============================================================ */
+  const modalTutorial = $("#modalTutorial");
+  const tutEscena = $("#tutEscena");
+  const tutSiguiente = $("#tutSiguiente");
+  const tutAtras = $("#tutAtras");
+  const TUT_REDUCIR = Boolean(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+  let tutPaso = 0, tutObligatorio = false, tutCancelar = null, tutFocoPrevio = null;
+
+  function tEl(etiqueta, clase, texto) {
+    const e = document.createElement(etiqueta);
+    if (clase) e.className = clase;
+    if (texto !== undefined) e.textContent = texto;
+    return e;
+  }
+  function tFila(palabra) {
+    const el = tEl("div", "tut-fila"), celdas = [];
+    palabra.split("").forEach(function (letra) {
+      const c = tEl("span", "tut-celda");
+      c.dataset.l = letra;
+      el.appendChild(c);
+      celdas.push(c);
+    });
+    return { el: el, celdas: celdas };
+  }
+  function tLimpiar(c) { c.className = "tut-celda"; c.textContent = ""; }
+  function tEscribir(c) { c.textContent = c.dataset.l; c.className = "tut-celda tut-celda--rellena"; }
+  function tColor(c, tipo) { c.textContent = c.dataset.l; c.className = "tut-celda tut-celda--" + tipo; }
+  function tRevelar(c, tipo, retraso) {
+    setTimeout(function () {
+      c.classList.add("tut-celda--giro");
+      setTimeout(function () { tColor(c, tipo); c.classList.add("tut-celda--giro"); }, 250);
+    }, retraso || 0);
+  }
+  function tNada() {}
+
+  /* Línea de tiempo: [espera en ms, acción]. Se repite hasta cancelarla. */
+  function tutLinea(pasos) {
+    let vivo = true, timer = 0, i = 0;
+    function siguiente() {
+      if (!vivo) return;
+      if (i >= pasos.length) i = 0;
+      const p = pasos[i++];
+      timer = setTimeout(function () { if (!vivo) return; p[1](); siguiente(); }, p[0]);
+    }
+    siguiente();
+    return function () { vivo = false; clearTimeout(timer); };
+  }
+
+  const TUT_INTENTO = "PIQUE", TUT_META = "PEDRI", TUT_COLORES = ["v", "a", "g", "g", "a"];
+
+  function tutEscObjetivo(cont) {
+    const tablero = tEl("div", "tut-tablero"), filas = [];
+    for (let k = 0; k < 6; k++) {
+      const f = tFila(k === 0 ? TUT_INTENTO : k === 1 ? TUT_META : "     ");
+      tablero.appendChild(f.el);
+      filas.push(f);
+    }
+    const estado = tEl("p", "tut-estado", "Intento 1 de 6");
+    cont.appendChild(tablero);
+    cont.appendChild(estado);
+
+    function reiniciar() {
+      filas.forEach(function (f) { f.celdas.forEach(tLimpiar); });
+      estado.textContent = "Intento 1 de 6";
+      estado.classList.remove("tut-estado--ok");
+    }
+    function fin() {
+      estado.textContent = "¡Lo has adivinado en 2 intentos!";
+      estado.classList.add("tut-estado--ok");
+    }
+    function reposo() {
+      filas[0].celdas.forEach(function (c, k) { tColor(c, TUT_COLORES[k]); });
+      filas[1].celdas.forEach(function (c) { tColor(c, "v"); });
+      fin();
+    }
+    const pasos = [[400, reiniciar]];
+    filas[0].celdas.forEach(function (c, k) { pasos.push([k === 0 ? 500 : 320, function () { tEscribir(c); }]); });
+    pasos.push([650, function () { filas[0].celdas.forEach(function (c, k) { tRevelar(c, TUT_COLORES[k], k * 170); }); }]);
+    pasos.push([1700, function () { estado.textContent = "Intento 2 de 6"; }]);
+    filas[1].celdas.forEach(function (c, k) { pasos.push([k === 0 ? 400 : 320, function () { tEscribir(c); }]); });
+    pasos.push([650, function () { filas[1].celdas.forEach(function (c, k) { tRevelar(c, "v", k * 170); }); }]);
+    pasos.push([1500, fin]);
+    pasos.push([3000, tNada]);
+    return { reposo: reposo, pasos: pasos };
+  }
+
+  function tutEscColores(cont) {
+    const fila = tFila(TUT_INTENTO);
+    const lista = tEl("ul", "tut-leyenda");
+    const defs = [["v", "P", "Letra y posición correctas"], ["a", "I", "Letra en otra casilla"], ["g", "Q", "Letra que no está"]];
+    const items = defs.map(function (d) {
+      const li = tEl("li", "tut-leyenda__item");
+      const m = tEl("span", "tut-celda tut-celda--" + d[0], d[1]);
+      li.appendChild(m);
+      li.appendChild(tEl("span", "", d[2]));
+      lista.appendChild(li);
+      return li;
+    });
+    cont.appendChild(fila.el);
+    cont.appendChild(lista);
+
+    function activar(n) { items[n].classList.add("tut-leyenda__item--on"); }
+    function reiniciar() {
+      fila.celdas.forEach(function (c) { tEscribir(c); c.classList.remove("tut-celda--rellena"); });
+      items.forEach(function (li) { li.classList.remove("tut-leyenda__item--on"); });
+    }
+    function reposo() {
+      fila.celdas.forEach(function (c, k) { tColor(c, TUT_COLORES[k]); });
+      items.forEach(function (li) { li.classList.add("tut-leyenda__item--on"); });
+    }
+    const c = fila.celdas;
+    return { reposo: reposo, pasos: [
+      [400, reiniciar],
+      [800, function () { tRevelar(c[0], "v"); activar(0); }],
+      [1500, function () { tRevelar(c[1], "a"); tRevelar(c[4], "a", 150); activar(1); }],
+      [1500, function () { tRevelar(c[2], "g"); tRevelar(c[3], "g", 150); activar(2); }],
+      [3200, tNada]
+    ] };
+  }
+
+  function tutEscTeclado(cont) {
+    const fila = tFila(TUT_INTENTO);
+    const teclado = tEl("div", "tut-teclado"), teclas = {};
+    [["Q","W","E","R","T","Y","U","I","O","P"], ["A","S","D","F","G","H","J","K","L"], ["Enviar","Z","X","C","V","B","N","M","⌫"]].forEach(function (fl) {
+      const f = tEl("div", "tut-teclas");
+      fl.forEach(function (l) {
+        const t = tEl("span", "tut-tecla" + (l.length > 1 ? " tut-tecla--ancha" : ""), l);
+        teclas[l] = t;
+        f.appendChild(t);
+      });
+      teclado.appendChild(f);
+    });
+    cont.appendChild(fila.el);
+    cont.appendChild(teclado);
+
+    function colorearTeclas() {
+      TUT_INTENTO.split("").forEach(function (l, k) { teclas[l].className = "tut-tecla tut-tecla--" + TUT_COLORES[k]; });
+    }
+    function reiniciar() {
+      fila.celdas.forEach(tLimpiar);
+      Object.keys(teclas).forEach(function (l) { teclas[l].className = "tut-tecla" + (l.length > 1 ? " tut-tecla--ancha" : ""); });
+    }
+    function reposo() {
+      fila.celdas.forEach(function (c, k) { tColor(c, TUT_COLORES[k]); });
+      colorearTeclas();
+    }
+    const pasos = [[400, reiniciar]];
+    fila.celdas.forEach(function (c, k) {
+      pasos.push([k === 0 ? 500 : 380, function () {
+        tEscribir(c);
+        const t = teclas[c.dataset.l];
+        t.classList.add("tut-tecla--on");
+        setTimeout(function () { t.classList.remove("tut-tecla--on"); }, 180);
+      }]);
+    });
+    pasos.push([450, function () { teclas["Enviar"].classList.add("tut-tecla--on"); setTimeout(function () { teclas["Enviar"].classList.remove("tut-tecla--on"); }, 180); }]);
+    pasos.push([300, function () { fila.celdas.forEach(function (c, k) { tRevelar(c, TUT_COLORES[k], k * 150); }); }]);
+    pasos.push([900, colorearTeclas]);
+    pasos.push([3200, tNada]);
+    return { reposo: reposo, pasos: pasos };
+  }
+
+  function tutEscPista(cont) {
+    const fila = tFila(TUT_INTENTO);
+    const barra = tEl("div", "tut-barra");
+    const boton = tEl("span", "tut-boton-pista", "Pista");
+    barra.appendChild(boton);
+    const caja = tEl("div", "tut-pista");
+    caja.appendChild(tEl("span", "tut-pista__etiqueta", "Jugador · 5 letras"));
+    caja.appendChild(tEl("span", "", "Centrocampista español"));
+    const letras = tEl("div", "tut-pista__letras"), ranuras = [];
+    for (let k = 0; k < 5; k++) { const r = tEl("span", "tut-pl"); letras.appendChild(r); ranuras.push(r); }
+    caja.appendChild(letras);
+    cont.appendChild(fila.el);
+    cont.appendChild(barra);
+    cont.appendChild(caja);
+
+    function pintarFila() { fila.celdas.forEach(function (c, k) { tColor(c, TUT_COLORES[k]); }); }
+    function reiniciar() {
+      pintarFila();
+      boton.className = "tut-boton-pista";
+      caja.className = "tut-pista";
+      ranuras[0].className = "tut-pl"; ranuras[0].textContent = "";
+    }
+    function mostrar() { boton.classList.add("tut-boton-pista--on"); caja.classList.add("tut-pista--ver"); }
+    function acierto() { ranuras[0].className = "tut-pl tut-pl--ok"; ranuras[0].textContent = "P"; }
+    function reposo() { pintarFila(); mostrar(); acierto(); }
+    return { reposo: reposo, pasos: [
+      [400, reiniciar],
+      [1000, mostrar],
+      [1000, acierto],
+      [3600, tNada]
+    ] };
+  }
+
+  function tutEscPuntos(cont) {
+    const num = tEl("div", "tut-contador", "⚡ 7");
+    const pop = tEl("p", "tut-pop", "⚡ +1 TIKITEXTO");
+    const lista = tEl("ol", "tut-rank");
+    cont.appendChild(num);
+    cont.appendChild(pop);
+    cont.appendChild(lista);
+    let datos = [];
+
+    function pintar(sube) {
+      lista.innerHTML = "";
+      datos.slice().sort(function (a, b) { return b.p - a.p; }).forEach(function (d, k) {
+        const li = tEl("li", d.yo ? "tut-rank--yo" + (sube ? " tut-rank--sube" : "") : "");
+        li.appendChild(tEl("span", "", ["🥇", "🥈", "🥉"][k]));
+        li.appendChild(tEl("em", "", d.n));
+        li.appendChild(tEl("b", "", d.p + " ⚡"));
+        lista.appendChild(li);
+      });
+    }
+    function reiniciar() {
+      datos = [{ n: "Goleador", p: 12 }, { n: "Tiki10", p: 8 }, { n: "Tú", p: 7, yo: true }];
+      num.textContent = "⚡ 7";
+      pintar(false);
+    }
+    function sumar(sube) {
+      pop.classList.remove("tut-pop--ver");
+      void pop.offsetWidth;
+      pop.classList.add("tut-pop--ver");
+      datos[2].p++;
+      num.textContent = "⚡ " + datos[2].p;
+      pintar(sube);
+    }
+    function reposo() { reiniciar(); datos[2].p = 9; num.textContent = "⚡ 9"; pintar(false); }
+    return { reposo: reposo, pasos: [
+      [400, reiniciar],
+      [900, function () { sumar(false); }],
+      [1500, function () { sumar(true); }],
+      [3600, tNada]
+    ] };
+  }
+
+  const TUT_PASOS = [
+    { titulo: "Adivina el nombre en seis intentos",
+      texto: "En cada partida hay un nombre oculto: un jugador, un equipo, un estadio… Escribe un nombre con el mismo número de letras y pulsa Intro para comprobarlo.",
+      lista: ["Dispones de 6 intentos por partida.", "El tablero te indica cuántas letras tiene la respuesta."],
+      escena: tutEscObjetivo },
+    { titulo: "Los colores te guían",
+      texto: "Tras cada intento, cada casilla cambia de color para indicarte cuánto te has acercado a la respuesta.",
+      lista: [],
+      escena: tutEscColores },
+    { titulo: "El teclado también te ayuda",
+      texto: "Las teclas se colorean con lo que ya has descubierto, para que no repitas letras descartadas.",
+      lista: ["Puedes usar el teclado en pantalla o el de tu dispositivo.", "No hace falta escribir tildes."],
+      escena: tutEscTeclado },
+    { titulo: "¿Atascado? Usa la pista",
+      texto: "El botón «Pista» muestra una descripción de la respuesta y las letras que ya has acertado en su posición.",
+      lista: ["Puedes ocultarla volviendo a pulsar el botón."],
+      escena: tutEscPista },
+    { titulo: "Gana tikitextos y sube en el ranking",
+      texto: "Cada acierto suma +1 ⚡ tikitexto a tu cuenta y te hace subir en el ranking mundial.",
+      lista: ["Tikitexto diario: un reto nuevo cada día, el mismo para todo el mundo. Puntúa una sola vez al día.", "Hay muchos modos entre los que elegir: jugadores, porteros, equipos, leyendas, estadios…", "Guarda tu código de recuperación: te permite recuperar tu cuenta si cambias de dispositivo."],
+      escena: tutEscPuntos }
+  ];
+
+  function pintarTutorial() {
+    if (tutCancelar) { tutCancelar(); tutCancelar = null; }
+    const paso = TUT_PASOS[tutPaso], ultimo = tutPaso === TUT_PASOS.length - 1;
+    $("#tutEtiqueta").textContent = "Tutorial · Paso " + (tutPaso + 1) + " de " + TUT_PASOS.length;
+    $("#tutTitulo").textContent = paso.titulo;
+    $("#tutTexto").textContent = paso.texto;
+    const lista = $("#tutLista");
+    lista.innerHTML = "";
+    lista.hidden = !paso.lista.length;
+    paso.lista.forEach(function (t) { lista.appendChild(tEl("li", "", t)); });
+
+    const puntos = $("#tutPuntos");
+    puntos.innerHTML = "";
+    TUT_PASOS.forEach(function (p, k) {
+      const b = tEl("button", "tut__punto");
+      b.type = "button";
+      b.setAttribute("aria-label", "Ir al paso " + (k + 1) + ": " + p.titulo);
+      if (k === tutPaso) b.setAttribute("aria-current", "step");
+      b.addEventListener("click", function () { tutPaso = k; pintarTutorial(); });
+      puntos.appendChild(b);
+    });
+
+    tutAtras.hidden = tutPaso === 0;
+    tutSiguiente.textContent = ultimo ? "¡Entendido, a jugar!" : "Siguiente";
+
+    tutEscena.innerHTML = "";
+    const esc = paso.escena(tutEscena);
+    if (TUT_REDUCIR) esc.reposo(); else tutCancelar = tutLinea(esc.pasos);
+  }
+
+  function abrirTutorial(obligatorio) {
+    tutObligatorio = Boolean(obligatorio);
+    tutFocoPrevio = document.activeElement;
+    tutPaso = 0;
+    $("#tutCerrar").hidden = tutObligatorio;
+    modalTutorial.hidden = false;
+    document.body.classList.add("sin-desplazamiento");
+    pintarTutorial();
+    setTimeout(function () { $("#tutTitulo").focus(); }, 60);
+  }
+
+  function cerrarTutorial() {
+    if (tutCancelar) { tutCancelar(); tutCancelar = null; }
+    modalTutorial.hidden = true;
+    document.body.classList.remove("sin-desplazamiento");
+    const p = datosJ.actual ? perfil() : null;
+    if (p && p.tutorialPendiente) { delete p.tutorialPendiente; guardarJ(); }
+    tutObligatorio = false;
+    try { if (tutFocoPrevio && tutFocoPrevio.focus && document.contains(tutFocoPrevio)) tutFocoPrevio.focus(); } catch (error) { /* sin foco */ }
+  }
+
+  tutSiguiente.addEventListener("click", function () {
+    if (tutPaso >= TUT_PASOS.length - 1) { cerrarTutorial(); return; }
+    tutPaso++;
+    pintarTutorial();
+  });
+  tutAtras.addEventListener("click", function () { if (tutPaso > 0) { tutPaso--; pintarTutorial(); } });
+  $("#tutCerrar").addEventListener("click", function () { if (!tutObligatorio) cerrarTutorial(); });
+  $("#tutVelo").addEventListener("click", function () { if (!tutObligatorio) cerrarTutorial(); });
+  $("#abrirTutorial").addEventListener("click", function () { abrirTutorial(false); });
+
+  document.addEventListener("keydown", function (e) {
+    if (modalTutorial.hidden) return;
+    if (e.key === "Escape") { e.preventDefault(); if (!tutObligatorio) cerrarTutorial(); return; }
+    if (e.key === "ArrowRight" && tutPaso < TUT_PASOS.length - 1) { tutPaso++; pintarTutorial(); return; }
+    if (e.key === "ArrowLeft" && tutPaso > 0) { tutPaso--; pintarTutorial(); return; }
+    if (e.key === "Tab") {
+      const f = Array.prototype.filter.call(modalTutorial.querySelectorAll("button, [tabindex='-1']"), function (x) { return !x.hidden && !x.disabled && x.offsetParent !== null; });
+      if (!f.length) return;
+      const primero = f[0], ultimoEl = f[f.length - 1];
+      if (e.shiftKey && (document.activeElement === primero || document.activeElement === $("#tutTitulo"))) { e.preventDefault(); ultimoEl.focus(); }
+      else if (!e.shiftKey && document.activeElement === ultimoEl) { e.preventDefault(); primero.focus(); }
+      else if (!modalTutorial.contains(document.activeElement)) { e.preventDefault(); primero.focus(); }
+    }
+  });
+
   prepararIntro();
   if (tieneCuenta()) {
     enviarPend();
@@ -4403,6 +4833,18 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   } else {
     mostrarCuenta();
   }
+
+  /* Tutorial: obligatorio si la cuenta es nueva y aún no lo ha completado; o a petición (#tutorial) */
+  if (tieneCuenta()) {
+    const pendiente = Boolean(perfil().tutorialPendiente);
+    if (location.hash === "#tutorial") { try { history.replaceState(null, "", location.pathname + location.search); } catch (error) { /* opcional */ } }
+    if (pendiente || location.hash === "#tutorial") abrirTutorial(pendiente);
+  }
+  window.addEventListener("hashchange", function () {
+    if (location.hash !== "#tutorial") return;
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (error) { /* opcional */ }
+    if (tieneCuenta() && modalTutorial.hidden) abrirTutorial(Boolean(perfil().tutorialPendiente));
+  });
 })();
 </script>
 </body>

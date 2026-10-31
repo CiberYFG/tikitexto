@@ -70,6 +70,35 @@ with sync_playwright() as p:
         check("se puede jugar", False, str(e)[:150])
     check("sin errores de JavaScript durante la partida", not errores_js, "; ".join(errores_js)[:200])
 
+    print("3b) Tutorial interactivo")
+    try:
+        pg.goto(BASE)
+        pg.wait_for_selector("#abrirTutorial", state="attached", timeout=10000)
+        pg.evaluate("document.querySelector('#abrirTutorial').click()")
+        pg.wait_for_timeout(400)
+        check("el tutorial se abre desde el pie", pg.is_visible("#modalTutorial") and pg.is_visible("#tutCerrar"))
+        for _ in range(4):
+            pg.click("#tutSiguiente")
+        check("el último paso ofrece «¡Entendido, a jugar!»", "Entendido" in pg.inner_text("#tutSiguiente"))
+        pg.click("#tutSiguiente")
+        pg.wait_for_timeout(300)
+        check("el botón final cierra el tutorial", not pg.is_visible("#modalTutorial"))
+        # primera vez (cuenta nueva): obligatorio, sin X, y Escape no lo cierra
+        pg2 = ctx.new_page()
+        pg2.route("**/rest/v1/rpc/*", lambda r: r.abort())
+        perfil2 = dict(perfil, tutorialPendiente=True)
+        pg2.add_init_script(
+            "sessionStorage.setItem('tikitexto:intro','1');"
+            "localStorage.setItem('tikitexto:jugadores'," + json.dumps(json.dumps({"actual": "BotNuevo", "perfiles": {"BotNuevo": perfil2}})) + ");")
+        pg2.goto(BASE, wait_until="networkidle", timeout=60000)
+        pg2.wait_for_timeout(800)
+        pg2.keyboard.press("Escape")
+        pg2.wait_for_timeout(200)
+        check("tutorial obligatorio: sin X y Escape no lo cierra", pg2.is_visible("#modalTutorial") and not pg2.is_visible("#tutCerrar"))
+    except Exception as e:
+        check("tutorial interactivo", False, str(e)[:150])
+    check("sin errores de JavaScript en el tutorial", not errores_js, "; ".join(errores_js)[:200])
+
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:
         print("  (omitido)")
