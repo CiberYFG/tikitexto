@@ -65,3 +65,10 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 - 5 fallos, sin pistas, 50 jugadores en `AH_JUGADORES` (nombres con tildes; se juega sobre A–Z; un hueco = espacio entre palabras). Cada 3 victorias seguidas, +1 tikitexto (`AH_PARA_TIKI`). Mejor racha en `perfil().nv.a`; tutorial visto en `perfil().nv.tut.ahorcado`.
 - Título y dibujo «arcoíris» con `filter: hue-rotate` (clases `.ah-arco`, `.ah-svg`); respeta `prefers-reduced-motion`, sonido y vibración de ajustes.
 - Textos nuevos en `i18n/fuente.txt`; tests en `tests/check_site.py` (3k).
+
+## Invitado, nickname e intro
+- **Sin cuenta se juega como invitado** (perfil local con clave `""`; `esInvitado()`, `tieneCuenta()` es verdadero para invitados). El nickname se pide con `pedirNickname()` cuando el invitado llega a 1, 4 y 10 tikitextos (`NICK_UMBRALES`), desde «Ver ranking» (`#botonNick`) o desde Ajustes. El modal `#modalCuenta` se puede cerrar (X / Esc) para invitados.
+- Al crear la cuenta, el perfil de invitado se hereda (`aceptarCuenta(..., heredar)`): estadísticas, récords y tikitextos (hasta 10 se envían al servidor con `pend`).
+- **No hay pantalla «guarda tu código»**: el código de recuperación se ve en Ajustes → «Mi cuenta» → «¿Cuál es mi código?» (`TIKI.cuenta`, definido en el script principal) y en el ranking (`#botonCodigo`).
+- Intro: arranca sola (`.intro--play` en el HTML), dura ~1 s, sin sonido ni «Toca para empezar»; un toque la salta; se ve una vez por sesión. Primera visita: tutorial obligatorio (`PRIMERA_VEZ`).
+- Tests: `tests/check_site.py` 3l.

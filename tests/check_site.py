@@ -422,6 +422,44 @@ with sync_playwright() as p:
     except Exception as e:
         check("ahorcado", False, str(e)[:150])
 
+    print("3l) Invitado, intro rápida y código en Ajustes")
+    try:
+        cg = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+        pgi = cg.new_page()
+        errs_g = []
+        pgi.on("pageerror", lambda e: errs_g.append(str(e)))
+        def _rpc(r):
+            n_ = r.request.url.split("/rpc/")[1]
+            cuerpo = {"estado": "ok", "pts": 0, "puesto": 7} if n_ in ("reclamar_nombre", "registrar_acierto") else []
+            r.fulfill(status=200, content_type="application/json", body=json.dumps(cuerpo))
+        pgi.route("**/rest/v1/rpc/*", _rpc)
+        pgi.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');")
+        pgi.goto(BASE, wait_until="domcontentloaded", timeout=60000)
+        pgi.wait_for_selector("#intro", state="attached")
+        check("intro: arranca sola (sin «Toca para empezar»)", pgi.evaluate("document.getElementById('intro').classList.contains('intro--play')") and "Toca para empezar" not in pgi.content())
+        pgi.wait_for_selector("#intro", state="hidden", timeout=4000)
+        check("intro: termina sola en pocos segundos", not pgi.is_visible("#intro"))
+        check("invitado: no se pide nickname al entrar", not pgi.is_visible("#modalCuenta"))
+        pgi.wait_for_timeout(500)
+        for _ in range(12):
+            if pgi.is_visible("#modalTutorial"):
+                pgi.click("#tutSiguiente"); pgi.wait_for_timeout(120)
+        pgi.click("[data-stats]"); pgi.wait_for_timeout(400)
+        check("invitado: el ranking ofrece elegir nickname", pgi.is_visible("#botonNick"))
+        pgi.click("#botonNick"); pgi.wait_for_timeout(300)
+        check("invitado: se puede cerrar el aviso de nickname", pgi.is_visible("#cuentaCerrar"))
+        pgi.fill("#cuentaInput", "BotInvitado"); pgi.click("#cuentaBoton"); pgi.wait_for_timeout(800)
+        check("nickname: avanza sin pantalla de código", not pgi.is_visible("#modalCuenta") and pgi.locator("#codigoTexto").count() == 0)
+        pgi.click("[data-cerrar-stats]") if pgi.is_visible("[data-cerrar-stats]") else None
+        pgi.evaluate("document.getElementById('botonAjustes').click()"); pgi.wait_for_timeout(300)
+        pgi.click("#ajusteCodigo"); pgi.wait_for_timeout(200)
+        cod = pgi.inner_text("#ajusteCodigoTexto")
+        check("ajustes: muestra «¿Cuál es mi código?»", len(cod.replace("-", "")) == 20, cod)
+        check("invitado: sin errores de JavaScript", not errs_g, "; ".join(errs_g)[:150])
+        cg.close()
+    except Exception as e:
+        check("invitado e intro", False, str(e)[:150])
+
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:
         print("  (omitido)")

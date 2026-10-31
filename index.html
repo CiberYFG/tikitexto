@@ -1374,7 +1374,7 @@ button.marca:active .marca__icono { transform: scale(.9); }
 .cuenta__error { color: #ff6b6b; font-size: .85rem; min-height: 1.2em; margin: 0; }
 
 /* ---------- Intro ---------- */
-.intro { position: fixed; inset: 0; z-index: 500; display: grid; place-items: center; overflow: hidden; cursor: pointer; color: #fff; background: radial-gradient(900px 620px at 50% 42%, #0f4a37, #070d14 72%); transition: opacity .5s; }
+.intro { position: fixed; inset: 0; z-index: 500; display: grid; place-items: center; overflow: hidden; cursor: pointer; color: #fff; background: radial-gradient(900px 620px at 50% 42%, #0f4a37, #070d14 72%); transition: opacity .25s; }
 .intro[hidden] { display: none; }
 .intro--salir { opacity: 0; pointer-events: none; }
 .intro__luces { position: absolute; inset: 0; background: conic-gradient(from 195deg at 50% -12%, transparent 0 9%, rgba(255, 255, 255, .1) 11% 13%, transparent 15% 30%, rgba(255, 255, 255, .08) 32% 34%, transparent 36% 64%, rgba(255, 255, 255, .08) 66% 68%, transparent 70% 85%, rgba(255, 255, 255, .1) 87% 89%, transparent 91%); animation: luces 7s ease-in-out infinite alternate; transform-origin: 50% 0; }
@@ -1387,21 +1387,16 @@ button.marca:active .marca__icono { transform: scale(.9); }
 .intro__t { position: absolute; right: -9%; bottom: -11%; width: 40%; aspect-ratio: 1; display: grid; place-items: center; border-radius: 26%; background: #ffc83d; border: 4px solid #fff; color: #2b2000; font-weight: 900; font-size: calc(min(58vw, 260px) * .27); line-height: 1; box-shadow: 0 10px 30px rgba(255, 200, 61, .65); transform: scale(0) rotate(-35deg); }
 .intro__titulo { margin: 0; font-size: clamp(2.2rem, 11vw, 3.6rem); font-weight: 900; letter-spacing: .06em; opacity: 0; }
 .intro__titulo span { background: linear-gradient(90deg, #3ee0a4, #ffc83d); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.intro__tocar { position: absolute; bottom: 14%; margin: 0; font-weight: 800; letter-spacing: .25em; text-transform: uppercase; font-size: .85rem; animation: parpadeo 1.6s ease-in-out infinite; }
-@keyframes parpadeo { 50% { opacity: .25; } }
-.intro__saltar { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 14px); right: 16px; padding: 8px 14px; border: 0; border-radius: 99px; background: rgba(255, 255, 255, .14); color: #fff; font: inherit; font-weight: 700; opacity: 0; pointer-events: none; }
-.intro--play .intro__tocar { animation: none; opacity: 0; }
-.intro--play .intro__saltar { opacity: 1; transition: opacity .4s .6s; }
-.intro--play .intro__balon { animation: acercar 1.3s cubic-bezier(.2, .7, .2, 1) forwards; }
-.intro--play .intro__giro { animation: girar 2s forwards; }
-.intro--play .intro__destello { animation: destello .7s ease-out 2s; }
-.intro--play .intro__t { animation: popT .5s cubic-bezier(.3, 1.9, .5, 1) 2s forwards; }
-.intro--play .intro__titulo { animation: aparecer 2.4s forwards; }
+.intro--play .intro__balon { animation: acercar .5s cubic-bezier(.2, .7, .2, 1) forwards; }
+.intro--play .intro__giro { animation: girar .85s forwards; }
+.intro--play .intro__destello { animation: destello .35s ease-out .5s; }
+.intro--play .intro__t { animation: popT .3s cubic-bezier(.3, 1.9, .5, 1) .5s forwards; }
+.intro--play .intro__titulo { animation: introTitulo .45s ease-out .3s forwards; }
 @keyframes acercar { 0% { transform: scale(.1); opacity: 0; } 15% { opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 @keyframes girar { 0% { transform: rotate(0); animation-timing-function: ease-in; } 67% { transform: rotate(720deg); animation-timing-function: cubic-bezier(.05, .7, .2, 1); } 100% { transform: rotate(3240deg); } }
 @keyframes destello { 0% { opacity: .95; transform: scale(.3); } 100% { opacity: 0; transform: scale(1.4); } }
 @keyframes popT { to { transform: scale(1) rotate(-6deg); } }
-@keyframes aparecer { 0%, 80% { opacity: 0; transform: translateY(14px); } 100% { opacity: 1; transform: none; } }
+@keyframes introTitulo { 0% { opacity: 0; transform: translateY(14px); } 100% { opacity: 1; transform: none; } }
 
 .enlace { display: block; width: 100%; padding: 12px 0 2px; border: 0; background: none; color: var(--acento); font: inherit; font-weight: 700; cursor: pointer; text-align: center; }
 .codigo { display: block; width: 100%; margin: 12px 0; padding: 14px 10px; border-radius: 14px; border: 2px dashed var(--acento); background: var(--superficie-2); color: var(--texto); font-family: ui-monospace, Menlo, monospace; font-weight: 800; font-size: 1rem; letter-spacing: .06em; text-align: center; word-break: break-all; -webkit-user-select: text; user-select: text; }
@@ -1785,6 +1780,8 @@ button.marca:active .marca__icono { transform: scale(.9); }
    ============================================================ */
 .inicio__acciones { display: flex; align-items: center; gap: 8px; }
 /* ---- Panel de ajustes ---- */
+.ajustes__txt { margin: 8px 0; font-size: .88rem; line-height: 1.4; color: var(--texto-suave); } .ajustes__txt b { color: var(--texto); }
+.ajustes__caja .boton { width: 100%; margin-top: 8px; } .ajustes__caja .enlace { display: block; margin: 8px auto 0; }
 .idioma__caja.ajustes__caja { text-align: left; }
 .ajustes__caja .idioma__titulo { margin-bottom: 14px; padding-right: 34px; }
 .ajustes__sec { margin: 4px 0 10px; font-size: .78rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--texto-suave, #5b6b64); }
@@ -2162,10 +2159,11 @@ button.marca:active .marca__icono { transform: scale(.9); }
 <div class="modal" id="modalCuenta" role="dialog" aria-modal="true" aria-labelledby="tituloCuenta" hidden>
   <div class="modal__velo"></div>
   <div class="modal__caja">
-    <p class="modal__etiqueta">Bienvenido a TIKITEXTO</p>
+    <button type="button" class="modal__cerrar" id="cuentaCerrar" aria-label="Cerrar" hidden>✕</button>
+    <p class="modal__etiqueta" id="cuentaEtiqueta">Bienvenido a TIKITEXTO</p>
     <h2 class="modal__titulo" id="tituloCuenta">Crea tu cuenta</h2>
     <div id="pasoCrear">
-      <p class="modal__texto">Elige tu nickname. Será tu nombre en el ranking mundial y no podrás cambiarlo.</p>
+      <p class="modal__texto" id="cuentaTexto">Elige tu nickname. Será tu nombre en el ranking mundial y no podrás cambiarlo.</p>
       <form class="nuevo" id="formCuenta" autocomplete="off">
         <input id="cuentaInput" maxlength="14" placeholder="Tu nickname" aria-label="Tu nickname" autocapitalize="off" autocorrect="off" spellcheck="false">
         <p class="cuenta__error" id="cuentaError" role="alert"></p>
@@ -2183,12 +2181,6 @@ button.marca:active .marca__icono { transform: scale(.9); }
         <button class="boton boton--primario" id="recBoton">Recuperar mi cuenta</button>
       </form>
       <button type="button" class="enlace" id="verCrear">‹ Crear una cuenta nueva</button>
-    </div>
-    <div id="pasoCodigo" hidden>
-      <p class="modal__texto">Este es tu <b>código de recuperación</b>. Guárdalo (captura de pantalla o nota): si borras la app o cambias de móvil, con él recuperas tu cuenta y tus tikitextos.</p>
-      <div class="codigo" id="codigoTexto"></div>
-      <button type="button" class="boton boton--secundario" id="codigoCopiar">Copiar código</button>
-      <button type="button" class="boton boton--primario" id="codigoOk">Lo he guardado, ¡a jugar!</button>
     </div>
   </div>
 </div>
@@ -2314,7 +2306,7 @@ button.marca:active .marca__icono { transform: scale(.9); }
 </div>
 
 
-<div class="intro" id="intro" role="dialog" aria-label="TIKITEXTO">
+<div class="intro intro--play" id="intro" role="dialog" aria-label="TIKITEXTO">
   <div class="intro__luces"></div>
   <div class="intro__escena">
     <div class="intro__balon">
@@ -2331,8 +2323,6 @@ button.marca:active .marca__icono { transform: scale(.9); }
     </div>
     <p class="intro__titulo">TIKI<span>TEXTO</span></p>
   </div>
-  <p class="intro__tocar">Toca para empezar</p>
-  <button type="button" class="intro__saltar" tabindex="-1">Saltar ›</button>
 </div>
 
 <div class="punto" id="punto" aria-hidden="true">⚡ +1 TIKITEXTO</div>
@@ -2641,8 +2631,38 @@ button.marca:active .marca__icono { transform: scale(.9); }
     caja.appendChild(tit); caja.appendChild(sec); caja.appendChild(rej);
     var sec2 = document.createElement("p"); sec2.className = "ajustes__sec"; sec2.style.marginTop = "22px"; sec2.textContent = "Sonido y vibración";
     caja.appendChild(sec2);
-    caja.appendChild(filaAjuste("Sonido", "Música de la intro y fanfarria al acertar", "sonido", true));
+    caja.appendChild(filaAjuste("Sonido", "Fanfarria al acertar", "sonido", true));
     caja.appendChild(filaAjuste("Vibración", "Vibración corta al acertar y al equivocarte", "vibracion", puedeVibrar()));
+    if (TIKI.cuenta) {
+      var sec3 = document.createElement("p"); sec3.className = "ajustes__sec"; sec3.style.marginTop = "22px"; sec3.textContent = "Mi cuenta";
+      caja.appendChild(sec3);
+      var cu = TIKI.cuenta;
+      if (cu.invitado()) {
+        var ti = document.createElement("p"); ti.className = "ajustes__txt"; ti.textContent = "Juegas como invitado. Elige un nickname para entrar al ranking mundial.";
+        var b1 = document.createElement("button"); b1.type = "button"; b1.className = "boton boton--primario"; b1.textContent = "Elegir nickname";
+        b1.addEventListener("click", function () { cerrarAjustes(); cu.pedir(); });
+        var b2 = document.createElement("button"); b2.type = "button"; b2.className = "enlace"; b2.textContent = "¿Ya tienes cuenta? Recupérala";
+        b2.addEventListener("click", function () { cerrarAjustes(); cu.recuperar(); });
+        caja.appendChild(ti); caja.appendChild(b1); caja.appendChild(b2);
+      } else {
+        var fila = document.createElement("p"); fila.className = "ajustes__txt";
+        var et = document.createElement("span"); et.textContent = "Nickname: ";
+        var nm = document.createElement("b"); nm.setAttribute("data-no-t", ""); nm.textContent = cu.nombre();
+        fila.appendChild(et); fila.appendChild(nm); caja.appendChild(fila);
+        if (cu.codigo()) {
+          var bc = document.createElement("button"); bc.type = "button"; bc.id = "ajusteCodigo"; bc.className = "boton boton--secundario"; bc.textContent = "🔑 ¿Cuál es mi código?";
+          var info = document.createElement("p"); info.className = "ajustes__txt"; info.hidden = true;
+          bc.addEventListener("click", function () {
+            var cod = document.createElement("div"); cod.className = "codigo"; cod.setAttribute("data-no-t", ""); cod.id = "ajusteCodigoTexto"; cod.textContent = cu.codigo();
+            info.textContent = "Guárdalo: con él recuperas tu cuenta si cambias de móvil o reinstalas la app. Se ha copiado.";
+            info.hidden = false;
+            bc.replaceWith(cod);
+            cu.copiar();
+          });
+          caja.appendChild(bc); caja.appendChild(info);
+        }
+      }
+    }
     var x = document.createElement("button"); x.type = "button"; x.className = "idioma__cerrar"; x.textContent = "✕"; x.setAttribute("aria-label", "Cerrar · Close");
     x.addEventListener("click", cerrarAjustes); caja.appendChild(x);
     c.addEventListener("click", function (e) { if (e.target === c) cerrarAjustes(); });
@@ -4842,6 +4862,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     } catch (error) { /* sin datos */ }
     return { actual: "", perfiles: { "": nuevoPerfil() } };
   }
+  const PRIMERA_VEZ = (function () { try { return localStorage.getItem(CLAVE_JUG) === null; } catch (error) { return false; } })();
   let datosJ = cargarJ();
   function guardarJ() { try { localStorage.setItem(CLAVE_JUG, JSON.stringify(datosJ)); } catch (error) { /* sin almacenamiento */ } }
   function perfil() { return datosJ.perfiles[datosJ.actual]; }
@@ -4905,9 +4926,10 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     pintarTikis();
     if (suma) {
       const enLinea = ONLINE && p.online;
-      textoPunto = "⚡ +1 tikitexto · " + p.pts + " en total" + (enLinea ? "" : " · puesto #" + puesto()) + " · Ver ranking";
+      textoPunto = "⚡ +1 tikitexto · " + p.pts + " en total" + (enLinea || esInvitado() ? "" : " · puesto #" + puesto()) + " · Ver ranking";
       if (enLinea) { p.pend = (p.pend || 0) + 1; guardarJ(); enviarPend(); }
       mostrarPunto();
+      pedirNickname();
     }
   }
 
@@ -4919,7 +4941,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     const casillas = [[p.jugadas, "Jugadas"], [(p.jugadas ? Math.round(p.aciertos / p.jugadas * 100) : 0) + "%", "Aciertos"], [p.racha, "Racha"], [p.mejor, "Mejor racha"], [(p.diaUlt === claveDelDia() || p.diaUlt === diaAnterior()) ? (p.diaD || 0) : 0, "Días seguidos"], [p.diaMejor || 0, "Mejor en días"]];
 
     statsContenido.innerHTML =
-      '<div class="stats__heroe"><span class="stats__nombre">' + esc(datosJ.actual) + " · " + n.nombre + "</span>" +
+      '<div class="stats__heroe"><span class="stats__nombre">' + esc(datosJ.actual || "Invitado") + " · " + n.nombre + "</span>" +
       '<div class="stats__num">' + p.pts + '</div><div class="stats__etq">TIKITEXTOS</div>' +
       '<div class="barra-nivel"><i style="width:' + pct + '%"></i></div>' +
       '<div class="stats__sig">' + (n.sig ? "Te faltan " + (n.sig[0] - p.pts) + " para " + n.sig[1] : "Nivel máximo ⭐") + "</div></div>" +
@@ -4928,9 +4950,9 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       p.dist.map(function (v, i) { return '<div class="dist"><span>' + (i + 1) + '</span><i style="width:' + Math.max(10, v / max * 100) + '%">' + v + "</i></div>"; }).join("") +
       '<h3 class="stats__sub">🏆 Ranking · Top jugadores</h3><ol class="rank">' +
       ranking().slice(0, 10).map(function (x, i) {
-        return '<li class="' + (x[0] === datosJ.actual ? "rank--yo" : "") + '"><span>' + (["🥇", "🥈", "🥉"][i] || (i + 1)) + "</span><em>" + esc(x[0]) + "</em><b>" + x[1].pts + " ⚡</b></li>";
+        return '<li class="' + (x[0] === datosJ.actual ? "rank--yo" : "") + '"><span>' + (["🥇", "🥈", "🥉"][i] || (i + 1)) + "</span><em>" + esc(x[0] || "Invitado") + "</em><b>" + x[1].pts + " ⚡</b></li>";
       }).join("") + "</ol>" +
-      (ONLINE ? '<button type="button" class="boton boton--secundario" id="botonCodigo">🔑 Ver mi código de recuperación</button><button type="button" class="enlace enlace--peligro" id="botonEliminar">🗑 Eliminar mi cuenta</button>' : "") +
+      (ONLINE && esInvitado() ? '<button type="button" class="boton boton--primario" id="botonNick">🏆 Elegir nickname y entrar al ranking mundial</button><button type="button" class="enlace" id="botonYaTengo">¿Ya tienes cuenta? Recupérala</button>' : ONLINE ? '<button type="button" class="boton boton--secundario" id="botonCodigo">🔑 Ver mi código de recuperación</button><button type="button" class="enlace enlace--peligro" id="botonEliminar">🗑 Eliminar mi cuenta</button>' : "") +
       '<p class="stats__nota">Cada navegador o app instalada tiene su propia cuenta. Guarda tu código para poder recuperarla.</p>' +
       '<p class="stats__pie"><a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a> · <a href="aviso-legal.html" target="_blank" rel="noopener">Aviso legal</a> · <a href="cookies.html" target="_blank" rel="noopener">Cookies</a></p>';
     if (ONLINE) cargarMundial();
@@ -5014,50 +5036,83 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     });
   }
 
-  function tieneCuenta() { return Boolean(datosJ.actual) && (!ONLINE || perfil().online); }
+  window.TIKI.cuenta = {
+    invitado: function () { return esInvitado(); },
+    nombre: function () { return datosJ.actual; },
+    codigo: function () { return ONLINE && !esInvitado() ? formatoCodigo(perfil().token || "") : ""; },
+    copiar: function () { copiarCodigo(perfil().token); },
+    pedir: function () { pedirNickname(true); },
+    recuperar: function () { mostrarCuenta(true); }
+  };
+  /* Sin nickname se juega como invitado (perfil local ""); el nickname se pide tras el primer acierto */
+  function esInvitado() { return !datosJ.actual; }
+  function tieneCuenta() { return esInvitado() || (Boolean(datosJ.actual) && (!ONLINE || perfil().online)); }
 
-  function mostrarCuenta() {
+  function mostrarCuenta(recuperar) {
+    const inv = esInvitado();
+    $("#cuentaEtiqueta").textContent = inv ? "¡Has acertado! 🎉" : "Bienvenido a TIKITEXTO";
+    $("#cuentaTexto").textContent = inv
+      ? "Elige tu nickname: guardamos tus tikitextos y entras en el ranking mundial. No podrás cambiarlo."
+      : "Elige tu nickname. Será tu nombre en el ranking mundial y no podrás cambiarlo.";
+    $("#cuentaCerrar").hidden = !inv;
+    $("#pasoCrear").hidden = Boolean(recuperar);
+    $("#pasoRecuperar").hidden = !recuperar;
+    $("#tituloCuenta").textContent = recuperar ? "Recupera tu cuenta" : (inv ? "Entra en el ranking mundial" : "Crea tu cuenta");
     modalCuenta.hidden = false;
     document.body.classList.add("sin-desplazamiento");
     setTimeout(function () { if (!introActiva) cuentaInput.focus(); }, 80);
   }
 
-  function aceptarCuenta(nombre, token, pts, puesto, conCodigo, nueva) {
-    const p = nuevoPerfil();
-    p.token = token; p.online = ONLINE; p.pts = pts; p.puesto = puesto || 0;
-    if (nueva) p.tutorialPendiente = true;
+  function aceptarCuenta(nombre, token, pts, puesto, heredar) {
+    const p = Object.assign(nuevoPerfil(), heredar ? JSON.parse(JSON.stringify(heredar)) : {});
+    const previos = heredar ? (Number(heredar.pts) || 0) : 0;
+    p.token = token; p.online = ONLINE; p.puesto = puesto || 0;
+    if (heredar && ONLINE) { p.pend = Math.min(previos, 10); p.pts = pts + p.pend; }
+    else if (heredar) p.pts = previos;
+    else p.pts = pts;
+    delete p.nick;
     datosJ = { actual: nombre, perfiles: {} };
     datosJ.perfiles[nombre] = p;
     guardarJ();
     pintarTikis();
     try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (error) { /* opcional */ }
-    if (conCodigo) {
-      $("#pasoCrear").hidden = true;
-      $("#pasoRecuperar").hidden = true;
-      $("#pasoCodigo").hidden = false;
-      $("#tituloCuenta").textContent = "¡Cuenta creada!";
-      $("#codigoTexto").textContent = formatoCodigo(token);
-    } else {
-      terminarCuenta();
-    }
+    terminarCuenta(Boolean(heredar));
   }
 
-  function terminarCuenta() {
+  function terminarCuenta(continuar) {
     modalCuenta.hidden = true;
     document.body.classList.remove("sin-desplazamiento");
     mostrarAviso("¡Bienvenido, " + datosJ.actual + "!");
     enviarPend();
-    recuperarPartida();
-    if (perfil() && perfil().tutorialPendiente) abrirTutorial(true);
+    if (!continuar) recuperarPartida();
+  }
+
+  /* Pide el nickname tras un acierto (invitados): a los 1, 4 y 10 tikitextos; o cuando se pide a mano */
+  const NICK_UMBRALES = [1, 4, 10];
+  function pedirNickname(forzar) {
+    if (!esInvitado()) return;
+    const p = perfil();
+    if (!forzar) {
+      const veces = p.nick || 0;
+      if (veces >= NICK_UMBRALES.length || p.pts < NICK_UMBRALES[veces]) return;
+      p.nick = veces + 1; guardarJ();
+    }
+    setTimeout(function () {
+      if (!esInvitado() || !modalCuenta.hidden || !modalTutorial.hidden) return;
+      cuentaInput.value = "";
+      cuentaError.textContent = "";
+      mostrarCuenta();
+    }, forzar ? 0 : 2400);
   }
 
   /* Crea la cuenta del dispositivo; el nombre es único en todo el mundo */
   function crearCuenta(nombre) {
     const token = nuevoToken();
-    if (!ONLINE) { aceptarCuenta(nombre, token, 0, 0, false, true); return Promise.resolve(); }
+    const heredar = esInvitado() ? perfil() : null;
+    if (!ONLINE) { aceptarCuenta(nombre, token, 0, 0, heredar); return Promise.resolve(); }
     return api("reclamar_nombre", { p_nombre: nombre, p_token: token }).then(function (r) {
       if (r.estado !== "ok") throw new Error(r.estado);
-      aceptarCuenta(nombre, token, r.pts, r.puesto, true, true);
+      aceptarCuenta(nombre, token, r.pts, r.puesto, heredar);
     });
   }
 
@@ -5065,7 +5120,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   function recuperarCuenta(nombre, codigo) {
     return api("recuperar_cuenta", { p_nombre: nombre, p_token: codigo }).then(function (r) {
       if (r.estado !== "ok") throw new Error(r.estado);
-      aceptarCuenta(r.nombre, codigo, r.pts, r.puesto, false);
+      aceptarCuenta(r.nombre, codigo, r.pts, r.puesto, null);
     });
   }
 
@@ -5091,10 +5146,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       modalStats.hidden = true;
       borrarPartida();
       irAlInicio();
-      $("#pasoCrear").hidden = false; $("#pasoRecuperar").hidden = true; $("#pasoCodigo").hidden = true;
-      $("#tituloCuenta").textContent = "Crea tu cuenta";
       cuentaInput.value = "";
-      mostrarCuenta();
       mostrarAviso("Tu cuenta se ha eliminado");
     });
   }
@@ -5110,8 +5162,9 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     ol.innerHTML = "<li><em>Cargando…</em></li>";
     enviarPend();
 
-    Promise.all([api("ranking_top"), api("reclamar_nombre", { p_nombre: datosJ.actual, p_token: p.token })]).then(function (res) {
-      const filas = res[0], yo = res[1], mio = datosJ.actual.toLowerCase();
+    const inv = esInvitado();
+    Promise.all([api("ranking_top"), inv ? Promise.resolve({ estado: "invitado" }) : api("reclamar_nombre", { p_nombre: datosJ.actual, p_token: p.token })]).then(function (res) {
+      const filas = res[0], yo = res[1], mio = (datosJ.actual || "\u0000").toLowerCase();
       if (yo.estado === "ok") { p.pts = yo.pts; p.puesto = yo.puesto; guardarJ(); pintarTikis(); }
       let html = filas.map(function (x, i) {
         return '<li class="' + (x.nombre.toLowerCase() === mio ? "rank--yo" : "") + '"><span>' + (["🥇", "🥈", "🥉"][i] || (i + 1)) + "</span><em>" + esc(x.nombre) + "</em><b>" + (Number(x.pts) || 0) + " ⚡</b></li>";
@@ -5145,6 +5198,9 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   });
 
   document.addEventListener("visibilitychange", function () { if (!document.hidden) enviarPend(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !modalCuenta.hidden && !$("#cuentaCerrar").hidden) { modalCuenta.hidden = true; document.body.classList.remove("sin-desplazamiento"); }
+  });
 
   document.addEventListener("submit", function (e) {
     if (e.target.id !== "formCuenta") return;
@@ -5167,74 +5223,9 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   });
 
   /* ============================================================
-     INTRO CON SONIDO (todo sintetizado con Web Audio, sin archivos)
+     INTRO (rápida, sin sonido ni toque: se ve una vez por sesión)
      ============================================================ */
-  let introFase = 0, introTimer = 0, introAudio = null, introInicio = 0;
-
-  function sonidoIntro() {
-    if (!TIKI.ajustes.sonido()) return null;
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return null;
-    const ctx = new AC();
-    if (ctx.resume) ctx.resume();
-    const t0 = ctx.currentTime + 0.05;
-    const DUR = 3.2;
-    const master = ctx.createGain();
-    master.gain.value = 0.35;
-    const comp = ctx.createDynamicsCompressor();
-    master.connect(comp);
-    comp.connect(ctx.destination);
-
-    /* Eco de estadio, corto */
-    const largo = Math.floor(ctx.sampleRate * 1.1);
-    const ir = ctx.createBuffer(2, largo, ctx.sampleRate);
-    for (let c = 0; c < 2; c++) {
-      const d = ir.getChannelData(c);
-      for (let i = 0; i < largo; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / largo, 2.5);
-    }
-    const eco = ctx.createConvolver(); eco.buffer = ir;
-    const humedo = ctx.createGain(); humedo.gain.value = 0.35;
-    eco.connect(humedo); humedo.connect(master);
-    const bus = ctx.createGain();
-    bus.connect(master); bus.connect(eco);
-
-    /* Bocinas de afición con una mini melodía pegadiza (sin grada, volumen suave) */
-    function bocina(t, f, dur, vol) {
-      const env = ctx.createGain();
-      env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(vol, t + 0.03);
-      env.gain.setValueAtTime(vol, t + Math.max(0.04, dur - 0.1));
-      env.gain.linearRampToValueAtTime(0, t + dur);
-      const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 1300; lp.Q.value = 0.7;
-      [1, 1.005, 2.01].forEach(function (m, i) {
-        const o = ctx.createOscillator(); o.type = i === 2 ? "triangle" : "sawtooth";
-        o.frequency.setValueAtTime(f * m * 0.97, t);
-        o.frequency.linearRampToValueAtTime(f * m, t + 0.05);
-        const g = ctx.createGain(); g.gain.value = i === 2 ? 0.4 : 1;
-        o.connect(g); g.connect(lp);
-        o.start(t); o.stop(t + dur + 0.05);
-      });
-      lp.connect(env); env.connect(bus);
-    }
-    /* Melodía en sol mayor: "ta-ta-ta-TAA · ta-ta-ta-TA-TAAA" */
-    const G4 = 392, B4 = 493.88, D5 = 587.33, E5 = 659.25, G5 = 783.99;
-    const V = 0.04;
-    [[0.00, G4, 0.14], [0.17, G4, 0.14], [0.34, B4, 0.14], [0.51, D5, 0.34],
-     [0.95, B4, 0.14], [1.12, D5, 0.14], [1.29, E5, 0.14], [1.46, D5, 0.2],
-     [1.72, E5, 0.14], [1.89, G5, 0.14]].forEach(function (n) { bocina(t0 + 0.1 + n[0], n[1], n[2], V); });
-    /* Final en acorde, que se queda sonando y se apaga */
-    [[196, 1.0, 0.05], [G4, 1.0, 0.04], [B4, 1.0, 0.035], [D5, 1.0, 0.035], [G5, 1.0, 0.045]].forEach(function (n) { bocina(t0 + 2.1, n[0], n[1], n[2]); });
-
-    return {
-      parar: function () {
-        const ahora = ctx.currentTime;
-        master.gain.cancelScheduledValues(ahora);
-        master.gain.setValueAtTime(master.gain.value, ahora);
-        master.gain.linearRampToValueAtTime(0, ahora + 0.3);
-        setTimeout(function () { if (ctx.close) ctx.close().catch(function () {}); }, 450);
-      }
-    };
-  }
+  let introTimer = 0;
 
   /* Sonido de victoria al ganar un tikitexto: fanfarria corta + vítores */
   let audioVictoria = null;
@@ -5284,6 +5275,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     try { visto = Boolean(sessionStorage.getItem("tikitexto:intro")); } catch (error) { /* sin almacenamiento */ }
     if (reducir || visto) { intro.hidden = true; return; }
     introActiva = true;
+    introTimer = setTimeout(cerrarIntro, 950);
   }
 
   function cerrarIntro() {
@@ -5291,28 +5283,15 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     introActiva = false;
     clearTimeout(introTimer);
     try { sessionStorage.setItem("tikitexto:intro", "1"); } catch (error) { /* sin almacenamiento */ }
-    if (introAudio) { introAudio.parar(); introAudio = null; }
     intro.classList.add("intro--salir");
-    setTimeout(function () { intro.hidden = true; }, 540);
+    setTimeout(function () { intro.hidden = true; }, 260);
     if (!modalCuenta.hidden) cuentaInput.focus();
   }
 
-  /* Primer toque: arranca (y activa el sonido). Segundo toque: salta. */
-  function pulsarIntro() {
-    if (!introActiva) return;
-    if (introFase === 0) {
-      introFase = 1;
-      introInicio = Date.now();
-      intro.classList.add("intro--play");
-      try { introAudio = sonidoIntro(); } catch (error) { introAudio = null; }
-      introTimer = setTimeout(cerrarIntro, 3300);
-    } else if (Date.now() - introInicio > 700) {
-      cerrarIntro();
-    }
-  }
-  intro.addEventListener("click", pulsarIntro);
+  /* Un toque (o Intro/Espacio/Esc) salta la intro */
+  intro.addEventListener("click", cerrarIntro);
   document.addEventListener("keydown", function (e) {
-    if (introActiva && (e.key === "Enter" || e.key === " " || e.key === "Escape")) { e.preventDefault(); pulsarIntro(); }
+    if (introActiva && (e.key === "Enter" || e.key === " " || e.key === "Escape")) { e.preventDefault(); cerrarIntro(); }
   });
 
   /* ============================================================
@@ -5347,13 +5326,14 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       copiarCodigo(t);
       return;
     }
-    if (objetivo.closest("#codigoCopiar")) { copiarCodigo(perfil().token); return; }
-    if (objetivo.closest("#codigoOk")) { terminarCuenta(); return; }
+    if (objetivo.closest("#cuentaCerrar")) { modalCuenta.hidden = true; document.body.classList.remove("sin-desplazamiento"); return; }
+    if (objetivo.closest("#botonNick")) { modalStats.hidden = true; cuentaInput.value = ""; cuentaError.textContent = ""; mostrarCuenta(); return; }
+    if (objetivo.closest("#botonYaTengo")) { modalStats.hidden = true; mostrarCuenta(true); return; }
     if (objetivo.closest("#verRecuperar") || objetivo.closest("#verCrear")) {
       const rec = Boolean(objetivo.closest("#verRecuperar"));
       $("#pasoCrear").hidden = rec;
       $("#pasoRecuperar").hidden = !rec;
-      $("#tituloCuenta").textContent = rec ? "Recupera tu cuenta" : "Crea tu cuenta";
+      $("#tituloCuenta").textContent = rec ? "Recupera tu cuenta" : (esInvitado() ? "Entra en el ranking mundial" : "Crea tu cuenta");
       return;
     }
     if (objetivo.closest("[data-stats]")) { pintarStats(); modalStats.hidden = false; return; }
@@ -5853,6 +5833,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (enLinea) enviarPend();
     mostrarPunto();
     lanzarConfeti();
+    pedirNickname();
   }
 
   function nvLimpiarTimer() { clearTimeout(nv.timer); nv.timer = 0; }
@@ -6805,7 +6786,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (tutCancelar) { tutCancelar(); tutCancelar = null; }
     modalTutorial.hidden = true;
     document.body.classList.remove("sin-desplazamiento");
-    const p = datosJ.actual ? perfil() : null;
+    const p = perfil();
     if (tutGeneral && p && p.tutorialPendiente) { delete p.tutorialPendiente; guardarJ(); }
     tutObligatorio = false;
     const cb = tutAlCerrar; tutAlCerrar = null;
@@ -6839,6 +6820,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   });
 
   prepararIntro();
+  if (PRIMERA_VEZ && esInvitado()) { perfil().tutorialPendiente = true; guardarJ(); }
   if (tieneCuenta()) {
     enviarPend();
     recuperarPartida();
