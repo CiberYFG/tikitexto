@@ -3559,13 +3559,23 @@ MONUMENTAL|mu|Buenos Aires · Final del Mundial de 1978
 CENTENARIO|mu|Montevideo · Primera final de un Mundial
 SOCCER CITY|mu|Johannesburgo · Final de 2010, forma de calabaza
 LUSAIL STADIUM|mu|Catar · Final del Mundial de 2022
-METLIFE STADIUM|mu|Nueva Jersey · Dos equipos de la NFL
+METLIFE STADIUM|us|Nueva Jersey · Sede de la final del Mundial de 2026
+SOFI STADIUM|us|Inglewood · Super Bowl LVI y casa de Rams y Chargers
+AT&T STADIUM|us|Arlington · Casa de los Cowboys con una pantalla gigante sobre el campo
+ROSE BOWL|us|Pasadena · Final del Mundial de 1994
+LUMEN FIELD|us|Seattle · Casa de los Seahawks y los Sounders
+SOLDIER FIELD|us|Chicago · Casa de los Bears junto al lago Míchigan
+GILLETTE|us|Foxborough · Casa de los Patriots y del New England Revolution
+LEVIS STADIUM|us|Santa Clara · Casa de los 49ers, inaugurado en 2014
+ARROWHEAD|us|Kansas City · Casa de los Chiefs, famoso por el ambiente de su afición
+MERCEDES BENZ|us|Atlanta · Sede de una semifinal del Mundial de 2026 y casa del Atlanta United
 MORUMBI|mu|São Paulo · Nombre de barrio
 NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(function (l) { const p = l.split("|"); return { nombre: p[0], zona: p[1], pista: p[2] }; });
   const ZONAS = {
     es: ["es"], en: ["en"],
     eu: ["es", "en", "fr", "it", "de", "eu"],
-    mu: ["es", "en", "fr", "it", "de", "eu", "mu"]
+    us: ["us"],
+    mu: ["es", "en", "fr", "it", "de", "eu", "mu", "us"]
   };
   function estadiosDe(z) { return ESTADIOS.filter(function (e) { return ZONAS[z].indexOf(e.zona) >= 0; }); }
 
@@ -3624,6 +3634,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     { id: "estadios_es", nombre: "Estadios · Liga española", tipo: "Estadio", unidad: "estadios", icono: "estadio", max: 14, oculto: true, fuente: function () { return estadiosDe("es"); } },
     { id: "estadios_en", nombre: "Estadios · Liga inglesa", tipo: "Estadio", unidad: "estadios", icono: "estadio", max: 14, oculto: true, fuente: function () { return estadiosDe("en"); } },
     { id: "estadios_eu", nombre: "Estadios · Europa", tipo: "Estadio", unidad: "estadios", icono: "estadio", max: 14, oculto: true, fuente: function () { return estadiosDe("eu"); } },
+    { id: "estadios_us", nombre: "Estadios · Estados Unidos", tipo: "Estadio", unidad: "estadios", icono: "estadio", max: 14, oculto: true, fuente: function () { return estadiosDe("us"); } },
     { id: "estadios_mu", nombre: "Estadios · Resto del mundo", tipo: "Estadio", unidad: "estadios", icono: "estadio", max: 14, oculto: true, fuente: function () { return estadiosDe("mu"); } }
   ];
 
@@ -3874,7 +3885,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     fragmento.appendChild(est);
 
     subModos.innerHTML = "";
-    [["estadios_es", "Liga española"], ["estadios_en", "Liga inglesa"], ["estadios_eu", "Europa"], ["estadios_mu", "Resto del mundo"]].forEach(function (m) {
+    [["estadios_es", "Liga española"], ["estadios_en", "Liga inglesa"], ["estadios_eu", "Europa"], ["estadios_us", "Estados Unidos"], ["estadios_mu", "Resto del mundo"]].forEach(function (m) {
       const b = document.createElement("button");
       b.type = "button";
       b.className = "sub-modo";

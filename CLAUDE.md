@@ -55,3 +55,7 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 - Las páginas y descripciones en inglés dicen «football (soccer)» a propósito, para búsquedas de EE. UU. Mantener el texto natural.
 - Botón «Instalar la app» (`#instalarCaja`/`#instalarApp`): oculto hasta que el navegador lanza `beforeinstallprompt`; sin cookies ni datos. Sus textos están en `fuente.txt`.
 - Al acertar, vibración corta si el móvil la permite y no se pidió «reducir movimiento».
+
+## Ajustes y estadios de EE. UU.
+- Botón ⚙ (`#botonAjustes`) abre el panel de ajustes: idioma, sonido y vibración. Se guardan en `localStorage` `tikitexto:ajustes` (`{sonido,vibracion}`); la API es `TIKI.ajustes` (`sonido()`, `vibracion()`, `vibrar()`). Todo sonido o vibración nuevo debe respetarla.
+- Estadios: zona `us` (10 estadios de EE. UU.) y modo `estadios_us`; `mu` también la incluye. Pistas traducidas en `fuente.txt`.

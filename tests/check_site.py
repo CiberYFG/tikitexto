@@ -354,6 +354,22 @@ with sync_playwright() as p:
     except Exception as e:
         check("instalar app e imagen social", False, str(e)[:150])
 
+    print("3j) Estadios de Estados Unidos")
+    try:
+        cu = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+        pu = cu.new_page()
+        errs_u = []
+        pu.on("pageerror", lambda e: errs_u.append(str(e)))
+        pu.add_init_script("sessionStorage.setItem('tikitexto:intro','1');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');")
+        pu.goto(BASE + "?modo=estadios_us", wait_until="networkidle", timeout=60000)
+        pu.wait_for_timeout(800)
+        check("estadios EE. UU.: el modo arranca sin errores", not errs_u and pu.locator("#tablero, .tablero, .fila").count() > 0, "; ".join(errs_u)[:120])
+        n_us = len(re.findall(r"^[A-Z0-9&' ]+\|us\|", html, re.M))
+        check("estadios EE. UU.: hay 10 estadios", n_us == 10, str(n_us))
+        cu.close()
+    except Exception as e:
+        check("estadios EE. UU.", False, str(e)[:150])
+
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:
         print("  (omitido)")
