@@ -11,10 +11,6 @@ CSP = ("<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'self
        "style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; media-src 'self' data:; "
        "connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com; "
        "object-src 'none'; base-uri 'self'; form-action 'self'\">\n<meta name=\"referrer\" content=\"strict-origin-when-cross-origin\">\n")
-NOTA = ('<p class="nota-idioma" translate="no" style="margin:0 0 14px;padding:10px 12px;border-radius:10px;background:rgba(127,127,127,.12);font-size:.85rem">'
-        '🌐 Esta página está solo en español (versión oficial). · This page is only available in Spanish (official version): use your browser\'s translate feature. · '
-        'Cette page n\'existe qu\'en espagnol. · Esta página só está em espanhol. · Questa pagina è disponibile solo in spagnolo. · Diese Seite gibt es nur auf Spanisch.</p>')
-
 CSS = """:root { --fondo: #f2f5fa; --texto: #14202e; --suave: #55657a; --acento: #0c9b66; --caja: #fff; --linea: rgba(128,140,160,.25); }
 @media (prefers-color-scheme: dark) { :root { --fondo: #0d131a; --texto: #e8eef5; --suave: #9fb0c3; --acento: #3ee0a4; --caja: #131d29; } }
 * { box-sizing: border-box; }
@@ -58,107 +54,10 @@ LIBRO = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width
 ESTADIO = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="32" cy="38" rx="24" ry="10"/><ellipse cx="32" cy="38" rx="12" ry="4"/><path d="M8 38V26c0-5 11-9 24-9s24 4 24 9v12"/></svg>'
 
 
-def cabecera(titulo, desc, ruta, h1):
-    return f"""<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-{CSP}<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{e(titulo)}</title>
-<meta name="description" content="{e(desc)}">
-<link rel="canonical" href="{DOM}{ruta}">
-<meta property="og:title" content="{e(titulo)}">
-<meta property="og:description" content="{e(desc)}">
-<meta property="og:type" content="article">
-<meta property="og:url" content="{DOM}{ruta}">
-<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
-<style>
-{CSS}</style>
-</head>
-<body>
-<main>
-{NOTA}
-<p><a href="/">‹ Volver al juego</a> · <a href="/curiosidades/">Curiosidades del fútbol</a></p>
-<h1>{e(h1)}</h1>
-<p class="fecha">Datos revisados el {FECHA}</p>
-"""
-
-def pie(extra=""):
-    return f"""{extra}
-<p><a class="jugar" href="/">⚽ Juega a TIKITEXTO, el juego diario de fútbol</a></p>
-<nav class="legal-nav" aria-label="Información legal">
-<a href="/curiosidades/">Curiosidades</a><a href="/aviso-legal.html">Aviso legal</a><a href="/privacidad.html">Privacidad</a><a href="/cookies.html">Cookies</a><a href="/accesibilidad.html">Accesibilidad</a><a href="/contacto.html">Contacto</a>
-</nav>
-<p class="fecha">TIKITEXTO no está afiliado a clubes, jugadores, federaciones ni competiciones. Los nombres se usan solo como referencia informativa. Ilustraciones propias.</p>
-</main>
-</body>
-</html>
-"""
-
-def entrada(icono, marca, titulo, parrafos, dato=None, id_=None):
-    ps = "".join(f"<p>{p}</p>" for p in parrafos)
-    d = f'<p class="dato"><b>En una frase:</b> {dato}</p>' if dato else ""
-    i = f' id="{id_}"' if id_ else ""
-    return f'<article class="entrada"{i}><div class="ano">{icono}<b>{e(marca)}</b></div><div><h3>{titulo}</h3>{ps}{d}</div></article>\n'
-
-def linea_tiempo(puntos, titulo):
-    """SVG de línea de tiempo propio: puntos = [(año, etiqueta)]"""
-    n = len(puntos); w = 600; m = 46; paso = (w - 2 * m) / max(1, n - 1)
-    s = [f'<svg class="ilustra" viewBox="0 0 {w} 130" role="img" aria-label="{e(titulo)}"><line x1="{m}" y1="65" x2="{w-m}" y2="65" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>']
-    for k, (a, t) in enumerate(puntos):
-        x = m + k * paso; arriba = (k % 2 == 0)
-        ay = 30 if arriba else 112; ly = ay - 15 if arriba else ay + 0
-        anc = "start" if k == 0 else ("end" if k == n - 1 else "middle")
-        tx = x - 10 if k == 0 else (x + 10 if k == n - 1 else x)
-        s.append(f'<circle cx="{x:.0f}" cy="65" r="6" fill="currentColor"/>')
-        s.append(f'<text x="{tx:.0f}" y="{(ay if arriba else ay-14):.0f}" text-anchor="{anc}" font-size="15" font-weight="700" fill="currentColor">{e(str(a))}</text>'
-                 f'<text x="{tx:.0f}" y="{(ay+14 if arriba else ay):.0f}" text-anchor="{anc}" font-size="11.5" fill="#7d8da1">{e(t)}</text>')
-    s.append('</svg>')
-    return "".join(s)
-
-# ---------------------------------------------------------------- DATOS
 CHAMPIONS = [(1956,"Real Madrid"),(1957,"Real Madrid"),(1958,"Real Madrid"),(1959,"Real Madrid"),(1960,"Real Madrid"),(1961,"Benfica"),(1962,"Benfica"),(1963,"Milan"),(1964,"Inter"),(1965,"Inter"),(1966,"Real Madrid"),(1967,"Celtic"),(1968,"Manchester United"),(1969,"Milan"),(1970,"Feyenoord"),(1971,"Ajax"),(1972,"Ajax"),(1973,"Ajax"),(1974,"Bayern de Múnich"),(1975,"Bayern de Múnich"),(1976,"Bayern de Múnich"),(1977,"Liverpool"),(1978,"Liverpool"),(1979,"Nottingham Forest"),(1980,"Nottingham Forest"),(1981,"Liverpool"),(1982,"Aston Villa"),(1983,"Hamburgo"),(1984,"Liverpool"),(1985,"Juventus"),(1986,"Steaua de Bucarest"),(1987,"Oporto"),(1988,"PSV Eindhoven"),(1989,"Milan"),(1990,"Milan"),(1991,"Estrella Roja"),(1992,"Barcelona"),(1993,"Olympique de Marsella"),(1994,"Milan"),(1995,"Ajax"),(1996,"Juventus"),(1997,"Borussia Dortmund"),(1998,"Real Madrid"),(1999,"Manchester United"),(2000,"Real Madrid"),(2001,"Bayern de Múnich"),(2002,"Real Madrid"),(2003,"Milan"),(2004,"Oporto"),(2005,"Liverpool"),(2006,"Barcelona"),(2007,"Milan"),(2008,"Manchester United"),(2009,"Barcelona"),(2010,"Inter"),(2011,"Barcelona"),(2012,"Chelsea"),(2013,"Bayern de Múnich"),(2014,"Real Madrid"),(2015,"Barcelona"),(2016,"Real Madrid"),(2017,"Real Madrid"),(2018,"Real Madrid"),(2019,"Liverpool"),(2020,"Bayern de Múnich"),(2021,"Chelsea"),(2022,"Real Madrid"),(2023,"Manchester City"),(2024,"Real Madrid"),(2025,"París Saint-Germain"),(2026,"París Saint-Germain")]
 FINALES_RECIENTES = [(2026,"París Saint-Germain","Arsenal","1-1 (4-3 en penaltis)","Budapest"),(2025,"París Saint-Germain","Inter","5-0","Múnich"),(2024,"Real Madrid","Borussia Dortmund","2-0","Londres"),(2023,"Manchester City","Inter","1-0","Estambul"),(2022,"Real Madrid","Liverpool","1-0","París"),(2021,"Chelsea","Manchester City","1-0","Oporto"),(2020,"Bayern de Múnich","París Saint-Germain","1-0","Lisboa"),(2019,"Liverpool","Tottenham","2-0","Madrid"),(2018,"Real Madrid","Liverpool","3-1","Kiev"),(2017,"Real Madrid","Juventus","4-1","Cardiff"),(2016,"Real Madrid","Atlético de Madrid","1-1 (5-3 en penaltis)","Milán"),(2015,"Barcelona","Juventus","3-1","Berlín")]
 MUNDIAL = [(1930,"Uruguay","Argentina","4-2","Uruguay"),(1934,"Italia","Checoslovaquia","2-1 (prórroga)","Italia"),(1938,"Italia","Hungría","4-2","Francia"),(1950,"Uruguay","Brasil","2-1 (liguilla final)","Brasil"),(1954,"Alemania Occidental","Hungría","3-2","Suiza"),(1958,"Brasil","Suecia","5-2","Suecia"),(1962,"Brasil","Checoslovaquia","3-1","Chile"),(1966,"Inglaterra","Alemania Occidental","4-2 (prórroga)","Inglaterra"),(1970,"Brasil","Italia","4-1","México"),(1974,"Alemania Occidental","Países Bajos","2-1","Alemania Occidental"),(1978,"Argentina","Países Bajos","3-1 (prórroga)","Argentina"),(1982,"Italia","Alemania Occidental","3-1","España"),(1986,"Argentina","Alemania Occidental","3-2","México"),(1990,"Alemania Occidental","Argentina","1-0","Italia"),(1994,"Brasil","Italia","0-0 (3-2 en penaltis)","Estados Unidos"),(1998,"Francia","Brasil","3-0","Francia"),(2002,"Brasil","Alemania","2-0","Corea del Sur y Japón"),(2006,"Italia","Francia","1-1 (5-3 en penaltis)","Alemania"),(2010,"España","Países Bajos","1-0 (prórroga)","Sudáfrica"),(2014,"Alemania","Argentina","1-0 (prórroga)","Brasil"),(2018,"Francia","Croacia","4-2","Rusia"),(2022,"Argentina","Francia","3-3 (4-2 en penaltis)","Catar"),(2026,"España","Argentina","1-0 (prórroga)","Estados Unidos, México y Canadá")]
 
-def tabla(cab, filas):
-    t = "<div class=\"tabla-scroll\"><table><thead><tr>" + "".join(f"<th>{e(c)}</th>" for c in cab) + "</tr></thead><tbody>"
-    for f in filas:
-        t += "<tr>" + "".join(f"<td>{e(str(c))}</td>" for c in f) + "</tr>"
-    return t + "</tbody></table></div>"
-
-def cuenta(lista):
-    d = {}
-    for x in lista: d[x] = d.get(x, 0) + 1
-    return sorted(d.items(), key=lambda kv: (-kv[1], kv[0]))
-
-def pagina_campeones():
-    ruta = "curiosidades/campeones/"
-    h = cabecera("Ganadores de la Champions League y del Mundial: lista completa | TIKITEXTO",
-                 "Todos los campeones de la Champions League (Copa de Europa) y de la Copa del Mundo, con finales recientes, marcadores y cuántos títulos tiene cada club y selección.",
-                 ruta, "Ganadores de la Champions League y del Mundial")
-    ch_t = cuenta([c for _, c in CHAMPIONS])
-    mu_t = cuenta([("Alemania" if "Alemania" in c else c) for _, c, *_ in MUNDIAL])
-    h += '<div class="caja">La Copa de Europa nació en 1955-56 y desde 1992-93 se llama Champions League. El Mundial se juega desde 1930, cada cuatro años, salvo 1942 y 1946 por la Segunda Guerra Mundial.</div>\n'
-    h += '<p class="indice"><a href="#champions">Champions League</a><a href="#mundial">Copa del Mundo</a><a href="#titulos">Ranking de títulos</a></p>\n'
-    h += linea_tiempo([(1956,"Primera Copa de Europa"),(1992,"Nace la Champions"),(2010,"Era de finales recientes"),(2026,"PSG bicampeón")], "Línea de tiempo de la Champions League")
-    h += '<h2 id="champions">Campeones de la Champions League y la Copa de Europa</h2>\n'
-    h += '<p>Estas son las últimas finales, con su marcador. La edición de 2026 se jugó el 30 de mayo en Budapest: el PSG empató 1-1 con el Arsenal y ganó 4-3 en la tanda de penaltis, con lo que revalidó el título.</p>\n'
-    h += tabla(["Año","Campeón","Subcampeón","Resultado","Sede"], FINALES_RECIENTES)
-    h += '<h3 style="margin-top:22px">Todos los campeones, año a año</h3>\n'
-    h += tabla(["Final","Campeón"], [(a, c) for a, c in reversed(CHAMPIONS)])
-    h += '<h2 id="mundial">Campeones de la Copa del Mundo</h2>\n'
-    h += '<p>El Mundial de 2026, el primero con 48 selecciones y organizado por Estados Unidos, México y Canadá, terminó el 19 de julio en el MetLife Stadium con la segunda estrella de España: venció 1-0 a Argentina en la prórroga con un gol de Ferran Torres, tras un pase de Nico Williams.</p>\n'
-    h += linea_tiempo([(1930,"Uruguay"),(1950,"Maracanazo"),(1970,"Brasil, 3.ª"),(1998,"Francia"),(2010,"España"),(2022,"Argentina"),(2026,"España")], "Línea de tiempo de los Mundiales")
-    h += tabla(["Año","Campeón","Subcampeón","Final","País anfitrión"], [(a, c, s, r, p) for a, c, s, r, p in reversed(MUNDIAL)])
-    h += '<h2 id="titulos">Ranking de títulos</h2>\n<div class="tabla-scroll">'
-    h += '<p><b>Champions League / Copa de Europa</b></p>' + tabla(["Club","Títulos"], ch_t[:8])
-    h += '<p style="margin-top:16px"><b>Copa del Mundo</b> (Alemania Occidental y Alemania se cuentan juntas)</p>' + tabla(["Selección","Títulos"], mu_t)
-    h += '</div>\n'
-    h += '<p class="fecha">Fuentes: UEFA y FIFA (palmarés oficiales). Los marcadores de prórroga o penaltis se indican entre paréntesis.</p>'
-    return ruta, h + pie()
-
-# ------------------------------------------------------------ LIGAS
 LIGAS = [
  ("🏴","1888","Inglaterra · Football League y Premier League","La liga más antigua del mundo",
   ["El 17 de abril de 1888, en un hotel de Manchester, se fundó la <b>Football League</b> por iniciativa de William McGregor, directivo del Aston Villa. Cansado de que los clubes jugaran amistosos sueltos y sin calendario fijo, propuso una competición regular. Empezó con 12 equipos y ganó la primera edición el Preston North End, que no perdió ningún partido de liga (los llamados «Invencibles»).",
@@ -210,20 +109,6 @@ LIGAS = [
   "Nacida en 1991 y estrenada en 1993, es el ejemplo de liga creada de la nada."),
 ]
 
-def pagina_ligas():
-    ruta = "curiosidades/ligas/"
-    h = cabecera("Cómo se fundaron las ligas de fútbol más famosas del mundo | TIKITEXTO",
-                 "Historia de la fundación de 13 ligas: Premier League, La Liga, Serie A, Bundesliga, Ligue 1, Primeira Liga, Eredivisie, Brasileirão, MLS y más. Años, primeros campeones y curiosidades.",
-                 ruta, "Cómo se fundaron las ligas de fútbol más famosas del mundo")
-    h += '<div class="caja">Trece ligas, de la más antigua (Inglaterra, 1888) a las más recientes. Cada una incluye cuándo nació, quién ganó la primera edición y su dato clave.</div>\n'
-    h += linea_tiempo([(1888,"Inglaterra"),(1890,"Escocia"),(1891,"Argentina"),(1898,"Italia"),(1929,"España"),(1932,"Francia"),(1934,"Portugal"),(1956,"P. Bajos"),(1963,"Alemania"),(1971,"Brasil"),(1993,"Japón"),(1996,"EE. UU.")], "Línea de tiempo de la fundación de las ligas")
-    h += '<p class="indice">' + "".join(f'<a href="#l{i}">{e(t.split(" · ")[0])}</a>' for i, (_, _, t, *_ ) in enumerate(LIGAS)) + '</p>\n'
-    for i, (_, ano, tit, sub, ps, dato) in enumerate(LIGAS):
-        h += entrada(LIGA, ano, f"{e(tit)} — {e(sub)}", ps, dato, f"l{i}")
-    h += '<p class="fecha">Fuentes: federaciones y organizadores de cada competición. Cuando una liga tuvo varias etapas, se indica la fecha de su formato actual.</p>'
-    return ruta, h + pie()
-
-# ------------------------------------------------------------ TROFEOS
 TROFEOS = [
  ("🏆","1872","Inglaterra · FA Cup","La copa más antigua del mundo",
   ["Se creó por idea de Charles W. Alcock, secretario de la Football Association, tras el éxito de una copa escolar en Harrow. La primera final se jugó el 16 de marzo de 1872 en el Kennington Oval de Londres y la ganó el Wanderers por 1-0 al Royal Engineers.",
@@ -269,33 +154,220 @@ TROFEOS = [
   ["Henri Delaunay, secretario de la federación francesa y de la UEFA, propuso un torneo de selecciones europeas ya en los años veinte, pero no vio su primera edición, que se jugó en 1960 y ganó la Unión Soviética. El trofeo lleva su nombre."],"Primera Eurocopa: 1960, campeona la Unión Soviética."),
 ]
 
-def pagina_trofeos():
-    ruta = "curiosidades/trofeos/"
-    h = cabecera("Historia de los trofeos de fútbol más importantes del mundo | TIKITEXTO",
-                 "Cómo nacieron la FA Cup, la Copa del Rey, la Copa del Mundo, la Champions League, el Balón de Oro y otros trofeos de España, Inglaterra, Italia, Alemania, Francia, Portugal, Brasil, Estados Unidos y Argentina.",
-                 ruta, "Historia de los trofeos de fútbol más importantes del mundo")
-    h += f'<div class="caja">{len(TROFEOS)} trofeos y premios, ordenados por países, con el año de su primera edición y su primer ganador.</div>\n'
-    h += '<p class="indice">' + "".join(f'<a href="#t{i}">{e(t.split(" · ")[1] if " · " in t else t)}</a>' for i, (_, _, t, *_ ) in enumerate(TROFEOS)) + '</p>\n'
-    for i, (_, ano, tit, sub, ps, dato) in enumerate(TROFEOS):
-        h += entrada(COPA, ano, f"{e(tit)} — {e(sub)}", ps, dato, f"t{i}")
-    h += '<p class="fecha">Fuentes: federaciones y organizadores de cada competición. Algunos trofeos tuvieron varios nombres y etapas; se indica el año de su primera edición.</p>'
-    return ruta, h + pie()
 
-def pagina_indice():
-    ruta = "curiosidades/"
-    h = cabecera("Curiosidades del fútbol: campeones, ligas y trofeos | TIKITEXTO",
-                 "Historia y datos del fútbol: ganadores de la Champions League y del Mundial, cómo se fundaron las ligas más famosas y cómo nacieron los trofeos más importantes.",
-                 ruta, "Curiosidades del fútbol")
-    h += '<div class="caja">Datos, historia y números del fútbol mundial. Si te gusta, pon a prueba lo que sabes en <a href="/">TIKITEXTO</a>.</div>\n<div class="tarjetas">\n'
-    h += f'<a class="tarjeta" href="/curiosidades/campeones/">{COPA}<b>Campeones</b><span>Ganadores de la Champions League y del Mundial, con finales y marcadores.</span></a>\n'
-    h += f'<a class="tarjeta" href="/curiosidades/ligas/">{LIGA}<b>Fundación de las ligas</b><span>Cómo nacieron 13 ligas del mundo: años, primeros campeones y curiosidades.</span></a>\n'
-    h += f'<a class="tarjeta" href="/curiosidades/trofeos/">{BALON}<b>Trofeos</b><span>La historia de las copas y premios de España, Inglaterra, Italia, Alemania, Francia, Portugal, Brasil, EE. UU. y Argentina.</span></a>\n'
-    h += '</div>\n'
-    h += f'<h2>Lo último</h2>\n<div class="caja"><b>Mundial 2026:</b> España, campeona tras vencer 1-0 a Argentina en la prórroga de la final del 19 de julio en el MetLife Stadium. <b>Champions 2025-26:</b> el PSG revalidó el título al ganar al Arsenal en los penaltis (1-1, 4-3) el 30 de mayo en Budapest. <a href="/curiosidades/campeones/">Ver todos los campeones</a>.</div>\n'
-    return ruta, h + pie()
+LANGS = ["es", "en", "pt", "fr", "it", "de"]
+HREFLANG = {"es": "es", "en": "en", "pt": "pt-BR", "fr": "fr", "it": "it", "de": "de"}
+NOMBRE_IDIOMA = {"es": "Español", "en": "English", "pt": "Português", "fr": "Français", "it": "Italiano", "de": "Deutsch"}
+import importlib, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-for fn in (pagina_indice, pagina_campeones, pagina_ligas, pagina_trofeos):
-    ruta, cont = fn()
-    os.makedirs(os.path.join(RAIZ, ruta), exist_ok=True)
-    open(os.path.join(RAIZ, ruta, "index.html"), "w", encoding="utf-8").write(cont)
-    print("generada", ruta)
+UI_ES = {
+ "back": "‹ Volver al juego", "crumb": "Curiosidades del fútbol", "checked": "Datos revisados el 31 de octubre de 2026",
+ "play": "⚽ Juega a TIKITEXTO, el juego diario de fútbol", "nav": ["Curiosidades", "Aviso legal", "Privacidad", "Cookies", "Accesibilidad", "Contacto"],
+ "disc": "TIKITEXTO no está afiliado a clubes, jugadores, federaciones ni competiciones. Los nombres se usan solo como referencia informativa. Ilustraciones propias.",
+ "nutshell": "En una frase:",
+ "idx_title": "Curiosidades del fútbol: campeones, ligas y trofeos | TIKITEXTO",
+ "idx_desc": "Historia y datos del fútbol: ganadores de la Champions League y del Mundial, cómo se fundaron las ligas más famosas y cómo nacieron los trofeos más importantes.",
+ "idx_h1": "Curiosidades del fútbol",
+ "idx_caja": 'Datos, historia y números del fútbol mundial. Si te gusta, pon a prueba lo que sabes en <a href="{play}">TIKITEXTO</a>.',
+ "cards": [("Campeones", "Ganadores de la Champions League y del Mundial, con finales y marcadores."),
+           ("Fundación de las ligas", "Cómo nacieron 13 ligas del mundo: años, primeros campeones y curiosidades."),
+           ("Trofeos", "La historia de las copas y premios de España, Inglaterra, Italia, Alemania, Francia, Portugal, Brasil, EE. UU. y Argentina.")],
+ "latest_h": "Lo último",
+ "latest": '<b>Mundial 2026:</b> España, campeona tras vencer 1-0 a Argentina en la prórroga de la final del 19 de julio en el MetLife Stadium. <b>Champions 2025-26:</b> el PSG revalidó el título al ganar al Arsenal en los penaltis (1-1, 4-3) el 30 de mayo en Budapest. <a href="{champ}">Ver todos los campeones</a>.',
+ "ch_title": "Ganadores de la Champions League y del Mundial: lista completa | TIKITEXTO",
+ "ch_desc": "Todos los campeones de la Champions League (Copa de Europa) y de la Copa del Mundo, con finales recientes, marcadores y cuántos títulos tiene cada club y selección.",
+ "ch_h1": "Ganadores de la Champions League y del Mundial",
+ "ch_caja": "La Copa de Europa nació en 1955-56 y desde 1992-93 se llama Champions League. El Mundial se juega desde 1930, cada cuatro años, salvo 1942 y 1946 por la Segunda Guerra Mundial.",
+ "ch_idx": ["Champions League", "Copa del Mundo", "Ranking de títulos"],
+ "tl1": ["Primera Copa de Europa", "Nace la Champions", "Finales recientes", "PSG bicampeón"], "tl1_t": "Línea de tiempo de la Champions League",
+ "ch_h2a": "Campeones de la Champions League y la Copa de Europa",
+ "ch_p1": "Estas son las últimas finales, con su marcador. La edición de 2026 se jugó el 30 de mayo en Budapest: el PSG empató 1-1 con el Arsenal y ganó 4-3 en la tanda de penaltis, con lo que revalidó el título.",
+ "ch_h3all": "Todos los campeones, año a año",
+ "ch_h2b": "Campeones de la Copa del Mundo",
+ "ch_p2": "El Mundial de 2026, el primero con 48 selecciones y organizado por Estados Unidos, México y Canadá, terminó el 19 de julio en el MetLife Stadium con la segunda estrella de España: venció 1-0 a Argentina en la prórroga con un gol de Ferran Torres, tras un pase de Nico Williams.",
+ "tl2": ["Uruguay", "Maracanazo", "Brasil, 3.ª", "Francia", "España", "Argentina", "España"], "tl2_t": "Línea de tiempo de los Mundiales",
+ "ch_h2c": "Ranking de títulos", "rk1": "Champions League / Copa de Europa", "rk2": "Copa del Mundo (Alemania Occidental y Alemania se cuentan juntas)",
+ "th_year": "Año", "th_champ": "Campeón", "th_runner": "Subcampeón", "th_result": "Resultado", "th_venue": "Sede", "th_final": "Final", "th_club": "Club", "th_titles": "Títulos", "th_team": "Selección", "th_host": "País anfitrión",
+ "pens": "{s} ({p} en penaltis)", "aet": "{s} (prórroga)", "round": "{s} (liguilla final)",
+ "ch_src": "Fuentes: UEFA y FIFA (palmarés oficiales). Los marcadores de prórroga o penaltis se indican entre paréntesis.",
+ "li_title": "Cómo se fundaron las ligas de fútbol más famosas del mundo | TIKITEXTO",
+ "li_desc": "Historia de la fundación de 13 ligas: Premier League, La Liga, Serie A, Bundesliga, Ligue 1, Primeira Liga, Eredivisie, Brasileirão, MLS y más. Años, primeros campeones y curiosidades.",
+ "li_h1": "Cómo se fundaron las ligas de fútbol más famosas del mundo",
+ "li_caja": "Trece ligas, de la más antigua (Inglaterra, 1888) a las más recientes. Cada una incluye cuándo nació, quién ganó la primera edición y su dato clave.",
+ "li_tl": ["Inglaterra", "Escocia", "Argentina", "Italia", "España", "Francia", "Portugal", "P. Bajos", "Alemania", "Brasil", "Japón", "EE. UU."], "li_tl_t": "Línea de tiempo de la fundación de las ligas",
+ "li_idx": ["Inglaterra", "España", "Italia", "Alemania", "Francia", "Portugal", "Países Bajos", "Escocia", "Brasil", "Argentina", "México", "Estados Unidos", "Japón"],
+ "li_src": "Fuentes: federaciones y organizadores de cada competición. Cuando una liga tuvo varias etapas, se indica la fecha de su formato actual.",
+ "tr_title": "Historia de los trofeos de fútbol más importantes del mundo | TIKITEXTO",
+ "tr_desc": "Cómo nacieron la FA Cup, la Copa del Rey, la Copa del Mundo, la Champions League, el Balón de Oro y otros trofeos de España, Inglaterra, Italia, Alemania, Francia, Portugal, Brasil, Estados Unidos y Argentina.",
+ "tr_h1": "Historia de los trofeos de fútbol más importantes del mundo",
+ "tr_caja": "{n} trofeos y premios, ordenados por países, con el año de su primera edición y su primer ganador.",
+ "tr_idx": ["FA Cup", "Copa de la Liga", "Copa del Rey", "Pichichi", "Coppa Italia", "Scudetto", "DFB-Pokal", "Meisterschale", "Copa de Francia", "Taça de Portugal", "Copa de Brasil", "Copa Libertadores", "U.S. Open Cup", "MLS Cup", "Copa Argentina", "Copa del Mundo", "Champions League", "Balón de Oro", "Eurocopa"],
+ "tr_src": "Fuentes: federaciones y organizadores de cada competición. Algunos trofeos tuvieron varios nombres y etapas; se indica el año de su primera edición.",
+}
+NOMBRES_ES = {}
+
+class Idioma:
+    def __init__(self, lang):
+        self.lang = lang
+        self.prefix = "" if lang == "es" else lang + "/"
+        if lang == "es":
+            self.ui = UI_ES; self.nombres = {}; self.paises = {}; self.ciudades = {}
+            self.ligas = LIGAS; self.trofeos = TROFEOS
+        else:
+            m = importlib.import_module("cur_tr." + lang)
+            self.ui = m.UI; self.nombres = m.NOMBRES; self.paises = m.PAISES; self.ciudades = m.CIUDADES
+            self.ligas = [(LIGAS[k][0], LIGAS[k][1]) + tuple(x) for k, x in enumerate(m.LIGAS)]
+            self.trofeos = [(TROFEOS[k][0], TROFEOS[k][1]) + tuple(x) for k, x in enumerate(m.TROFEOS)]
+            assert len(m.LIGAS) == len(LIGAS) and len(m.TROFEOS) == len(TROFEOS), lang
+    def club(self, x): return self.nombres.get(x, x)
+    def pais(self, x): return self.paises.get(x, x)
+    def ciudad(self, x): return self.ciudades.get(x, x)
+    def url(self, ruta): return "/" + self.prefix + ruta
+    def play(self): return "/" if self.lang == "es" else "/?lang=" + self.lang
+
+def cabecera(L, titulo, desc, ruta, h1):
+    u = L.ui
+    alt = "".join(f'<link rel="alternate" hreflang="{HREFLANG[c]}" href="{DOM}{"" if c == "es" else c + "/"}{ruta}">\n' for c in LANGS)
+    alt += f'<link rel="alternate" hreflang="x-default" href="{DOM}{ruta}">\n'
+    sel = " · ".join((f'<b>{NOMBRE_IDIOMA[c]}</b>' if c == L.lang else f'<a href="/{"" if c == "es" else c + "/"}{ruta}" hreflang="{HREFLANG[c]}" lang="{HREFLANG[c]}">{NOMBRE_IDIOMA[c]}</a>') for c in LANGS)
+    return f"""<!DOCTYPE html>
+<html lang="{HREFLANG[L.lang]}">
+<head>
+<meta charset="utf-8">
+{CSP}<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{e(titulo)}</title>
+<meta name="description" content="{e(desc)}">
+<link rel="canonical" href="{DOM}{L.prefix}{ruta}">
+{alt}<meta property="og:title" content="{e(titulo)}">
+<meta property="og:description" content="{e(desc)}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{DOM}{L.prefix}{ruta}">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<style>
+{CSS}.idiomas {{ font-size: .85rem; color: var(--suave); margin: 0 0 14px; }}
+</style>
+</head>
+<body>
+<main>
+<p class="idiomas" translate="no">🌐 {sel}</p>
+<p><a href="{L.play()}">{e(u['back'])}</a> · <a href="{L.url('curiosidades/')}">{e(u['crumb'])}</a></p>
+<h1>{e(h1)}</h1>
+<p class="fecha">{e(u['checked'])}</p>
+"""
+
+def pie(L, extra=""):
+    u = L.ui; n = u["nav"]
+    return f"""{extra}
+<p><a class="jugar" href="{L.play()}">{e(u['play'])}</a></p>
+<nav class="legal-nav" aria-label="Info">
+<a href="{L.url('curiosidades/')}">{e(n[0])}</a><a href="/aviso-legal.html">{e(n[1])}</a><a href="/privacidad.html">{e(n[2])}</a><a href="/cookies.html">{e(n[3])}</a><a href="/accesibilidad.html">{e(n[4])}</a><a href="/contacto.html">{e(n[5])}</a>
+</nav>
+<p class="fecha">{e(u['disc'])}</p>
+</main>
+</body>
+</html>
+"""
+
+def entrada(L, icono, marca, titulo, parrafos, dato=None, id_=None):
+    ps = "".join(f"<p>{p}</p>" for p in parrafos)
+    d = f'<p class="dato"><b>{e(L.ui["nutshell"])}</b> {dato}</p>' if dato else ""
+    i = f' id="{id_}"' if id_ else ""
+    return f'<article class="entrada"{i}><div class="ano">{icono}<b>{e(marca)}</b></div><div><h3>{titulo}</h3>{ps}{d}</div></article>\n'
+
+def linea_tiempo(puntos, titulo):
+    n = len(puntos); w = 600; m = 46; paso = (w - 2 * m) / max(1, n - 1)
+    s = [f'<svg class="ilustra" viewBox="0 0 {w} 130" role="img" aria-label="{e(titulo)}"><line x1="{m}" y1="65" x2="{w-m}" y2="65" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>']
+    for k, (a, t) in enumerate(puntos):
+        x = m + k * paso; arriba = (k % 2 == 0)
+        ay = 30 if arriba else 112
+        anc = "start" if k == 0 else ("end" if k == n - 1 else "middle")
+        tx = x - 10 if k == 0 else (x + 10 if k == n - 1 else x)
+        s.append(f'<circle cx="{x:.0f}" cy="65" r="6" fill="currentColor"/>')
+        s.append(f'<text x="{tx:.0f}" y="{(ay if arriba else ay-14):.0f}" text-anchor="{anc}" font-size="15" font-weight="700" fill="currentColor">{e(str(a))}</text>'
+                 f'<text x="{tx:.0f}" y="{(ay+14 if arriba else ay):.0f}" text-anchor="{anc}" font-size="11.5" fill="#7d8da1">{e(t)}</text>')
+    s.append('</svg>')
+    return "".join(s)
+
+def tabla(cab, filas):
+    t = "<div class=\"tabla-scroll\"><table><thead><tr>" + "".join(f"<th>{e(c)}</th>" for c in cab) + "</tr></thead><tbody>"
+    for f in filas:
+        t += "<tr>" + "".join(f"<td>{e(str(c))}</td>" for c in f) + "</tr>"
+    return t + "</tbody></table></div>"
+
+def cuenta(lista):
+    d = {}
+    for x in lista: d[x] = d.get(x, 0) + 1
+    return sorted(d.items(), key=lambda kv: (-kv[1], kv[0]))
+
+def resultado(L, texto):
+    """convierte el texto neutro (como en español) a la plantilla del idioma"""
+    u = L.ui
+    if "(prórroga)" in texto: return u["aet"].format(s=texto.split(" ")[0])
+    if "en penaltis" in texto:
+        sc, p = texto.split(" (")[0], texto.split(" (")[1].split(" ")[0]
+        return u["pens"].format(s=sc, p=p)
+    if "liguilla" in texto: return u["round"].format(s=texto.split(" ")[0])
+    return texto
+
+def pagina_campeones(L):
+    u = L.ui; ruta = "curiosidades/campeones/"
+    h = cabecera(L, u["ch_title"], u["ch_desc"], ruta, u["ch_h1"])
+    ch_t = cuenta([L.club(c) for _, c in CHAMPIONS])
+    mu_t = cuenta([L.pais("Alemania" if "Alemania" in c else c) for _, c, *_ in MUNDIAL])
+    h += f'<div class="caja">{e(u["ch_caja"])}</div>\n'
+    h += '<p class="indice"><a href="#champions">%s</a><a href="#mundial">%s</a><a href="#titulos">%s</a></p>\n' % tuple(e(x) for x in u["ch_idx"])
+    h += linea_tiempo(list(zip([1956, 1992, 2010, 2026], u["tl1"])), u["tl1_t"])
+    h += f'<h2 id="champions">{e(u["ch_h2a"])}</h2>\n<p>{e(u["ch_p1"])}</p>\n'
+    h += tabla([u["th_year"], u["th_champ"], u["th_runner"], u["th_result"], u["th_venue"]], [(a, L.club(c), L.club(s), resultado(L, r), L.ciudad(v)) for a, c, s, r, v in FINALES_RECIENTES])
+    h += f'<h3 style="margin-top:22px">{e(u["ch_h3all"])}</h3>\n'
+    h += tabla([u["th_final"], u["th_champ"]], [(a, L.club(c)) for a, c in reversed(CHAMPIONS)])
+    h += f'<h2 id="mundial">{e(u["ch_h2b"])}</h2>\n<p>{e(u["ch_p2"])}</p>\n'
+    h += linea_tiempo(list(zip([1930, 1950, 1970, 1998, 2010, 2022, 2026], u["tl2"])), u["tl2_t"])
+    h += tabla([u["th_year"], u["th_champ"], u["th_runner"], u["th_final"], u["th_host"]], [(a, L.pais(c), L.pais(s), resultado(L, r), L.pais(p)) for a, c, s, r, p in reversed(MUNDIAL)])
+    h += f'<h2 id="titulos">{e(u["ch_h2c"])}</h2>\n'
+    h += f'<p><b>{e(u["rk1"])}</b></p>' + tabla([u["th_club"], u["th_titles"]], ch_t[:8])
+    h += f'<p style="margin-top:16px"><b>{e(u["rk2"])}</b></p>' + tabla([u["th_team"], u["th_titles"]], mu_t)
+    h += f'\n<p class="fecha">{e(u["ch_src"])}</p>'
+    return ruta, h + pie(L)
+
+def pagina_ligas(L):
+    u = L.ui; ruta = "curiosidades/ligas/"
+    h = cabecera(L, u["li_title"], u["li_desc"], ruta, u["li_h1"])
+    h += f'<div class="caja">{e(u["li_caja"])}</div>\n'
+    h += linea_tiempo(list(zip([1888, 1890, 1891, 1898, 1929, 1932, 1934, 1956, 1963, 1971, 1993, 1996], u["li_tl"])), u["li_tl_t"])
+    h += '<p class="indice">' + "".join(f'<a href="#l{i}">{e(t)}</a>' for i, t in enumerate(u["li_idx"])) + '</p>\n'
+    for i, (_, ano, tit, sub, ps, dato) in enumerate(L.ligas):
+        h += entrada(L, LIGA, ano, f"{e(tit)} — {e(sub)}", ps, dato, f"l{i}")
+    h += f'<p class="fecha">{e(u["li_src"])}</p>'
+    return ruta, h + pie(L)
+
+def pagina_trofeos(L):
+    u = L.ui; ruta = "curiosidades/trofeos/"
+    h = cabecera(L, u["tr_title"], u["tr_desc"], ruta, u["tr_h1"])
+    h += f'<div class="caja">{e(u["tr_caja"].format(n=len(L.trofeos)))}</div>\n'
+    h += '<p class="indice">' + "".join(f'<a href="#t{i}">{e(t)}</a>' for i, t in enumerate(u["tr_idx"])) + '</p>\n'
+    for i, (_, ano, tit, sub, ps, dato) in enumerate(L.trofeos):
+        h += entrada(L, COPA, ano, f"{e(tit)} — {e(sub)}", ps, dato, f"t{i}")
+    h += f'<p class="fecha">{e(u["tr_src"])}</p>'
+    return ruta, h + pie(L)
+
+def pagina_indice(L):
+    u = L.ui; ruta = "curiosidades/"
+    h = cabecera(L, u["idx_title"], u["idx_desc"], ruta, u["idx_h1"])
+    h += f'<div class="caja">{u["idx_caja"].format(play=L.play())}</div>\n<div class="tarjetas">\n'
+    for icono, sl, (b, sp) in zip((COPA, LIGA, BALON), ("campeones/", "ligas/", "trofeos/"), u["cards"]):
+        h += f'<a class="tarjeta" href="{L.url("curiosidades/" + sl)}">{icono}<b>{e(b)}</b><span>{e(sp)}</span></a>\n'
+    h += f'</div>\n<h2>{e(u["latest_h"])}</h2>\n<div class="caja">{u["latest"].format(champ=L.url("curiosidades/campeones/"))}</div>\n'
+    return ruta, h + pie(L)
+
+if __name__ == "__main__":
+    langs = [a for a in sys.argv[1:] if a in LANGS] or LANGS
+    for lg in langs:
+        L = Idioma(lg)
+        for fn in (pagina_indice, pagina_campeones, pagina_ligas, pagina_trofeos):
+            ruta, cont = fn(L)
+            d = os.path.join(RAIZ, L.prefix + ruta)
+            os.makedirs(d, exist_ok=True)
+            open(os.path.join(d, "index.html"), "w", encoding="utf-8").write(cont)
+            print("generada", L.prefix + ruta)

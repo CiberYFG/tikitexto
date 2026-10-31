@@ -1852,7 +1852,7 @@ button.marca:active .marca__icono { transform: scale(.9); }
     </section>
 
     <nav class="pie-legal" aria-label="Información legal"><button type="button" id="abrirTutorial">Tutorial: ¿cómo se juega?</button>
-      <button type="button" id="abrirTutNv">Tutoriales: modos de novedad</button><button type="button" id="abrirIdioma" aria-label="Cambiar de idioma">🌐 Idioma · Language</button><a href="curiosidades/">Curiosidades del fútbol</a><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a><a href="accesibilidad.html">Accesibilidad</a><a href="contacto.html">Contacto</a><button type="button" id="abrirCookies">Configurar cookies</button></nav>
+      <button type="button" id="abrirTutNv">Tutoriales: modos de novedad</button><button type="button" id="abrirIdioma" aria-label="Cambiar de idioma">🌐 Idioma · Language</button><a href="curiosidades/" id="enlaceCuriosidades">Curiosidades del fútbol</a><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a><a href="accesibilidad.html">Accesibilidad</a><a href="contacto.html">Contacto</a><button type="button" id="abrirCookies">Configurar cookies</button></nav>
   </main>
 
   <footer class="inicio__pie">
@@ -6186,6 +6186,14 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     try { history.replaceState(null, "", location.pathname + location.search); } catch (error) { /* opcional */ }
     if (tieneCuenta() && modalTutorial.hidden) abrirTutorial(Boolean(perfil().tutorialPendiente));
   });
+})();
+</script>
+<script>
+(function () {
+  try {
+    var l = localStorage.getItem("tikitexto:idioma"), a = document.getElementById("enlaceCuriosidades");
+    if (a && l && l !== "es" && /^(en|pt|fr|it|de)$/.test(l)) a.setAttribute("href", l + "/curiosidades/");
+  } catch (e) { /* sin almacenamiento */ }
 })();
 </script>
 <!-- Aviso informativo (cookies y medición). La medición sin cookies (Cloudflare Web Analytics) está activa salvo que el usuario la desactive. -->

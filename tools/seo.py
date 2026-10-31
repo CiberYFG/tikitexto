@@ -142,7 +142,7 @@ def pagina(lang, ruta, titulo, desc, h1, lead, modo_cta, bloques, faq, hreflang_
 %(faq)s
 </main>
 <footer>
-<p><a href="%(base)saviso-legal.html">%(legal)s</a><a href="%(base)sprivacidad.html">%(priv)s</a><a href="%(base)scookies.html">%(cook)s</a><a href="%(base)saccesibilidad.html">%(acc)s</a></p>
+<p><a href="%(curhref)s">%(curlabel)s</a><a href="%(base)saviso-legal.html">%(legal)s</a><a href="%(base)sprivacidad.html">%(priv)s</a><a href="%(base)scookies.html">%(cook)s</a><a href="%(base)saccesibilidad.html">%(acc)s</a></p>
 <p>%(nota)s</p>
 </footer>
 </body>
@@ -150,13 +150,14 @@ def pagina(lang, ruta, titulo, desc, h1, lead, modo_cta, bloques, faq, hreflang_
 """ % dict(lang=HREFLANG[lang] if lang != "es" else "es", titulo=esc(titulo), desc=esc(desc), canon=canon, alts=hreflang_html, loc=HREFLANG[lang].replace("-", "_") if lang != "es" else "es_ES",
            base=base, ld=ldj, css=CSS, sel=selector, h1=esc(h1), lead=esc(lead), cta=cta, jugar=esc(u["jugar"]), como=esc(u["como"]),
            pasos="".join("<li>%s</li>" % esc(p) for p in u["pasos"]), bloques=bloques, faqt=esc(u["faq"]), faq=faq_html,
-           legal=esc(u["legal"]), priv=esc(u["priv"]), cook=esc(u["cook"]), acc=esc(u["acc"]), nota=esc(u["nota"]))
+           curhref=base + ("" if lang == "es" else lang + "/") + "curiosidades/", curlabel=esc(CUR_LABEL[lang]), legal=esc(u["legal"]), priv=esc(u["priv"]), cook=esc(u["cook"]), acc=esc(u["acc"]), nota=esc(u["nota"]))
 
 def escribir(ruta, contenido):
     destino = os.path.join(RAIZ, ruta, "index.html")
     os.makedirs(os.path.dirname(destino), exist_ok=True)
     open(destino, "w", encoding="utf-8").write(contenido)
 
+CUR_LABEL = {"es": "Curiosidades del fútbol", "en": "Football trivia", "pt": "Curiosidades do futebol", "fr": "Curiosités du football", "it": "Curiosità sul calcio", "de": "Fußball-Wissenswertes"}
 urls = [("", "es")]
 # páginas de idioma
 for lang in LANGS[1:]:
@@ -183,7 +184,11 @@ sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitem
 for ruta, lang in urls:
     extra = home_alts if (ruta == "" or ruta.rstrip("/") in LANGS) else ""
     sm.append("  <url><loc>%s%s</loc>%s</url>" % (DOM, ruta, extra))
-for p in ("curiosidades/", "curiosidades/campeones/", "curiosidades/ligas/", "curiosidades/trofeos/", "privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html", "contacto.html"):
+for sub in ("curiosidades/", "curiosidades/campeones/", "curiosidades/ligas/", "curiosidades/trofeos/"):
+    alts = "".join('<xhtml:link rel="alternate" hreflang="%s" href="%s%s%s"/>' % (HREFLANG[c], DOM, "" if c == "es" else c + "/", sub) for c in LANGS) + '<xhtml:link rel="alternate" hreflang="x-default" href="%s%s"/>' % (DOM, sub)
+    for c in LANGS:
+        sm.append("  <url><loc>%s%s%s</loc>%s</url>" % (DOM, "" if c == "es" else c + "/", sub, alts))
+for p in ("privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html", "contacto.html"):
     sm.append("  <url><loc>%s%s</loc></url>" % (DOM, p))
 sm.append("</urlset>")
 open(os.path.join(RAIZ, "sitemap.xml"), "w", encoding="utf-8").write("\n".join(sm) + "\n")

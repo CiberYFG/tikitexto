@@ -24,7 +24,7 @@ with sync_playwright() as p:
     api = ctx.request
 
     print("1) Archivos publicados")
-    for ruta in ["", "manifest.webmanifest", "sw.js", "privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html", "contacto.html", "curiosidades/", "curiosidades/campeones/", "curiosidades/ligas/", "curiosidades/trofeos/", "sitemap.xml", "robots.txt",
+    for ruta in ["", "manifest.webmanifest", "sw.js", "privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html", "contacto.html", "curiosidades/", "curiosidades/campeones/", "curiosidades/ligas/", "curiosidades/trofeos/", "en/curiosidades/", "de/curiosidades/ligas/", "sitemap.xml", "robots.txt",
                  "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png"]:
         try:
             r = api.get(BASE + ruta, timeout=30000)
@@ -294,6 +294,25 @@ with sync_playwright() as p:
         cg.close()
     except Exception as e:
         check("racha diaria y compartir", False, str(e)[:150])
+
+    print("3h) Curiosidades en los 6 idiomas")
+    try:
+        ch = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+        errs_h = []
+        for pre in ["", "en/", "pt/", "fr/", "it/", "de/"]:
+            for sub in ["curiosidades/", "curiosidades/campeones/", "curiosidades/ligas/", "curiosidades/trofeos/"]:
+                ph = ch.new_page()
+                ph.on("pageerror", lambda e: errs_h.append(str(e)))
+                ph.on("console", lambda m: errs_h.append(m.text) if "Content Security" in m.text else None)
+                r = ph.goto(BASE + pre + sub, wait_until="load", timeout=30000)
+                n_alt = ph.locator('link[rel="alternate"][hreflang]').count()
+                ancho = ph.evaluate("document.documentElement.scrollWidth <= innerWidth")
+                check("curiosidades " + pre + sub + " carga, con hreflang y sin scroll horizontal", r.status == 200 and n_alt == 7 and ancho, f"{r.status} alt={n_alt} ancho={ancho}")
+                ph.close()
+        check("curiosidades: sin errores de JavaScript ni CSP", not errs_h, "; ".join(errs_h)[:200])
+        ch.close()
+    except Exception as e:
+        check("curiosidades en idiomas", False, str(e)[:150])
 
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:

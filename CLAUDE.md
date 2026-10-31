@@ -22,7 +22,7 @@ Web: https://tikitexto.com · Repositorio: CiberYFG/tikitexto · Alojamiento: Gi
 6. No subir secretos. La URL y la clave **pública** (publishable) de Supabase están en `index.html` a propósito; la `service_role` jamás.
 
 ## Curiosidades (contenido)
-- `tools/curiosidades.py` genera `curiosidades/` (índice, `campeones/`, `ligas/`, `trofeos/`): solo español, ilustraciones SVG propias (sin fotos ni escudos). No editar a mano esos `index.html`; los datos están en el script. Tras cambiarlo: ejecutarlo y luego `tools/seo.py` (sitemap). Revisar siempre los datos con fuentes oficiales antes de publicar.
+- `tools/curiosidades.py` genera `curiosidades/` y `{en,pt,fr,it,de}/curiosidades/` (índice, `campeones/`, `ligas/`, `trofeos/`) en los 6 idiomas (textos en `tools/cur_tr/<idioma>.py`, con `hreflang`), ilustraciones SVG propias (sin fotos ni escudos). No editar a mano esos `index.html`; los datos están en el script. Tras cambiarlo: ejecutarlo y luego `tools/seo.py` (sitemap). Revisar siempre los datos con fuentes oficiales antes de publicar.
 
 ## Ranking (Supabase)
 - Tabla `jugadores` con RLS sin políticas; todo pasa por funciones RPC (`reclamar_nombre`, `registrar_acierto`, `ranking_top`, `recuperar_cuenta`, `eliminar_cuenta`).
