@@ -4847,5 +4847,18 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   });
 })();
 </script>
+<!-- Medición de visitas sin cookies (Cloudflare Web Analytics). Se puede desactivar en cookies.html#configurar -->
+<script>
+(function () {
+  var off = false;
+  try { off = localStorage.getItem("tikitexto:sin-medicion") === "1"; } catch (error) { /* sin almacenamiento */ }
+  if (off) return;
+  var s = document.createElement("script");
+  s.type = "module";
+  s.src = "https://static.cloudflareinsights.com/beacon.min.js";
+  s.setAttribute("data-cf-beacon", '{"token": "dab3fe665e7c48fb81d093154d9bd1ea"}');
+  document.head.appendChild(s);
+})();
+</script>
 </body>
 </html>

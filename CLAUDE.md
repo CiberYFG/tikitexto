@@ -17,7 +17,7 @@ Web: https://tikitexto.com · Repositorio: CiberYFG/tikitexto · Alojamiento: Gi
 2. Antes de editar: `git pull`. Un commit por cambio, con mensaje claro. Subir a `main` publica la web en 1-2 minutos: probar antes.
 3. No romper juegos, diseño ni archivos existentes. Comprobar que el JS compila y, si se puede, probar en un navegador.
 4. Las referencias a clubes/jugadores son solo texto. **No** usar escudos, fotos ni logos (derechos de autor).
-5. Si se añaden anuncios, analítica o cookies no técnicas: actualizar `privacidad.html` y añadir antes un aviso de consentimiento.
+5. Si se añaden anuncios o cookies no técnicas: actualizar `privacidad.html` y `cookies.html` y añadir antes un aviso de consentimiento. Ya hay medición de visitas **sin cookies** (Cloudflare Web Analytics, token público al final de `index.html`; se puede desactivar con `tikitexto:sin-medicion` en `localStorage`). Cualquier otra analítica requiere actualizar los textos legales.
 6. No subir secretos. La URL y la clave **pública** (publishable) de Supabase están en `index.html` a propósito; la `service_role` jamás.
 
 ## Ranking (Supabase)

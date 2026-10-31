@@ -34,7 +34,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--acento); outlin
   <h1>Política de cookies</h1>
   <p class="fecha">Última actualización: 31 de octubre de 2026</p>
 
-  <div class="caja">Resumen: TIKITEXTO <strong>no usa cookies de publicidad, de analítica ni de seguimiento</strong>. Solo guarda en tu dispositivo lo imprescindible para que el juego funcione, por lo que no necesita pedirte consentimiento.</div>
+  <div class="caja">Resumen: TIKITEXTO <strong>no usa cookies de publicidad ni de seguimiento</strong>. Solo guarda en tu dispositivo lo imprescindible para que el juego funcione. Para saber cuánta gente lo visita usa una medición de audiencia <strong>sin cookies y sin identificar a nadie</strong> (Cloudflare Web Analytics), que puedes desactivar en el apartado «Configurar cookies».</div>
 
   <h2>1. Qué son las cookies y el almacenamiento local</h2>
   <p>Las cookies y tecnologías similares (como el almacenamiento local del navegador) son pequeños datos que un sitio guarda en tu dispositivo. Según la normativa (art. 22.2 LSSI y RGPD), las que son <strong>estrictamente necesarias</strong> para prestar el servicio que pides están exentas de consentimiento.</p>
@@ -49,14 +49,17 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--acento); outlin
       <tr><td><code>tikitexto:tema</code></td><td>Tu preferencia de tema claro/oscuro.</td><td>Preferencia · almacenamiento local</td><td>Hasta que la borres</td></tr>
       <tr><td><code>tikitexto:intro</code></td><td>Recuerda que ya viste la intro en esta sesión.</td><td>Necesaria · almacenamiento de sesión</td><td>Hasta cerrar la pestaña</td></tr>
       <tr><td>Caché del navegador (service worker)</td><td>Permite instalar el juego como app y cargarlo más rápido.</td><td>Necesaria · caché</td><td>Hasta que se actualice o la borres</td></tr>
+      <tr><td><code>tikitexto:sin-medicion</code></td><td>Solo existe si desactivas la medición de visitas: recuerda tu elección.</td><td>Preferencia · almacenamiento local</td><td>Hasta que la borres</td></tr>
+      <tr><td>Medición de visitas (Cloudflare Web Analytics)</td><td>Cuenta de forma agregada visitas, países, páginas y tipo de dispositivo.</td><td>No guarda cookies ni datos en tu dispositivo</td><td>—</td></tr>
     </tbody>
   </table>
   <p>Los proveedores de alojamiento y de base de datos (GitHub Pages y Supabase) pueden registrar datos técnicos de conexión, como se explica en la <a href="privacidad.html">política de privacidad</a>.</p>
 
   <h2 id="configurar">3. Configurar cookies</h2>
-  <p>Como solo se usa almacenamiento estrictamente necesario, <strong>no hay categorías opcionales que activar o desactivar</strong>: no hay cookies de analítica, de personalización publicitaria ni de redes sociales.</p>
+  <p>TIKITEXTO <strong>no usa cookies</strong> de personalización publicitaria, de redes sociales ni de seguimiento. La única medición opcional es la de visitas, que funciona sin cookies y de forma agregada; aun así, puedes desactivarla.</p>
   <div class="caja">
-    <p style="margin-top:0"><strong>Estado actual:</strong> cookies necesarias → siempre activas · analítica → no se usa · publicidad → no se usa.</p>
+    <p style="margin-top:0"><strong>Estado actual:</strong> almacenamiento necesario → siempre activo · medición de visitas sin cookies → <strong id="medicion-estado">activa</strong> · publicidad → no se usa.</p>
+    <p style="margin-top:0"><button type="button" id="medicion-boton">No contar mis visitas</button></p>
     <p>Si quieres borrar lo que TIKITEXTO guarda en este dispositivo, pulsa el botón. <strong>Se cerrará tu sesión y se borrarán tus estadísticas locales</strong> en este dispositivo (tu cuenta del ranking seguirá existiendo; podrás recuperarla con tu código de recuperación). Para eliminar la cuenta del ranking, usa «Eliminar mi cuenta» dentro del juego.</p>
     <button type="button" id="borrar-local">Borrar datos de este dispositivo</button>
     <p id="borrar-estado" role="status" style="margin-bottom:0"></p>
@@ -68,7 +71,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--acento); outlin
     <a href="https://support.microsoft.com/es-es/microsoft-edge" target="_blank" rel="noopener">Edge</a>.</p>
 
   <h2>4. Cambios</h2>
-  <p>Si en el futuro se incorporan cookies de analítica o publicidad, se actualizará esta página y se mostrará antes un aviso para que puedas aceptarlas o rechazarlas. Hasta entonces no se activará ninguna.</p>
+  <p>Si en el futuro se incorporan cookies de publicidad o de analítica que requieran consentimiento, se actualizará esta página y se mostrará antes un aviso para que puedas aceptarlas o rechazarlas. Hasta entonces no se activará ninguna.</p>
 
   <nav class="legal-nav" aria-label="Información legal">
     <a href="./#tutorial">Tutorial: ¿cómo se juega?</a>
@@ -82,6 +85,21 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--acento); outlin
 </main>
 <script>
 (function () {
+  var m = document.getElementById("medicion-boton"), me = document.getElementById("medicion-estado");
+  function pintarMedicion() {
+    var off = false;
+    try { off = localStorage.getItem("tikitexto:sin-medicion") === "1"; } catch (e) { /* sin almacenamiento */ }
+    me.textContent = off ? "desactivada" : "activa";
+    m.textContent = off ? "Volver a contar mis visitas" : "No contar mis visitas";
+  }
+  m.addEventListener("click", function () {
+    try {
+      if (localStorage.getItem("tikitexto:sin-medicion") === "1") localStorage.removeItem("tikitexto:sin-medicion");
+      else localStorage.setItem("tikitexto:sin-medicion", "1");
+    } catch (e) { /* sin almacenamiento */ }
+    pintarMedicion();
+  });
+  pintarMedicion();
   var b = document.getElementById("borrar-local"), s = document.getElementById("borrar-estado");
   b.addEventListener("click", function () {
     if (!confirm("Se borrarán los datos de TIKITEXTO de este dispositivo (sesión, estadísticas y partida). ¿Continuar?")) return;
