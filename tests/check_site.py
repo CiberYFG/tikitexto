@@ -528,6 +528,9 @@ with sync_playwright() as p:
         ph.goto(BASE + "?huecos=0", wait_until="networkidle", timeout=60000)
         pc = ch.new_page(); pc.goto(BASE + "curiosidades/campeones/", wait_until="networkidle", timeout=60000)
         check("curiosidades: hay huecos entre secciones y fijos", pc.evaluate("document.querySelectorAll('.hueco').length >= 4"))
+        pc.evaluate("localStorage.setItem('tikitexto:tema','claro')"); pc.reload(wait_until="networkidle")
+        pc.click("[data-tema-btn]")
+        check("curiosidades: el botón cambia a modo oscuro y lo guarda", pc.evaluate("document.documentElement.dataset.tema") == "oscuro" and pc.evaluate("localStorage.getItem('tikitexto:tema')") == "oscuro")
         check("portada: sin errores de JavaScript (huecos)", not errs_h, "; ".join(errs_h)[:150])
         ch.close()
     except Exception as e:
