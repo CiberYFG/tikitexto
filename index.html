@@ -1371,6 +1371,14 @@ button.marca:active .marca__icono { transform: scale(.9); }
 .rank li { display: flex; align-items: center; gap: 10px; padding: 10px 13px; border-radius: 13px; background: var(--superficie-2); }
 .rank em { flex: 1; font-style: normal; font-weight: 700; }
 .rank li:first-child b { color: #ffb300; text-shadow: 0 0 12px rgba(255, 200, 61, .9); }
+.rank .podio em { background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 900; }
+.rank .podio--oro em { background-image: linear-gradient(90deg, #ff3b3b, #ffb02e, #3be06b, #2ea8ff, #b04bff, #ff3b3b); animation: podioArco 3.2s linear infinite; }
+.rank .podio--plata em { background-image: linear-gradient(100deg, #5d6877 20%, #b9c3d1 45%, #5d6877 70%); animation: podioBrillo 2.6s ease-in-out infinite; }
+.rank .podio--bronce em { background-image: linear-gradient(100deg, #9a5b2c 20%, #f0b27a 45%, #9a5b2c 70%); animation: podioBrillo 3s ease-in-out infinite; }
+@keyframes podioArco { to { background-position: 220% 0; } }
+@keyframes podioBrillo { 0%, 100% { background-position: 0 0; } 50% { background-position: 100% 0; } }
+@media (prefers-reduced-motion: reduce) { .rank .podio em { animation: none !important; } }
+.boton-invitar { width: 100%; margin-top: 12px; }
 .rank--yo { background: linear-gradient(90deg, rgba(255, 200, 61, .38), transparent) !important; box-shadow: inset 0 0 0 2px #ffc83d, 0 0 20px rgba(255, 200, 61, .55); }
 .nuevo { display: grid; gap: 8px; margin-top: 16px; }
 .nuevo input { padding: 13px; border-radius: 13px; border: 2px solid var(--borde); background: var(--superficie); color: var(--texto); font: inherit; }
@@ -5214,12 +5222,25 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       const filas = res[0], yo = res[1], mio = (datosJ.actual || "\u0000").toLowerCase();
       if (yo.estado === "ok") { p.pts = yo.pts; p.puesto = yo.puesto; guardarJ(); pintarTikis(); }
       let html = filas.map(function (x, i) {
-        return '<li class="' + (x.nombre.toLowerCase() === mio ? "rank--yo" : "") + '"><span>' + (["🥇", "🥈", "🥉"][i] || (i + 1)) + "</span><em>" + esc(x.nombre) + "</em><b>" + (Number(x.pts) || 0) + " ⚡</b></li>";
+        return '<li class="' + (x.nombre.toLowerCase() === mio ? "rank--yo " : "") + (i < 3 ? "podio podio--" + ["oro", "plata", "bronce"][i] : "") + '"><span>' + (["🥇", "🥈", "🥉"][i] || (i + 1)) + "</span><em>" + esc(x.nombre) + "</em><b>" + (Number(x.pts) || 0) + " ⚡</b></li>";
       }).join("") || "<li><em>Sé el primero en entrar 🚀</em></li>";
       if (yo.estado === "ok" && !filas.some(function (x) { return x.nombre.toLowerCase() === mio; })) {
         html += '<li class="rank--yo"><span>#' + (Number(yo.puesto) || 0) + "</span><em>" + esc(datosJ.actual) + "</em><b>" + (Number(yo.pts) || 0) + " ⚡</b></li>";
       }
       ol.innerHTML = html;
+      if (!statsContenido.querySelector(".boton-invitar")) {
+        const inv = document.createElement("button");
+        inv.type = "button";
+        inv.className = "boton boton--secundario boton-invitar";
+        inv.textContent = "Invita a un amigo";
+        inv.addEventListener("click", function () {
+          const url = "https://tikitexto.com/";
+          const texto = TIKI.t("Juega conmigo a TIKITEXTO, el juego diario de fútbol. ¿Cuántos puntos sacas?");
+          if (navigator.share) navigator.share({ title: "TIKITEXTO", text: texto, url: url }).catch(function () {});
+          else if (navigator.clipboard) navigator.clipboard.writeText(texto + " " + url).then(function () { mostrarAviso("Enlace copiado"); }).catch(function () {});
+        });
+        ol.parentNode.insertBefore(inv, ol.nextSibling);
+      }
       const num = statsContenido.querySelector(".stats__num");
       if (num) num.textContent = p.pts;
     }).catch(function () {
