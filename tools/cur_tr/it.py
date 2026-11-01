@@ -1,6 +1,6 @@
 UI = {
  "back": "‹ Torna al gioco", "crumb": "Curiosità sul calcio", "checked": "Dati verificati il 31 ottobre 2026",
- "play": "⚽ Gioca a TIKITEXTO, il gioco quotidiano di calcio", "nav": ["Curiosità", "Note legali", "Privacy", "Cookie", "Accessibilità", "Contatti"],
+ "play": "⚽ Gioca ai giochi di calcio di TIKITEXTO", "nav": ["Curiosità", "Note legali", "Privacy", "Cookie", "Accessibilità", "Contatti"],
  "disc": "TIKITEXTO non è affiliato a club, giocatori, federazioni né competizioni. I nomi sono usati solo a scopo informativo. Illustrazioni originali. Le pagine legali sono disponibili solo in spagnolo.",
  "nutshell": "In una frase:",
  "idx_title": "Curiosità sul calcio: campioni, campionati e trofei | TIKITEXTO",

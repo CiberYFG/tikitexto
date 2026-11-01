@@ -201,7 +201,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 UI_ES = {
  "back": "‹ Volver al juego", "crumb": "Curiosidades del fútbol", "checked": "Datos revisados el 31 de octubre de 2026",
- "play": "⚽ Juega a TIKITEXTO, el juego diario de fútbol", "nav": ["Curiosidades", "Aviso legal", "Privacidad", "Cookies", "Accesibilidad", "Contacto"],
+ "play": "⚽ Juega a los juegos de fútbol de TIKITEXTO", "nav": ["Curiosidades", "Aviso legal", "Privacidad", "Cookies", "Accesibilidad", "Contacto"],
  "disc": "TIKITEXTO no está afiliado a clubes, jugadores, federaciones ni competiciones. Los nombres se usan solo como referencia informativa. Ilustraciones propias.",
  "nutshell": "En una frase:",
  "idx_title": "Curiosidades del fútbol: campeones, ligas y trofeos | TIKITEXTO",
@@ -274,6 +274,8 @@ HUECOS_JS = ("<script>(function(){try{var q=new URLSearchParams(location.search)
 
 TEMA_JS = """<script>(function(){try{var g=localStorage.getItem('tikitexto:tema');var o=window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.dataset.tema=g||(o?'oscuro':'claro');}catch(e){document.documentElement.dataset.tema='claro';}})();</script>"""
 
+SOBRE = {"es": "Sobre TIKITEXTO", "en": "About TIKITEXTO", "pt": "Sobre o TIKITEXTO", "fr": "À propos de TIKITEXTO", "it": "Chi siamo", "de": "Über TIKITEXTO"}
+
 def hueco(L, tipo=""):
     cls = "hueco" + (" hueco--" + tipo if tipo else "")
     cerrar = '<button type="button" data-cerrar-hueco aria-label="✕">✕</button>' if tipo == "ancla" else ""
@@ -342,7 +344,7 @@ def pie(L, extra=""):
 <p><a class="jugar" href="{L.play()}">{e(u['play'])}</a></p>
 {hueco(L)}{seguir(L)}{hueco(L, "ancla")}
 <nav class="legal-nav" aria-label="Info">
-<a href="{L.url('curiosidades/')}">{e(n[0])}</a><a href="/aviso-legal.html">{e(n[1])}</a><a href="/privacidad.html">{e(n[2])}</a><a href="/cookies.html">{e(n[3])}</a><a href="/accesibilidad.html">{e(n[4])}</a><a href="/contacto.html">{e(n[5])}</a>
+<a href="{L.url('curiosidades/')}">{e(n[0])}</a><a href="/sobre-tikitexto.html">{e(SOBRE[L.lang])}</a><a href="/aviso-legal.html">{e(n[1])}</a><a href="/privacidad.html">{e(n[2])}</a><a href="/cookies.html">{e(n[3])}</a><a href="/accesibilidad.html">{e(n[4])}</a><a href="/contacto.html">{e(n[5])}</a>
 </nav>
 <p class="fecha">{e(u['disc'])}</p>
 </main>
@@ -442,6 +444,10 @@ def pagina_indice(L):
     if L.lang in ("es", "en"):
         _t = ("Récords y rankings con fuentes", "Goleadores, Balón de Oro, Pichichi, Eurocopa y más") if L.lang == "es" else ("Records and rankings, with sources", "Scorers, Ballon d'Or, Pichichi, the Euros and more")
         h += f'<a class="tarjeta" href="{L.url("curiosidades/datos/")}">{ESTADIO}<b>{e(_t[0])}</b><span>{e(_t[1])}</span></a>\n'
+    if L.lang in ("es", "en"):
+        import hist_data as _H
+        for _sl, _t, _f, _ic in _H.cards_meta(L.lang):
+            h += f'<a class="tarjeta" href="{L.url("curiosidades/" + _sl + "/")}">{globals()[_ic]}<b>{e(_t)}</b><span>{e(_f)}</span></a>\n'
     h += f'</div>\n<h2>{e(u["latest_h"])}</h2>\n<div class="caja">{u["latest"].format(champ=L.url("curiosidades/campeones/"))}</div>\n'
     return ruta, h + pie(L)
 

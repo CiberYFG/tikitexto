@@ -1,6 +1,6 @@
 UI = {
  "back": "‹ Back to the game", "crumb": "Football trivia", "checked": "Data checked on 31 October 2026",
- "play": "⚽ Play TIKITEXTO, the daily football game", "nav": ["Trivia", "Legal notice", "Privacy", "Cookies", "Accessibility", "Contact"],
+ "play": "⚽ Play the TIKITEXTO football games", "nav": ["Trivia", "Legal notice", "Privacy", "Cookies", "Accessibility", "Contact"],
  "disc": "TIKITEXTO is not affiliated with clubs, players, federations or competitions. Names are used for information only. Original illustrations. Legal pages are available in Spanish only.",
  "nutshell": "In a nutshell:",
  "idx_title": "Football trivia: champions, leagues and trophies | TIKITEXTO",

@@ -1,6 +1,6 @@
 UI = {
  "back": "‹ Zurück zum Spiel", "crumb": "Fußball-Wissenswertes", "checked": "Daten geprüft am 31. Oktober 2026",
- "play": "⚽ Spiel TIKITEXTO, das tägliche Fußballspiel", "nav": ["Wissenswertes", "Impressum", "Datenschutz", "Cookies", "Barrierefreiheit", "Kontakt"],
+ "play": "⚽ Spiele die Fußballspiele von TIKITEXTO", "nav": ["Wissenswertes", "Impressum", "Datenschutz", "Cookies", "Barrierefreiheit", "Kontakt"],
  "disc": "TIKITEXTO ist nicht mit Vereinen, Spielern, Verbänden oder Wettbewerben verbunden. Namen werden nur zur Information verwendet. Eigene Illustrationen. Die Rechtstexte sind nur auf Spanisch verfügbar.",
  "nutshell": "In einem Satz:",
  "idx_title": "Fußball-Wissenswertes: Meister, Ligen und Pokale | TIKITEXTO",

@@ -2,7 +2,7 @@
   "id": "./",
   "name": "TIKITEXTO · Adivina el jugador del día",
   "short_name": "TIKITEXTO",
-  "description": "Juego diario de fútbol: adivina jugadores, equipos, entrenadores, leyendas y estadios en seis intentos.",
+  "description": "Datos y curiosidades del fútbol, y juegos interactivos para adivinar jugadores, equipos, entrenadores y estadios.",
   "lang": "es",
   "start_url": "./",
   "scope": "./",
