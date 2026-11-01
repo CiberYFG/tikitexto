@@ -5021,7 +5021,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     const p = perfil();
     const n = nivel(p.pts);
     const pct = n.sig ? Math.round((p.pts - n.base) / (n.sig[0] - n.base) * 100) : 100;
-    const max = Math.max(1, Math.max.apply(null, p.dist));
     const casillas = [[p.jugadas, "Jugadas"], [(p.jugadas ? Math.round(p.aciertos / p.jugadas * 100) : 0) + "%", "Aciertos"], [p.racha, "Racha"], [p.mejor, "Mejor racha"], [(p.diaUlt === claveDelDia() || p.diaUlt === diaAnterior()) ? (p.diaD || 0) : 0, "Días seguidos"], [p.diaMejor || 0, "Mejor en días"]];
 
     statsContenido.innerHTML =
@@ -5030,8 +5029,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       '<div class="barra-nivel"><i style="width:' + pct + '%"></i></div>' +
       '<div class="stats__sig">' + (n.sig ? "Te faltan " + (n.sig[0] - p.pts) + " para " + n.sig[1] : "Nivel máximo ⭐") + "</div></div>" +
       '<div class="stats__rejilla">' + casillas.map(function (c) { return "<div><b>" + c[0] + "</b><span>" + c[1] + "</span></div>"; }).join("") + "</div>" +
-      '<h3 class="stats__sub">Intentos para acertar</h3>' +
-      p.dist.map(function (v, i) { return '<div class="dist"><span>' + (i + 1) + '</span><i style="width:' + Math.max(10, v / max * 100) + '%">' + v + "</i></div>"; }).join("") +
       '<h3 class="stats__sub">🏆 Ranking · Top jugadores</h3><ol class="rank">' +
       ranking().slice(0, 10).map(function (x, i) {
         return '<li class="' + (x[0] === datosJ.actual ? "rank--yo" : "") + '"><span>' + (["🥇", "🥈", "🥉"][i] || (i + 1)) + "</span><em>" + esc(x[0] || "Invitado") + "</em><b>" + x[1].pts + " ⚡</b></li>";
