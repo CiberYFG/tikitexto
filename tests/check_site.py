@@ -500,6 +500,20 @@ with sync_playwright() as p:
     except Exception as e:
         check("tarjetas exactas", False, str(e)[:150])
 
+    print("3n) Páginas de datos (curiosidades/datos)")
+    try:
+        sm = api.get(BASE + "sitemap.xml").text()
+        rutas = [u for u in re.findall(r"<loc>https://tikitexto.com/([^<]*)</loc>", sm) if "curiosidades/" in u and u.rstrip("/").split("/")[-1] not in ("curiosidades", "campeones", "ligas", "trofeos")]
+        check("datos: páginas en el sitemap", len(rutas) >= 20, str(len(rutas)))
+        malas = []
+        for ru in rutas:
+            r = api.get(BASE + ru)
+            t = r.text() if r.status == 200 else ""
+            if r.status != 200 or 'class="jugar"' not in t or "<table" not in t and not ru.endswith("datos/"): malas.append(ru)
+        check("datos: todas existen, con botón de jugar y tabla", not malas, ", ".join(malas)[:150])
+    except Exception as e:
+        check("páginas de datos", False, str(e)[:150])
+
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:
         print("  (omitido)")

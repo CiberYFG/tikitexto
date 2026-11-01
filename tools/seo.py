@@ -225,6 +225,14 @@ for sub in ("curiosidades/", "curiosidades/campeones/", "curiosidades/ligas/", "
     alts = "".join('<xhtml:link rel="alternate" hreflang="%s" href="%s%s%s"/>' % (HREFLANG[c], DOM, "" if c == "es" else c + "/", sub) for c in LANGS) + '<xhtml:link rel="alternate" hreflang="x-default" href="%s%s"/>' % (DOM, sub)
     for c in LANGS:
         sm.append("  <url><loc>%s%s%s</loc>%s</url>" % (DOM, "" if c == "es" else c + "/", sub, alts))
+# páginas de datos (solo es/en; slugs distintos por idioma)
+_sys.path.insert(0, os.path.join(RAIZ, "tools"))
+import curiosidades_datos as _cd
+_es = _cd.paginas(_cd.Idioma("es")); _en = _cd.fix_en(_cd.paginas(_cd.Idioma("en")))
+for _ra, _rb in [("datos", "datos")] + [(x["slug"], y["slug"]) for x, y in zip(_es, _en)]:
+    _u = (DOM + "curiosidades/" + _ra + "/", DOM + "en/curiosidades/" + _rb + "/")
+    _alts = '<xhtml:link rel="alternate" hreflang="es" href="%s"/><xhtml:link rel="alternate" hreflang="en" href="%s"/><xhtml:link rel="alternate" hreflang="x-default" href="%s"/>' % (_u[0], _u[1], _u[0])
+    for _x in _u: sm.append("  <url><loc>%s</loc>%s</url>" % (_x, _alts))
 for p in ("privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html", "contacto.html"):
     sm.append("  <url><loc>%s%s</loc></url>" % (DOM, p))
 sm.append("</urlset>")
