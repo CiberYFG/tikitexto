@@ -1437,11 +1437,27 @@ button.marca:active .marca__icono { transform: scale(.9); }
 #modalCuenta .boton, #botonCodigo { width: 100%; margin-top: 8px; }
 
 /* Curiosidades: aspecto editorial (de lectura), distinto del juego */
-.curio { margin: 34px auto 6px; max-width: 640px; padding: 26px 24px 22px; font-family: Georgia, "Times New Roman", "Noto Serif", serif; color: #2b2418; background: #f7f1e1; border-top: 4px double #8a7a52; border-bottom: 4px double #8a7a52; text-align: left; }
+/* ---------- Huecos para anuncios (vacíos y ocultos hasta que haya anuncios y consentimiento) ----------
+   Para ver dónde irían: añade ?huecos=1 a la URL (?huecos=0 lo quita). No cargan nada externo. */
+.hueco { display: none; }
+html.huecos .hueco { display: flex; align-items: center; justify-content: center; position: relative; margin: 22px 0; min-height: 110px; border: 2px dashed var(--borde, rgba(128,140,160,.45)); border-radius: 14px; color: var(--suave, #6b7a8c); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
+html.huecos .hueco--lat { display: none; }
+@media (min-width: 1300px) {
+  html.huecos .hueco--lat { display: flex; position: fixed; top: 90px; width: 160px; min-height: 600px; margin: 0; z-index: 5; }
+  html.huecos .hueco--izq { left: calc(50% - 480px - 190px); }
+  html.huecos .hueco--der { right: calc(50% - 480px - 190px); }
+}
+html.huecos .hueco--ancla { position: fixed; left: 0; right: 0; bottom: 0; z-index: 700; margin: 0; border-radius: 0; border-width: 2px 0 0; min-height: 56px; background: var(--fondo, #f2f5fa); }
+html.huecos .hueco--ancla button { position: absolute; right: 8px; top: 6px; border: 0; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; background: rgba(128,140,160,.25); color: inherit; }
+html.huecos .inicio { padding-bottom: 70px; }
+
+.curio { margin: 34px auto 6px; max-width: 100%; padding: 26px 24px 22px; font-family: Georgia, "Times New Roman", "Noto Serif", serif; color: #2b2418; background: #f7f1e1; border-top: 4px double #8a7a52; border-bottom: 4px double #8a7a52; text-align: left; }
 .curio__kicker { margin: 0 0 6px; font: 600 .68rem/1.2 var(--fuente); letter-spacing: .16em; text-transform: uppercase; color: #7a6a3f; }
 .curio h2 { margin: 0 0 8px; font-size: 1.55rem; line-height: 1.15; font-weight: 700; color: #2b2418; }
 .curio__intro { margin: 0 0 14px; font-size: .98rem; line-height: 1.6; }
-.curio__lista { list-style: none; margin: 0; padding: 0; }
+.curio__lista { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; column-gap: 28px; }
+@media (min-width: 720px) { .curio__lista { grid-template-columns: 1fr 1fr; } }
+.curio__lista li[hidden] { display: none; }
 .curio__lista li { border-top: 1px dotted #a8996b; }
 .curio__lista a { display: grid; grid-template-columns: 2.2rem 1fr; column-gap: 8px; padding: 12px 2px; text-decoration: none; color: inherit; }
 .curio__lista a:hover b, .curio__lista a:focus-visible b { text-decoration: underline; }
@@ -2005,6 +2021,21 @@ button.marca:active .marca__icono { transform: scale(.9); }
       </div>
     </div>
 
+    <section class="curio" aria-labelledby="curioTitulo">
+      <p class="curio__kicker">Para leer · no es un juego</p>
+      <h2 id="curioTitulo">Curiosidades del fútbol</h2>
+      <p class="curio__intro">Historia, datos y estadísticas del fútbol: quién ha ganado la Champions y el Mundial, cómo nacieron las ligas más famosas y de dónde vienen los trofeos más importantes.</p>
+      <ol class="curio__lista">
+        <li><a data-curio="campeones/" href="curiosidades/campeones/"><span class="curio__n">I</span><b>Campeones de la Champions y del Mundial</b><em>Todos los ganadores, año a año, con finales y marcadores.</em></a></li>
+        <li><a data-curio="ligas/" href="curiosidades/ligas/"><span class="curio__n">II</span><b>Cómo nacieron las ligas</b><em>Trece ligas del mundo: cuándo se fundaron y quién ganó la primera.</em></a></li>
+        <li><a data-curio="trofeos/" href="curiosidades/trofeos/"><span class="curio__n">III</span><b>Historia de los trofeos</b><em>De la FA Cup al Balón de Oro: el origen de las copas y los premios.</em></a></li>
+        <li data-solo-es-en><a data-curio="datos/" href="curiosidades/datos/"><span class="curio__n">IV</span><b>Récords y rankings con fuentes</b><em>Goleadores, Balón de Oro, Pichichi, Eurocopa y más.</em></a></li>
+      </ol>
+      <p class="curio__todo"><a data-curio="" href="curiosidades/">Ver todas las curiosidades →</a></p>
+    </section>
+
+    <aside class="hueco hueco--medio" aria-label="Publicidad">Publicidad</aside>
+
     <section class="info" aria-labelledby="infoTitulo">
       <h2 id="infoTitulo">¿Qué es TIKITEXTO?</h2>
       <p>TIKITEXTO es un juego diario de fútbol gratuito: cada día hay un nombre oculto —un futbolista, un equipo, un estadio, una selección o un entrenador— y tienes seis intentos para adivinarlo. Tras cada intento, las casillas se colorean para decirte qué letras están bien colocadas. No hace falta registrarse: solo eliges un nickname para entrar en el ranking mundial. Y si lo tuyo es leer, la web también incluye curiosidades del fútbol: historia, datos y estadísticas.</p>
@@ -2026,21 +2057,13 @@ button.marca:active .marca__icono { transform: scale(.9); }
       <details><summary>¿Se puede instalar en el móvil?</summary><p>Sí. Es una app web (PWA): desde el navegador, elige «Añadir a la pantalla de inicio».</p></details>
     </section>
 
-    <section class="curio" aria-labelledby="curioTitulo">
-      <p class="curio__kicker">Para leer · no es un juego</p>
-      <h2 id="curioTitulo">Curiosidades del fútbol</h2>
-      <p class="curio__intro">Historia, datos y estadísticas del fútbol: quién ha ganado la Champions y el Mundial, cómo nacieron las ligas más famosas y de dónde vienen los trofeos más importantes.</p>
-      <ol class="curio__lista">
-        <li><a data-curio="campeones/" href="curiosidades/campeones/"><span class="curio__n">I</span><b>Campeones de la Champions y del Mundial</b><em>Todos los ganadores, año a año, con finales y marcadores.</em></a></li>
-        <li><a data-curio="ligas/" href="curiosidades/ligas/"><span class="curio__n">II</span><b>Cómo nacieron las ligas</b><em>Trece ligas del mundo: cuándo se fundaron y quién ganó la primera.</em></a></li>
-        <li><a data-curio="trofeos/" href="curiosidades/trofeos/"><span class="curio__n">III</span><b>Historia de los trofeos</b><em>De la FA Cup al Balón de Oro: el origen de las copas y los premios.</em></a></li>
-      </ol>
-      <p class="curio__todo"><a data-curio="" href="curiosidades/">Ver todas las curiosidades →</a></p>
-    </section>
-
     <div class="instalar" id="instalarCaja" hidden><button type="button" id="instalarApp" class="instalar__boton">📲 Instalar la app</button><span class="instalar__nota">Juega en un toque desde tu pantalla de inicio</span></div>
     <nav class="pie-legal" aria-label="Información legal"><button type="button" id="abrirTutorial">Tutorial: ¿cómo se juega?</button>
       <button type="button" id="abrirTutNv">Tutoriales: modos de novedad</button><button type="button" id="abrirIdioma" aria-label="Cambiar de idioma">🌐 Idioma · Language</button><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a><a href="accesibilidad.html">Accesibilidad</a><a href="contacto.html">Contacto</a><button type="button" id="abrirCookies">Configurar cookies</button></nav>
+    <aside class="hueco hueco--pie" aria-label="Publicidad">Publicidad</aside>
+    <aside class="hueco hueco--lat hueco--izq" aria-label="Publicidad">Publicidad</aside>
+    <aside class="hueco hueco--lat hueco--der" aria-label="Publicidad">Publicidad</aside>
+    <aside class="hueco hueco--ancla" aria-label="Publicidad">Publicidad<button type="button" data-cerrar-hueco aria-label="Cerrar">✕</button></aside>
   </main>
 
   <footer class="inicio__pie">
@@ -6941,8 +6964,18 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
 <script>
 (function () {
   try {
+    var q = new URLSearchParams(location.search).get("huecos");
+    if (q === "1") localStorage.setItem("tikitexto:huecos", "1");
+    if (q === "0") localStorage.removeItem("tikitexto:huecos");
+    if (localStorage.getItem("tikitexto:huecos") === "1") document.documentElement.classList.add("huecos");
+  } catch (e) { /* sin almacenamiento */ }
+  document.addEventListener("click", function (e) { var b = e.target.closest && e.target.closest("[data-cerrar-hueco]"); if (b) b.parentNode.style.display = "none"; });
+})();
+(function () {
+  try {
     var l = localStorage.getItem("tikitexto:idioma"), as = document.querySelectorAll("a[data-curio]");
     if (l && l !== "es" && /^(en|pt|fr|it|de)$/.test(l)) as.forEach(function (a) { a.setAttribute("href", l + "/curiosidades/" + a.getAttribute("data-curio")); });
+    if (l && !/^(es|en)$/.test(l)) document.querySelectorAll("[data-solo-es-en]").forEach(function (x) { x.hidden = true; });
   } catch (e) { /* sin almacenamiento */ }
 })();
 </script>

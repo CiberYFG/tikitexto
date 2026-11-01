@@ -28,6 +28,11 @@ Web: https://tikitexto.com · Repositorio: CiberYFG/tikitexto · Alojamiento: Gi
 
 - En `index.html`, la sección `.curio` («Para leer · no es un juego», estilo editorial) va justo debajo de `.info` y enlaza a las curiosidades (los enlaces `a[data-curio]` se prefijan con el idioma). La descripción de la web menciona historia, datos y estadísticas; si se cambia, actualizar `fuente.txt` y `tools/seo.py`.
 
+## Huecos de anuncios (aún sin anuncios)
+- Hay **huecos vacíos y ocultos** (`.hueco`, no cargan nada externo): portada (`--medio` tras curiosidades, `--pie`, laterales `--lat` ≥1300 px, `--ancla` inferior con ✕) y páginas de curiosidades/datos (laterales ≥1360 px, uno cada 2 secciones `h2` o cada 3 `.entrada` — función `con_huecos` en `tools/curiosidades.py` —, uno al final y un ancla). Ver dónde irían: `?huecos=1` (se guarda en `tikitexto:huecos`; `?huecos=0` lo quita). Test 3o.
+- **No poner ningún script de anuncios sin** CMP certificada (TCF) + actualizar `privacidad.html`/`cookies.html` + ampliar la CSP (regla 5/7). Después, mostrar los huecos con `html.huecos` solo si hay consentimiento y rellenarlos.
+- Curiosidades rediseñadas (serif/papel, barra superior con «Jugar», JSON-LD Article). Fotos opcionales por slug en `img/curiosidades/` + `creditos.json` (ver `LEEME.md`; solo libres, sin escudos/logos/jugadores). En la portada la sección `.curio` va **antes** de «¿Qué es TIKITEXTO?»; el enlace IV (datos) solo es/en (`data-solo-es-en`).
+
 ## Ranking (Supabase)
 - Tabla `jugadores` con RLS sin políticas; todo pasa por funciones RPC (`reclamar_nombre`, `registrar_acierto`, `ranking_top`, `recuperar_cuenta`, `eliminar_cuenta`).
 - El SQL (`ranking-supabase.sql`) **no está en el repositorio**: lo guarda el titular. Pedirlo antes de tocar el servidor; cualquier cambio de SQL lo ejecuta él en Supabase → SQL Editor → Run.

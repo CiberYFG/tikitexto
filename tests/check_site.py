@@ -514,6 +514,25 @@ with sync_playwright() as p:
     except Exception as e:
         check("páginas de datos", False, str(e)[:150])
 
+    print("3o) Huecos de anuncios y curiosidades en portada")
+    try:
+        ch = br.new_context(viewport={"width": 1366, "height": 800}, service_workers="block")
+        ph = ch.new_page(); errs_h = []
+        ph.on("pageerror", lambda e: errs_h.append(str(e)))
+        ph.add_init_script("localStorage.setItem('tikitexto:idioma','es');sessionStorage.setItem('tikitexto:intro','1');")
+        ph.goto(BASE, wait_until="networkidle", timeout=60000); ph.wait_for_timeout(400)
+        check("huecos: ocultos por defecto", ph.evaluate("[...document.querySelectorAll('.hueco')].every(e => getComputedStyle(e).display === 'none')"))
+        check("portada: curiosidades antes de «¿Qué es TIKITEXTO?»", ph.evaluate("!!(document.querySelector('.curio').compareDocumentPosition(document.querySelector('.info')) & 4)"))
+        ph.goto(BASE + "?huecos=1", wait_until="networkidle", timeout=60000); ph.wait_for_timeout(400)
+        check("huecos: se ven con ?huecos=1", ph.evaluate("[...document.querySelectorAll('.hueco')].some(e => getComputedStyle(e).display !== 'none')"))
+        ph.goto(BASE + "?huecos=0", wait_until="networkidle", timeout=60000)
+        pc = ch.new_page(); pc.goto(BASE + "curiosidades/campeones/", wait_until="networkidle", timeout=60000)
+        check("curiosidades: hay huecos entre secciones y fijos", pc.evaluate("document.querySelectorAll('.hueco').length >= 4"))
+        check("portada: sin errores de JavaScript (huecos)", not errs_h, "; ".join(errs_h)[:150])
+        ch.close()
+    except Exception as e:
+        check("huecos de anuncios", False, str(e)[:150])
+
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:
         print("  (omitido)")
