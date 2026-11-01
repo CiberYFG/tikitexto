@@ -1378,7 +1378,12 @@ button.marca:active .marca__icono { transform: scale(.9); }
 @keyframes podioArco { to { background-position: 220% 0; } }
 @keyframes podioBrillo { 0%, 100% { background-position: 0 0; } 50% { background-position: 100% 0; } }
 @media (prefers-reduced-motion: reduce) { .rank .podio em { animation: none !important; } }
-.boton-invitar { width: 100%; margin-top: 12px; }
+.boton-invitar { width: 100%; margin: 4px 0 16px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 12px 14px; border: 0; border-radius: 14px; cursor: pointer;
+  background: linear-gradient(135deg, #ff9f1c, #ff3d71); color: #fff; font-weight: 800; font-size: 1.05rem; box-shadow: 0 6px 18px rgba(255, 61, 113, .35); animation: invitarLate 2.4s ease-in-out infinite; }
+.boton-invitar b { background: rgba(255, 255, 255, .95); color: #c2185b; border-radius: 999px; padding: 2px 12px; font-size: .9rem; }
+.boton-invitar:active { transform: scale(.98); }
+@keyframes invitarLate { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
+@media (prefers-reduced-motion: reduce) { .boton-invitar { animation: none; } }
 .rank--yo { background: linear-gradient(90deg, rgba(255, 200, 61, .38), transparent) !important; box-shadow: inset 0 0 0 2px #ffc83d, 0 0 20px rgba(255, 200, 61, .55); }
 .nuevo { display: grid; gap: 8px; margin-top: 16px; }
 .nuevo input { padding: 13px; border-radius: 13px; border: 2px solid var(--borde); background: var(--superficie); color: var(--texto); font: inherit; }
@@ -5246,14 +5251,14 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
         const inv = document.createElement("button");
         inv.type = "button";
         inv.className = "boton boton--secundario boton-invitar";
-        inv.textContent = datosJ.actual ? "Invita a un amigo · +3 tikitextos" : "Invita a un amigo";
+        inv.innerHTML = "<span>🎁 Invita a un amigo</span>" + (datosJ.actual ? "<b>+3 tikitextos</b>" : "");
         inv.addEventListener("click", function () {
           const url = "https://tikitexto.com/" + (datosJ.actual ? "?inv=" + encodeURIComponent(datosJ.actual) : "");
           const texto = TIKI.t("Juega conmigo a TIKITEXTO, el juego diario de fútbol. ¿Cuántos puntos sacas?");
           if (navigator.share) navigator.share({ title: "TIKITEXTO", text: texto, url: url }).catch(function () {});
           else if (navigator.clipboard) navigator.clipboard.writeText(texto + " " + url).then(function () { mostrarAviso("Enlace copiado"); }).catch(function () {});
         });
-        ol.parentNode.insertBefore(inv, ol.nextSibling);
+        titulo.parentNode.insertBefore(inv, titulo);
       }
       const num = statsContenido.querySelector(".stats__num");
       if (num) num.textContent = p.pts;
