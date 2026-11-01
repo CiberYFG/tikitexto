@@ -1451,28 +1451,32 @@ html.huecos .hueco--ancla { position: fixed; left: 0; right: 0; bottom: 0; z-ind
 html.huecos .hueco--ancla button { position: absolute; right: 8px; top: 6px; border: 0; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; background: rgba(128,140,160,.25); color: inherit; }
 html.huecos .inicio { padding-bottom: 70px; }
 
-.curio { margin: 34px auto 6px; max-width: 100%; padding: 26px 24px 22px; font-family: Georgia, "Times New Roman", "Noto Serif", serif; color: #2b2418; background: #f7f1e1; border-top: 4px double #8a7a52; border-bottom: 4px double #8a7a52; text-align: left; }
-.curio__kicker { margin: 0 0 6px; font: 600 .68rem/1.2 var(--fuente); letter-spacing: .16em; text-transform: uppercase; color: #7a6a3f; }
-.curio h2 { margin: 0 0 8px; font-size: 1.55rem; line-height: 1.15; font-weight: 700; color: #2b2418; }
-.curio__intro { margin: 0 0 14px; font-size: .98rem; line-height: 1.6; }
-.curio__lista { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; column-gap: 28px; }
-@media (min-width: 720px) { .curio__lista { grid-template-columns: 1fr 1fr; } }
+.curio { position: relative; isolation: isolate; overflow: hidden; margin: 34px auto 6px; max-width: 100%; padding: 28px 22px 22px; border-radius: 26px; color: #fff; text-align: left;
+  background: radial-gradient(120% 90% at 50% 0%, #2f7bff 0%, #1448e0 45%, #0a24a8 100%); box-shadow: 0 18px 40px rgba(20, 72, 224, .35), inset 0 0 0 1px rgba(255, 255, 255, .22); }
+.curio::before { content: ""; position: absolute; z-index: -1; left: 50%; top: 38%; width: 220%; aspect-ratio: 1; transform: translate(-50%, -50%);
+  background: repeating-conic-gradient(from 0deg, rgba(255, 255, 255, .17) 0 5deg, rgba(255, 255, 255, 0) 5deg 14deg);
+  -webkit-mask-image: radial-gradient(circle, #000 8%, transparent 62%); mask-image: radial-gradient(circle, #000 8%, transparent 62%); animation: curioRayos 60s linear infinite; }
+@keyframes curioRayos { to { transform: translate(-50%, -50%) rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .curio::before { animation: none; } }
+:root[data-tema="oscuro"] .curio { background: radial-gradient(120% 90% at 50% 0%, #2455d6 0%, #12338f 48%, #081447 100%); box-shadow: 0 18px 40px rgba(0, 0, 0, .5), inset 0 0 0 1px rgba(160, 190, 255, .25); }
+.curio__kicker { margin: 0 0 6px; font: 800 .7rem/1.2 var(--fuente); letter-spacing: .18em; text-transform: uppercase; color: #ffd84d; }
+.curio h2 { margin: 0 0 8px; font: 900 clamp(1.6rem, 5vw, 2.2rem)/1.1 var(--fuente-titulo); letter-spacing: -.02em; color: #fff; text-shadow: 0 2px 14px rgba(0, 20, 120, .5); }
+.curio__intro { margin: 0 0 18px; max-width: 60ch; font-size: .98rem; line-height: 1.55; color: rgba(255, 255, 255, .88); }
+.curio__lista { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 720px) { .curio__lista { grid-template-columns: 1fr 1fr; gap: 12px; } }
 .curio__lista li[hidden] { display: none; }
-.curio__lista li { border-top: 1px dotted #a8996b; }
-.curio__lista a { display: grid; grid-template-columns: 2.2rem 1fr; column-gap: 8px; padding: 12px 2px; text-decoration: none; color: inherit; }
-.curio__lista a:hover b, .curio__lista a:focus-visible b { text-decoration: underline; }
-.curio__lista a:focus-visible, .curio__todo a:focus-visible { outline: 2px solid #7a6a3f; outline-offset: 2px; }
-.curio__n { grid-row: span 2; font-style: italic; font-size: 1.25rem; color: #8a7a52; }
-.curio__lista b { font-size: 1.02rem; }
-.curio__lista em { font-size: .88rem; color: #5b5038; }
-.curio__todo { margin: 10px 0 0; text-align: right; font-size: .92rem; }
-.curio__todo a { color: #5b4a1c; font-weight: 700; }
-:root[data-tema="oscuro"] .curio { background: #1d1a13; color: #e9e1cc; border-color: #6d6040; }
-:root[data-tema="oscuro"] .curio h2 { color: #f1e9d3; }
-:root[data-tema="oscuro"] .curio__kicker, :root[data-tema="oscuro"] .curio__n { color: #b8a770; }
-:root[data-tema="oscuro"] .curio__lista em { color: #b9ae92; }
-:root[data-tema="oscuro"] .curio__todo a { color: #e0cf94; }
-:root[data-tema="oscuro"] .curio__lista li { border-color: #5d5238; }
+.curio__lista a { display: grid; grid-template-columns: 2.6rem 1fr 1.2rem; align-items: center; column-gap: 12px; min-height: 76px; padding: 12px 14px; text-decoration: none; color: #fff; border-radius: 16px;
+  background: rgba(255, 255, 255, .13); border: 1px solid rgba(255, 255, 255, .32); backdrop-filter: blur(3px); transition: transform .16s, background .16s, box-shadow .16s; }
+.curio__lista a::after { content: "›"; grid-column: 3; grid-row: 1 / span 2; font-size: 1.7rem; font-weight: 800; color: #ffd84d; }
+.curio__lista a:hover, .curio__lista a:focus-visible { transform: translateY(-3px); background: rgba(255, 255, 255, .24); box-shadow: 0 10px 22px rgba(0, 10, 90, .35); outline: none; }
+.curio__lista a:active { transform: scale(.98); }
+.curio__n { grid-row: span 2; display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 13px; font-size: 1.4rem; font-style: normal; background: rgba(255, 255, 255, .95); box-shadow: 0 3px 8px rgba(0, 10, 90, .3); }
+.curio__lista b { font: 800 1.02rem/1.2 var(--fuente-titulo); }
+.curio__lista em { font-style: normal; font-size: .84rem; line-height: 1.35; color: rgba(255, 255, 255, .85); }
+.curio__todo { margin: 16px 0 0; text-align: center; }
+.curio__todo a { display: inline-block; padding: 11px 22px; border-radius: 999px; background: #ffd84d; color: #1a1500; font-weight: 800; text-decoration: none; box-shadow: 0 6px 16px rgba(0, 10, 90, .35); }
+.curio__todo a:hover { filter: brightness(1.06); }
+.curio a:focus-visible { outline: 3px solid #ffd84d; outline-offset: 2px; }
 .instalar { display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 22px 0 4px; }
 .instalar[hidden] { display: none; }
 .instalar__boton { padding: 11px 22px; font: inherit; font-weight: 700; color: #fff; background: var(--verde, #2e9e6b); border: 0; border-radius: 999px; cursor: pointer; box-shadow: 0 2px 0 rgba(0,0,0,.18); transition: transform .12s ease; }
@@ -2026,10 +2030,10 @@ html.huecos .inicio { padding-bottom: 70px; }
       <h2 id="curioTitulo">Curiosidades del fútbol</h2>
       <p class="curio__intro">Historia, datos y estadísticas del fútbol: quién ha ganado la Champions y el Mundial, cómo nacieron las ligas más famosas y de dónde vienen los trofeos más importantes.</p>
       <ol class="curio__lista">
-        <li><a data-curio="campeones/" href="curiosidades/campeones/"><span class="curio__n">I</span><b>Campeones de la Champions y del Mundial</b><em>Todos los ganadores, año a año, con finales y marcadores.</em></a></li>
-        <li><a data-curio="ligas/" href="curiosidades/ligas/"><span class="curio__n">II</span><b>Cómo nacieron las ligas</b><em>Trece ligas del mundo: cuándo se fundaron y quién ganó la primera.</em></a></li>
-        <li><a data-curio="trofeos/" href="curiosidades/trofeos/"><span class="curio__n">III</span><b>Historia de los trofeos</b><em>De la FA Cup al Balón de Oro: el origen de las copas y los premios.</em></a></li>
-        <li data-solo-es-en><a data-curio="datos/" href="curiosidades/datos/"><span class="curio__n">IV</span><b>Récords y rankings con fuentes</b><em>Goleadores, Balón de Oro, Pichichi, Eurocopa y más.</em></a></li>
+        <li><a data-curio="campeones/" href="curiosidades/campeones/"><span class="curio__n" aria-hidden="true">🏆</span><b>Campeones de la Champions y del Mundial</b><em>Todos los ganadores, año a año, con finales y marcadores.</em></a></li>
+        <li><a data-curio="ligas/" href="curiosidades/ligas/"><span class="curio__n" aria-hidden="true">⚽</span><b>Cómo nacieron las ligas</b><em>Trece ligas del mundo: cuándo se fundaron y quién ganó la primera.</em></a></li>
+        <li><a data-curio="trofeos/" href="curiosidades/trofeos/"><span class="curio__n" aria-hidden="true">📜</span><b>Historia de los trofeos</b><em>De la FA Cup al Balón de Oro: el origen de las copas y los premios.</em></a></li>
+        <li data-solo-es-en><a data-curio="datos/" href="curiosidades/datos/"><span class="curio__n" aria-hidden="true">📊</span><b>Récords y rankings con fuentes</b><em>Goleadores, Balón de Oro, Pichichi, Eurocopa y más.</em></a></li>
       </ol>
       <p class="curio__todo"><a data-curio="" href="curiosidades/">Ver todas las curiosidades →</a></p>
     </section>
