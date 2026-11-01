@@ -234,6 +234,11 @@ for _ra, _rb in [("datos", "datos")] + [(x["slug"], y["slug"]) for x, y in zip(_
     _u = (DOM + "curiosidades/" + _ra + "/", DOM + "en/curiosidades/" + _rb + "/")
     _alts = '<xhtml:link rel="alternate" hreflang="es" href="%s"/><xhtml:link rel="alternate" hreflang="en" href="%s"/><xhtml:link rel="alternate" hreflang="x-default" href="%s"/>' % (_u[0], _u[1], _u[0])
     for _x in _u: sm.append("  <url><loc>%s</loc>%s</url>" % (_x, _alts))
+import curiosidades_historia as _ch
+for _pg in _ch.PAGINAS:
+    _u = (DOM + "curiosidades/" + _pg["es"] + "/", DOM + "en/curiosidades/" + _pg["en"] + "/")
+    _alts = '<xhtml:link rel="alternate" hreflang="es" href="%s"/><xhtml:link rel="alternate" hreflang="en" href="%s"/><xhtml:link rel="alternate" hreflang="x-default" href="%s"/>' % (_u[0], _u[1], _u[0])
+    for _x in _u: sm.append("  <url><loc>%s</loc>%s</url>" % (_x, _alts))
 for p in ("privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html", "contacto.html"):
     sm.append("  <url><loc>%s%s</loc></url>" % (DOM, p))
 sm.append("</urlset>")

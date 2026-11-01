@@ -247,6 +247,9 @@ def hub(L, todas):
     h += f'<div class="caja">{e(d)}</div>\n<div class="tarjetas">\n'
     for q in todas:
         h += f'<a class="tarjeta" href="{L.url("curiosidades/" + q["slug"] + "/")}">{q["ic"]}<b>{e(q["t"][k])}</b><span>{e(q["fecha"][k])}</span></a>\n'
+    import hist_data as _H
+    for _sl, _t, _f, _ic in _H.cards_meta(L.lang):
+        h += f'<a class="tarjeta" href="{L.url("curiosidades/" + _sl + "/")}">{globals()[_ic]}<b>{e(_t)}</b><span>{e(_f)}</span></a>\n'
     h += '</div>\n'
     return ruta, h + pie(L)
 

@@ -442,6 +442,10 @@ def pagina_indice(L):
     if L.lang in ("es", "en"):
         _t = ("Récords y rankings con fuentes", "Goleadores, Balón de Oro, Pichichi, Eurocopa y más") if L.lang == "es" else ("Records and rankings, with sources", "Scorers, Ballon d'Or, Pichichi, the Euros and more")
         h += f'<a class="tarjeta" href="{L.url("curiosidades/datos/")}">{ESTADIO}<b>{e(_t[0])}</b><span>{e(_t[1])}</span></a>\n'
+    if L.lang in ("es", "en"):
+        import hist_data as _H
+        for _sl, _t, _f, _ic in _H.cards_meta(L.lang):
+            h += f'<a class="tarjeta" href="{L.url("curiosidades/" + _sl + "/")}">{globals()[_ic]}<b>{e(_t)}</b><span>{e(_f)}</span></a>\n'
     h += f'</div>\n<h2>{e(u["latest_h"])}</h2>\n<div class="caja">{u["latest"].format(champ=L.url("curiosidades/campeones/"))}</div>\n'
     return ruta, h + pie(L)
 
