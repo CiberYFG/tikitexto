@@ -5029,6 +5029,20 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     return Array.prototype.map.call(b, function (x) { return ALFABETO[x % 32]; }).join("");
   }
   function formatoCodigo(t) { return /^[A-Z2-9]{20}$/.test(t) ? t.match(/.{4}/g).join("-") : t; }
+  /* Invitaciones: quien abre un enlace ?inv=nombre sin haber jugado antes suma 3 tikitextos a quien lo invitó.
+     El servidor limita: un premio por dispositivo, 15 al día por invitador, y nunca a uno mismo. Si falla, no pasa nada. */
+  (function () {
+    try {
+      const inv = new URLSearchParams(location.search).get("inv");
+      if (!ONLINE || !inv || !/^[A-Za-z0-9ÁÉÍÓÚÜÑáéíóúüñ _.-]{3,14}$/.test(inv)) return;
+      if (localStorage.getItem("tikitexto:inv-hecho") || datosJ.actual || perfil().jugadas > 0) return;
+      let disp = localStorage.getItem("tikitexto:dispositivo");
+      if (!disp) { disp = nuevoToken(); localStorage.setItem("tikitexto:dispositivo", disp); }
+      localStorage.setItem("tikitexto:inv-hecho", "1");
+      api("registrar_invitacion", { p_invitador: inv, p_dispositivo: disp, p_propio: datosJ.actual || "" }).catch(function () {});
+    } catch (error) { /* opcional */ }
+  })();
+
   function normalizarCodigo(c) {
     const t = String(c).trim(), limpio = t.replace(/[\s-]/g, "").toUpperCase();
     if (/^[A-Z2-9]{20}$/.test(limpio)) return limpio;
@@ -5232,9 +5246,9 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
         const inv = document.createElement("button");
         inv.type = "button";
         inv.className = "boton boton--secundario boton-invitar";
-        inv.textContent = "Invita a un amigo";
+        inv.textContent = datosJ.actual ? "Invita a un amigo · +3 tikitextos" : "Invita a un amigo";
         inv.addEventListener("click", function () {
-          const url = "https://tikitexto.com/";
+          const url = "https://tikitexto.com/" + (datosJ.actual ? "?inv=" + encodeURIComponent(datosJ.actual) : "");
           const texto = TIKI.t("Juega conmigo a TIKITEXTO, el juego diario de fútbol. ¿Cuántos puntos sacas?");
           if (navigator.share) navigator.share({ title: "TIKITEXTO", text: texto, url: url }).catch(function () {});
           else if (navigator.clipboard) navigator.clipboard.writeText(texto + " " + url).then(function () { mostrarAviso("Enlace copiado"); }).catch(function () {});
