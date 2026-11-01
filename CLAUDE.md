@@ -24,6 +24,8 @@ Web: https://tikitexto.com · Repositorio: CiberYFG/tikitexto · Alojamiento: Gi
 ## Curiosidades (contenido)
 - `tools/curiosidades.py` genera `curiosidades/` y `{en,pt,fr,it,de}/curiosidades/` (índice, `campeones/`, `ligas/`, `trofeos/`) en los 6 idiomas (textos en `tools/cur_tr/<idioma>.py`, con `hreflang`), ilustraciones SVG propias (sin fotos ni escudos). No editar a mano esos `index.html`; los datos están en el script. Tras cambiarlo: ejecutarlo y luego `tools/seo.py` (sitemap). Revisar siempre los datos con fuentes oficiales antes de publicar.
 
+- `tools/curiosidades_datos.py` genera 9 páginas de **récords y rankings con fuentes** (+ índice `curiosidades/datos/`) solo en **es y en** (slugs distintos por idioma; hreflang es/en/x-default corregido con `alinear()`): goleadores de Champions, Mundial y selecciones, partidos con la selección, Balón de Oro, entrenadores con más Champions, Eurocopa, Pichichi, Bota de Oro. Cada una lleva fecha de los datos, enlace a la fuente (Wikipedia/Al Jazeera) y botón de jugar. Orden: `curiosidades.py` → `curiosidades_datos.py` → `seo.py` (el sitemap las importa). Para actualizar: cambiar los datos del script y la fecha, y regenerar. Verificar con fuentes antes de publicar. Test 3n.
+
 - En `index.html`, la sección `.curio` («Para leer · no es un juego», estilo editorial) va justo debajo de `.info` y enlaza a las curiosidades (los enlaces `a[data-curio]` se prefijan con el idioma). La descripción de la web menciona historia, datos y estadísticas; si se cambia, actualizar `fuente.txt` y `tools/seo.py`.
 
 ## Ranking (Supabase)

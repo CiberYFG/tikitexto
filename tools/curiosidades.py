@@ -365,6 +365,9 @@ def pagina_indice(L):
     h += f'<div class="caja">{u["idx_caja"].format(play=L.play())}</div>\n<div class="tarjetas">\n'
     for icono, sl, (b, sp) in zip((COPA, LIGA, BALON), ("campeones/", "ligas/", "trofeos/"), u["cards"]):
         h += f'<a class="tarjeta" href="{L.url("curiosidades/" + sl)}">{icono}<b>{e(b)}</b><span>{e(sp)}</span></a>\n'
+    if L.lang in ("es", "en"):
+        _t = ("Récords y rankings con fuentes", "Goleadores, Balón de Oro, Pichichi, Eurocopa y más") if L.lang == "es" else ("Records and rankings, with sources", "Scorers, Ballon d'Or, Pichichi, the Euros and more")
+        h += f'<a class="tarjeta" href="{L.url("curiosidades/datos/")}">{ESTADIO}<b>{e(_t[0])}</b><span>{e(_t[1])}</span></a>\n'
     h += f'</div>\n<h2>{e(u["latest_h"])}</h2>\n<div class="caja">{u["latest"].format(champ=L.url("curiosidades/campeones/"))}</div>\n'
     return ruta, h + pie(L)
 
