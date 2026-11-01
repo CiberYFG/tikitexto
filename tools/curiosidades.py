@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Genera las páginas de «Curiosidades del fútbol» (curiosidades/, /campeones/, /ligas/, /trofeos/).
 Ilustraciones: SVG propios (sin fotos ni escudos). Ejecutar: python3 tools/curiosidades.py  y luego tools/seo.py (sitemap)."""
-import os, html
+import os, html, json
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOM = "https://tikitexto.com/"
 FECHA = "31 de octubre de 2026"
@@ -11,40 +11,71 @@ CSP = ("<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'self
        "style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; media-src 'self' data:; "
        "connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com; "
        "object-src 'none'; base-uri 'self'; form-action 'self'\">\n<meta name=\"referrer\" content=\"strict-origin-when-cross-origin\">\n")
-CSS = """:root { --fondo: #f2f5fa; --texto: #14202e; --suave: #55657a; --acento: #0c9b66; --caja: #fff; --linea: rgba(128,140,160,.25); }
-@media (prefers-color-scheme: dark) { :root { --fondo: #0d131a; --texto: #e8eef5; --suave: #9fb0c3; --acento: #3ee0a4; --caja: #131d29; } }
+CSS = """:root { --fondo: #f7f3e9; --texto: #1d2a24; --suave: #5e6b63; --acento: #0b7a52; --acento2: #b9862a; --caja: #fffdf8; --linea: rgba(70,60,30,.16); --sombra: 0 1px 2px rgba(60,50,20,.06), 0 8px 24px rgba(60,50,20,.07); --serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Noto Serif", serif; }
+@media (prefers-color-scheme: dark) { :root { --fondo: #0e1512; --texto: #e8eee9; --suave: #9db0a5; --acento: #45d9a2; --acento2: #e0b45a; --caja: #16201b; --linea: rgba(190,210,200,.14); --sombra: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25); } }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--fondo); color: var(--texto); font: 16px/1.65 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-main { max-width: 820px; margin: 0 auto; padding: 24px 18px 60px; }
-a { color: var(--acento); }
-h1 { font-size: 1.9rem; margin: 18px 0 4px; line-height: 1.2; }
-h2 { font-size: 1.3rem; margin: 34px 0 8px; }
-h3 { font-size: 1.08rem; margin: 0 0 4px; }
-.fecha { color: var(--suave); font-size: .9rem; margin: 0 0 18px; }
-.caja { background: var(--caja); border-radius: 14px; padding: 14px 18px; margin: 14px 0; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--fondo); color: var(--texto); font: 17px/1.7 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+main { max-width: 760px; margin: 0 auto; padding: 0 18px 60px; }
+a { color: var(--acento); text-underline-offset: 3px; }
+.barra { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--fondo) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--linea); }
+.barra div { max-width: 760px; margin: 0 auto; padding: 8px 18px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.barra .marca { font-weight: 900; letter-spacing: .04em; text-decoration: none; color: var(--texto); font-size: 1rem; }
+.barra .marca i { font-style: normal; color: var(--acento); }
+.barra .miga { font-size: .84rem; color: var(--suave); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 6px; }
+.barra .miga a { color: var(--suave); }
+.barra .cta { background: var(--acento); color: #fff; font-weight: 800; font-size: .86rem; padding: 7px 14px; border-radius: 999px; text-decoration: none; white-space: nowrap; }
+@media (prefers-color-scheme: dark) { .barra .cta { color: #04150e; } }
+.hero { display: grid; grid-template-columns: 1fr 92px; gap: 18px; align-items: center; margin: 30px 0 6px; }
+.hero svg { width: 92px; height: 92px; color: var(--acento); background: var(--caja); border-radius: 26px; padding: 16px; border: 1px solid var(--linea); box-shadow: var(--sombra); }
+.etiqueta { margin: 0 0 6px; font-size: .72rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--acento2); }
+h1 { font-family: var(--serif); font-size: clamp(1.9rem, 5.2vw, 2.7rem); margin: 0; line-height: 1.12; font-weight: 700; letter-spacing: -.01em; }
+h2 { font-family: var(--serif); font-size: 1.55rem; margin: 46px 0 10px; line-height: 1.2; padding-top: 18px; border-top: 3px double var(--linea); }
+h3 { font-family: var(--serif); font-size: 1.15rem; margin: 0 0 4px; }
+p { margin: 0 0 14px; }
+.fecha { color: var(--suave); font-size: .88rem; margin: 6px 0 18px; }
+.caja { background: var(--caja); border-radius: 16px; padding: 18px 20px; margin: 18px 0; border: 1px solid var(--linea); box-shadow: var(--sombra); font-family: var(--serif); font-size: 1.12rem; line-height: 1.65; border-left: 5px solid var(--acento2); }
+.foto { margin: 22px 0; } .foto img { width: 100%; height: auto; border-radius: 14px; display: block; } .foto figcaption { font-size: .8rem; color: var(--suave); margin-top: 6px; }
 .tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin: 18px 0; }
-.tarjeta { display: block; background: var(--caja); border-radius: 16px; padding: 16px; text-decoration: none; color: inherit; border: 1px solid var(--linea); }
-.tarjeta:hover, .tarjeta:focus-visible { border-color: var(--acento); outline: none; }
+.tarjeta { display: block; background: var(--caja); border-radius: 18px; padding: 18px; text-decoration: none; color: inherit; border: 1px solid var(--linea); box-shadow: var(--sombra); transition: transform .15s, border-color .15s; }
+.tarjeta:hover, .tarjeta:focus-visible { border-color: var(--acento); outline: none; transform: translateY(-2px); }
 .tarjeta svg { width: 54px; height: 54px; color: var(--acento); }
-.tarjeta b { display: block; margin-top: 6px; font-size: 1.05rem; }
-.tarjeta span { color: var(--suave); font-size: .9rem; }
-.entrada { display: grid; grid-template-columns: 74px 1fr; gap: 14px; background: var(--caja); border-radius: 16px; padding: 16px; margin: 14px 0; border: 1px solid var(--linea); }
+.tarjeta b { display: block; margin-top: 8px; font-family: var(--serif); font-size: 1.12rem; line-height: 1.25; }
+.tarjeta span { color: var(--suave); font-size: .88rem; }
+.entrada { display: grid; grid-template-columns: 78px 1fr; gap: 16px; background: var(--caja); border-radius: 18px; padding: 18px; margin: 16px 0; border: 1px solid var(--linea); box-shadow: var(--sombra); }
 .entrada .ano { text-align: center; }
 .entrada .ano svg { width: 56px; height: 56px; color: var(--acento); }
-.entrada .ano b { display: block; font-size: 1.05rem; color: var(--acento); }
+.entrada .ano b { display: block; font-size: 1.02rem; color: var(--acento2); font-family: var(--serif); }
 .entrada p { margin: 6px 0; }
-.dato { background: rgba(12,155,102,.10); border-left: 4px solid var(--acento); padding: 8px 12px; border-radius: 0 10px 10px 0; font-size: .93rem; margin: 8px 0 0; }
-@media (max-width: 520px) { .entrada { grid-template-columns: 1fr; } .entrada .ano { display: flex; align-items: center; gap: 10px; text-align: left; } }
-table { width: 100%; border-collapse: collapse; background: var(--caja); border-radius: 14px; overflow: hidden; font-size: .92rem; }
-th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--linea); vertical-align: top; }
-th { color: var(--suave); font-weight: 600; }
-.tabla-scroll { overflow-x: auto; }
-.indice { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .92rem; margin: 10px 0 0; }
-.ilustra { display: block; width: 100%; height: auto; margin: 16px 0; border-radius: 14px; background: var(--caja); border: 1px solid var(--linea); color: var(--acento); }
-.legal-nav { margin: 40px 0 0; padding-top: 18px; border-top: 1px solid var(--linea); font-size: .9rem; display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.dato { background: color-mix(in srgb, var(--acento) 9%, transparent); border-left: 4px solid var(--acento); padding: 10px 14px; border-radius: 0 12px 12px 0; font-size: .95rem; margin: 12px 0 0; }
+@media (max-width: 560px) { th, td { padding: 8px 8px; font-size: .86rem; } .entrada { grid-template-columns: 1fr; } .entrada .ano { display: flex; align-items: center; gap: 10px; text-align: left; } .hero { grid-template-columns: 1fr; } .hero svg { display: none; } .barra .miga { display: none; } }
+table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--caja); border-radius: 16px; overflow: hidden; font-size: .94rem; border: 1px solid var(--linea); box-shadow: var(--sombra); font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 9px 13px; border-bottom: 1px solid var(--linea); vertical-align: top; }
+th { color: var(--suave); font-weight: 700; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; background: color-mix(in srgb, var(--acento2) 8%, var(--caja)); }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: color-mix(in srgb, var(--acento) 6%, transparent); }
+tbody tr:nth-child(-n+3) td:first-child { font-weight: 900; color: var(--acento2); }
+tbody tr:first-child td { font-weight: 700; }
+.tabla-scroll { overflow-x: auto; margin: 14px 0; border-radius: 16px; }
+.indice { display: flex; flex-wrap: wrap; gap: 8px; font-size: .9rem; margin: 14px 0 0; }
+.indice a { background: var(--caja); border: 1px solid var(--linea); border-radius: 999px; padding: 4px 12px; text-decoration: none; }
+.indice a:hover { border-color: var(--acento); }
+.ilustra { display: block; width: 100%; height: auto; margin: 20px 0; border-radius: 16px; background: var(--caja); border: 1px solid var(--linea); color: var(--acento); box-shadow: var(--sombra); }
+.legal-nav { margin: 40px 0 0; padding-top: 18px; border-top: 1px solid var(--linea); font-size: .88rem; display: flex; flex-wrap: wrap; gap: 6px 16px; }
 .legal-nav a { color: var(--suave); }
 a:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
-.jugar { display: inline-block; margin: 12px 0; padding: 12px 20px; background: var(--acento); color: #04150e; font-weight: 700; border-radius: 12px; text-decoration: none; }
+.jugar { display: inline-block; margin: 14px 0; padding: 14px 24px; background: linear-gradient(135deg, var(--acento), #1fb98a); color: #fff; font-weight: 800; border-radius: 14px; text-decoration: none; box-shadow: 0 6px 18px rgba(11,122,82,.3); }
+@media (prefers-color-scheme: dark) { .jugar { color: #04150e; } }
+.mas { margin-top: 44px; } .mas h2 { margin-top: 0; }
+/* Huecos de anuncios: ocultos mientras no haya anuncios. Para ver dónde irían: ?huecos=1 (y ?huecos=0 para quitar). */
+.hueco { display: none; }
+html.huecos .hueco { display: flex; align-items: center; justify-content: center; flex-direction: column; margin: 22px 0; min-height: 110px; border: 2px dashed var(--linea); border-radius: 14px; color: var(--suave); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; background: color-mix(in srgb, var(--acento2) 5%, transparent); }
+html.huecos .hueco--lat { display: none; }
+@media (min-width: 1360px) { html.huecos .hueco--lat { display: flex; position: fixed; top: 96px; width: 160px; min-height: 600px; margin: 0; }
+  html.huecos .hueco--izq { left: calc(50% - 380px - 190px); } html.huecos .hueco--der { right: calc(50% - 380px - 190px); } }
+html.huecos .hueco--ancla { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; margin: 0; border-radius: 0; border-width: 2px 0 0; min-height: 60px; background: var(--fondo); }
+html.huecos .hueco--ancla button { position: absolute; right: 8px; top: 6px; border: 0; background: var(--caja); color: var(--texto); border-radius: 50%; width: 26px; height: 26px; cursor: pointer; }
+html.huecos body { padding-bottom: 64px; }
 """
 
 COPA = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10h24v14c0 9-5 15-12 15s-12-6-12-15V10z"/><path d="M20 14h-8c0 9 4 14 10 15M44 14h8c0 9-4 14-10 15"/><path d="M32 39v10M22 54h20M26 49h12"/></svg>'
@@ -226,7 +257,30 @@ class Idioma:
     def url(self, ruta): return "/" + self.prefix + ruta
     def play(self): return "/" if self.lang == "es" else "/?lang=" + self.lang
 
-def cabecera(L, titulo, desc, ruta, h1):
+JUGAR = {"es": "⚽ Jugar", "en": "⚽ Play", "pt": "⚽ Jogar", "fr": "⚽ Jouer", "it": "⚽ Gioca", "de": "⚽ Spielen"}
+PUB = {"es": "Publicidad", "en": "Advertisement", "pt": "Publicidade", "fr": "Publicité", "it": "Pubblicità", "de": "Werbung"}
+MAS = {"es": "Sigue leyendo", "en": "Keep reading", "pt": "Continue lendo", "fr": "Continuer la lecture", "it": "Continua a leggere", "de": "Weiterlesen"}
+ICONO_RUTA = {"curiosidades/campeones/": "COPA", "curiosidades/ligas/": "LIGA", "curiosidades/trofeos/": "COPA", "curiosidades/": "LIBRO"}
+HUECOS_JS = ("<script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');"
+             "if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}"
+             "document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';});})();</script>\n")
+
+def hueco(L, tipo=""):
+    cls = "hueco" + (" hueco--" + tipo if tipo else "")
+    cerrar = '<button type="button" data-cerrar-hueco aria-label="✕">✕</button>' if tipo == "ancla" else ""
+    return f'<aside class="{cls}" aria-label="{e(PUB[L.lang])}" data-hueco="{tipo or "medio"}">{e(PUB[L.lang])}{cerrar}</aside>\n'
+
+def con_huecos(L, h):
+    """inserta un hueco de anuncio cada 2 secciones (h2) o cada 3 entradas, sin tocar el contenido"""
+    import re
+    marcas = [m.start() for m in re.finditer(r'<h2[ >]|<article class="entrada"', h)]
+    if len(marcas) < 4: return h
+    paso = 3 if '<article class="entrada"' in h else 2
+    sitios = [m for k, m in enumerate(marcas) if k and k % paso == 0 and k < len(marcas) - 1]
+    for pos in reversed(sitios): h = h[:pos] + hueco(L) + h[pos:]
+    return h
+
+def cabecera(L, titulo, desc, ruta, h1, icono=None):
     u = L.ui
     alt = "".join(f'<link rel="alternate" hreflang="{HREFLANG[c]}" href="{DOM}{"" if c == "es" else c + "/"}{ruta}">\n' for c in LANGS)
     alt += f'<link rel="alternate" hreflang="x-default" href="{DOM}{ruta}">\n'
@@ -247,6 +301,7 @@ def cabecera(L, titulo, desc, ruta, h1):
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@type": "Article", "headline": h1, "description": desc, "inLanguage": HREFLANG[L.lang], "mainEntityOfPage": DOM + L.prefix + ruta, "image": "https://tikitexto.com/icons/og-image.png", "publisher": {"@type": "Organization", "name": "TIKITEXTO", "url": DOM}}, ensure_ascii=False)}</script>
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png">
 <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96.png">
@@ -256,17 +311,25 @@ def cabecera(L, titulo, desc, ruta, h1):
 </style>
 </head>
 <body>
-<main>
+{HUECOS_JS}<header class="barra"><div><a class="marca" href="{L.play()}" aria-label="{e(u['back'])}">TIKI<i>TEXTO</i></a><span class="miga"><a href="{L.url('curiosidades/')}">{e(u['crumb'])}</a></span><a class="cta" href="{L.play()}">{e(JUGAR[L.lang])}</a></div></header>
+{hueco(L, "lat izq").replace('hueco--lat izq', 'hueco--lat hueco--izq')}{hueco(L, "lat der").replace('hueco--lat der', 'hueco--lat hueco--der')}<main>
 <p class="idiomas" translate="no">🌐 {sel}</p>
-<p><a href="{L.play()}">{e(u['back'])}</a> · <a href="{L.url('curiosidades/')}">{e(u['crumb'])}</a></p>
-<h1>{e(h1)}</h1>
-<p class="fecha">{e(u['checked'])}</p>
+<div class="hero"><div><p class="etiqueta">{e(u['crumb'])}</p><h1>{e(h1)}</h1><p class="fecha">{e(u['checked'])}</p></div>{icono or globals().get(ICONO_RUTA.get(ruta, "BALON"), BALON)}</div>
 """
+
+def seguir(L):
+    u = L.ui
+    t = list(zip((COPA, LIGA, BALON), ("campeones/", "ligas/", "trofeos/"), u["cards"]))
+    h = f'<section class="mas"><h2>{e(MAS[L.lang])}</h2><div class="tarjetas">\n'
+    for icono, sl, (b, sp) in t:
+        h += f'<a class="tarjeta" href="{L.url("curiosidades/" + sl)}">{icono}<b>{e(b)}</b><span>{e(sp)}</span></a>\n'
+    return h + '</div></section>\n'
 
 def pie(L, extra=""):
     u = L.ui; n = u["nav"]
     return f"""{extra}
 <p><a class="jugar" href="{L.play()}">{e(u['play'])}</a></p>
+{hueco(L)}{seguir(L)}{hueco(L, "ancla")}
 <nav class="legal-nav" aria-label="Info">
 <a href="{L.url('curiosidades/')}">{e(n[0])}</a><a href="/aviso-legal.html">{e(n[1])}</a><a href="/privacidad.html">{e(n[2])}</a><a href="/cookies.html">{e(n[3])}</a><a href="/accesibilidad.html">{e(n[4])}</a><a href="/contacto.html">{e(n[5])}</a>
 </nav>
@@ -377,6 +440,7 @@ if __name__ == "__main__":
         L = Idioma(lg)
         for fn in (pagina_indice, pagina_campeones, pagina_ligas, pagina_trofeos):
             ruta, cont = fn(L)
+            cont = con_huecos(L, cont)
             d = os.path.join(RAIZ, L.prefix + ruta)
             os.makedirs(d, exist_ok=True)
             open(os.path.join(d, "index.html"), "w", encoding="utf-8").write(cont)

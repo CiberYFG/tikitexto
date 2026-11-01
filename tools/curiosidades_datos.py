@@ -191,15 +191,32 @@ def celda(L, v):
                 v = v.replace(a, b)
     return v
 
+def foto(L, slug):
+    """Foto opcional: img/curiosidades/<slug>.jpg|webp + crédito en img/curiosidades/creditos.json
+    ({"<slug>": {"alt": "...", "es": "pie en español", "en": "caption", "autor": "...", "licencia": "...", "url": "..."}}).
+    Solo fotos de dominio público o con licencia libre que NO muestren escudos, logos ni jugadores/clubes (regla 4)."""
+    import json
+    base = os.path.join(C.RAIZ, "img", "curiosidades")
+    for ext in ("webp", "jpg"):
+        if os.path.exists(os.path.join(base, slug + "." + ext)):
+            cr = {}
+            try: cr = json.load(open(os.path.join(base, "creditos.json"), encoding="utf-8")).get(slug, {})
+            except Exception: pass
+            pie_ = cr.get(L.lang) or cr.get("en") or ""
+            aut = f' · {e(cr.get("autor", ""))}, <a href="{e(cr.get("url", "#"))}" rel="noopener" target="_blank">{e(cr.get("licencia", ""))}</a>' if cr.get("autor") else ""
+            return f'<figure class="foto"><img src="/img/curiosidades/{slug}.{ext}" alt="{e(cr.get("alt", ""))}" loading="lazy" width="760" height="428"><figcaption>{e(pie_)}{aut}</figcaption></figure>\n'
+    return ""
+
 def pagina(L, p, todas):
     es = L.lang == "es"
     ruta = "curiosidades/" + p["slug"] + "/"
     k = 0 if es else 1
     titulo = p["t"][k]
-    h = cabecera(L, titulo + " | TIKITEXTO", p["d"][k], ruta, titulo)
+    h = cabecera(L, titulo + " | TIKITEXTO", p["d"][k], ruta, titulo, p["ic"])
     h = alinear(L, h, ruta, p["slug"], todas_slugs[p["slug"]])
     h = h.replace(L.ui["checked"], p["fecha"][k])
     h += f'<div class="caja">{e(p["intro"][k])}</div>\n'
+    h += foto(L, p["slug"])
     filas = []
     for i, f in enumerate(p["filas"], 1):
         f = [celda(L, c) for c in f]
@@ -242,6 +259,7 @@ if __name__ == "__main__":
         pg = fix_en(paginas(L))
         _h = hub(L, pg); _h = (_h[0], _h[1].replace('hreflang="es" href="%scuriosidades/datos/"' % DOM, 'hreflang="es" href="%scuriosidades/datos/"' % DOM))
         for ruta, cont in [_h] + [pagina(L, p, pg) for p in pg]:
+            cont = C.con_huecos(L, cont)
             d = os.path.join(C.RAIZ, L.prefix + ruta)
             os.makedirs(d, exist_ok=True)
             open(os.path.join(d, "index.html"), "w", encoding="utf-8").write(cont)
