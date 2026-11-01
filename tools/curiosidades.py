@@ -299,6 +299,7 @@ def cabecera(L, titulo, desc, ruta, h1, icono=None):
 <head>
 <meta charset="utf-8">
 {CSP}<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-adsense-account" content="ca-pub-3562310629171137">
 <title>{e(titulo)}</title>
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{DOM}{L.prefix}{ruta}">
