@@ -1475,6 +1475,13 @@ html.huecos .inicio { padding-bottom: 70px; }
 .curio__lista b { font: 800 1.02rem/1.2 var(--fuente-titulo); }
 .curio__lista em { font-style: normal; font-size: .84rem; line-height: 1.35; color: rgba(255, 255, 255, .85); }
 .curio__nuevo { display: inline-block; margin-left: 6px; padding: 2px 7px; border-radius: 999px; background: #ffd84d; color: #1a1500; font: 800 .62rem/1.2 var(--fuente); font-style: normal; letter-spacing: .08em; vertical-align: middle; }
+.ir-juegos { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; margin: 4px 0 2px; padding: 13px 22px; border-radius: 999px; font: 900 1rem/1 var(--fuente-titulo); letter-spacing: .08em; text-transform: uppercase; color: #fff; text-decoration: none; text-shadow: 0 1px 6px rgba(0, 0, 0, .35); background: linear-gradient(90deg, #ff2d6f, #ff9f1a, #ffe600, #2ee66b, #19b8ff, #8a4dff, #ff2d6f); background-size: 300% 100%; animation: irJuegosRgb 5s linear infinite; box-shadow: 0 8px 22px rgba(138, 77, 255, .4), inset 0 -3px 0 rgba(0, 0, 0, .18); transition: transform .15s; }
+.ir-juegos svg { width: 20px; height: 20px; animation: irJuegosBaja 1.4s ease-in-out infinite; }
+.ir-juegos:hover { transform: translateY(-2px); } .ir-juegos:active { transform: scale(.96); }
+.ir-juegos:focus-visible { outline: 3px solid var(--texto); outline-offset: 3px; }
+@keyframes irJuegosRgb { to { background-position: 300% 0; } }
+@keyframes irJuegosBaja { 50% { transform: translateY(4px); } }
+@media (prefers-reduced-motion: reduce) { .ir-juegos, .ir-juegos svg { animation: none; } }
 .inicio__juegos { margin: 30px 0 4px; font: 900 clamp(1.3rem, 4.4vw, 1.7rem)/1.15 var(--fuente-titulo); letter-spacing: -.01em; color: var(--texto); }
 .curio__todo { margin: 16px 0 0; text-align: center; }
 .curio__todo a { display: inline-block; padding: 11px 22px; border-radius: 999px; background: #ffd84d; color: #1a1500; font-weight: 800; text-decoration: none; box-shadow: 0 6px 16px rgba(0, 10, 90, .35); }
@@ -1946,7 +1953,7 @@ html.huecos .inicio { padding-bottom: 70px; }
   <main class="inicio__contenido">
     <p class="inicio__etiqueta">Datos y curiosidades del fútbol</p>
     <h1 class="inicio__titulo">Historia, datos y curiosidades<br><span>del fútbol</span></h1>
-    <p class="inicio__descripcion">Las últimas 20 finales de la Champions, todos los Mundiales, récords y rankings con fuentes. Y además, juegos interactivos para poner a prueba lo que sabes.</p>
+    <a class="ir-juegos" href="#tituloJuegos" id="irJuegos"><span aria-hidden="true">🎮</span> Juegos interactivos <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
     <section class="curio" aria-labelledby="curioTitulo">
       <p class="curio__kicker">Lo principal de TIKITEXTO</p>
       <h2 id="curioTitulo">Curiosidades del fútbol</h2>
@@ -7098,6 +7105,8 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   });
   window.addEventListener("appinstalled", function () { caja.hidden = true; evento = null; });
 })();
+
+document.addEventListener("click", function (e) { var a = e.target.closest && e.target.closest("#irJuegos"); if (!a) return; e.preventDefault(); var t = document.getElementById("tituloJuegos"); if (t) t.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); });
 </script>
 </body>
 </html>
