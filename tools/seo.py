@@ -22,7 +22,7 @@ FAQ_RESP = ["Escribe un nombre con el mismo número de letras que las casillas y
             "El Tikitexto diario cambia cada día y es el mismo para todo el mundo. Los demás modos puedes jugarlos tantas veces como quieras.",
             "En español, inglés, portugués, francés, italiano y alemán.",
             "Sí. Es una app web (PWA): desde el navegador, elige «Añadir a la pantalla de inicio».",
-            "No. Además del juego diario, TIKITEXTO tiene una sección de curiosidades del fútbol con historia, datos y estadísticas: los campeones de la Champions y del Mundial, cómo se fundaron las principales ligas y cómo nacieron los trofeos más importantes."]
+            "No. TIKITEXTO es, ante todo, una base de datos y curiosidades del fútbol: historia de la Champions y del Mundial, récords con fuentes, cómo se fundaron las ligas y cómo nacieron los trofeos. Además tiene una sección de juegos interactivos."]
 
 # ---- textos por idioma de las páginas de idioma ----
 UI = {
@@ -40,11 +40,11 @@ UI = {
             pasos=["Gib einen Namen mit der Anzahl Buchstaben ein, die die Felder zeigen.", "Drücke Enter: grün = Buchstabe an der richtigen Stelle, gelb = kommt woanders im Namen vor, grau = nicht im Namen.", "Du hast 6 Versuche. Wenn du nicht weiterkommst, nutze den Hinweis."]),
 }
 LANDING = {
- "en": dict(titulo="Daily football (soccer) game: guess the player, team & stadium | TIKITEXTO", desc="Free daily football (soccer) game: guess the player, team, stadium or national team in 6 tries. World ranking, no sign-up.", h1="Daily football (soccer) guessing game", lead="A new hidden name every day from the world of football, or soccer as it is called in the US: a player, a team, a stadium, a national team or a manager. Six attempts, colour clues after each one and a world ranking. Free and with no sign-up."),
- "pt": dict(titulo="Jogo diário de futebol: adivinhe o jogador, o time e o estádio | TIKITEXTO", desc="Jogo de futebol grátis todo dia: adivinhe o jogador, o time, o estádio ou a seleção em 6 tentativas. Com ranking mundial e sem cadastro.", h1="Jogo diário de adivinhar futebol", lead="Todo dia um nome novo escondido: um jogador, um time, um estádio, uma seleção ou um treinador. Seis tentativas, pistas em cores a cada uma e ranking mundial. Grátis e sem cadastro."),
- "fr": dict(titulo="Jeu quotidien de football : devine le joueur, l'équipe et le stade | TIKITEXTO", desc="Jeu de football gratuit chaque jour : devine le joueur, l'équipe, le stade ou la sélection en 6 essais. Classement mondial, sans inscription.", h1="Jeu quotidien de football à deviner", lead="Chaque jour, un nouveau nom caché : un joueur, une équipe, un stade, une sélection ou un entraîneur. Six essais, des indices en couleurs après chacun et un classement mondial. Gratuit et sans inscription."),
- "it": dict(titulo="Gioco quotidiano di calcio: indovina giocatore, squadra e stadio | TIKITEXTO", desc="Gioco di calcio gratuito ogni giorno: indovina giocatore, squadra, stadio o nazionale in 6 tentativi. Classifica mondiale, senza registrazione.", h1="Gioco quotidiano di calcio da indovinare", lead="Ogni giorno un nuovo nome nascosto: un giocatore, una squadra, uno stadio, una nazionale o un allenatore. Sei tentativi, indizi a colori dopo ognuno e classifica mondiale. Gratis e senza registrazione."),
- "de": dict(titulo="Tägliches Fußballspiel: Spieler, Team und Stadion erraten | TIKITEXTO", desc="Kostenloses tägliches Fußballspiel: Errate Spieler, Team, Stadion oder Nationalmannschaft in 6 Versuchen. Weltrangliste, ohne Anmeldung.", h1="Tägliches Fußball-Ratespiel", lead="Jeden Tag ein neuer versteckter Name: ein Spieler, ein Team, ein Stadion, eine Nationalmannschaft oder ein Trainer. Sechs Versuche, Farbhinweise nach jedem und eine Weltrangliste. Kostenlos und ohne Anmeldung."),
+ "en": dict(titulo="Football (soccer) facts, history and trivia, plus interactive games | TIKITEXTO", desc="A football (soccer) database and trivia site: Champions League and World Cup history, records and sourced rankings. Plus free interactive games to test what you know.", h1="Football (soccer) facts, history and trivia", lead="The last 20 Champions League finals, every World Cup, records and sourced rankings. And interactive games to test what you know."),
+ "pt": dict(titulo="Dados e curiosidades do futebol, e jogos interativos | TIKITEXTO", desc="Base de dados e curiosidades do futebol: história da Liga dos Campeões e das Copas do Mundo, recordes e rankings com fontes. Além disso, jogos interativos grátis para testar o que você sabe.", h1="Dados, história e curiosidades do futebol", lead="As últimas 20 finais da Liga dos Campeões, todas as Copas do Mundo, recordes e rankings com fontes. E, além disso, jogos interativos para testar o que você sabe."),
+ "fr": dict(titulo="Données et curiosités du football, et jeux interactifs | TIKITEXTO", desc="Base de données et curiosités du football : histoire de la Ligue des champions et des Coupes du monde, records et classements sourcés. Et des jeux interactifs gratuits pour tester tes connaissances.", h1="Données, histoire et curiosités du football", lead="Les 20 dernières finales de la Ligue des champions, toutes les Coupes du monde, records et classements sourcés. Et des jeux interactifs pour tester tes connaissances."),
+ "it": dict(titulo="Dati e curiosità sul calcio, e giochi interattivi | TIKITEXTO", desc="Database e curiosità sul calcio: storia della Champions League e dei Mondiali, record e classifiche con fonti. In più, giochi interattivi gratuiti per mettere alla prova ciò che sai.", h1="Dati, storia e curiosità sul calcio", lead="Le ultime 20 finali di Champions League, tutti i Mondiali, record e classifiche con fonti. E giochi interattivi per mettere alla prova ciò che sai."),
+ "de": dict(titulo="Fußball-Daten und Wissenswertes, plus interaktive Spiele | TIKITEXTO", desc="Fußball-Datenbank und Wissenswertes: Geschichte der Champions League und der Weltmeisterschaften, Rekorde und Ranglisten mit Quellen. Dazu kostenlose interaktive Spiele, um dein Wissen zu testen.", h1="Fußball-Daten, Geschichte und Wissenswertes", lead="Die letzten 20 Champions-League-Finals, alle Weltmeisterschaften, Rekorde und Ranglisten mit Quellen. Und interaktive Spiele, um dein Wissen zu testen."),
 }
 import sys as _sys
 _sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -176,7 +176,8 @@ for lang in LANGS[1:]:
     if lang in ("en", "de"):
         _lista = MODOS_EN if lang == "en" else MODOS_DE
         modos = "".join('<li><a href="%s/">%s</a></li>' % (g["slug"], esc(g["h1"])) for g in _lista)
-    bloques = "<h2>%s</h2><ul class=\"g\">%s</ul>" % (esc(u["modos"]), modos)
+    _cur = '<h2>%s</h2><ul class="g"><li><a href="curiosidades/">%s</a></li></ul>' % (esc(CUR_LABEL[lang]), esc(CUR_LABEL[lang]))
+    bloques = _cur + "<h2>%s</h2><ul class=\"g\">%s</ul>" % (esc(u["modos"]), modos)
     faq = [(T(FAQ_CLAVES[i], lang), T(FAQ_RESP[i], lang)) for i in range(6)]
     escribir(lang, pagina(lang, lang + "/", L["titulo"], L["desc"], L["h1"], L["lead"], None, bloques, faq, alternates(), 1))
     urls.append((lang + "/", lang))
@@ -239,7 +240,7 @@ for _pg in _ch.PAGINAS:
     _u = (DOM + "curiosidades/" + _pg["es"] + "/", DOM + "en/curiosidades/" + _pg["en"] + "/")
     _alts = '<xhtml:link rel="alternate" hreflang="es" href="%s"/><xhtml:link rel="alternate" hreflang="en" href="%s"/><xhtml:link rel="alternate" hreflang="x-default" href="%s"/>' % (_u[0], _u[1], _u[0])
     for _x in _u: sm.append("  <url><loc>%s</loc>%s</url>" % (_x, _alts))
-for p in ("privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html", "contacto.html"):
+for p in ("privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html", "contacto.html", "sobre-tikitexto.html"):
     sm.append("  <url><loc>%s%s</loc></url>" % (DOM, p))
 sm.append("</urlset>")
 open(os.path.join(RAIZ, "sitemap.xml"), "w", encoding="utf-8").write("\n".join(sm) + "\n")

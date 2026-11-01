@@ -172,7 +172,7 @@ with sync_playwright() as p:
         check("al elegir inglés se guarda y recarga", pi.evaluate("localStorage.getItem('tikitexto:idioma')") == "en" and pi.evaluate("document.documentElement.lang") == "en")
         check("ya no aparece el selector", not pi.is_visible(".idioma"))
         texto = pi.inner_text("body")
-        check("la portada está en inglés", "Guess the name" in texto and "Choose a mode" in texto.replace("CHOOSE A MODE", "Choose a mode"))
+        check("la portada está en inglés", "Football history, facts and" in texto and "Interactive games" in texto and "Choose a mode" in texto.replace("CHOOSE A MODE", "Choose a mode"))
         check("el menú de modos está traducido", "Goalkeepers" in texto and "Porteros" not in texto)
         for cod, frase in (("pt", "Escolha um modo"), ("fr", "Choisis un mode"), ("it", "Scegli una modalità"), ("de", "Wähle einen Modus")):
             pi.evaluate("localStorage.setItem('tikitexto:idioma','%s')" % cod)
@@ -509,10 +509,28 @@ with sync_playwright() as p:
         for ru in rutas:
             r = api.get(BASE + ru)
             t = r.text() if r.status == 200 else ""
-            if r.status != 200 or 'class="jugar"' not in t or "<table" not in t and not ru.endswith("datos/"): malas.append(ru)
+            hist = any(x in ru for x in ("champions-20-anos", "champions-league-last-20-finals", "mundiales-edicion-por-edicion", "world-cups-edition-by-edition"))
+            if r.status != 200 or 'class="jugar"' not in t or ("<table" not in t and not ru.endswith("datos/") and not hist): malas.append(ru)
         check("datos: todas existen, con botón de jugar y tabla", not malas, ", ".join(malas)[:150])
     except Exception as e:
         check("páginas de datos", False, str(e)[:150])
+
+    print("3p) Historia de la Champions y los Mundiales, identidad y menores")
+    try:
+        for ru, n_ent in (("curiosidades/champions-20-anos/", 20), ("en/curiosidades/champions-league-last-20-finals/", 20), ("curiosidades/mundiales-edicion-por-edicion/", 23), ("en/curiosidades/world-cups-edition-by-edition/", 23)):
+            r = api.get(BASE + ru); t = r.text() if r.status == 200 else ""
+            check("historia: " + ru, r.status == 200 and t.count('<article class="entrada"') == n_ent and 'rel="alternate" hreflang="x-default"' in t, str(t.count('<article class="entrada"')))
+        h = api.get(BASE).text()
+        check("portada: nueva identidad (sin «juego diario»)", "base de datos" in h.lower() or "Datos y curiosidades del fútbol" in h)
+        check("portada: .curio antes de los juegos", h.index('class="curio"') < h.index('id="tituloJuegos"') < h.index('data-modo="diario"'))
+        pv = api.get(BASE + "privacidad.html").text()
+        check("privacidad: menores coherente (14 años para crear cuenta)", "14 años o más" in pv and "no está dirigido a menores de 14" not in pv.lower())
+        al = api.get(BASE + "aviso-legal.html").text()
+        check("aviso legal: titular identificado y menores coherente", "Yago Fernández Galán" in al and "no está dirigido a menores" not in al)
+        so = api.get(BASE + "sobre-tikitexto.html")
+        check("sobre-tikitexto existe y está en el sitemap", so.status == 200 and "sobre-tikitexto.html" in api.get(BASE + "sitemap.xml").text())
+    except Exception as e:
+        check("historia/identidad", False, str(e)[:150])
 
     print("3o) Huecos de anuncios y curiosidades en portada")
     try:
