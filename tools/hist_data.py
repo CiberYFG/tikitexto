@@ -211,4 +211,6 @@ def cards_meta(lang):
     return [("champions-20-anos" if es else "champions-league-last-20-finals",
              "Las últimas 20 finales de la Champions League" if es else "The last 20 Champions League finals", "2007-2026", "COPA"),
             ("mundiales-edicion-por-edicion" if es else "world-cups-edition-by-edition",
-             "Todos los Mundiales, edición por edición" if es else "Every World Cup, edition by edition", "1930-2026", "BALON")]
+             "Todos los Mundiales, edición por edición" if es else "Every World Cup, edition by edition", "1930-2026", "BALON"),
+            ("curiosidades-por-temas" if es else "football-trivia-by-topic",
+             "Curiosidades por equipos y jugadores" if es else "Curiosities by club and player", "Real Madrid, Barça, Messi, Cristiano…" if es else "Real Madrid, Barça, Messi, Cristiano…", "LIGA")]
