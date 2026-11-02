@@ -510,7 +510,7 @@ with sync_playwright() as p:
             r = api.get(BASE + ru)
             t = r.text() if r.status == 200 else ""
             hist = any(x in ru for x in ("champions-20-anos", "champions-league-last-20-finals", "mundiales-edicion-por-edicion", "world-cups-edition-by-edition"))
-            if r.status != 200 or 'class="jugar"' not in t or ("<table" not in t and not ru.endswith("datos/") and not hist): malas.append(ru)
+            if r.status != 200 or 'class="jugar"' not in t or ("<table" not in t and not ru.endswith("datos/") and not hist and 'class="entrada"' not in t and 'class="tarjetas"' not in t): malas.append(ru)
         check("datos: todas existen, con botón de jugar y tabla", not malas, ", ".join(malas)[:150])
     except Exception as e:
         check("páginas de datos", False, str(e)[:150])
@@ -523,6 +523,14 @@ with sync_playwright() as p:
         h = api.get(BASE).text()
         check("portada: nueva identidad (sin «juego diario»)", "base de datos" in h.lower() or "Datos y curiosidades del fútbol" in h)
         check("portada: .curio antes de los juegos", h.index('class="curio"') < h.index('id="tituloJuegos"') < h.index('data-modo="diario"'))
+        import sys as _s; _s.path.insert(0, "tools"); import temas_data as _td
+        malas_t = []
+        for tm in _td.TEMAS:
+            for pre, sl in (("", tm["es"]), ("en/", tm["en"])):
+                r = api.get(BASE + pre + "curiosidades/" + sl + "/"); tt = r.text() if r.status == 200 else ""
+                if r.status != 200 or tt.count('class="entrada"') < 7 or 'class="jugar"' not in tt: malas_t.append(pre + sl)
+        check("temas: 12 páginas es/en con ≥7 curiosidades", not malas_t and len(_td.TEMAS) == 12, ", ".join(malas_t)[:150])
+        check("temas: índice enlazado desde curiosidades", "curiosidades-por-temas" in api.get(BASE + "curiosidades/").text())
         pv = api.get(BASE + "privacidad.html").text()
         check("privacidad: menores coherente (14 años para crear cuenta)", "14 años o más" in pv and "no está dirigido a menores de 14" not in pv.lower())
         al = api.get(BASE + "aviso-legal.html").text()

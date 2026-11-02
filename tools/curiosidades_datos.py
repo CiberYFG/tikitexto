@@ -7,7 +7,7 @@ import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import curiosidades as C
 DOM = "https://tikitexto.com/"
-from curiosidades import e, tabla, cabecera, pie, Idioma, BALON, COPA, ESTADIO
+from curiosidades import e, tabla, cabecera, pie, Idioma, BALON, COPA, ESTADIO, LIGA
 C.LANGS = ["es", "en"]          # estas páginas solo existen en es/en (hreflang correcto)
 LANGS = C.LANGS
 W = "https://en.wikipedia.org/wiki/"

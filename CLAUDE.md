@@ -92,3 +92,9 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 - La portada pone la sección `.curio` (azul con rayos) **justo bajo el título**, antes de «Juegos interactivos» (`h2.inicio__juegos`). Los items nuevos llevan `data-curio-en` para el slug en inglés y `data-solo-es-en`.
 - `sobre-tikitexto.html` (quiénes somos, fuentes, correcciones) enlazada desde el pie, las páginas legales, las curiosidades y el sitemap.
 - Menores: para **crear cuenta hay que tener ≥14 años** (art. 7 LOPDGDD); sin cuenta se puede jugar como invitado y leer curiosidades. Aviso en el modal de cuenta, `privacidad.html#menores` y `aviso-legal.html` deben decir lo mismo. Si hay anuncios, no personalizados a menores.
+
+## Curiosidades por temas (2-nov-2026)
+- `tools/temas_data.py` (datos) + `tools/curiosidades_temas.py` generan 12 páginas es/en (Champions, Mundial, Real Madrid, Barça, LaLiga, Premier League, Messi, Cristiano, Balón de Oro, Eurocopa, Man. United, Liverpool) + índice `curiosidades/curiosidades-por-temas/` (en: `football-trivia-by-topic`). Cada tema: lista de `hechos` (título es/en, texto es/en) y fuentes. Orden: `curiosidades.py` → `curiosidades_datos.py` → `curiosidades_historia.py` → `curiosidades_temas.py` → `seo.py`.
+- Cifras contrastadas el 2-nov-2026 (Wikipedia: campeones de LaLiga, LaLiga 2025-26, honours del Real Madrid; prensa para el título del Arsenal 2025-26). Las cifras que cambian cada temporada (títulos, goleadores) hay que revisarlas tras cada temporada/Mundial. Test 3p.
+- Para añadir un tema: añadir un `dict` a `TEMAS` (≥7 hechos), regenerar y ampliar el `12` de la tarjeta de portada/test si cambia.
+
