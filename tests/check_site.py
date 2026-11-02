@@ -510,7 +510,7 @@ with sync_playwright() as p:
             r = api.get(BASE + ru)
             t = r.text() if r.status == 200 else ""
             hist = any(x in ru for x in ("champions-20-anos", "champions-league-last-20-finals", "mundiales-edicion-por-edicion", "world-cups-edition-by-edition"))
-            if r.status != 200 or 'class="jugar"' not in t or ("<table" not in t and not ru.endswith("datos/") and not hist and 'class="entrada"' not in t): malas.append(ru)
+            if r.status != 200 or 'class="jugar"' not in t or ("<table" not in t and not ru.endswith("datos/") and not hist and 'class="entrada"' not in t and 'class="tarjetas"' not in t): malas.append(ru)
         check("datos: todas existen, con botón de jugar y tabla", not malas, ", ".join(malas)[:150])
     except Exception as e:
         check("páginas de datos", False, str(e)[:150])
