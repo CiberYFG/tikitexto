@@ -596,6 +596,26 @@ with sync_playwright() as p:
     except Exception as e:
         check("linterna maldita", False, str(e)[:150])
 
+    print("3r) Artículos largos (articulos/)")
+    try:
+        pa = br.new_page(); errs_r = []; pa.on("pageerror", lambda e: errs_r.append(str(e)))
+        pa.goto(BASE + "articulos/", wait_until="domcontentloaded", timeout=60000)
+        n_t = pa.evaluate("document.querySelectorAll('.tarjeta[href^=\"/articulos/\"]').length")
+        check("articulos: el índice lista los artículos", n_t >= 12, str(n_t))
+        enlaces = pa.evaluate("Array.from(document.querySelectorAll('.tarjeta[href^=\"/articulos/\"]')).map(a => a.getAttribute('href'))")
+        pobres = []
+        for hr in enlaces:
+            pa.goto(BASE + hr.lstrip("/"), wait_until="domcontentloaded", timeout=60000)
+            palabras = pa.evaluate("document.querySelector('.articulo').innerText.split(/\\s+/).length")
+            h2 = pa.evaluate("document.querySelectorAll('.articulo h2').length")
+            hl = pa.evaluate("Array.from(document.querySelectorAll('link[rel=alternate]')).map(l => l.hreflang).join(',')")
+            if palabras < 650 or h2 < 4 or hl != "es,x-default": pobres.append(f"{hr}: {palabras} palabras, {h2} h2, {hl}")
+        check("articulos: cada uno tiene texto largo, secciones y solo hreflang es", not pobres, "; ".join(pobres)[:200])
+        check("articulos: sin errores de JavaScript", not errs_r, "; ".join(errs_r)[:150])
+        pa.close()
+    except Exception as e:
+        check("articulos", False, str(e)[:150])
+
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:
         print("  (omitido)")
