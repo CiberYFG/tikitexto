@@ -600,9 +600,9 @@ with sync_playwright() as p:
     try:
         pa = br.new_page(); errs_r = []; pa.on("pageerror", lambda e: errs_r.append(str(e)))
         pa.goto(BASE + "articulos/", wait_until="domcontentloaded", timeout=60000)
-        n_t = pa.evaluate("document.querySelectorAll('.tarjeta').length")
+        n_t = pa.evaluate("document.querySelectorAll('.tarjeta[href^=\"/articulos/\"]').length")
         check("articulos: el índice lista los artículos", n_t >= 12, str(n_t))
-        enlaces = pa.evaluate("Array.from(document.querySelectorAll('.tarjeta')).map(a => a.getAttribute('href'))")
+        enlaces = pa.evaluate("Array.from(document.querySelectorAll('.tarjeta[href^=\"/articulos/\"]')).map(a => a.getAttribute('href'))")
         pobres = []
         for hr in enlaces:
             pa.goto(BASE + hr.lstrip("/"), wait_until="domcontentloaded", timeout=60000)
