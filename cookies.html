@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BglJL/KWCQFKgTvptRWQQzCFptmAt+seW/fpU6gHNV4=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="google-adsense-account" content="ca-pub-3562310629171137">
@@ -112,8 +112,6 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--acento); outlin
       else { localStorage.setItem("tikitexto:consentimiento", "si"); localStorage.removeItem("tikitexto:sin-medicion"); }
     } catch (e) { /* sin almacenamiento */ }
     pintarMedicion();
-  });
-  pintarMedicion();
   });
   pintarMedicion();
   var b = document.getElementById("borrar-local"), s = document.getElementById("borrar-estado");

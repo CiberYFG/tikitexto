@@ -585,7 +585,7 @@ with sync_playwright() as p:
                     if st["s"] >= st["l"]: break
                     pos = ph.evaluate("(()=>{const o=TIKI.lz.letras.find(o=>!o.tomada&&o.l===TIKI.lz.orden[TIKI.lz.sig]);return [o.x,o.y]})()")
                     box = ph.locator("#lzCampo").bounding_box()
-                    ph.mouse.move(box["x"] + pos[0], box["y"] + pos[1]); ph.mouse.down(); ph.mouse.up(); ph.wait_for_timeout(60)
+                    ph.mouse.move(box["x"] + pos[0], box["y"] + pos[1]); ph.wait_for_timeout(120); ph.mouse.down(); ph.mouse.up(); ph.wait_for_timeout(60)
                 ph.wait_for_timeout(1500)
             ph.wait_for_timeout(1500)
             check("linterna: se superan las 3 noches y aparece el resultado", ph.evaluate("TIKI.lz.fin && TIKI.lz.hechos === 3") and "+1 tikitexto" in ph.inner_text("#lzResultado"))
@@ -596,6 +596,23 @@ with sync_playwright() as p:
         ch.close()
     except Exception as e:
         check("linterna maldita", False, str(e)[:150])
+
+    print("3s) Seguridad: CSP sin unsafe-inline en scripts y huellas al día")
+    try:
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tools"))
+        import csp as _csp
+        for ruta in ["", "curiosidades/", "articulos/", "privacidad.html", "cookies.html", "aviso-legal.html", "adivina-el-jugador/"]:
+            h = br.new_context().request.get(BASE + ruta).text()
+            m = re.search(r'http-equiv="Content-Security-Policy" content="([^"]*)"', h)
+            ss = re.search(r"script-src [^;]*", m.group(1)).group(0) if m else ""
+            bien = bool(m) and "unsafe-inline" not in ss and all(x in ss for x in _csp.huellas(h))
+            check("CSP de /" + ruta + ": sin unsafe-inline y con las huellas de sus scripts (si falla: python3 tools/csp.py)", bien, ss[:80])
+        ph = br.new_context().new_page()
+        ph.goto(BASE + "cookies.html", wait_until="networkidle")
+        ph.click("#medicion-boton")
+        check("cookies.html: el botón de medición funciona (JS sin errores de sintaxis)", ph.evaluate("localStorage.getItem('tikitexto:consentimiento')") in ("si", "no"))
+    except Exception as e:
+        check("seguridad CSP", False, str(e)[:150])
 
     print("3r) Artículos largos (articulos/)")
     try:
