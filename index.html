@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-2kAbdep/AqA2pMBXFkLYLyLuzl/noJyPg4wvg1R4Fr0=' 'sha256-7qKX25NrKcQFcy6FHfchhaQPCdgmm5pmAstcrRFWods=' 'sha256-BI2BsDQZvkJytdbTG9/Js43IM+wH69cDIaMBOmFPvx8=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-bfOeYVsPhEDFEVKuSJnZjqv/Yk+G/t0yuBX3Cg6jtwo=' 'sha256-hJeWfGyIKh1MSTJoty2bLO7c0l6ygFO/FHtTmwtFpWQ=' 'sha256-l9n8dLWaoRNIyZZMiZwlyrQuDg/PokbApbUlT17D82s=' 'sha256-lwMrjbnibw66kGN5bfuM22qSsSfJ0q70HdO+ToH3olI=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-2kAbdep/AqA2pMBXFkLYLyLuzl/noJyPg4wvg1R4Fr0=' 'sha256-7qKX25NrKcQFcy6FHfchhaQPCdgmm5pmAstcrRFWods=' 'sha256-BI2BsDQZvkJytdbTG9/Js43IM+wH69cDIaMBOmFPvx8=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-bfOeYVsPhEDFEVKuSJnZjqv/Yk+G/t0yuBX3Cg6jtwo=' 'sha256-hJeWfGyIKh1MSTJoty2bLO7c0l6ygFO/FHtTmwtFpWQ=' 'sha256-hVF/lYmiU74NnlHiawbyJUSyaTC0qlQsCfJpk7DUf4U=' 'sha256-lwMrjbnibw66kGN5bfuM22qSsSfJ0q70HdO+ToH3olI=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <script>/* anti-clickjacking: GitHub Pages no permite X-Frame-Options */try{if(window.top!==window.self){window.top.location=window.self.location;}}catch(e){document.documentElement.style.display="none";}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -6140,7 +6140,8 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (enLinea) enviarPend();
     mostrarPunto();
     lanzarConfeti();
-    pedirNickname();
+    /* En la Linterna (con tiempo) la ventana del nickname espera al final de la partida */
+    if (lz.activo && !lz.fin && !pantallaLz.hidden) lz.pendNick = true; else pedirNickname();
   }
 
   function nvLimpiarTimer() { clearTimeout(nv.timer); nv.timer = 0; }
@@ -7091,6 +7092,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   function lzFin(gana) {
     if (lz.fin) return;
     lz.fin = true; lzParar();
+    if (lz.pendNick) { lz.pendNick = false; pedirNickname(); }
     const sesion = lz.sesion;
     const d = lzDatos();
     let rec = false;
