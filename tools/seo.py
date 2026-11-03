@@ -195,6 +195,7 @@ def alts_modo(modo):
 for m in MODOS_ES:
     u = UI["es"]
     otros = "".join('<li><a href="../%s/">%s</a></li>' % (o["slug"], esc(o["h1"])) for o in MODOS_ES if o["slug"] != m["slug"])
+    otros += '<li><a href="../ahorcado-futbolistas/">Ahorcado de futbolistas</a></li>'
     bloques = '<h2>Más modos para jugar</h2><ul class="g">%s<li><a href="../">Todos los modos</a></li></ul>' % otros
     faq = m["qa"] + [(FAQ_CLAVES[1], FAQ_RESP[1]), (FAQ_CLAVES[2], FAQ_RESP[2])]
     migas = [("TIKITEXTO", DOM), (m["h1"], DOM + m["slug"] + "/")]
@@ -202,10 +203,32 @@ for m in MODOS_ES:
                                alts_modo(m["modo"]), 1, migas))
     urls.append((m["slug"] + "/", "es"))
 
+
+# ---- página del Ahorcado (es/en): modo especial con su propia entrada de búsqueda ----
+AHORCADO = {
+ "es": dict(slug="ahorcado-futbolistas", titulo="Ahorcado de futbolistas online gratis | TIKITEXTO", desc="Juega al ahorcado de futbolistas: adivina el nombre de un crack de fútbol letra a letra antes de cometer 5 fallos. Gratis, sin registro y con ranking.", h1="Ahorcado de futbolistas",
+        lead="El clásico ahorcado con un giro futbolero: hay un jugador famoso escondido y cada cuadrado es una letra de su nombre. Toca letras del teclado; si fallas, el muñeco avanza. Tienes 5 fallos y no hay pistas.",
+        qa=[("¿Cuántos fallos puedo cometer?", "Cinco. Con el quinto fallo, el muñeco se completa y pierdes la partida."), ("¿Qué jugadores aparecen?", "Medio centenar de futbolistas famosos, de leyendas como Pelé o Maradona a estrellas actuales."), ("¿Se gana algo?", "Cada 3 victorias seguidas ganas +1 tikitexto, y se guarda tu mejor racha."), ("¿Es gratis?", "Sí, gratis y sin registro: puedes jugar como invitado.")],
+        otros="Más modos para jugar", todos="Todos los modos", cta="Jugar al ahorcado"),
+ "en": dict(slug="football-hangman", titulo="Football hangman online, free | TIKITEXTO", desc="Play football (soccer) hangman: guess the famous player's name letter by letter before 5 mistakes. Free, no sign-up, with a worldwide ranking.", h1="Football hangman",
+        lead="The classic hangman with a football twist: a famous player is hidden and every square is a letter of his name. Tap letters on the keyboard; each mistake brings the stick figure closer to the end. You get 5 mistakes and no hints.",
+        qa=[("How many mistakes can I make?", "Five. On the fifth mistake the figure is complete and the round is over."), ("Which players appear?", "About fifty famous footballers, from legends like Pelé or Maradona to current stars."), ("Do I win anything?", "Every 3 wins in a row earns you +1 tikitexto, and your best streak is saved."), ("Is it free?", "Yes, free and with no sign-up: you can play as a guest.")],
+        otros="More ways to play", todos="All game modes", cta="Play hangman"),
+}
+_AH_ALTS = '<link rel="alternate" hreflang="es" href="%sahorcado-futbolistas/">\n<link rel="alternate" hreflang="en" href="%sen/football-hangman/">\n<link rel="alternate" hreflang="x-default" href="%sahorcado-futbolistas/">' % (DOM, DOM, DOM)
+for _l, _a in AHORCADO.items():
+    _otros = "".join('<li><a href="%s">%s</a></li>' % (("../%s/" % o["slug"]) if _l == "es" else ("../%s/" % o["slug"]), esc(o["h1"])) for o in (MODOS_ES if _l == "es" else MODOS_EN))
+    _bl = '<h2>%s</h2><ul class="g">%s<li><a href="../">%s</a></li></ul>' % (_a["otros"], _otros, _a["todos"])
+    _faq = _a["qa"]
+    _ruta = ("" if _l == "es" else "en/") + _a["slug"] + "/"
+    _migas = [("TIKITEXTO", DOM + ("" if _l == "es" else "en/")), (_a["h1"], DOM + _ruta)]
+    escribir(_ruta, pagina(_l, _ruta, _a["titulo"], _a["desc"], _a["h1"], _a["lead"], "ahorcado", _bl, _faq, _AH_ALTS, 1 if _l == "es" else 2, _migas))
+
 for lang, lista in (("en", MODOS_EN), ("de", MODOS_DE)):
     for m in lista:
         otros_t, todos_t = LABELS_ED[lang]
         otros = "".join('<li><a href="../%s/">%s</a></li>' % (o["slug"], esc(o["h1"])) for o in lista if o["slug"] != m["slug"])
+        if lang == "en": otros += '<li><a href="../football-hangman/">Football hangman</a></li>'
         bloques = '<h2>%s</h2><ul class="g">%s<li><a href="../">%s</a></li></ul>' % (otros_t, otros, todos_t)
         faq = m["qa"] + [(T(FAQ_CLAVES[1], lang), T(FAQ_RESP[1], lang)), (T(FAQ_CLAVES[2], lang), T(FAQ_RESP[2], lang))]
         ruta = lang + "/" + m["slug"] + "/"
@@ -245,6 +268,8 @@ for _pg in _ch.PAGINAS:
     _u = (DOM + "curiosidades/" + _pg["es"] + "/", DOM + "en/curiosidades/" + _pg["en"] + "/")
     _alts = '<xhtml:link rel="alternate" hreflang="es" href="%s"/><xhtml:link rel="alternate" hreflang="en" href="%s"/><xhtml:link rel="alternate" hreflang="x-default" href="%s"/>' % (_u[0], _u[1], _u[0])
     for _x in _u: sm.append("  <url><loc>%s</loc>%s</url>" % (_x, _alts))
+_ah_alts = '<xhtml:link rel="alternate" hreflang="es" href="%sahorcado-futbolistas/"/><xhtml:link rel="alternate" hreflang="en" href="%sen/football-hangman/"/><xhtml:link rel="alternate" hreflang="x-default" href="%sahorcado-futbolistas/"/>' % (DOM, DOM, DOM)
+for _x in (DOM + "ahorcado-futbolistas/", DOM + "en/football-hangman/"): sm.append("  <url><loc>%s</loc>%s</url>" % (_x, _ah_alts))
 for p in ("privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html", "contacto.html", "sobre-tikitexto.html"):
     sm.append("  <url><loc>%s%s</loc></url>" % (DOM, p))
 sm.append("</urlset>")
