@@ -2,9 +2,11 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-2kAbdep/AqA2pMBXFkLYLyLuzl/noJyPg4wvg1R4Fr0=' 'sha256-7qKX25NrKcQFcy6FHfchhaQPCdgmm5pmAstcrRFWods=' 'sha256-BI2BsDQZvkJytdbTG9/Js43IM+wH69cDIaMBOmFPvx8=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-bfOeYVsPhEDFEVKuSJnZjqv/Yk+G/t0yuBX3Cg6jtwo=' 'sha256-hJeWfGyIKh1MSTJoty2bLO7c0l6ygFO/FHtTmwtFpWQ=' 'sha256-hVF/lYmiU74NnlHiawbyJUSyaTC0qlQsCfJpk7DUf4U=' 'sha256-lwMrjbnibw66kGN5bfuM22qSsSfJ0q70HdO+ToH3olI=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BI2BsDQZvkJytdbTG9/Js43IM+wH69cDIaMBOmFPvx8=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-ZCmhjcKQnbqIXA+ijY+mfbC1vvsvaZOVyISJmMJx4SA=' 'sha256-hVF/lYmiU74NnlHiawbyJUSyaTC0qlQsCfJpk7DUf4U=' 'sha256-i/uezubRZzZHSJf/pQ5SYUOkxpVDuy7MafHbdaR+erU=' 'sha256-lwMrjbnibw66kGN5bfuM22qSsSfJ0q70HdO+ToH3olI=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<script>/* anti-clickjacking: GitHub Pages no permite X-Frame-Options */try{if(window.top!==window.self){window.top.location=window.self.location;}}catch(e){document.documentElement.style.display="none";}</script>
+<script>/* anti-clickjacking: GitHub Pages no permite X-Frame-Options */try{if(window.top!==window.self){window.top.location=window.self.location;}}catch(e){document.documentElement.style.display="none";}
+/* idioma distinto del español: no pintar hasta traducir (evita el salto de diseño); lo quita el traductor */
+try{var q=new URLSearchParams(location.search).get("lang"),l=/^(es|en|pt|fr|it|de)$/.test(q||"")?q:localStorage.getItem("tikitexto:idioma");document.documentElement.setAttribute("data-idioma",/^(es|en|pt|fr|it|de)$/.test(l||"")?l:"es");if(/^(en|pt|fr|it|de)$/.test(l||""))document.documentElement.classList.add("t-espera");}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-adsense-account" content="ca-pub-3562310629171137">
 <title>TIKITEXTO · Web de historia y juegos del fútbol</title>
@@ -212,8 +214,6 @@ body.sin-desplazamiento { overflow: hidden; }
   z-index: 30;
   background: var(--barra);
   border-bottom: 1px solid var(--borde);
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
 }
 
 .cabecera__interior {
@@ -978,9 +978,7 @@ body.sin-desplazamiento { overflow: hidden; }
 .modal__velo {
   position: absolute;
   inset: 0;
-  background: rgba(7, 11, 17, .56);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background: rgba(7, 11, 17, .7);
   animation: fundido 200ms ease;
 }
 
@@ -1308,7 +1306,7 @@ body {
 .modo:hover { transform: translateY(-4px) rotate(-.6deg); border-color: var(--acento); box-shadow: 0 12px 26px var(--acento-brillo); }
 .modo:active { transform: scale(.94); }
 
-.cabecera { background: color-mix(in srgb, var(--fondo) 70%, transparent); backdrop-filter: blur(20px) saturate(180%); }
+.cabecera { background: color-mix(in srgb, var(--fondo) 94%, transparent); }
 .boton-pista, .boton-icono { border-radius: 14px; transition: transform .15s, background .15s; }
 .boton-pista:hover:not(:disabled), .boton-icono:hover { transform: translateY(-2px); background: var(--acento-suave); }
 .boton-pista[aria-pressed="true"] { background: var(--amarillo); color: var(--amarillo-texto); border-color: transparent; }
@@ -1405,7 +1403,7 @@ button.marca:active .marca__icono { transform: scale(.9); }
 }
 
 #modalCuenta { z-index: 300; }
-#modalCuenta .modal__velo { background: rgba(5, 10, 16, .82); backdrop-filter: blur(10px); }
+#modalCuenta .modal__velo { background: rgba(5, 10, 16, .86); }
 .cuenta__error { color: #ff6b6b; font-size: .85rem; min-height: 1.2em; margin: 0; }
 
 /* ---------- Intro ---------- */
@@ -1576,7 +1574,7 @@ html.huecos .inicio { padding-bottom: 70px; }
   background: radial-gradient(120% 90% at 50% 0%, #2f7bff 0%, #1448e0 45%, #0a24a8 100%); box-shadow: 0 18px 40px rgba(20, 72, 224, .35), inset 0 0 0 1px rgba(255, 255, 255, .22); }
 .curio::before { content: ""; position: absolute; z-index: -1; left: 50%; top: 38%; width: 220%; aspect-ratio: 1; transform: translate(-50%, -50%);
   background: repeating-conic-gradient(from 0deg, rgba(255, 255, 255, .17) 0 5deg, rgba(255, 255, 255, 0) 5deg 14deg);
-  -webkit-mask-image: radial-gradient(circle, #000 8%, transparent 62%); mask-image: radial-gradient(circle, #000 8%, transparent 62%); animation: curioRayos 60s linear infinite; }
+  -webkit-mask-image: radial-gradient(circle, #000 8%, transparent 62%); mask-image: radial-gradient(circle, #000 8%, transparent 62%); animation: curioRayos 60s linear infinite; will-change: transform; }
 @keyframes curioRayos { to { transform: translate(-50%, -50%) rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .curio::before { animation: none; } }
 :root[data-tema="oscuro"] .curio { background: radial-gradient(120% 90% at 50% 0%, #2455d6 0%, #12338f 48%, #081447 100%); box-shadow: 0 18px 40px rgba(0, 0, 0, .5), inset 0 0 0 1px rgba(160, 190, 255, .25); }
@@ -1587,7 +1585,7 @@ html.huecos .inicio { padding-bottom: 70px; }
 @media (min-width: 720px) { .curio__lista { grid-template-columns: 1fr 1fr; gap: 12px; } }
 .curio__lista li[hidden] { display: none; }
 .curio__lista a { display: grid; grid-template-columns: 2.6rem 1fr 1.2rem; align-items: center; column-gap: 12px; min-height: 76px; padding: 12px 14px; text-decoration: none; color: #fff; border-radius: 16px;
-  background: rgba(255, 255, 255, .13); border: 1px solid rgba(255, 255, 255, .32); backdrop-filter: blur(3px); transition: transform .16s, background .16s, box-shadow .16s; }
+  background: rgba(255, 255, 255, .13); border: 1px solid rgba(255, 255, 255, .32); transition: transform .16s, background .16s, box-shadow .16s; }
 .curio__lista a::after { content: "›"; grid-column: 3; grid-row: 1 / span 2; font-size: 1.7rem; font-weight: 800; color: #ffd84d; }
 .curio__lista a:hover, .curio__lista a:focus-visible { transform: translateY(-3px); background: rgba(255, 255, 255, .24); box-shadow: 0 10px 22px rgba(0, 10, 90, .35); outline: none; }
 .curio__lista a:active { transform: scale(.98); }
@@ -1609,6 +1607,14 @@ button.ir-juegos { border: 0; cursor: pointer; }
 @keyframes irJuegosBaja { 50% { transform: translateY(4px); } }
 @media (prefers-reduced-motion: reduce) { .ir-juegos, .ir-juegos svg { animation: none; } }
 .inicio__juegos { margin: 30px 0 4px; font: 900 clamp(1.3rem, 4.4vw, 1.7rem)/1.15 var(--fuente-titulo); letter-spacing: -.01em; color: var(--texto); }
+/* Rendimiento (INP): sin animaciones fuera de pantalla ni bajo un modal abierto */
+.pausa, .pausa *, .pausa::before, .pausa::after, .pausa *::before, .pausa *::after { animation-play-state: paused !important; }
+html:has(.modal:not([hidden]), .idioma) :is(.curio,.info,.novedad,.ah-card,.modo,.tikis,.ir-juegos,#hwCard,.podio,.marca__icono),
+html:has(.modal:not([hidden]), .idioma) :is(.curio,.info,.novedad,.ah-card,.modo,.tikis,.ir-juegos,#hwCard,.podio,.marca__icono) *,
+html:has(.modal:not([hidden]), .idioma) :is(.curio,.info,.novedad,.ah-card,.modo,.tikis,.ir-juegos,#hwCard,.podio,.marca__icono)::before,
+html:has(.modal:not([hidden]), .idioma) :is(.curio,.info,.novedad,.ah-card,.modo,.tikis,.ir-juegos,#hwCard,.podio,.marca__icono)::after,
+html:has(.modal:not([hidden]), .idioma) :is(.curio,.info,.novedad,.ah-card,.modo,.tikis,.ir-juegos,#hwCard,.podio,.marca__icono) *::before,
+html:has(.modal:not([hidden]), .idioma) :is(.curio,.info,.novedad,.ah-card,.modo,.tikis,.ir-juegos,#hwCard,.podio,.marca__icono) *::after { animation-play-state: paused !important; }
 .curio { cursor: pointer; }
 .curio a, .curio button { cursor: pointer; }
 .curio__todo { margin: 16px 0 0; text-align: center; }
@@ -1629,7 +1635,7 @@ button.ir-juegos { border: 0; cursor: pointer; }
 .cuenta-atras { font-size: 2.6rem; font-weight: 900; text-align: center; margin: 12px 0 18px; font-variant-numeric: tabular-nums; background: var(--degradado); -webkit-background-clip: text; background-clip: text; color: transparent; }
 /* ---------- Tutorial interactivo ---------- */
 #modalTutorial { z-index: 350; }
-#modalTutorial .modal__velo { background: rgba(5, 10, 16, .84); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+#modalTutorial .modal__velo { background: rgba(5, 10, 16, .86); }
 .tut { max-width: 440px; }
 .tut__escena { display: grid; place-items: center; align-content: center; gap: 10px; min-height: 280px; margin: 14px 0 8px; padding: 14px 10px; background: var(--superficie-2); border: 1px solid var(--borde); border-radius: 18px; overflow: hidden; }
 .tut .modal__titulo { outline: none; padding-right: 30px; }
@@ -1997,7 +2003,7 @@ button.ir-juegos { border: 0; cursor: pointer; }
   position: fixed; inset: 0; z-index: 700;
   display: flex; align-items: center; justify-content: center;
   padding: calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 16px);
-  background: rgba(8, 18, 14, .78); backdrop-filter: blur(6px);
+  background: rgba(8, 18, 14, .86);
   overflow-y: auto;
 }
 .idioma__caja {
@@ -2046,6 +2052,8 @@ button.ir-juegos { border: 0; cursor: pointer; }
 .info details { border-top: 1px solid var(--borde, rgba(127, 127, 127, .25)); padding: 9px 0; }
 .info summary { font-size: .9rem; font-weight: 800; cursor: pointer; color: var(--texto); }
 .info details p { margin: 8px 0 0; }
+html.t-espera body { visibility: hidden; }
+html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not([data-idioma="es"]):not([data-idioma="en"]) [data-solo-es-en] { display: none; }
 </style>
 </head>
 <body>
@@ -2591,7 +2599,11 @@ button.ir-juegos { border: 0; cursor: pointer; }
     if (q && ok.test(q)) { localStorage.setItem("tikitexto:idioma", q); }
     L = localStorage.getItem("tikitexto:idioma");
   } catch (e) { /* sin almacenamiento */ }
-  if (L && ok.test(L) && L !== "es") document.write('<script src="i18n/' + L + '.js"><\/script>');
+  if (L && ok.test(L) && L !== "es") {
+    /* Si el diccionario no llega, a los 4 s se muestra igualmente (la clase se pone en <head>) */
+    setTimeout(function () { document.documentElement.classList.remove("t-espera"); }, 4000);
+    document.write('<script src="i18n/' + L + '.js"><\/script>');
+  }
 })();
 </script>
 <script>
@@ -2933,9 +2945,13 @@ button.ir-juegos { border: 0; cursor: pointer; }
       if (e.target.closest("#abrirIdioma")) abrirSelector(false);
       else if (e.target.closest("#botonAjustes")) abrirAjustes();
     });
-    if (col >= 0) iniciarTraductor();
+    if (col >= 0 && !observador) iniciarTraductor();
+    document.documentElement.classList.remove("t-espera");
     if (!guardado && !/bot|crawl|spider|slurp|lighthouse|pagespeed/i.test(navigator.userAgent)) abrirSelector(true);
   }
+  /* El HTML visible ya está analizado en este punto: se traduce ya (antes del primer pintado) y el
+     observador traduce lo que llegue después. Así no hay parpadeo en español ni salto de diseño. */
+  if (col >= 0 && document.body) { iniciarTraductor(); document.documentElement.classList.remove("t-espera"); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arrancar); else arrancar();
 })();
 </script>
@@ -7525,6 +7541,11 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (l && !/^(es|en)$/.test(l)) document.querySelectorAll("[data-solo-es-en]").forEach(function (x) { x.hidden = true; });
     if (l && l !== "es") document.querySelectorAll("[data-solo-es]").forEach(function (x) { x.hidden = true; });
   } catch (e) { /* sin almacenamiento */ }
+  /* Rendimiento: pausa las animaciones de lo que no se ve */
+  if ("IntersectionObserver" in window) {
+    var ioP = new IntersectionObserver(function (es) { es.forEach(function (e) { e.target.classList.toggle("pausa", !e.isIntersecting); }); }, { rootMargin: "120px" });
+    document.querySelectorAll(".curio, .info, .novedad, .ah-card, .modo, .tikis, .ir-juegos, #hwCard, .podio").forEach(function (n) { ioP.observe(n); });
+  }
   /* Toda la caja azul lleva a las curiosidades (salvo enlaces y botones propios) */
   var cu = document.querySelector("section.curio");
   if (cu) cu.addEventListener("click", function (ev) {
