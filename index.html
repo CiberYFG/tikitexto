@@ -1608,6 +1608,8 @@ button.ir-juegos { border: 0; cursor: pointer; }
 @keyframes irJuegosBaja { 50% { transform: translateY(4px); } }
 @media (prefers-reduced-motion: reduce) { .ir-juegos, .ir-juegos svg { animation: none; } }
 .inicio__juegos { margin: 30px 0 4px; font: 900 clamp(1.3rem, 4.4vw, 1.7rem)/1.15 var(--fuente-titulo); letter-spacing: -.01em; color: var(--texto); }
+.curio { cursor: pointer; }
+.curio a, .curio button { cursor: pointer; }
 .curio__todo { margin: 16px 0 0; text-align: center; }
 .curio__todo a { display: inline-block; padding: 11px 22px; border-radius: 999px; background: #ffd84d; color: #1a1500; font-weight: 800; text-decoration: none; box-shadow: 0 6px 16px rgba(0, 10, 90, .35); }
 .curio__todo a:hover { filter: brightness(1.06); }
@@ -7520,6 +7522,12 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (l && !/^(es|en)$/.test(l)) document.querySelectorAll("[data-solo-es-en]").forEach(function (x) { x.hidden = true; });
     if (l && l !== "es") document.querySelectorAll("[data-solo-es]").forEach(function (x) { x.hidden = true; });
   } catch (e) { /* sin almacenamiento */ }
+  /* Toda la caja azul lleva a las curiosidades (salvo enlaces y botones propios) */
+  var cu = document.querySelector("section.curio");
+  if (cu) cu.addEventListener("click", function (ev) {
+    if (ev.target.closest("a, button")) return;
+    var go = cu.querySelector(".curio__todo a"); if (go) location.href = go.getAttribute("href");
+  });
 })();
 </script>
 <!-- Aviso informativo (cookies y medición). La medición sin cookies (Cloudflare Web Analytics) está activa salvo que el usuario la desactive. -->

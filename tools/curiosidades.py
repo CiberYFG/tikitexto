@@ -330,6 +330,25 @@ def cabecera(L, titulo, desc, ruta, h1, icono=None):
 <div class="hero"><div><p class="etiqueta">{e(u['crumb'])}</p><h1>{e(h1)}</h1><p class="fecha">{e(u['checked'])}</p></div>{icono or globals().get(ICONO_RUTA.get(ruta, "BALON"), BALON)}</div>
 """
 
+CSS_TC = """
+.gr { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 38px 0 6px; padding: 12px 18px; border-radius: 18px; background: color-mix(in srgb, var(--c) 14%, var(--caja)); border: 1px solid color-mix(in srgb, var(--c) 35%, transparent); border-left: 9px solid var(--c); }
+.gr h2 { margin: 0; padding: 0; border: 0; font-size: 1.28rem; flex: 1 1 auto; }
+.gr a.todo { font-weight: 800; font-size: .88rem; color: var(--c); text-decoration: none; white-space: nowrap; }
+.gr a.todo:hover { text-decoration: underline; }
+.gr-d { margin: 0 2px 4px; color: var(--suave); font-size: .95rem; }
+.tc { position: relative; border-top: 6px solid var(--c) !important; }
+.tc .emo { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; font-size: 28px; background: color-mix(in srgb, var(--c) 16%, var(--caja)); }
+.tc svg { color: var(--c) !important; }
+.tc:hover, .tc:focus-visible { border-color: var(--c) !important; box-shadow: 0 14px 30px color-mix(in srgb, var(--c) 32%, transparent) !important; }
+.tc .min { display: inline-block; margin-top: 8px; padding: 2px 10px; border-radius: 999px; font-size: .76rem; font-weight: 800; color: var(--c); background: color-mix(in srgb, var(--c) 13%, transparent); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+.chips a { border: 1px solid color-mix(in srgb, var(--c) 45%, transparent); background: color-mix(in srgb, var(--c) 10%, var(--caja)); color: var(--texto); border-radius: 999px; padding: 5px 14px; font-size: .88rem; font-weight: 700; text-decoration: none; }
+.chips a:hover { background: var(--c); color: #fff; }
+"""
+
+def inyecta_css(h, css):
+    return h.replace("</style>", css + "\n</style>", 1)
+
 def seguir(L):
     u = L.ui
     t = list(zip((COPA, LIGA, BALON), ("campeones/", "ligas/", "trofeos/"), u["cards"]))
@@ -338,11 +357,11 @@ def seguir(L):
         h += f'<a class="tarjeta" href="{L.url("curiosidades/" + sl)}">{icono}<b>{e(b)}</b><span>{e(sp)}</span></a>\n'
     return h + '</div></section>\n'
 
-def pie(L, extra=""):
+def pie(L, extra="", con_seguir=True):
     u = L.ui; n = u["nav"]
     return f"""{extra}
 <p><a class="jugar" href="{L.play()}">{e(u['play'])}</a></p>
-{hueco(L)}{seguir(L)}{hueco(L, "ancla")}
+{hueco(L)}{seguir(L) if con_seguir else ""}{hueco(L, "ancla")}
 <nav class="legal-nav" aria-label="Info">
 <a href="{L.url('curiosidades/')}">{e(n[0])}</a><a href="/sobre-tikitexto.html">{e(SOBRE[L.lang])}</a><a href="/aviso-legal.html">{e(n[1])}</a><a href="/privacidad.html">{e(n[2])}</a><a href="/cookies.html">{e(n[3])}</a><a href="/accesibilidad.html">{e(n[4])}</a><a href="/contacto.html">{e(n[5])}</a>
 </nav>
@@ -435,21 +454,62 @@ def pagina_trofeos(L):
     h += f'<p class="fecha">{e(u["tr_src"])}</p>'
     return ruta, h + pie(L)
 
+def _col(c):
+    return f' style="--c:{c}"'
+
 def pagina_indice(L):
     u = L.ui; ruta = "curiosidades/"
+    es = L.lang == "es"
     h = cabecera(L, u["idx_title"], u["idx_desc"], ruta, u["idx_h1"])
-    h += f'<div class="caja">{u["idx_caja"].format(play=L.play())}</div>\n<div class="tarjetas">\n'
-    for icono, sl, (b, sp) in zip((COPA, LIGA, BALON), ("campeones/", "ligas/", "trofeos/"), u["cards"]):
-        h += f'<a class="tarjeta" href="{L.url("curiosidades/" + sl)}">{icono}<b>{e(b)}</b><span>{e(sp)}</span></a>\n'
-    if L.lang in ("es", "en"):
-        _t = ("Récords y rankings con fuentes", "Goleadores, Balón de Oro, Pichichi, Eurocopa y más") if L.lang == "es" else ("Records and rankings, with sources", "Scorers, Ballon d'Or, Pichichi, the Euros and more")
-        h += f'<a class="tarjeta" href="{L.url("curiosidades/datos/")}">{ESTADIO}<b>{e(_t[0])}</b><span>{e(_t[1])}</span></a>\n'
-    if L.lang in ("es", "en"):
-        import hist_data as _H
-        for _sl, _t, _f, _ic in _H.cards_meta(L.lang):
-            h += f'<a class="tarjeta" href="{L.url("curiosidades/" + _sl + "/")}">{globals()[_ic]}<b>{e(_t)}</b><span>{e(_f)}</span></a>\n'
-    h += f'</div>\n<h2>{e(u["latest_h"])}</h2>\n<div class="caja">{u["latest"].format(champ=L.url("curiosidades/campeones/"))}</div>\n'
-    return ruta, h + pie(L)
+    h = inyecta_css(h, CSS_TC)
+    h += f'<div class="caja">{u["idx_caja"].format(play=L.play())}</div>\n'
+    clasicas = [(COPA, "campeones/", "#1747d6"), (LIGA, "ligas/", "#0f9d58"), (BALON, "trofeos/", "#c98a00")]
+    if L.lang not in ("es", "en"):
+        h += '<div class="tarjetas">\n'
+        for (icono, sl, col), (b, sp) in zip(clasicas, u["cards"]):
+            h += f'<a class="tarjeta tc" href="{L.url("curiosidades/" + sl)}"{_col(col)}>{icono}<b>{e(b)}</b><span>{e(sp)}</span></a>\n'
+        h += f'</div>\n<h2>{e(u["latest_h"])}</h2>\n<div class="caja">{u["latest"].format(champ=L.url("curiosidades/campeones/"))}</div>\n'
+        return ruta, h + pie(L, "", False)
+    import hist_data as _H
+    import temas_data as _T
+    import articulos_a, articulos_b, articulos_c
+    from articulos_meta import meta
+    k = 0 if es else 1
+    def grupo(col, titulo, desc, enlace=None, texto_enlace=""):
+        a = f'<a class="todo" href="{enlace}">{e(texto_enlace)} →</a>' if enlace else ""
+        return f'<div class="gr"{_col(col)}><h2>{e(titulo)}</h2>{a}</div>\n<p class="gr-d">{e(desc)}</p>\n'
+    # 1) artículos (solo español)
+    if es:
+        arts = articulos_a.ARTICULOS_A + articulos_b.ARTICULOS_B + articulos_c.ARTICULOS_C
+        h += grupo("#7c3aed", "✍️ Artículos de análisis", "Textos largos y originales: cómo se elige el Balón de Oro, penaltis, fuera de juego, xG, estadísticas propias de TIKITEXTO…", "/articulos/", "Ver los 12 artículos")
+        h += '<div class="tarjetas">\n'
+        for a in arts:
+            m = meta(a["slug"]); mins = sum(len(p.split()) for _, ps in a["secciones"] for p in ps) // 200 + 1
+            h += f'<a class="tarjeta tc" href="/articulos/{a["slug"]}/"{_col(m["c"][0])}><span class="emo" aria-hidden="true">{m["e"]}</span><b>{e(a["titulo"])}</b><span class="min">{mins} min de lectura</span></a>\n'
+        h += '</div>\n'
+    # 2) datos y récords
+    dt = ("Récords y rankings con fuentes", "Goleadores de la Champions y del Mundial, Balón de Oro, Pichichi, Eurocopa, Bota de Oro y más: nueve páginas con la fuente y la fecha de los datos.") if es else ("Records and rankings, with sources", "Champions League and World Cup scorers, Ballon d'Or, Pichichi, the Euros, the Golden Shoe and more: nine pages with source and data date.")
+    h += grupo("#0f9d58", "📊 " + dt[0], dt[1])
+    h += f'<div class="tarjetas"><a class="tarjeta tc" href="{L.url("curiosidades/datos/")}"{_col("#0f9d58")}>{ESTADIO}<b>{e(dt[0])}</b><span>{e("Entrar al índice de récords" if es else "Open the records index")}</span></a></div>\n'
+    # 3) historia
+    hs = [(sl, t, f, ic) for sl, t, f, ic in _H.cards_meta(L.lang) if sl not in (_T_HUB := {"curiosidades-por-temas", "football-trivia-by-topic"})]
+    h += grupo("#dc2626", "🏟️ " + ("Historia: Champions y Mundiales" if es else "History: Champions League and World Cups"), "Las últimas 20 finales de la Champions y los 23 Mundiales, con marcador, sede y curiosidades." if es else "The last 20 Champions League finals and all 23 World Cups, with scores, venues and trivia.")
+    h += '<div class="tarjetas">\n'
+    for sl, t, f, ic in hs:
+        h += f'<a class="tarjeta tc" href="{L.url("curiosidades/" + sl + "/")}"{_col("#dc2626")}>{globals()[ic]}<b>{e(t)}</b><span>{e(f)}</span></a>\n'
+    h += '</div>\n'
+    # 4) temas
+    hub_t = ("curiosidades-por-temas", "football-trivia-by-topic")[k]
+    h += grupo("#ea580c", "⚡ " + ("Curiosidades por equipos y jugadores" if es else "Trivia by club and player"), "Real Madrid, Barça, Messi, Cristiano, Premier League y más." if es else "Real Madrid, Barça, Messi, Cristiano, the Premier League and more.", L.url("curiosidades/" + hub_t + "/"), "Ver todas" if es else "See all")
+    h += f'<div class="chips"{_col("#ea580c")}>' + "".join(f'<a href="{L.url("curiosidades/" + t[L.lang] + "/")}">{e(t["t"][k])}</a>' for t in _T.TEMAS) + '</div>\n'
+    # 5) clásicas
+    h += grupo("#1747d6", "🏆 " + ("Campeones, ligas y trofeos" if es else "Champions, leagues and trophies"), "Ganadores año a año, el origen de las ligas y la historia de las copas." if es else "Winners year by year, how the leagues began and the story of the cups.")
+    h += '<div class="tarjetas">\n'
+    for (icono, sl, col), (b, sp) in zip(clasicas, u["cards"]):
+        h += f'<a class="tarjeta tc" href="{L.url("curiosidades/" + sl)}"{_col(col)}>{icono}<b>{e(b)}</b><span>{e(sp)}</span></a>\n'
+    h += '</div>\n'
+    h += f'<h2>{e(u["latest_h"])}</h2>\n<div class="caja">{u["latest"].format(champ=L.url("curiosidades/campeones/"))}</div>\n'
+    return ruta, h + pie(L, "", False)
 
 if __name__ == "__main__":
     langs = [a for a in sys.argv[1:] if a in LANGS] or LANGS
