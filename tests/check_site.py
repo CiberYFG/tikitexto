@@ -597,6 +597,23 @@ with sync_playwright() as p:
     except Exception as e:
         check("linterna maldita", False, str(e)[:150])
 
+    print("3s) Seguridad: CSP sin unsafe-inline en scripts y huellas al día")
+    try:
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tools"))
+        import csp as _csp
+        for ruta in ["", "curiosidades/", "articulos/", "privacidad.html", "cookies.html", "aviso-legal.html", "adivina-el-jugador/"]:
+            h = br.new_context().request.get(BASE + ruta).text()
+            m = re.search(r'http-equiv="Content-Security-Policy" content="([^"]*)"', h)
+            ss = re.search(r"script-src [^;]*", m.group(1)).group(0) if m else ""
+            ok = bool(m) and "unsafe-inline" not in ss and all(x in ss for x in _csp.huellas(h))
+            check("CSP de /" + ruta + ": sin unsafe-inline y con las huellas de sus scripts (si falla: python3 tools/csp.py)", ok, ss[:80])
+        ph = br.new_context().new_page()
+        ph.goto(BASE + "cookies.html", wait_until="networkidle")
+        ph.click("#medicion-boton")
+        check("cookies.html: el botón de medición funciona (JS sin errores de sintaxis)", ph.evaluate("localStorage.getItem('tikitexto:consentimiento')") in ("si", "no"))
+    except Exception as e:
+        check("seguridad CSP", False, str(e)[:150])
+
     print("3r) Artículos largos (articulos/)")
     try:
         pa = br.new_page(); errs_r = []; pa.on("pageerror", lambda e: errs_r.append(str(e)))
