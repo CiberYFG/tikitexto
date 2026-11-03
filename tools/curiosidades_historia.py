@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Páginas de historia (es/en): las últimas 20 finales de la Champions y los Mundiales edición por edición.
 Orden: curiosidades.py -> curiosidades_datos.py -> curiosidades_historia.py -> seo.py
-Datos en tools/hist_data.py (Wikipedia: List of European Cup and UEFA Champions League finals; FIFA World Cup)."""
+Datos en tools/hist_data.py (UEFA y FIFA)."""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import curiosidades as C
@@ -11,7 +11,6 @@ import hist_data as H
 C.LANGS = ["es", "en"]
 LANGS = C.LANGS
 DOM = C.DOM if hasattr(C, "DOM") else "https://tikitexto.com/"
-W = "https://en.wikipedia.org/wiki/"
 
 # slug es, slug en, título es/en, descripción es/en, fecha es/en, icono
 PAGINAS = [
@@ -53,7 +52,7 @@ def champions(L, p):
         cab = f"{camp} {res2} {sub}"
         parr = [f"<b>{e(cab)}</b> · {e(sede)}."] + [e(x) for x in ps]
         h += entrada(L, p["ic"], str(ano), e(tit), parr, e(dato), f"f{ano}")
-    srcs = f'<a href="{W}List_of_European_Cup_and_UEFA_Champions_League_finals" rel="noopener" target="_blank">Wikipedia · List of European Cup and UEFA Champions League finals</a>'
+    srcs = f'<a href="https://www.uefa.com/uefachampionsleague/history/" rel="noopener" target="_blank">UEFA.com · finales de la Copa de Europa y la Champions League</a>'
     h += f'<p class="fecha">{"Fuente" if es else "Source"}: {srcs}. {e(p["fecha"][k])}.</p>\n'
     return ruta, h + pie(L)
 
@@ -75,7 +74,7 @@ def mundiales(L, p):
         else:
             ficha = f"<b>Final:</b> {e(camp_)} {e(fin)} {e(sub_)} · <b>Host:</b> {e(sede_)} · <b>Teams:</b> {n} · <b>Top scorer:</b> {e(goleador.replace('Seis jugadores', 'Six players').replace(' y ', ' and '))}."
         h += entrada(L, p["ic"], str(ano), e(t_es if es else t_en), [ficha, e(x_es if es else x_en)], None, f"m{ano}")
-    srcs = f'<a href="{W}FIFA_World_Cup" rel="noopener" target="_blank">Wikipedia · FIFA World Cup</a>'
+    srcs = f'<a href="https://www.fifa.com/en/tournaments/mens/worldcup" rel="noopener" target="_blank">FIFA.com · Copa Mundial de la FIFA</a>'
     h += f'<p class="fecha">{"Fuente" if es else "Source"}: {srcs}. {e(p["fecha"][k])}.</p>\n'
     return ruta, h + pie(L)
 

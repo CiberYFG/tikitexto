@@ -6050,7 +6050,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   ];
 
   /* FICHAJES: [nombre, de, a, año, importe (millones), divisa, tipo]
-     Fuente: Wikipedia, «List of most expensive association football transfers» (cifras nominales, sin variables)
+     Fuente: listados públicos de traspasos récord (cifras nominales, sin variables)
      y fichas de Figo, Ronaldinho y Rooney; Beckham (25 M£) y Torres (50 M£) según PA/AP. Las épocas anteriores al euro van en libras. */
   const NV_FICH = [
     ["Johan Cruyff", "Ajax", "FC Barcelona", 1973, 0.922, "£", "L"], ["Diego Maradona", "FC Barcelona", "Nápoles", 1984, 5, "£", "L"],
@@ -6221,7 +6221,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     panel.appendChild(b);
     panel.appendChild(tEl("p", "nv-nota", t
       ? "Cifras de carrera (amarillas y rojas, todas las competiciones) según Soccerway. Pueden diferir levemente de otras fuentes."
-      : "Importes de traspaso sin variables (Wikipedia y prensa). En épocas anteriores al euro, el importe está en libras (£)."));
+      : "Importes de traspaso sin variables (fuentes públicas y prensa). En épocas anteriores al euro, el importe está en libras (£)."));
     nvCuerpo.appendChild(panel);
   }
 

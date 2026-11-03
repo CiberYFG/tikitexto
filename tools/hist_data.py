@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Contenido de las páginas de historia (es/en). Datos de marcadores, sedes y asistencias: Wikipedia
-(List of European Cup and UEFA Champions League finals; FIFA World Cup). Revisado el 1-nov-2026."""
+"""Contenido de las páginas de historia (es/en). Datos de marcadores, sedes y asistencias: UEFA y FIFA.
+ Revisado el 1-nov-2026."""
 
 # (año, campeón, subcampeón, resultado, ciudad, estadio, asistencia,
 #  titulo_es, titulo_en, [parrafos_es], [parrafos_en], dato_es, dato_en)
