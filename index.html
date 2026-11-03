@@ -1502,6 +1502,51 @@ html.hw { --lz-oscuro: rgba(4, 2, 10, .99); --lz-fondo: radial-gradient(circle a
 @keyframes lzMal { 30% { background: #ff3b3b; transform: scale(1.3); } 100% { transform: scale(1); } }
 @keyframes hwVuela2 { to { transform: translateY(-30px) scale(1.6); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .lz-ranura--ok, .lz-letra--ok, .lz-letra--mal, .lz-pila__barra--baja, .lz-susto-emoji, .lz-campo.lz-sacude { animation: none !important; } .lz-letra--ok { opacity: 0; } }
+
+/* ---------- PREMIOS: Balón de Oro y Bota de Oro (dorado con brillos y rayos) ---------- */
+.grupo-titulo--oro { color: #b07a00; text-shadow: 0 0 12px rgba(255, 200, 40, .55); }
+.grupo-titulo--oro::before { content: "🏆"; font-size: 1rem; filter: drop-shadow(0 0 6px rgba(255, 200, 40, .9)); }
+.grupo-titulo--oro::after { height: 2px; background: linear-gradient(90deg, #f2b705, rgba(242, 183, 5, 0)); }
+:root[data-tema="oscuro"] .grupo-titulo--oro { color: #ffd84d; }
+.modo.modo--oro { position: relative; isolation: isolate; overflow: hidden; border: 2px solid #f5c518; color: #3a2600;
+  background: linear-gradient(135deg, #fff6c2 0%, #ffd83a 42%, #f0a800 100%);
+  box-shadow: 0 10px 24px rgba(240, 168, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .85), inset 0 -3px 8px rgba(160, 100, 0, .25); }
+.modo--oro::before { content: ""; position: absolute; z-index: -1; inset: -60%; background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255, 255, 255, .5) 0 6deg, rgba(255, 255, 255, 0) 6deg 18deg); animation: oroGira 22s linear infinite; opacity: .75; }
+.modo--oro::after { content: ""; position: absolute; z-index: 1; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .85) 50%, transparent 62%); transform: translateX(-130%); animation: oroBrillo 3.4s ease-in-out infinite; }
+.modo.modo--oro:hover { border-color: #fff3a0; box-shadow: 0 14px 30px rgba(255, 190, 0, .65), 0 0 0 3px rgba(255, 230, 120, .6), inset 0 1px 0 rgba(255, 255, 255, .9); }
+.modo--oro .modo__icono { background: linear-gradient(145deg, #fff, #ffe58a); color: #8a5400; box-shadow: 0 0 14px rgba(255, 255, 255, .9), inset 0 -2px 4px rgba(160, 100, 0, .35); }
+.modo--oro .modo__titulo { color: #3a2600; text-shadow: 0 1px 0 rgba(255, 255, 255, .6); position: relative; z-index: 2; }
+.modo__chispa { position: absolute; z-index: 2; font-style: normal; line-height: 1; color: #fff; text-shadow: 0 0 6px #fff, 0 0 12px #ffb300; pointer-events: none; animation: oroChispa 2.2s ease-in-out infinite; }
+.modo__chispa--a { top: 7px; right: 10px; font-size: 15px; }
+.modo__chispa--b { bottom: 9px; right: 24px; font-size: 10px; animation-delay: .7s; }
+.modo__chispa--c { top: 28px; right: 40px; font-size: 8px; animation-delay: 1.3s; }
+@keyframes oroGira { to { transform: rotate(360deg); } }
+@keyframes oroBrillo { 0%, 55% { transform: translateX(-130%); } 100% { transform: translateX(130%); } }
+@keyframes oroChispa { 0%, 100% { opacity: .25; transform: scale(.6) rotate(0); } 50% { opacity: 1; transform: scale(1.25) rotate(45deg); } }
+
+/* por dentro del juego: tema dorado (los colores verde / amarillo / gris de las letras NO cambian) */
+html.oro { --fondo: #fff8e1; --fondo-2: #ffefb3; --superficie: #fffdf5; --superficie-2: #fff3cc; --barra: rgba(255, 248, 225, .9); --texto: #2e2000; --texto-suave: #7a5c10; --borde: #f0d27a; --borde-fuerte: #d9a520; --acento: #c98a00; --sobre-acento: #2b1b00; --acento-suave: #ffe9a6; --acento-brillo: rgba(240, 168, 0, .4); --degradado: linear-gradient(135deg, #fff1a1, #ffc72c 50%, #e29b00); --pista-fondo: #fff0b8; --pista-borde: #e0b23a; --pista-texto: #5c4100; }
+html.oro[data-tema="oscuro"] { --fondo: #140f05; --fondo-2: #1e1708; --superficie: #241b0a; --superficie-2: #2e2310; --barra: rgba(20, 15, 5, .9); --texto: #fff3d0; --texto-suave: #d9b866; --borde: #5a4416; --borde-fuerte: #a67c1e; --acento: #ffcb3d; --sobre-acento: #2b1b00; --acento-suave: #3d2c08; --acento-brillo: rgba(255, 203, 61, .3); --degradado: linear-gradient(135deg, #ffe27a, #ffc72c 50%, #d98f00); --pista-fondo: #34270c; --pista-borde: #a67c1e; --pista-texto: #ffe08a; }
+html.oro body { background: radial-gradient(120% 60% at 50% -10%, rgba(255, 210, 60, .45), transparent 60%), var(--fondo); }
+html.oro .cabecera { border-bottom: 3px solid transparent; border-image: linear-gradient(90deg, #f5c518, #fff3a0, #f5c518, #c98a00, #f5c518) 1; }
+html.oro .marca__titulo span { background: linear-gradient(90deg, #ffd84d, #fff3a0, #e29b00); -webkit-background-clip: text; background-clip: text; color: transparent; }
+html.oro:not([data-tema="oscuro"]) .marca__titulo span { background: none; -webkit-text-fill-color: #b07a00; color: #b07a00; }
+html.oro .boton--primario { position: relative; overflow: hidden; color: #2b1b00; background: linear-gradient(135deg, #fff1a1, #ffc72c 50%, #e29b00); box-shadow: 0 10px 22px rgba(240, 168, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .8); }
+html.oro .boton--primario::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .8) 50%, transparent 62%); transform: translateX(-130%); animation: oroBrillo 3.4s ease-in-out infinite; pointer-events: none; }
+html.oro .celda--activa { border-color: #f5c518; box-shadow: 0 0 12px rgba(255, 200, 40, .6); }
+html.oro .tecla:not([data-estado]) { border-color: var(--borde-fuerte); }
+html.oro .modal__titulo { background: linear-gradient(90deg, #c98a00, #ffd84d, #c98a00); -webkit-background-clip: text; background-clip: text; color: transparent; }
+html.oro .modal__caja, html.oro .pista { box-shadow: 0 0 0 2px rgba(245, 197, 24, .55), 0 18px 40px rgba(240, 168, 0, .25); }
+.oro-deco { display: none; }
+html.oro .oro-deco { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.oro-rayos { position: absolute; left: 50%; top: -35vmax; width: 130vmax; height: 130vmax; margin-left: -65vmax; background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255, 215, 70, .22) 0 7deg, rgba(255, 215, 70, 0) 7deg 20deg); -webkit-mask-image: radial-gradient(circle, #000 0, transparent 62%); mask-image: radial-gradient(circle, #000 0, transparent 62%); animation: oroGira 70s linear infinite; }
+.oro-deco span { position: absolute; line-height: 1; filter: drop-shadow(0 0 8px rgba(255, 200, 40, .9)); animation: oroChispa 3s ease-in-out infinite; }
+.oro-d1 { top: 14%; left: 5%; font-size: 22px; }
+.oro-d2 { bottom: 10px; left: 8px; font-size: 40px; animation: hwBalanceo 3s ease-in-out infinite !important; }
+.oro-d3 { top: 30%; right: 6px; font-size: 24px; animation-delay: .8s; }
+.oro-d4 { top: 62%; left: 3%; font-size: 16px; animation-delay: 1.5s; }
+.oro-d5 { bottom: 12px; right: 10px; font-size: 38px; animation: hwBalanceo 3.4s ease-in-out infinite reverse !important; }
+@media (prefers-reduced-motion: reduce) { .modo--oro::before, .modo--oro::after, .modo__chispa, .oro-rayos, .oro-deco span, html.oro .boton--primario::after { animation: none !important; } .modo--oro::after, html.oro .boton--primario::after { display: none; } .modo__chispa { opacity: 1; } }
 .hw-deco { display: none; }
 html.hw .hw-deco { display: block; position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
 .hw-deco span { position: absolute; line-height: 1; opacity: .9; }
@@ -2477,6 +2522,7 @@ button.ir-juegos { border: 0; cursor: pointer; }
     <div id="lzCuerpo"></div>
   </main>
 </div>
+<div class="oro-deco" aria-hidden="true"><i class="oro-rayos"></i><span class="oro-d1">✨</span><span class="oro-d2">🏆</span><span class="oro-d3">⭐</span><span class="oro-d4">✨</span><span class="oro-d5">🥇</span></div>
 <div class="hw-deco" aria-hidden="true"><span class="hw-d1">🦇</span><span class="hw-d2">🎃</span><span class="hw-d3">👻</span><span class="hw-d4">🕸️</span><span class="hw-d5">🦇</span></div>
 
 <div class="modal" id="modalSalirNv" role="dialog" aria-modal="true" aria-labelledby="tituloSalirNv" hidden>
@@ -4219,11 +4265,22 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       titulo.textContent = modo.nombre;
       boton.appendChild(icono);
       boton.appendChild(titulo);
+      if (modo.id === "balones" || modo.id === "botas") {
+        boton.classList.add("modo--oro");
+        ["a", "b", "c"].forEach(function (k) {
+          const ch = document.createElement("i");
+          ch.className = "modo__chispa modo__chispa--" + k;
+          ch.setAttribute("aria-hidden", "true");
+          ch.setAttribute("data-no-t", "");
+          ch.textContent = "✦";
+          boton.appendChild(ch);
+        });
+      }
       return boton;
     }
-    function grupo(titulo) {
+    function grupo(titulo, extra) {
       const h = document.createElement("h3");
-      h.className = "grupo-titulo";
+      h.className = "grupo-titulo" + (extra ? " grupo-titulo--" + extra : "");
       h.textContent = titulo;
       fragmento.appendChild(h);
     }
@@ -4256,7 +4313,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     });
     fragmento.appendChild(filtros);
 
-    grupo("Premios");
+    grupo("Premios", "oro");
     ["balones", "botas"].forEach(function (id) { fragmento.appendChild(tarjetaModo(MODOS_POR_ID[id])); });
 
     grupo("Clubes y selecciones");
@@ -4282,7 +4339,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
      NAVEGACIÓN ENTRE PANTALLAS
      ============================================================ */
   function irAlInicio() {
-    document.documentElement.classList.remove("hw");
+    document.documentElement.classList.remove("hw", "oro");
     cancelarTemporizadores();
     cerrarModal(true);
     pantallaJuego.hidden = true;
@@ -4310,6 +4367,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   function irAlJuego() {
+    document.documentElement.classList.toggle("oro", estado.modo === "balones" || estado.modo === "botas");
     pantallaInicio.hidden = true;
     pantallaJuego.hidden = false;
 
