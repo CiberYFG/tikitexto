@@ -562,7 +562,7 @@ with sync_playwright() as p:
     except Exception as e:
         check("huecos de anuncios", False, str(e)[:150])
 
-    print("3q) Modo Halloween (tiempo limitado)")
+    print("3q) Linterna maldita (Halloween, tiempo limitado)")
     try:
         ch = br.new_context(viewport={"width": 430, "height": 900}); ph = ch.new_page()
         errs_q = []; ph.on("pageerror", lambda e: errs_q.append(str(e)))
@@ -574,15 +574,27 @@ with sync_playwright() as p:
         if activo:
             check("halloween: indica tiempo limitado y cuenta atrás", "TIEMPO LIMITADO" in ph.inner_text("#hwCard").upper() and "Termina" in ph.inner_text("#hwCuenta"))
             ph.evaluate("document.getElementById('hwCard').click()")
-            ph.wait_for_timeout(600)
-            check("halloween: arranca con el tema html.hw", ph.evaluate("document.documentElement.classList.contains('hw')"))
+            ph.wait_for_timeout(500)
+            check("linterna: abre su pantalla con el tema html.hw", ph.evaluate("!document.getElementById('pantallaLinterna').hidden && document.documentElement.classList.contains('hw')"))
+            ph.click("#lzEmpezar"); ph.wait_for_timeout(500)
+            check("linterna: hay campo oscuro, letras, fantasmas y pila", ph.evaluate("!!document.querySelector('#lzCampo .lz-oscuro') && document.querySelectorAll('.lz-letra').length >= 8 && document.querySelectorAll('.lz-fantasma').length === 2 && !!document.getElementById('lzPilaBarra')"))
+            for n in range(3):
+                for _ in range(12):
+                    st = ph.evaluate("({s:TIKI.lz.sig,l:TIKI.lz.orden.length})")
+                    if st["s"] >= st["l"]: break
+                    pos = ph.evaluate("(()=>{const o=TIKI.lz.letras.find(o=>!o.tomada&&o.l===TIKI.lz.orden[TIKI.lz.sig]);return [o.x,o.y]})()")
+                    box = ph.locator("#lzCampo").bounding_box()
+                    ph.mouse.move(box["x"] + pos[0], box["y"] + pos[1]); ph.mouse.down(); ph.mouse.up(); ph.wait_for_timeout(60)
+                ph.wait_for_timeout(1500)
+            ph.wait_for_timeout(1500)
+            check("linterna: se superan las 3 noches y aparece el resultado", ph.evaluate("TIKI.lz.fin && TIKI.lz.hechos === 3") and "+1 tikitexto" in ph.inner_text("#lzResultado"))
         else:
             ph.goto(BASE + "?modo=halloween", wait_until="networkidle", timeout=60000)
-            check("halloween caducado: el enlace directo no arranca", not ph.evaluate("document.documentElement.classList.contains('hw')"))
-        check("halloween: sin errores de JavaScript", not errs_q, "; ".join(errs_q)[:150])
+            check("halloween caducado: el enlace directo no abre la linterna", ph.evaluate("document.getElementById('pantallaLinterna').hidden"))
+        check("linterna: sin errores de JavaScript", not errs_q, "; ".join(errs_q)[:150])
         ch.close()
     except Exception as e:
-        check("modo halloween", False, str(e)[:150])
+        check("linterna maldita", False, str(e)[:150])
 
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:
