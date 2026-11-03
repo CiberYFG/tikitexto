@@ -104,6 +104,21 @@ html.huecos .hueco--ancla { position: fixed; left: 0; right: 0; bottom: 0; z-ind
 html.huecos .hueco--ancla button { position: absolute; right: 8px; top: 6px; border: 0; background: var(--caja); color: var(--texto); border-radius: 50%; width: 26px; height: 26px; cursor: pointer; }
 html.huecos body { padding-bottom: 64px; }
 .idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 14px; }
+
+.gr { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 38px 0 6px; padding: 12px 18px; border-radius: 18px; background: color-mix(in srgb, var(--c) 14%, var(--caja)); border: 1px solid color-mix(in srgb, var(--c) 35%, transparent); border-left: 9px solid var(--c); }
+.gr h2 { margin: 0; padding: 0; border: 0; font-size: 1.28rem; flex: 1 1 auto; }
+.gr a.todo { font-weight: 800; font-size: .88rem; color: var(--c); text-decoration: none; white-space: nowrap; }
+.gr a.todo:hover { text-decoration: underline; }
+.gr-d { margin: 0 2px 4px; color: var(--suave); font-size: .95rem; }
+.tc { position: relative; border-top: 6px solid var(--c) !important; }
+.tc .emo { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; font-size: 28px; background: color-mix(in srgb, var(--c) 16%, var(--caja)); }
+.tc svg { color: var(--c) !important; }
+.tc:hover, .tc:focus-visible { border-color: var(--c) !important; box-shadow: 0 14px 30px color-mix(in srgb, var(--c) 32%, transparent) !important; }
+.tc .min { display: inline-block; margin-top: 8px; padding: 2px 10px; border-radius: 999px; font-size: .76rem; font-weight: 800; color: var(--c); background: color-mix(in srgb, var(--c) 13%, transparent); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+.chips a { border: 1px solid color-mix(in srgb, var(--c) 45%, transparent); background: color-mix(in srgb, var(--c) 10%, var(--caja)); color: var(--texto); border-radius: 999px; padding: 5px 14px; font-size: .88rem; font-weight: 700; text-decoration: none; }
+.chips a:hover { background: var(--c); color: #fff; }
+
 </style>
 </head>
 <body>
@@ -116,20 +131,15 @@ html.huecos body { padding-bottom: 64px; }
 <div class="hero"><div><p class="etiqueta">Curiosità sul calcio</p><h1>Curiosità sul calcio</h1><p class="fecha">Dati verificati il 31 ottobre 2026</p></div><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14c8-3 16-3 22 2 6-5 14-5 22-2v36c-8-3-16-3-22 2-6-5-14-5-22-2V14z"/><path d="M32 16v36"/></svg></div>
 <div class="caja">Dati, storia e numeri del calcio mondiale. Se ti piace, metti alla prova quello che sai su <a href="/?lang=it">TIKITEXTO</a>.</div>
 <div class="tarjetas">
-<a class="tarjeta" href="/it/curiosidades/campeones/"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10h24v14c0 9-5 15-12 15s-12-6-12-15V10z"/><path d="M20 14h-8c0 9 4 14 10 15M44 14h8c0 9-4 14-10 15"/><path d="M32 39v10M22 54h20M26 49h12"/></svg><b>Campioni</b><span>Vincitori della Champions League e del Mondiale, con finali e risultati.</span></a>
-<a class="tarjeta" href="/it/curiosidades/ligas/"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="14" width="48" height="36" rx="4"/><path d="M32 14v36M8 32h48"/><circle cx="32" cy="32" r="7"/><path d="M8 24h6v16H8M56 24h-6v16h6"/></svg><b>Nascita dei campionati</b><span>Come sono nati 13 campionati del mondo: anni, primi campioni e curiosità.</span></a>
-<a class="tarjeta" href="/it/curiosidades/trofeos/"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="22"/><path d="M32 22l9 7-3 11H26l-3-11 9-7z"/><path d="M32 22V10M41 29l12-4M38 40l7 10M26 40l-7 10M23 29l-12-4"/></svg><b>Trofei</b><span>La storia delle coppe e dei premi di Spagna, Inghilterra, Italia, Germania, Francia, Portogallo, Brasile, USA e Argentina.</span></a>
+<a class="tarjeta tc" href="/it/curiosidades/campeones/" style="--c:#1747d6"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10h24v14c0 9-5 15-12 15s-12-6-12-15V10z"/><path d="M20 14h-8c0 9 4 14 10 15M44 14h8c0 9-4 14-10 15"/><path d="M32 39v10M22 54h20M26 49h12"/></svg><b>Campioni</b><span>Vincitori della Champions League e del Mondiale, con finali e risultati.</span></a>
+<a class="tarjeta tc" href="/it/curiosidades/ligas/" style="--c:#0f9d58"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="14" width="48" height="36" rx="4"/><path d="M32 14v36M8 32h48"/><circle cx="32" cy="32" r="7"/><path d="M8 24h6v16H8M56 24h-6v16h6"/></svg><b>Nascita dei campionati</b><span>Come sono nati 13 campionati del mondo: anni, primi campioni e curiosità.</span></a>
+<a class="tarjeta tc" href="/it/curiosidades/trofeos/" style="--c:#c98a00"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="22"/><path d="M32 22l9 7-3 11H26l-3-11 9-7z"/><path d="M32 22V10M41 29l12-4M38 40l7 10M26 40l-7 10M23 29l-12-4"/></svg><b>Trofei</b><span>La storia delle coppe e dei premi di Spagna, Inghilterra, Italia, Germania, Francia, Portogallo, Brasile, USA e Argentina.</span></a>
 </div>
 <h2>Ultime novità</h2>
 <div class="caja"><b>Mondiale 2026:</b> la Spagna è campione dopo aver battuto l'Argentina 1-0 ai supplementari nella finale del 19 luglio al MetLife Stadium. <b>Champions League 2025-26:</b> il PSG ha confermato il titolo battendo l'Arsenal ai rigori (1-1, 4-3) il 30 maggio a Budapest. <a href="/it/curiosidades/campeones/">Vedi tutti i campioni</a>.</div>
 
 <p><a class="jugar" href="/?lang=it">⚽ Gioca ai giochi di calcio di TIKITEXTO</a></p>
 <aside class="hueco" aria-label="Pubblicità" data-hueco="medio">Pubblicità</aside>
-<section class="mas"><h2>Continua a leggere</h2><div class="tarjetas">
-<a class="tarjeta" href="/it/curiosidades/campeones/"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10h24v14c0 9-5 15-12 15s-12-6-12-15V10z"/><path d="M20 14h-8c0 9 4 14 10 15M44 14h8c0 9-4 14-10 15"/><path d="M32 39v10M22 54h20M26 49h12"/></svg><b>Campioni</b><span>Vincitori della Champions League e del Mondiale, con finali e risultati.</span></a>
-<a class="tarjeta" href="/it/curiosidades/ligas/"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="14" width="48" height="36" rx="4"/><path d="M32 14v36M8 32h48"/><circle cx="32" cy="32" r="7"/><path d="M8 24h6v16H8M56 24h-6v16h6"/></svg><b>Nascita dei campionati</b><span>Come sono nati 13 campionati del mondo: anni, primi campioni e curiosità.</span></a>
-<a class="tarjeta" href="/it/curiosidades/trofeos/"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="22"/><path d="M32 22l9 7-3 11H26l-3-11 9-7z"/><path d="M32 22V10M41 29l12-4M38 40l7 10M26 40l-7 10M23 29l-12-4"/></svg><b>Trofei</b><span>La storia delle coppe e dei premi di Spagna, Inghilterra, Italia, Germania, Francia, Portogallo, Brasile, USA e Argentina.</span></a>
-</div></section>
 <aside class="hueco hueco--ancla" aria-label="Pubblicità" data-hueco="ancla">Pubblicità<button type="button" data-cerrar-hueco aria-label="✕">✕</button></aside>
 
 <nav class="legal-nav" aria-label="Info">
