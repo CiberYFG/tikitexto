@@ -2,11 +2,11 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-4d3ps7JVM5SjKcBbshYMdXKTrYFx536h5JPxCzs524Q=' 'sha256-BI2BsDQZvkJytdbTG9/Js43IM+wH69cDIaMBOmFPvx8=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-ZCmhjcKQnbqIXA+ijY+mfbC1vvsvaZOVyISJmMJx4SA=' 'sha256-hVF/lYmiU74NnlHiawbyJUSyaTC0qlQsCfJpk7DUf4U=' 'sha256-kco2sUF3SALwgKX8dLlXT3jNDIVrOiQbeLV/tDga6dM=' 'sha256-lwMrjbnibw66kGN5bfuM22qSsSfJ0q70HdO+ToH3olI=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BI2BsDQZvkJytdbTG9/Js43IM+wH69cDIaMBOmFPvx8=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-ZCmhjcKQnbqIXA+ijY+mfbC1vvsvaZOVyISJmMJx4SA=' 'sha256-hVF/lYmiU74NnlHiawbyJUSyaTC0qlQsCfJpk7DUf4U=' 'sha256-i/uezubRZzZHSJf/pQ5SYUOkxpVDuy7MafHbdaR+erU=' 'sha256-lwMrjbnibw66kGN5bfuM22qSsSfJ0q70HdO+ToH3olI=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <script>/* anti-clickjacking: GitHub Pages no permite X-Frame-Options */try{if(window.top!==window.self){window.top.location=window.self.location;}}catch(e){document.documentElement.style.display="none";}
 /* idioma distinto del español: no pintar hasta traducir (evita el salto de diseño); lo quita el traductor */
-try{var q=new URLSearchParams(location.search).get("lang"),l=/^(es|en|pt|fr|it|de)$/.test(q||"")?q:localStorage.getItem("tikitexto:idioma");if(/^(en|pt|fr|it|de)$/.test(l||""))document.documentElement.classList.add("t-espera");}catch(e){}</script>
+try{var q=new URLSearchParams(location.search).get("lang"),l=/^(es|en|pt|fr|it|de)$/.test(q||"")?q:localStorage.getItem("tikitexto:idioma");document.documentElement.setAttribute("data-idioma",/^(es|en|pt|fr|it|de)$/.test(l||"")?l:"es");if(/^(en|pt|fr|it|de)$/.test(l||""))document.documentElement.classList.add("t-espera");}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-adsense-account" content="ca-pub-3562310629171137">
 <title>TIKITEXTO · Web de historia y juegos del fútbol</title>
@@ -2053,6 +2053,7 @@ html:has(.modal:not([hidden]), .idioma) :is(.curio,.info,.novedad,.ah-card,.modo
 .info summary { font-size: .9rem; font-weight: 800; cursor: pointer; color: var(--texto); }
 .info details p { margin: 8px 0 0; }
 html.t-espera body { visibility: hidden; }
+html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not([data-idioma="es"]):not([data-idioma="en"]) [data-solo-es-en] { display: none; }
 </style>
 </head>
 <body>
@@ -2944,10 +2945,13 @@ html.t-espera body { visibility: hidden; }
       if (e.target.closest("#abrirIdioma")) abrirSelector(false);
       else if (e.target.closest("#botonAjustes")) abrirAjustes();
     });
-    if (col >= 0) iniciarTraductor();
+    if (col >= 0 && !observador) iniciarTraductor();
     document.documentElement.classList.remove("t-espera");
     if (!guardado && !/bot|crawl|spider|slurp|lighthouse|pagespeed/i.test(navigator.userAgent)) abrirSelector(true);
   }
+  /* El HTML visible ya está analizado en este punto: se traduce ya (antes del primer pintado) y el
+     observador traduce lo que llegue después. Así no hay parpadeo en español ni salto de diseño. */
+  if (col >= 0 && document.body) { iniciarTraductor(); document.documentElement.classList.remove("t-espera"); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arrancar); else arrancar();
 })();
 </script>
