@@ -6746,11 +6746,11 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
         "Estás a oscuras en el cementerio. Mueve la linterna (con el dedo o el ratón) para buscar letras escondidas.",
         "Toca las letras EN ORDEN para formar el nombre de la leyenda. Cada error te cuesta pila.",
         "Cuidado con los fantasmas 👻: si los iluminas, te chupan la pila más rápido.",
-        "⚡ Supera las 3 noches y ganas +1 tikitexto."
+        "⚡ Encuentra 2 nombres en una partida y ganas +1 tikitexto."
       ]
     }
   };
-  const LZ_NOCHES = 3, LZ_PILA = 70, LZ_BONUS = 15, LZ_FALLO = 5, LZ_DESTELLO = 8;
+  const LZ_NOCHES = 3, LZ_PARA_TIKI = 2, LZ_PILA = 70, LZ_BONUS = 15, LZ_FALLO = 5, LZ_DESTELLO = 8;
   const pantallaLz = $("#pantallaLinterna");
   const lzCuerpo = $("#lzCuerpo");
   let lz = { tema: "halloween", activo: false, fin: false, sesion: 0, cola: [], noche: 0, hechos: 0, pila: 0, nombre: "", orden: [], sig: 0, letras: [], fantasmas: [], x: 0, y: 0, radio: 70, raf: 0, t0: 0, destello: false, usadoDestello: false, ultimo: "", w: 0, h: 0, down: null };
@@ -6813,7 +6813,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
 
   function lzEmpezar() {
     lz.sesion++;
-    lz.activo = true; lz.fin = false; lz.noche = 0; lz.hechos = 0; lz.pila = LZ_PILA; lz.cola = [];
+    lz.activo = true; lz.fin = false; lz.premio = false; lz.noche = 0; lz.hechos = 0; lz.pila = LZ_PILA; lz.cola = [];
     lzNoche();
   }
 
@@ -7015,6 +7015,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
 
   function lzNocheOk() {
     lz.hechos++;
+    if (lz.hechos === LZ_PARA_TIKI && !lz.premio) { lz.premio = true; nvSumarTikitexto(); }
     lzParar();
     const sesion = lz.sesion;
     lz.pila = Math.min(LZ_PILA + LZ_BONUS, lz.pila + LZ_BONUS);
@@ -7037,7 +7038,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (gana) sonidoVictoria();
     setTimeout(function () {
       if (lz.sesion !== sesion) return;
-      if (gana) nvSumarTikitexto();
       const zona = $("#lzResultado");
       if (!zona) return;
       zona.innerHTML = "";
@@ -7052,7 +7052,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
         const nm = tEl("p", "ah-res__nombre"); nm.setAttribute("data-no-t", ""); nm.textContent = lz.nombre;
         res.appendChild(nm);
       }
-      if (gana) res.appendChild(tEl("p", "ah-res__tiki", "⚡ +1 tikitexto"));
+      if (lz.premio) res.appendChild(tEl("p", "ah-res__tiki", "⚡ +1 tikitexto"));
       const otra = tEl("button", "boton boton--primario", "Jugar otra vez"); otra.type = "button";
       otra.addEventListener("click", lzEmpezar);
       const menu = tEl("button", "boton boton--secundario", "Volver al menú"); menu.type = "button";
