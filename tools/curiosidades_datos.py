@@ -2,7 +2,7 @@
 """Páginas de datos concretos del fútbol (récords y rankings) en español e inglés, con fuentes.
 Usa las plantillas de tools/curiosidades.py. Ejecutar DESPUÉS de curiosidades.py y antes de seo.py:
   python3 tools/curiosidades.py && python3 tools/curiosidades_datos.py && python3 tools/seo.py
-Datos: Wikipedia (listas enlazadas en cada página) y Al Jazeera para el Balón de Oro; al 18-8-2026 salvo indicación."""
+Datos: fuentes oficiales enlazadas en cada página y Al Jazeera para el Balón de Oro; al 18-8-2026 salvo indicación."""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import curiosidades as C
@@ -10,7 +10,6 @@ DOM = "https://tikitexto.com/"
 from curiosidades import e, tabla, cabecera, pie, Idioma, BALON, COPA, ESTADIO, LIGA
 C.LANGS = ["es", "en"]          # estas páginas solo existen en es/en (hreflang correcto)
 LANGS = C.LANGS
-W = "https://en.wikipedia.org/wiki/"
 PAIS_EN = {"Francia": "France", "Argentina": "Argentina", "Alemania": "Germany", "Brasil": "Brazil", "Inglaterra": "England", "Hungría": "Hungary",
            "Portugal": "Portugal", "Irán": "Iran", "India": "India", "Bélgica": "Belgium", "Malasia": "Malaysia", "Emiratos Árabes Unidos": "United Arab Emirates",
            "Polonia": "Poland", "Zambia": "Zambia", "Croacia": "Croatia", "Kuwait": "Kuwait", "Omán": "Oman", "Catar": "Qatar", "Egipto": "Egypt", "México": "Mexico",
@@ -36,7 +35,7 @@ def paginas(L):
         ratio=True,
         dato=("Haaland ha marcado 61 goles en solo 60 partidos: más de un gol por partido, la mejor media de toda la lista.",
               "Haaland has scored 61 goals in just 60 games: more than one per match, the best ratio on the list."),
-        src=[("Wikipedia · List of UEFA Champions League top scorers", W + "List_of_UEFA_Champions_League_top_scorers")],
+        src=[("UEFA.com", "https://www.uefa.com/uefachampionsleague/")],
         fecha=("Hasta la temporada 2025-26", "Through the 2025–26 season"),
         btn=("⚽ ¿Eres capaz de adivinar al goleador? Juega", "⚽ Can you guess the scorer? Play")))
     # 2 Mundial
@@ -50,7 +49,7 @@ def paginas(L):
         filas=[("Kylian Mbappé","Francia",22,22),("Lionel Messi","Argentina",21,34),("Miroslav Klose","Alemania",16,24),("Ronaldo","Brasil",15,19),("Gerd Müller","Alemania Occidental",14,13),("Harry Kane","Inglaterra",14,18),("Just Fontaine","Francia",13,6),("Pelé","Brasil",12,14),("Sándor Kocsis","Hungría",11,5),("Jürgen Klinsmann","Alemania",11,17),("Cristiano Ronaldo","Portugal",11,27),("Helmut Rahn","Alemania Occidental",10,10)],
         dato=("Just Fontaine marcó 13 goles en un solo Mundial (1958) y sigue siendo el récord de una edición.",
               "Just Fontaine scored 13 goals in a single World Cup (1958), and that remains the single-tournament record."),
-        src=[("Wikipedia · List of FIFA World Cup top goalscorers", W + "List_of_FIFA_World_Cup_top_goalscorers")],
+        src=[("FIFA.com", "https://www.fifa.com/")],
         fecha=("Datos a 19 de julio de 2026 (tras la final)", "As of 19 July 2026 (after the final)"),
         btn=("⚽ Pon a prueba tu memoria mundialista: juega", "⚽ Test your World Cup memory: play")))
     # 3 Goles selecciones
@@ -64,7 +63,7 @@ def paginas(L):
         filas=[("Cristiano Ronaldo","Portugal",146,233),("Lionel Messi","Argentina",125,207),("Ali Daei","Irán",108,148),("Sunil Chhetri","India",95,157),("Romelu Lukaku","Bélgica",93,132),("Mokhtar Dahari","Malasia",89,142),("Robert Lewandowski","Polonia",89,167),("Ali Mabkhout","Emiratos Árabes Unidos",85,115),("Harry Kane","Inglaterra",85,121),("Ferenc Puskás","Hungría",84,89),("Neymar","Brasil",80,130),("Godfrey Chitalu","Zambia",79,111)],
         dato=("Ferenc Puskás marcó 84 goles en solo 89 partidos con Hungría: la mejor media de los doce primeros.",
               "Ferenc Puskás scored 84 goals in only 89 games for Hungary: the best ratio among the top twelve."),
-        src=[("Wikipedia · Men's footballers with 50+ international goals", W + "List_of_men%27s_footballers_with_50_or_more_international_goals")],
+        src=[("RSSSF", "https://www.rsssf.org/")],
         fecha=("Datos a 19 de julio de 2026", "As of 19 July 2026"),
         btn=("⚽ ¿Conoces a todos los goleadores? Juega", "⚽ Do you know every scorer? Play")))
     # 4 Caps
@@ -78,7 +77,7 @@ def paginas(L):
         filas=[("Cristiano Ronaldo","Portugal",233),("Lionel Messi","Argentina",207),("Luka Modrić","Croacia",202),("Bader Al-Mutawa","Kuwait",202),("Soh Chin Ann","Malasia",195),("Ahmed Kano","Omán",193),("Hassan Al-Haydos","Catar",188),("Ahmed Hassan","Egipto",184),("Andrés Guardado","México",180),("Sergio Ramos","España",180),("Claudio Suárez","México",178),("Hossam Hassan","Egipto",177)],
         dato=("Modrić y Al-Mutawa comparten el tercer puesto con 202 partidos cada uno.",
               "Modrić and Al-Mutawa share third place with 202 caps each."),
-        src=[("Wikipedia · Men's footballers with 100+ international caps", W + "List_of_men%27s_footballers_with_100_or_more_international_caps")],
+        src=[("RSSSF", "https://www.rsssf.org/")],
         fecha=("Datos a 18 de agosto de 2026", "As of 18 August 2026"),
         btn=("⚽ ¿Cuánto sabes de fútbol? Juega", "⚽ How much do you know about football? Play")))
     # 5 Balón de Oro
@@ -110,7 +109,7 @@ def paginas(L):
         filas=[("Carlo Ancelotti",5,"2003, 2007, 2014, 2022, 2024"),("Bob Paisley",3,"1977, 1978, 1981"),("Zinedine Zidane",3,"2016, 2017, 2018"),("Pep Guardiola",3,"2009, 2011, 2023"),("Luis Enrique",3,"2015, 2025, 2026")],
         dato=("Zidane es el único entrenador que ganó tres Champions seguidas (2016, 2017 y 2018).",
               "Zidane is the only manager to win three Champions League titles in a row (2016, 2017 and 2018)."),
-        src=[("Wikipedia · European Cup and UEFA Champions League winning managers", W + "List_of_European_Cup_and_UEFA_Champions_League_winning_managers")],
+        src=[("UEFA.com", "https://www.uefa.com/uefachampionsleague/")],
         fecha=("Hasta la final de 2026", "Through the 2026 final"),
         btn=("⚽ ¿Adivinas al entrenador? Juega", "⚽ Can you guess the manager? Play")))
     # 7 Eurocopa
@@ -124,7 +123,7 @@ def paginas(L):
         filas=[(2024,"España","Inglaterra","2-1"),(2020,"Italia","Inglaterra","1-1 (3-2 pen.)"),(2016,"Portugal","Francia","1-0 (prórroga)"),(2012,"España","Italia","4-0"),(2008,"España","Alemania","1-0"),(2004,"Grecia","Portugal","1-0"),(2000,"Francia","Italia","2-1 (gol de oro)"),(1996,"Alemania","República Checa","2-1 (gol de oro)"),(1992,"Dinamarca","Alemania","2-0"),(1988,"Países Bajos","Unión Soviética","2-0"),(1984,"Francia","España","2-0"),(1980,"Alemania Occidental","Bélgica","2-1"),(1976,"Checoslovaquia","Alemania Occidental","2-2 (5-3 pen.)"),(1972,"Alemania Occidental","Unión Soviética","3-0"),(1968,"Italia","Yugoslavia","1-1 y 2-0 en el desempate"),(1964,"España","Unión Soviética","2-1"),(1960,"Unión Soviética","Yugoslavia","2-1 (prórroga)")],
         dato=("Diez selecciones distintas han ganado la Eurocopa; España (4), Alemania (3 contando Alemania Occidental), Italia y Francia (2 cada una) acumulan 11 de las 17 ediciones hasta 2024.",
               "Ten different teams have won the Euros."),
-        src=[("Wikipedia · UEFA European Championship", W + "UEFA_European_Championship")],
+        src=[("UEFA.com", "https://www.uefa.com/")],
         fecha=("Hasta la edición de 2024", "Through the 2024 edition"),
         btn=("⚽ ¿Cuánto sabes de selecciones? Juega", "⚽ How much do you know about national teams? Play")))
     # 8 Pichichi
@@ -140,7 +139,7 @@ def paginas(L):
                 ("Últimos ganadores (masculino)", "Recent winners (men)"))],
         dato=("Messi ganó cinco Pichichis consecutivos entre 2016-17 y 2020-21.",
               "Messi won five Pichichis in a row between 2016–17 and 2020–21."),
-        src=[("Wikipedia · Pichichi Trophy", W + "Pichichi_Trophy")],
+        src=[("LaLiga.com", "https://www.laliga.com/")],
         fecha=("Hasta la temporada 2025-26", "Through the 2025–26 season"),
         btn=("⚽ ¿Quién es el goleador? Juega", "⚽ Who's the scorer? Play")))
     # 9 Bota de Oro
@@ -156,7 +155,7 @@ def paginas(L):
                 ("Últimos ganadores", "Recent winners"))],
         dato=("Los 41 goles de Lewandowski en 2020-21 son la cifra más alta de las últimas ocho ediciones.",
               "Lewandowski's 41 goals in 2020–21 are the highest total of the last eight editions."),
-        src=[("Wikipedia · European Golden Shoe", W + "European_Golden_Shoe")],
+        src=[("UEFA.com", "https://www.uefa.com/")],
         fecha=("Hasta la temporada 2025-26", "Through the 2025–26 season"),
         btn=("⚽ Adivina al goleador: juega", "⚽ Guess the scorer: play")))
     return pg
