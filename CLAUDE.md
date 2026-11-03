@@ -98,3 +98,8 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 - Cifras contrastadas el 2-nov-2026 (Wikipedia: campeones de LaLiga, LaLiga 2025-26, honours del Real Madrid; prensa para el título del Arsenal 2025-26). Las cifras que cambian cada temporada (títulos, goleadores) hay que revisarlas tras cada temporada/Mundial. Test 3p.
 - Para añadir un tema: añadir un `dict` a `TEMAS` (≥7 hechos), regenerar y ampliar el `12` de la tarjeta de portada/test si cambia.
 
+
+## Modo Halloween «Fantasmas del fútbol» (3-nov-2026, tiempo limitado)
+- Modo oculto `halloween` en `MODOS` (usa el pool `LEYENDAS`, 13 intentos máx.; cada acierto = +1 tikitexto como cualquier modo, sin cambios de servidor). Tarjeta `#hwCard` (`data-halloween`) en portada, sobre `.ah-card`, con cuenta atrás `#hwCuenta`.
+- **Caduca con `HW_FIN`** (constante en `index.html`, hoy 9-nov-2026 23:59; se expone como `window.TIKI_HW_FIN`): pasada la fecha la tarjeta se oculta y `?modo=halloween` no arranca. Para ampliar, cambiar solo esa fecha. Para retirar el modo del todo: quitar entrada de `MODOS`, tarjeta, bloque CSS «HALLOWEEN», IIFE de cuenta atrás, líneas de `fuente.txt` y test 3q.
+- Tema visual: clase `html.hw` (paleta morada/naranja, `.hw-deco` con murciélagos/calabaza/fantasma); respeta `prefers-reduced-motion`. Rejilla para compartir: 🟧🟪⬛.

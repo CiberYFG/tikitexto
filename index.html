@@ -1440,6 +1440,38 @@ button.marca:active .marca__icono { transform: scale(.9); }
 #modalCuenta .boton, #botonCodigo { width: 100%; margin-top: 8px; }
 
 /* Curiosidades: aspecto editorial (de lectura), distinto del juego */
+/* ---------- HALLOWEEN (modo de tiempo limitado) ---------- */
+.hw-card { position: relative; isolation: isolate; overflow: hidden; display: grid; grid-template-columns: 84px 1fr; align-items: center; gap: 14px; width: 100%; margin: 22px 0 6px; padding: 16px 16px 14px; text-align: left; color: #fff4e6; background: radial-gradient(120% 120% at 20% 0%, #4b1a7a 0%, #1d0b33 60%, #0d0518 100%); border: 2px solid #ff8a2b; border-radius: 26px; cursor: pointer; box-shadow: 0 0 0 3px rgba(255, 138, 43, .18), 0 14px 40px rgba(139, 92, 246, .4); font: inherit; transition: transform .15s ease; }
+.hw-card[hidden] { display: none; }
+.hw-card:hover { transform: translateY(-2px) rotate(-.3deg); } .hw-card:active { transform: scale(.985); }
+.hw-card:focus-visible { outline: 3px solid #ffd84d; outline-offset: 3px; }
+.hw-card::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle at 85% 15%, rgba(255, 138, 43, .35), transparent 45%), radial-gradient(circle at 10% 90%, rgba(124, 255, 79, .16), transparent 40%); }
+.hw-card__dib { position: relative; width: 84px; height: 96px; }
+.hw-card__dib i { position: absolute; font-style: normal; line-height: 1; }
+.hw-calabaza { left: 2px; bottom: 0; font-size: 54px; animation: hwBalanceo 2.6s ease-in-out infinite; filter: drop-shadow(0 0 12px rgba(255, 138, 43, .75)); }
+.hw-fantasma { right: 0; top: 2px; font-size: 32px; animation: hwFlota 3s ease-in-out infinite; }
+.hw-murcielago { left: 4px; top: 6px; font-size: 22px; animation: hwFlota 2.2s ease-in-out infinite reverse; }
+.hw-card__sello { display: inline-block; padding: 4px 11px; border-radius: 999px; background: #ff8a2b; color: #1b0a00; font: 900 .68rem/1.2 var(--fuente); letter-spacing: .1em; }
+.hw-card__titulo { display: block; margin-top: 8px; font: 900 1.5rem/1.05 var(--fuente-titulo); letter-spacing: -.02em; color: #ffb066; text-shadow: 0 0 18px rgba(255, 138, 43, .55); }
+.hw-card__desc { display: block; margin-top: 5px; font-size: .84rem; line-height: 1.4; color: #e4d5f7; }
+.hw-card__cuenta { display: block; margin-top: 8px; font: 800 .8rem/1.2 var(--fuente); color: #9dff7a; }
+.hw-card__accion { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-weight: 800; color: #ffd84d; }
+.hw-card__accion svg { width: 16px; height: 16px; }
+@keyframes hwBalanceo { 50% { transform: rotate(-7deg) translateY(-3px); } }
+@keyframes hwFlota { 50% { transform: translateY(-8px); } }
+html.hw, html.hw[data-tema] { color-scheme: dark; --fondo: #120a1f; --fondo-2: #1a0f2e; --superficie: #1d1233; --superficie-2: #26183f; --barra: rgba(18, 10, 31, .9); --texto: #f6efff; --texto-suave: #b9a6d6; --borde: #3a2760; --borde-fuerte: #5b3f94; --acento: #ff8a2b; --sobre-acento: #1b0a00; --acento-suave: #3a1f0a; --acento-brillo: rgba(255, 138, 43, .18); --verde: #f57c1f; --verde-texto: #1b0a00; --amarillo: #8b5cf6; --amarillo-texto: #ffffff; --ausente: #3a2f4d; --ausente-texto: #d9ccf0; --pista-fondo: #2a1747; --pista-borde: #5b3f94; --pista-texto: #ffcf9e; }
+html.hw body { background: radial-gradient(90% 60% at 50% 0%, #2c1250 0%, #120a1f 70%); }
+html.hw .celda--activa { border-color: #ff8a2b; box-shadow: 0 0 12px rgba(255, 138, 43, .45); }
+.hw-deco { display: none; }
+html.hw .hw-deco { display: block; position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+.hw-deco span { position: absolute; line-height: 1; opacity: .9; }
+.hw-d1 { top: 14%; left: -10%; font-size: 26px; animation: hwVuela 14s linear infinite; }
+.hw-d5 { top: 32%; left: -10%; font-size: 20px; animation: hwVuela 19s linear 4s infinite; }
+.hw-d2 { bottom: 10px; left: 8px; font-size: 38px; animation: hwBalanceo 2.8s ease-in-out infinite; filter: drop-shadow(0 0 12px rgba(255, 138, 43, .7)); }
+.hw-d3 { top: 22%; right: 6px; font-size: 30px; opacity: .7; animation: hwFlota 3.2s ease-in-out infinite; }
+.hw-d4 { top: 56px; right: 0; font-size: 44px; opacity: .6; }
+@keyframes hwVuela { 0% { transform: translateX(0) translateY(0); } 50% { transform: translateX(60vw) translateY(-26px); } 100% { transform: translateX(120vw) translateY(10px); } }
+@media (prefers-reduced-motion: reduce) { .hw-calabaza, .hw-fantasma, .hw-murcielago, .hw-d1, .hw-d2, .hw-d3, .hw-d5 { animation: none; } }
 /* ---------- Huecos para anuncios (vacíos y ocultos hasta que haya anuncios y consentimiento) ----------
    Para ver dónde irían: añade ?huecos=1 a la URL (?huecos=0 lo quita). No cargan nada externo. */
 .hueco { display: none; }
@@ -2036,6 +2068,17 @@ button.ir-juegos { border: 0; cursor: pointer; }
       </div>
     </section>
 
+    <button type="button" class="hw-card" data-halloween id="hwCard" hidden>
+      <span class="hw-card__dib" aria-hidden="true"><i class="hw-calabaza">🎃</i><i class="hw-fantasma">👻</i><i class="hw-murcielago">🦇</i></span>
+      <span class="hw-card__cuerpo">
+        <span class="hw-card__sello">⏳ MODO DE TIEMPO LIMITADO</span>
+        <span class="hw-card__titulo">Fantasmas del fútbol</span>
+        <span class="hw-card__desc">Los fantasmas de las leyendas han vuelto por Halloween. Adivina quién es antes de que se escape.</span>
+        <span class="hw-card__cuenta" id="hwCuenta" data-no-t></span>
+        <span class="hw-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </button>
+
     <button type="button" class="ah-card" data-ahorcado>
       <span class="ah-card__dib" aria-hidden="true"><svg viewBox="0 0 120 140" class="ah-svg ah-svg--bucle" aria-hidden="true"><g class="ah-horca"><path d="M12 128H72M30 128V14H84M30 36L52 14"/></g><g class="ah-fig"><path class="ah-cuerda" d="M84 14V30"/><circle class="ah-p ah-p1" pathLength="1" cx="84" cy="40" r="10"/><path class="ah-p ah-p2" pathLength="1" d="M84 50V88"/><path class="ah-p ah-p3" pathLength="1" d="M68 76L84 60L100 76"/><path class="ah-p ah-p4" pathLength="1" d="M84 88L71 114"/><path class="ah-p ah-p5" pathLength="1" d="M84 88L97 114"/><path class="ah-x" d="M78.5 35.5l4 4m0-4l-4 4M85.5 35.5l4 4m0-4l-4 4"/></g></svg></span>
       <span>
@@ -2101,6 +2144,7 @@ button.ir-juegos { border: 0; cursor: pointer; }
 
 <!-- ============ PANTALLA DE PARTIDA ============ -->
 <div class="partida" id="pantallaJuego" hidden>
+<div class="hw-deco" aria-hidden="true"><span class="hw-d1">🦇</span><span class="hw-d2">🎃</span><span class="hw-d3">👻</span><span class="hw-d4">🕸️</span><span class="hw-d5">🦇</span></div>
 
   <header class="cabecera">
     <div class="cabecera__interior">
@@ -3865,12 +3909,18 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     { id: "balones", nombre: "Balón de Oro", tipo: "Balón de Oro", unidad: "ganadores", icono: "balon", fuente: function () { return BALONES; } },
     { id: "botas", nombre: "Bota de Oro", tipo: "Bota de Oro", unidad: "ganadores", icono: "bota", fuente: function () { return BOTAS; } },
     { id: "leyendas", nombre: "Leyendas", tipo: "Leyenda", unidad: "leyendas", icono: "leyenda", max: 13, fuente: function () { return LEYENDAS; } },
+    { id: "halloween", nombre: "🎃 Halloween · Fantasmas del fútbol", tipo: "Fantasma", unidad: "fantasmas", icono: "leyenda", max: 13, oculto: true, fuente: function () { return LEYENDAS; } },
     { id: "estadios_es", nombre: "Estadios · Liga española", tipo: "Estadio", unidad: "estadios", icono: "estadio", max: 14, oculto: true, fuente: function () { return estadiosDe("es"); } },
     { id: "estadios_en", nombre: "Estadios · Liga inglesa", tipo: "Estadio", unidad: "estadios", icono: "estadio", max: 14, oculto: true, fuente: function () { return estadiosDe("en"); } },
     { id: "estadios_eu", nombre: "Estadios · Europa", tipo: "Estadio", unidad: "estadios", icono: "estadio", max: 14, oculto: true, fuente: function () { return estadiosDe("eu"); } },
     { id: "estadios_us", nombre: "Estadios · Estados Unidos", tipo: "Estadio", unidad: "estadios", icono: "estadio", max: 14, oculto: true, fuente: function () { return estadiosDe("us"); } },
     { id: "estadios_mu", nombre: "Estadios · Resto del mundo", tipo: "Estadio", unidad: "estadios", icono: "estadio", max: 14, oculto: true, fuente: function () { return estadiosDe("mu"); } }
   ];
+
+  /* Modo de tiempo limitado de Halloween: cambia HW_FIN para alargarlo o acortarlo (hora local del navegador). */
+  const HW_FIN = new Date(2026, 10, 9, 23, 59, 59).getTime();
+  window.TIKI_HW_FIN = HW_FIN;
+  function halloweenActivo() { return Date.now() <= HW_FIN; }
 
   const MODOS_POR_ID = {};
   MODOS.forEach(function (modo) { MODOS_POR_ID[modo.id] = modo; });
@@ -4164,6 +4214,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
      NAVEGACIÓN ENTRE PANTALLAS
      ============================================================ */
   function irAlInicio() {
+    document.documentElement.classList.remove("hw");
     cancelarTemporizadores();
     cerrarModal(true);
     pantallaJuego.hidden = true;
@@ -4191,6 +4242,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   function irAlJuego() {
+    document.documentElement.classList.toggle("hw", estado.modo === "halloween");
     pantallaInicio.hidden = true;
     pantallaJuego.hidden = false;
 
@@ -4653,7 +4705,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
 
   /* Rejilla de bloques de colores, con el estado de cada letra */
   function rejillaEmoji() {
-    const simbolos = { correcta: "🟩", presente: "🟨", ausente: "⬜" };
+    const simbolos = estado.modo === "halloween" ? { correcta: "🟧", presente: "🟪", ausente: "⬛" } : { correcta: "🟩", presente: "🟨", ausente: "⬜" };
 
     return estado.resultados.map(function (fila) {
       return fila.map(function (estadoLetra) {
@@ -4670,7 +4722,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   function textoResumen() {
     const marca = (estado.gano ? "✅ " : "❌ ") + estado.intentos.length + "/" + MAX_INTENTOS;
 
-    return "TIKITEXTO ⚽ · " + nombreDelModo() + "\n" +
+    return "TIKITEXTO " + (estado.modo === "halloween" ? "🎃" : "⚽") + " · " + nombreDelModo() + "\n" +
       formatearFecha(estado.inicio) + " · " + formatearHora(estado.inicio) + "\n" +
       marca + "\n\n" +
       rejillaEmoji() + "\n\nhttps://tikitexto.com/";
@@ -4693,9 +4745,14 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     modalRacha.hidden = !(estado.modo === "diario" && dd > 1);
     if (!modalRacha.hidden) modalRacha.textContent = TIKI.t("🔥 Racha diaria") + ": " + dd + " " + TIKI.t("días");
     modalEtiqueta.textContent = estado.gano ? "Partida completada" : "Partida terminada";
-    modalTitulo.textContent = estado.gano ? "¡Enhorabuena!" : "Se acabaron los intentos";
+    const hwModo = estado.modo === "halloween";
+    modalTitulo.textContent = hwModo ? (estado.gano ? "¡Fantasma exorcizado! 👻" : "El fantasma se escapó…") : (estado.gano ? "¡Enhorabuena!" : "Se acabaron los intentos");
 
-    if (estado.gano) {
+    if (hwModo && estado.gano) {
+      modalTexto.textContent = "El fantasma ha vuelto al más allá. ¡Buen trabajo! Este es el resumen de la partida.";
+    } else if (hwModo && !estado.revelada) {
+      modalTexto.textContent = "El fantasma se te escapó. Puedes ver quién era o volver a intentarlo.";
+    } else if (estado.gano) {
       modalTexto.textContent = "Has acertado en " + intentos + " de " + MAX_INTENTOS +
         " intentos. Este es el resumen de la partida.";
     } else if (estado.revelada) {
@@ -6601,6 +6658,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   document.addEventListener("click", function (e) {
     const o = e.target;
     if (o.closest && o.closest("[data-ahorcado]")) { abrirAhorcado(); return; }
+    if (o.closest && o.closest("[data-halloween]")) { if (halloweenActivo()) iniciarPartida("halloween"); return; }
     if (o.closest && o.closest("#ahLogo, #ahInicio")) {
       if (ah.activo && ah.racha > 0 && !ah.fin) modalSalirNv.hidden = false; else salirNovedad();
       return;
@@ -6978,6 +7036,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (!m) return;
     try { history.replaceState(null, "", location.pathname + location.hash); } catch (error) { /* opcional */ }
     if (m === "ahorcado" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirAhorcado(); return; }
+    if (m === "halloween" && !halloweenActivo()) return;
     if (MODOS_POR_ID[m] && m !== "diario" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) iniciarPartida(m);
   })();
   window.addEventListener("hashchange", function () {
@@ -7116,6 +7175,22 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
 })();
 
 document.addEventListener("click", function (e) { var a = e.target.closest && e.target.closest("#irJuegos"); if (!a) return; e.preventDefault(); var t = document.getElementById("tituloJuegos"); if (t) t.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); });
+
+/* ---------- Halloween: tarjeta de tiempo limitado con cuenta atrás ---------- */
+(function () {
+  var card = document.getElementById("hwCard"), cuenta = document.getElementById("hwCuenta");
+  if (!card || !cuenta) return;
+  var FIN = window.TIKI_HW_FIN || new Date(2026, 10, 9, 23, 59, 59).getTime(), t = null;
+  function pintar() {
+    var ms = FIN - Date.now();
+    if (ms <= 0) { card.hidden = true; clearInterval(t); return; }
+    var d = Math.floor(ms / 86400000), h = Math.floor(ms % 86400000 / 3600000), m = Math.floor(ms % 3600000 / 60000);
+    var pre = (window.TIKI && TIKI.t) ? TIKI.t("Termina en") : "Termina en";
+    cuenta.textContent = "⏳ " + pre + " " + d + " d " + h + " h " + m + " min";
+    card.hidden = false;
+  }
+  pintar(); t = setInterval(pintar, 30000);
+})();
 </script>
 </body>
 </html>

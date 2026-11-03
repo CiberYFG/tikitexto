@@ -562,6 +562,28 @@ with sync_playwright() as p:
     except Exception as e:
         check("huecos de anuncios", False, str(e)[:150])
 
+    print("3q) Modo Halloween (tiempo limitado)")
+    try:
+        ch = br.new_context(viewport={"width": 430, "height": 900}); ph = ch.new_page()
+        errs_q = []; ph.on("pageerror", lambda e: errs_q.append(str(e)))
+        ph.goto(BASE, wait_until="networkidle", timeout=60000)
+        ph.evaluate("localStorage.setItem('tikitexto:idioma','es')"); ph.reload(wait_until="networkidle")
+        activo = ph.evaluate("Date.now() <= window.TIKI_HW_FIN")
+        visible = ph.evaluate("!document.getElementById('hwCard').hidden")
+        check("halloween: la tarjeta se ve solo mientras dura el evento", activo == visible)
+        if activo:
+            check("halloween: indica tiempo limitado y cuenta atrás", "TIEMPO LIMITADO" in ph.inner_text("#hwCard").upper() and "Termina" in ph.inner_text("#hwCuenta"))
+            ph.evaluate("document.getElementById('hwCard').click()")
+            ph.wait_for_timeout(600)
+            check("halloween: arranca con el tema html.hw", ph.evaluate("document.documentElement.classList.contains('hw')"))
+        else:
+            ph.goto(BASE + "?modo=halloween", wait_until="networkidle", timeout=60000)
+            check("halloween caducado: el enlace directo no arranca", not ph.evaluate("document.documentElement.classList.contains('hw')"))
+        check("halloween: sin errores de JavaScript", not errs_q, "; ".join(errs_q)[:150])
+        ch.close()
+    except Exception as e:
+        check("modo halloween", False, str(e)[:150])
+
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:
         print("  (omitido)")
