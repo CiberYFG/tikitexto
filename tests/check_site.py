@@ -605,8 +605,8 @@ with sync_playwright() as p:
             h = br.new_context().request.get(BASE + ruta).text()
             m = re.search(r'http-equiv="Content-Security-Policy" content="([^"]*)"', h)
             ss = re.search(r"script-src [^;]*", m.group(1)).group(0) if m else ""
-            ok = bool(m) and "unsafe-inline" not in ss and all(x in ss for x in _csp.huellas(h))
-            check("CSP de /" + ruta + ": sin unsafe-inline y con las huellas de sus scripts (si falla: python3 tools/csp.py)", ok, ss[:80])
+            bien = bool(m) and "unsafe-inline" not in ss and all(x in ss for x in _csp.huellas(h))
+            check("CSP de /" + ruta + ": sin unsafe-inline y con las huellas de sus scripts (si falla: python3 tools/csp.py)", bien, ss[:80])
         ph = br.new_context().new_page()
         ph.goto(BASE + "cookies.html", wait_until="networkidle")
         ph.click("#medicion-boton")
