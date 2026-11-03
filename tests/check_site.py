@@ -578,8 +578,9 @@ with sync_playwright() as p:
             check("linterna: abre su pantalla con el tema html.hw", ph.evaluate("!document.getElementById('pantallaLinterna').hidden && document.documentElement.classList.contains('hw')"))
             ph.click("#lzEmpezar"); ph.wait_for_timeout(500)
             check("linterna: hay campo oscuro, letras, fantasmas y pila", ph.evaluate("!!document.querySelector('#lzCampo .lz-oscuro') && document.querySelectorAll('.lz-letra').length >= 8 && document.querySelectorAll('.lz-fantasma').length === 2 && !!document.getElementById('lzPilaBarra')"))
-            for n in range(3):
-                for _ in range(12):
+            for n in range(6):
+                if ph.evaluate("TIKI.lz.fin"): break
+                for _ in range(40):
                     st = ph.evaluate("({s:TIKI.lz.sig,l:TIKI.lz.orden.length})")
                     if st["s"] >= st["l"]: break
                     pos = ph.evaluate("(()=>{const o=TIKI.lz.letras.find(o=>!o.tomada&&o.l===TIKI.lz.orden[TIKI.lz.sig]);return [o.x,o.y]})()")
