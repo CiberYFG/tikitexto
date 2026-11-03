@@ -585,7 +585,7 @@ with sync_playwright() as p:
                     if st["s"] >= st["l"]: break
                     pos = ph.evaluate("(()=>{const o=TIKI.lz.letras.find(o=>!o.tomada&&o.l===TIKI.lz.orden[TIKI.lz.sig]);return [o.x,o.y]})()")
                     box = ph.locator("#lzCampo").bounding_box()
-                    ph.mouse.move(box["x"] + pos[0], box["y"] + pos[1]); ph.mouse.down(); ph.mouse.up(); ph.wait_for_timeout(60)
+                    ph.mouse.move(box["x"] + pos[0], box["y"] + pos[1]); ph.wait_for_timeout(120); ph.mouse.down(); ph.mouse.up(); ph.wait_for_timeout(60)
                 ph.wait_for_timeout(1500)
             ph.wait_for_timeout(1500)
             check("linterna: se superan las 3 noches y aparece el resultado", ph.evaluate("TIKI.lz.fin && TIKI.lz.hechos === 3") and "+1 tikitexto" in ph.inner_text("#lzResultado"))
