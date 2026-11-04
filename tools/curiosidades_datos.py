@@ -83,20 +83,43 @@ def paginas(L):
     # 5 Balón de Oro
     pg.append(dict(slug="balon-de-oro-ganadores" if es else "ballon-dor-winners", ic=BALON,
         t=("Balón de Oro: ganadores, récords y países con más premios", "Ballon d'Or: winners, records and countries with the most awards"),
-        d=("Quién ha ganado más Balones de Oro (Messi 8, Cristiano 5), qué países tienen más y los últimos ganadores: Messi, Rodri y Dembélé.",
-           "Who has won the most Ballon d'Or awards (Messi 8, Cristiano 5), which countries have the most, and the latest winners: Messi, Rodri and Dembélé."),
-        intro=("El Balón de Oro masculino se entrega desde 1956. Messi (8) y Cristiano Ronaldo (5) acumulan trece de los premios entregados.",
-               "The men's Ballon d'Or has been awarded since 1956. Messi (8) and Cristiano Ronaldo (5) account for thirteen of the awards given."),
+        d=("Quién ha ganado más Balones de Oro (Messi 8, Cristiano 5), qué países tienen más, los puntos de Messi y el último ganador: Harry Kane (2026).",
+           "Who has won the most Ballon d'Or awards (Messi 8, Cristiano 5), which countries have the most, Messi's vote points and the latest winner: Harry Kane (2026)."),
+        intro=("El Balón de Oro masculino se entrega desde 1956. Messi (8) y Cristiano Ronaldo (5) acumulan trece de los premios entregados. El último ganador es Harry Kane (Bayern de Múnich), en la gala del 26 de octubre de 2026 en Londres: el primer inglés que lo gana desde Michael Owen en 2001.",
+               "The men's Ballon d'Or has been awarded since 1956. Messi (8) and Cristiano Ronaldo (5) account for thirteen of the awards given. The latest winner is Harry Kane (Bayern Munich), at the 26 October 2026 ceremony in London: the first English winner since Michael Owen in 2001."),
         cab=(("Jugador", "País", "Balones de Oro"), ("Player", "Country", "Ballons d'Or")),
         filas=[("Lionel Messi","Argentina",8),("Cristiano Ronaldo","Portugal",5),("Michel Platini","Francia",3),("Johan Cruyff","Países Bajos",3),("Marco van Basten","Países Bajos",3)],
-        extra=[(("País", "Balones de Oro"), ("Country", "Awards"), [("Argentina",8),("Francia",8),("Portugal",7),("Alemania",7),("Países Bajos",7),("Brasil",5),("Inglaterra",5),("Italia",5),("España",4)],
+        extra=[(("País", "Balones de Oro"), ("Country", "Awards"), [("Argentina",8),("Francia",8),("Portugal",7),("Alemania",7),("Países Bajos",7),("Inglaterra",6),("Brasil",5),("Italia",5),("España",4)],
                 ("Países con más Balones de Oro", "Countries with the most Ballons d'Or")),
-               (("Año", "Ganador"), ("Year", "Winner"), [("2023","Lionel Messi"),("2024","Rodri"),("2025","Ousmane Dembélé")],
-                ("Últimos ganadores", "Latest winners"))],
+               (("Año", "Ganador"), ("Year", "Winner"), [("2023","Lionel Messi"),("2024","Rodri"),("2025","Ousmane Dembélé"),("2026","Harry Kane")],
+                ("Últimos ganadores", "Latest winners")),
+               (("Votación", "Ganador", "Puntos"), ("Vote", "Winner", "Points"), [("2009","Lionel Messi",473),("2019","Lionel Messi",686),("2021","Lionel Messi",613),("2023","Lionel Messi",462)],
+                ("Puntos de Messi en cuatro de sus Balones de Oro", "Messi's points in four of his Ballon d'Or wins"))],
         dato=("Argentina y Francia lideran el medallero por países con 8 premios cada una.",
               "Argentina and France top the country table with 8 awards each."),
-        src=[("Al Jazeera · Which countries and players have won the most Ballon d'Or awards?", "https://www.aljazeera.com/sports/2026/10/21/which-countries-and-players-have-won-the-most-ballon-dor-awards")],
-        fecha=("Consultado el 31 de octubre de 2026", "Checked on 31 October 2026"),
+        src=[("Al Jazeera · Which countries and players have won the most Ballon d'Or awards?", "https://www.aljazeera.com/sports/2026/10/21/which-countries-and-players-have-won-the-most-ballon-dor-awards"),
+             ("AFP (Kuwait Times) · Kane beats Mbappé and Yamal to win the Ballon d'Or", "https://kuwaittimes.com/article/52458/sports/kane-beats-mbappe-yamal-to-win-ballon-dor-in-london/"),
+             ("Irish News (PA) · Harry Kane crowned first English Ballon d'Or winner in 25 years", "https://www.irishnews.com/sport/soccer/harry-kane-crowned-first-english-ballon-dor-winner-in-25-years-PCAKTMUKTZICDBL2QORRVEO42A/"),
+             ("Sports Illustrated · Messi Ballon d'Or history and vote record", "https://www.si.com/soccer/lionel-messi-ballon-dor-history-total-nominations-wins-vote-record/app/"),
+             ("France Football", "https://www.francefootball.fr/")],
+        fecha=("Consultado el 4 de noviembre de 2026", "Checked on 4 November 2026"),
+        faq=[("¿Quién tiene más Balones de Oro?", "Who has won the most Ballons d'Or?",
+              "Lionel Messi, con ocho (2009, 2010, 2011, 2012, 2015, 2019, 2021 y 2023).",
+              "Lionel Messi, with eight (2009, 2010, 2011, 2012, 2015, 2019, 2021 and 2023)."),
+             ("¿Cuántos Balones de Oro tiene Cristiano Ronaldo?", "How many Ballons d'Or has Cristiano Ronaldo won?",
+              "Cinco (2008, 2013, 2014, 2016 y 2017). Es el segundo jugador con más premios, por detrás de Messi, y entre los dos suman trece.",
+              "Five (2008, 2013, 2014, 2016 and 2017). He is the second-most decorated player behind Messi, and between them they have thirteen."),
+             ("¿Quién ganó el Balón de Oro 2026?", "Who won the 2026 Ballon d'Or?",
+              "Harry Kane, delantero inglés del Bayern de Múnich. La gala se celebró el 26 de octubre de 2026 en el London Palladium; Kylian Mbappé fue segundo y Lamine Yamal, tercero. Es el primer inglés que lo gana desde Michael Owen en 2001.",
+              "Harry Kane, England's Bayern Munich striker. The ceremony took place on 26 October 2026 at the London Palladium; Kylian Mbappé finished second and Lamine Yamal third. He is the first English winner since Michael Owen in 2001."),
+             ("¿Qué país tiene más Balones de Oro?", "Which country has the most Ballons d'Or?",
+              "Argentina y Francia, con ocho cada una según el recuento de Al Jazeera de octubre de 2026. Les siguen Portugal, Alemania y Países Bajos, con siete; Inglaterra suma seis tras el premio de Kane.",
+              "Argentina and France, with eight each according to Al Jazeera's October 2026 count. Portugal, Germany and the Netherlands follow with seven; England have six after Kane's award."),
+             ("¿Quién tiene más puntos en la votación del Balón de Oro?", "Who has the most points in the Ballon d'Or vote?",
+              "Entre los datos que recoge esta página, la cifra más alta es la de Messi en 2019, con 686 puntos (613 en 2021, 473 en 2009 y 462 en 2023). Comparar épocas es delicado: el sistema de votación ha cambiado con los años y en varias ediciones se publicó el porcentaje de votos y no los puntos.",
+              "Among the figures on this page, the highest is Messi's 686 points in 2019 (613 in 2021, 473 in 2009 and 462 in 2023). Comparing eras is tricky: the voting system has changed over the years and in several editions the vote share was published rather than points."),
+             ("¿Quién ganó el primer Balón de Oro?", "Who won the first Ballon d'Or?",
+              "El inglés Stanley Matthews, en 1956.", "England's Stanley Matthews, in 1956.")],
         btn=("⚽ ¿Sabes quién es el jugador? Juega", "⚽ Can you name the player? Play")))
     # 6 Entrenadores
     pg.append(dict(slug="entrenadores-mas-champions" if es else "champions-league-winning-managers", ic=COPA,
@@ -230,6 +253,7 @@ def pagina(L, p, todas):
         c2, c2en, f2, tt = ex
         h += f'<h2>{e(tt[k])}</h2>\n' + tabla(list(c2 if es else c2en), [[celda(L, c) for c in f] for f in f2])
     h += f'<p class="dato"><b>{e(L.ui["nutshell"])}</b> {e(p["dato"][k])}</p>\n'
+    h += C.faq(L, p.get("faq", []))
     srcs = " · ".join(f'<a href="{u}" rel="noopener" target="_blank">{e(n)}</a>' for n, u in p["src"])
     h += f'<p class="fecha">{"Fuentes" if es else "Sources"}: {srcs}. {e(p["fecha"][k])}.</p>\n'
     otras = [q for q in todas if q["slug"] != p["slug"]][:4]

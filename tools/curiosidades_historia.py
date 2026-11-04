@@ -53,6 +53,16 @@ def champions(L, p):
         parr = [f"<b>{e(cab)}</b> · {e(sede)}."] + [e(x) for x in ps]
         h += entrada(L, p["ic"], str(ano), e(tit), parr, e(dato), f"f{ano}")
     srcs = f'<a href="https://www.uefa.com/uefachampionsleague/history/" rel="noopener" target="_blank">UEFA.com · finales de la Copa de Europa y la Champions League</a>'
+    h += C.faq(L, [
+        ("¿Quién ganó la última final de la Champions League?", "Who won the latest Champions League final?",
+         "El París Saint-Germain, en la final de 2026 en Budapest (Puskás Aréna): 1-1 ante el Arsenal y victoria 4-3 en los penaltis.",
+         "Paris Saint-Germain, in the 2026 final in Budapest (Puskás Aréna): 1-1 against Arsenal and a 4-3 win on penalties."),
+        ("¿Quién ha ganado más Champions League en los últimos 20 años?", "Who has won the most Champions Leagues in the last 20 years?",
+         "El Real Madrid, con seis títulos entre 2007 y 2026 según las finales de esta página, por delante del Barcelona (tres).",
+         "Real Madrid, with six titles between 2007 and 2026 according to the finals on this page, ahead of Barcelona (three)."),
+        ("¿Quién ganó la final de 2025?", "Who won the 2025 final?",
+         "El PSG goleó 5-0 al Inter en Múnich (Allianz Arena), la mayor goleada en una final de la Copa de Europa.",
+         "PSG beat Inter 5-0 in Munich (Allianz Arena), the biggest winning margin in a European Cup final.")])
     h += f'<p class="fecha">{"Fuente" if es else "Source"}: {srcs}. {e(p["fecha"][k])}.</p>\n'
     return ruta, h + pie(L)
 
@@ -75,6 +85,19 @@ def mundiales(L, p):
             ficha = f"<b>Final:</b> {e(camp_)} {e(fin)} {e(sub_)} · <b>Host:</b> {e(sede_)} · <b>Teams:</b> {n} · <b>Top scorer:</b> {e(goleador.replace('Seis jugadores', 'Six players').replace(' y ', ' and '))}."
         h += entrada(L, p["ic"], str(ano), e(t_es if es else t_en), [ficha, e(x_es if es else x_en)], None, f"m{ano}")
     srcs = f'<a href="https://www.fifa.com/en/tournaments/mens/worldcup" rel="noopener" target="_blank">FIFA.com · Copa Mundial de la FIFA</a>'
+    h += C.faq(L, [
+        ("¿Quién ganó el Mundial 2026?", "Who won the 2026 World Cup?",
+         "España, que ganó 1-0 a Argentina en la final tras la prórroga. El torneo se disputó en Estados Unidos, México y Canadá, con 48 selecciones, y Kylian Mbappé fue el máximo goleador con 10 goles.",
+         "Spain, who beat Argentina 1-0 after extra time in the final. The tournament was hosted by the United States, Mexico and Canada with 48 teams, and Kylian Mbappé was top scorer with 10 goals."),
+        ("¿Qué selección ha ganado más Mundiales?", "Which national team has won the most World Cups?",
+         "Brasil, con cinco (1958, 1962, 1970, 1994 y 2002). Le siguen Alemania (cuatro, contando los tres de Alemania Occidental) e Italia (cuatro).",
+         "Brazil, with five (1958, 1962, 1970, 1994 and 2002). Germany (four, including three as West Germany) and Italy (four) follow."),
+        ("¿Cuántos Mundiales se han jugado?", "How many World Cups have been played?",
+         "Veintitrés ediciones, de Uruguay 1930 a 2026. En 1942 y 1946 no se disputó por la Segunda Guerra Mundial.",
+         "Twenty-three editions, from Uruguay 1930 to 2026. No tournament was played in 1942 or 1946 because of the Second World War."),
+        ("¿Quién ganó el Mundial de Catar 2022?", "Who won the 2022 World Cup in Qatar?",
+         "Argentina, que venció a Francia en la final (3-3 y 4-2 en los penaltis). Mbappé fue máximo goleador con 8 goles.",
+         "Argentina, who beat France in the final (3-3, 4-2 on penalties). Mbappé was top scorer with 8 goals.")])
     h += f'<p class="fecha">{"Fuente" if es else "Source"}: {srcs}. {e(p["fecha"][k])}.</p>\n'
     return ruta, h + pie(L)
 

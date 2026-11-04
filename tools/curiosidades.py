@@ -53,6 +53,10 @@ p { margin: 0 0 14px; }
 .entrada .ano svg { width: 56px; height: 56px; color: var(--acento); }
 .entrada .ano b { display: block; font-size: 1.02rem; color: var(--acento2); font-weight: 900; }
 .entrada p { margin: 6px 0; }
+.faq details { background: var(--caja); border: 1px solid var(--linea); border-radius: 14px; padding: 12px 16px; margin: 8px 0; box-shadow: var(--sombra); }
+.faq summary { cursor: pointer; font-weight: 800; font-size: 1rem; }
+.faq details[open] summary { color: var(--acento); margin-bottom: 6px; }
+.faq details p { margin: 6px 0 2px; line-height: 1.6; }
 .dato { background: color-mix(in srgb, var(--acento) 10%, transparent); border-left: 4px solid var(--acento); padding: 10px 14px; border-radius: 0 12px 12px 0; font-size: .95rem; margin: 12px 0 0; }
 @media (max-width: 560px) { th, td { padding: 8px 8px; font-size: .86rem; } .entrada { grid-template-columns: 1fr; } .entrada .ano { display: flex; align-items: center; gap: 10px; text-align: left; } .hero { grid-template-columns: 1fr; padding: 24px 20px; } .hero svg { display: none; } .barra .miga { display: none; } .barra div { justify-content: space-between; } }
 table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--caja); border-radius: 18px; overflow: hidden; font-size: .94rem; border: 1px solid var(--linea); box-shadow: var(--sombra); font-variant-numeric: tabular-nums; }
@@ -390,6 +394,19 @@ def linea_tiempo(puntos, titulo):
                  f'<text x="{tx:.0f}" y="{(ay+14 if arriba else ay):.0f}" text-anchor="{anc}" font-size="11.5" fill="#7d8da1">{e(t)}</text>')
     s.append('</svg>')
     return "".join(s)
+
+def faq(L, pares):
+    """Bloque «Preguntas frecuentes» visible + datos estructurados FAQPage (solo es/en).
+    pares: lista de (pregunta_es, pregunta_en, respuesta_es, respuesta_en)."""
+    import json
+    if not pares or L.lang not in ("es", "en"): return ""
+    k = 0 if L.lang == "es" else 1
+    h = f'<h2>{"Preguntas frecuentes" if k == 0 else "Frequently asked questions"}</h2>\n<div class="faq">\n'
+    for q in pares:
+        h += f'<details><summary>{e(q[k])}</summary><p>{e(q[k + 2])}</p></details>\n'
+    ld = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+        {"@type": "Question", "name": q[k], "acceptedAnswer": {"@type": "Answer", "text": q[k + 2]}} for q in pares]}
+    return h + '</div>\n<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + '</script>\n'
 
 def tabla(cab, filas):
     t = "<div class=\"tabla-scroll\"><table><thead><tr>" + "".join(f"<th>{e(c)}</th>" for c in cab) + "</tr></thead><tbody>"

@@ -68,6 +68,10 @@ p { margin: 0 0 14px; }
 .entrada .ano svg { width: 56px; height: 56px; color: var(--acento); }
 .entrada .ano b { display: block; font-size: 1.02rem; color: var(--acento2); font-weight: 900; }
 .entrada p { margin: 6px 0; }
+.faq details { background: var(--caja); border: 1px solid var(--linea); border-radius: 14px; padding: 12px 16px; margin: 8px 0; box-shadow: var(--sombra); }
+.faq summary { cursor: pointer; font-weight: 800; font-size: 1rem; }
+.faq details[open] summary { color: var(--acento); margin-bottom: 6px; }
+.faq details p { margin: 6px 0 2px; line-height: 1.6; }
 .dato { background: color-mix(in srgb, var(--acento) 10%, transparent); border-left: 4px solid var(--acento); padding: 10px 14px; border-radius: 0 12px 12px 0; font-size: .95rem; margin: 12px 0 0; }
 @media (max-width: 560px) { th, td { padding: 8px 8px; font-size: .86rem; } .entrada { grid-template-columns: 1fr; } .entrada .ano { display: flex; align-items: center; gap: 10px; text-align: left; } .hero { grid-template-columns: 1fr; padding: 24px 20px; } .hero svg { display: none; } .barra .miga { display: none; } .barra div { justify-content: space-between; } }
 table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--caja); border-radius: 18px; overflow: hidden; font-size: .94rem; border: 1px solid var(--linea); box-shadow: var(--sombra); font-variant-numeric: tabular-nums; }

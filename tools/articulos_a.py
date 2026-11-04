@@ -116,7 +116,7 @@ BALON = dict(
         ]),
         ("La era Messi-Cristiano y lo que vino después", [
             "Entre 2008 y 2017, el premio se repartió entre Messi y Cristiano Ronaldo: cinco galardones para cada uno. Esa década hizo que muchos aficionados jóvenes crecieran pensando que el Balón de Oro era cosa de dos. En 2018 lo ganó Luka Modrić, que había conquistado la Champions con el Real Madrid y llegado a la final del Mundial con Croacia, lo que se interpretó como un cambio de ciclo.",
-            "Después de 2018 hubo victorias de Messi (2019, 2021 y 2023), una edición cancelada en 2020 por la pandemia, y ganadores de perfil más variado, como Benzema en 2022 o Rodri en 2024. Cada una de esas votaciones tuvo sus debates, y el debate es parte del atractivo del premio: no hay una fórmula matemática que elija al ganador, y siempre queda margen para discutir.",
+            "Después de 2018 hubo victorias de Messi (2019, 2021 y 2023), una edición cancelada en 2020 por la pandemia, y ganadores de perfil más variado, como Benzema en 2022, Rodri en 2024 o Harry Kane en 2026. Cada una de esas votaciones tuvo sus debates, y el debate es parte del atractivo del premio: no hay una fórmula matemática que elija al ganador, y siempre queda margen para discutir.",
         ]),
         ("Diferencias con otros premios", [
             "Es habitual confundir el Balón de Oro con The Best, el premio de la FIFA, y con los trofeos de goleadores. En The Best votan capitanes y entrenadores de selecciones, periodistas y aficionados. En el Balón de Oro votan solo periodistas. Y mientras el Balón de Oro se centra en el mejor jugador de la temporada, el Trofeo Gerd Müller premia al máximo goleador y el Trofeo Kopa al mejor jugador joven.",

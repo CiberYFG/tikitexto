@@ -93,6 +93,10 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 - `sobre-tikitexto.html` (quiénes somos, fuentes, correcciones) enlazada desde el pie, las páginas legales, las curiosidades y el sitemap.
 - Menores: para **crear cuenta hay que tener ≥14 años** (art. 7 LOPDGDD); sin cuenta se puede jugar como invitado y leer curiosidades. Aviso en el modal de cuenta, `privacidad.html#menores` y `aviso-legal.html` deben decir lo mismo. Si hay anuncios, no personalizados a menores.
 
+## Refuerzo de búsquedas / FAQ (4-nov-2026)
+- `C.faq(L, pares)` en `tools/curiosidades.py` pinta «Preguntas frecuentes» (details/summary) + JSON-LD FAQPage, solo es/en. En datos: clave `faq=[(preg_es, preg_en, resp_es, resp_en)]` en cada entrada; en historia: llamada directa. Hecho en Balón de Oro (actualizado con Kane 2026 y puntos de Messi), Mundiales y Champions 20 años. Pendiente: resto de páginas de datos, ligas y trofeos.
+- Balón de Oro 2026: Kane (26-oct-2026, London Palladium; Mbappé 2.º, Yamal 3.º). Revisar cada octubre.
+
 ## Curiosidades por temas (2-nov-2026)
 - `tools/temas_data.py` (datos) + `tools/curiosidades_temas.py` generan 12 páginas es/en (Champions, Mundial, Real Madrid, Barça, LaLiga, Premier League, Messi, Cristiano, Balón de Oro, Eurocopa, Man. United, Liverpool) + índice `curiosidades/curiosidades-por-temas/` (en: `football-trivia-by-topic`). Cada tema: lista de `hechos` (título es/en, texto es/en) y fuentes. Orden: `curiosidades.py` → `curiosidades_datos.py` → `curiosidades_historia.py` → `curiosidades_temas.py` → `seo.py`.
 - Cifras contrastadas el 2-nov-2026 (palmarés de LaLiga, LaLiga 2025-26, palmarés del Real Madrid; prensa para el título del Arsenal 2025-26). Las cifras que cambian cada temporada (títulos, goleadores) hay que revisarlas tras cada temporada/Mundial. Test 3p.
