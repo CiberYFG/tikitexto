@@ -634,6 +634,47 @@ with sync_playwright() as p:
     except Exception as e:
         check("articulos", False, str(e)[:150])
 
+    print("3t) Historias, rincón de los peques y textos legales sin publicidad")
+    try:
+        import sys as _s2, re as _re; _s2.path.insert(0, "tools"); import historias_data as _hd, peques_data as _pd
+        pa = br.new_page(); errs_t = []; pa.on("pageerror", lambda e: errs_t.append(str(e)))
+        pa.goto(BASE + "historias/", wait_until="domcontentloaded", timeout=60000)
+        check("historias: el índice lista las colecciones", pa.evaluate("document.querySelectorAll('.tarjeta[href^=\"/historias/\"]').length") >= len(_hd.COLECCIONES))
+        pobres_h = []
+        for c in _hd.COLECCIONES:
+            pa.goto(BASE + "historias/" + c["slug"] + "/", wait_until="domcontentloaded", timeout=60000)
+            n_e = pa.evaluate("document.querySelectorAll('article.entrada').length"); hl = pa.evaluate("Array.from(document.querySelectorAll('link[rel=alternate]')).map(l => l.hreflang).join(',')")
+            if n_e != len(c["items"]) or n_e < 8 or hl != "es,x-default": pobres_h.append(f"{c['slug']}: {n_e} entradas, {hl}")
+        check("historias: cada colección tiene ≥8 historias y solo hreflang es", not pobres_h, "; ".join(pobres_h)[:200])
+        pa.goto(BASE + "peques/", wait_until="domcontentloaded", timeout=60000)
+        check("peques: el índice enlaza las 5 secciones", pa.evaluate("document.querySelectorAll('.tarjeta[href^=\"/peques/\"]').length") == 5)
+        for sl, n_min in (("chistes-de-futbol", 15), ("adivinanzas-de-futbol", 10), ("verdadero-o-falso-futbol-ninos", 10)):
+            pa.goto(BASE + "peques/" + sl + "/", wait_until="domcontentloaded", timeout=60000)
+            n_d = pa.evaluate("document.querySelectorAll('.faq details').length"); abiertos = pa.evaluate("Array.from(document.querySelectorAll('.faq details')).every(d => !d.open && d.querySelector('summary') && !d.querySelector('summary p'))")
+            check("peques: " + sl + " (respuestas ocultas dentro de details)", n_d >= n_min and abiertos, str(n_d))
+        pa.goto(BASE + "peques/sopa-de-letras-futbol/", wait_until="domcontentloaded", timeout=60000)
+        resuelto = pa.evaluate("""() => { const ok = []; document.querySelectorAll('.sopa-box').forEach(box => {
+            const g = box.querySelector('.sopa'), n = +g.dataset.n, cs = Array.from(g.querySelectorAll('.cel')), pal = g.dataset.words.split(',');
+            let hechas = 0;
+            for (const w of pal) { let hall = false;
+              for (let r = 0; r < n && !hall; r++) for (let c = 0; c < n && !hall; c++) for (const [dr, dc] of [[0,1],[1,0],[1,1]]) {
+                const fr = r + dr * (w.length - 1), fc = c + dc * (w.length - 1); if (fr >= n || fc >= n) continue;
+                let s = ''; for (let i = 0; i < w.length; i++) s += cs[(r + dr * i) * n + (c + dc * i)].textContent;
+                if (s === w) { cs[r * n + c].click(); cs[fr * n + fc].click(); hall = true; hechas++; break; } } }
+            ok.push(hechas === pal.length && !box.querySelector('.ganas').hidden && box.querySelectorAll('.pal li.ok').length === pal.length); }); return ok; }""")
+        check("peques: las 3 sopas de letras se pueden resolver y avisan al terminar", resuelto == [True, True, True], str(resuelto))
+        check("historias/peques: sin errores de JavaScript", not errs_t, "; ".join(errs_t)[:150])
+        pa.close()
+        api2 = br.new_context().request
+        sin = []
+        for ru in ("aviso-legal.html", "privacidad.html", "cookies.html", "sobre-tikitexto.html"):
+            t = api2.get(BASE + ru).text()
+            t = _re.sub(r'<meta name="google-adsense-account"[^>]*>', "", t)
+            if _re.search(r"anunci|publicidad|publicitari|adsense", t, _re.I): sin.append(ru)
+        check("legales: sin menciones a anuncios ni publicidad", not sin, ", ".join(sin))
+    except Exception as e:
+        check("historias/peques", False, str(e)[:150])
+
     print("4) Ranking mundial (solo lectura)")
     if SKIP_RANKING:
         print("  (omitido)")

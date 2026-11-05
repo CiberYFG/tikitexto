@@ -395,15 +395,16 @@ def linea_tiempo(puntos, titulo):
     s.append('</svg>')
     return "".join(s)
 
-def faq(L, pares):
+def faq(L, pares, titulo=None, ld=True):
     """Bloque «Preguntas frecuentes» visible + datos estructurados FAQPage (solo es/en).
     pares: lista de (pregunta_es, pregunta_en, respuesta_es, respuesta_en)."""
     import json
     if not pares or L.lang not in ("es", "en"): return ""
     k = 0 if L.lang == "es" else 1
-    h = f'<h2>{"Preguntas frecuentes" if k == 0 else "Frequently asked questions"}</h2>\n<div class="faq">\n'
+    h = f'<h2>{titulo or ("Preguntas frecuentes" if k == 0 else "Frequently asked questions")}</h2>\n<div class="faq">\n'
     for q in pares:
         h += f'<details><summary>{e(q[k])}</summary><p>{e(q[k + 2])}</p></details>\n'
+    if not ld: return h + '</div>\n'
     ld = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
         {"@type": "Question", "name": q[k], "acceptedAnswer": {"@type": "Answer", "text": q[k + 2]}} for q in pares]}
     return h + '</div>\n<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + '</script>\n'
@@ -519,6 +520,15 @@ def pagina_indice(L):
     hub_t = ("curiosidades-por-temas", "football-trivia-by-topic")[k]
     h += grupo("#ea580c", "⚡ " + ("Curiosidades por equipos y jugadores" if es else "Trivia by club and player"), "Real Madrid, Barça, Messi, Cristiano, Premier League y más." if es else "Real Madrid, Barça, Messi, Cristiano, the Premier League and more.", L.url("curiosidades/" + hub_t + "/"), "Ver todas" if es else "See all")
     h += f'<div class="chips"{_col("#ea580c")}>' + "".join(f'<a href="{L.url("curiosidades/" + t[L.lang] + "/")}">{e(t["t"][k])}</a>' for t in _T.TEMAS) + '</div>\n'
+    # 4b) historias y peques (solo español)
+    if es:
+        import historias_data as _HD, peques_data as _PD
+        h += grupo("#7c3aed", "📖 Historias y anécdotas", "Relatos cortos y variados: Mundiales increíbles, quién inventó cada cosa, sorpresas, récords raros, mitos y leyendas.", "/historias/", "Ver todas")
+        h += '<div class="tarjetas">\n'
+        for c in _HD.COLECCIONES:
+            h += f'<a class="tarjeta tc" href="/historias/{c["slug"]}/"{_col(c["c"][0])}><span class="emo" aria-hidden="true">{c["emoji"]}</span><b>{e(c["titulo"])}</b><span class="min">{len(c["items"])} historias</span></a>\n'
+        h += '</div>\n'
+        h += grupo("#16a34a", "🧒 Rincón de los peques", "Chistes, adivinanzas, trabalenguas, verdadero o falso y sopas de letras de fútbol para niños.", "/peques/", "Entrar")
     # 5) clásicas
     h += grupo("#1747d6", "🏆 " + ("Campeones, ligas y trofeos" if es else "Champions, leagues and trophies"), "Ganadores año a año, el origen de las ligas y la historia de las copas." if es else "Winners year by year, how the leagues began and the story of the cups.")
     h += '<div class="tarjetas">\n'

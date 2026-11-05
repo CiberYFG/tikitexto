@@ -266,6 +266,11 @@ for _pg in _ct.T.TEMAS + [dict(es=_ct.HUB[0], en=_ct.HUB[1])]:
 import curiosidades_articulos as _ca
 sm.append("  <url><loc>%sarticulos/</loc></url>" % DOM)
 for _a in _ca.ARTICULOS: sm.append("  <url><loc>%sarticulos/%s/</loc></url>" % (DOM, _a["slug"]))
+import curiosidades_extra as _cx
+sm.append("  <url><loc>%shistorias/</loc></url>" % DOM)
+for _c in _cx.H.COLECCIONES: sm.append("  <url><loc>%shistorias/%s/</loc></url>" % (DOM, _c["slug"]))
+sm.append("  <url><loc>%speques/</loc></url>" % DOM)
+for _p in _cx.PAGINAS_P: sm.append("  <url><loc>%speques/%s/</loc></url>" % (DOM, _p["slug"]))
 import curiosidades_historia as _ch
 for _pg in _ch.PAGINAS:
     _u = (DOM + "curiosidades/" + _pg["es"] + "/", DOM + "en/curiosidades/" + _pg["en"] + "/")
