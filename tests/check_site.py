@@ -619,7 +619,7 @@ with sync_playwright() as p:
         pa = br.new_page(); errs_r = []; pa.on("pageerror", lambda e: errs_r.append(str(e)))
         pa.goto(BASE + "articulos/", wait_until="domcontentloaded", timeout=60000)
         n_t = pa.evaluate("document.querySelectorAll('.tarjeta[href^=\"/articulos/\"]').length")
-        check("articulos: el índice lista los artículos", n_t >= 12, str(n_t))
+        check("articulos: el índice lista los artículos", n_t >= 16, str(n_t))
         enlaces = pa.evaluate("Array.from(document.querySelectorAll('.tarjeta[href^=\"/articulos/\"]')).map(a => a.getAttribute('href'))")
         pobres = []
         for hr in enlaces:
@@ -663,6 +663,8 @@ with sync_playwright() as p:
                 if (s === w) { cs[r * n + c].click(); cs[fr * n + fc].click(); hall = true; hechas++; break; } } }
             ok.push(hechas === pal.length && !box.querySelector('.ganas').hidden && box.querySelectorAll('.pal li.ok').length === pal.length); }); return ok; }""")
         check("peques: las 3 sopas de letras se pueden resolver y avisan al terminar", resuelto == [True, True, True], str(resuelto))
+        bo = br.new_context().request.get(BASE + "curiosidades/balon-de-oro-ganadores/").text()
+        check("FAQ: respuestas dentro de details y cierre de summary correcto", "</summary><p>" in bo and "<summary>" in bo and bo.count("<summary>") == bo.count("</summary>") and "FAQPage" in bo)
         check("historias/peques: sin errores de JavaScript", not errs_t, "; ".join(errs_t)[:150])
         pa.close()
         api2 = br.new_context().request

@@ -42,7 +42,7 @@ dict(es="curiosidades-mundial-futbol", en="world-cup-facts", ic="BALON",
  src=[("FIFA.com", "https://www.fifa.com/")]),
 
 dict(es="curiosidades-real-madrid", en="real-madrid-facts", ic="COPA",
- t=("Curiosidades del Real Madrid", "Real Madrid facts and curiosities"),
+ t=("Datos curiosos del Real Madrid: títulos y curiosidades", "Real Madrid facts: trophies and curiosities"),
  d=("Datos curiosos del Real Madrid: sus 15 Copas de Europa, 36 Ligas, el origen del nombre «Real» y la historia del Bernabéu.",
     "Real Madrid curiosities: their 15 European Cups, 36 league titles, the origin of the name \"Real\" and the history of the Bernabéu."),
  intro=("El Real Madrid es el club con más títulos de la historia del fútbol español y europeo. Estas son algunas de sus curiosidades.",
@@ -116,7 +116,7 @@ dict(es="curiosidades-premier-league", en="premier-league-facts", ic="LIGA",
  src=[("Premier League", "https://www.premierleague.com/")]),
 
 dict(es="curiosidades-messi", en="lionel-messi-facts", ic="BALON",
- t=("Curiosidades de Lionel Messi", "Lionel Messi facts and curiosities"),
+ t=("Datos curiosos de Messi: récords, títulos y curiosidades", "Lionel Messi facts: records, trophies and curiosities"),
  d=("Datos curiosos de Messi: sus 8 Balones de Oro, el Mundial de 2022, el contrato en una servilleta y todos sus récords.",
     "Messi curiosities: his 8 Ballons d'Or, the 2022 World Cup, the napkin contract and all his records."),
  intro=("Lionel Messi es uno de los mejores futbolistas de la historia. Estas son algunas de sus curiosidades y récords.",
@@ -135,7 +135,7 @@ dict(es="curiosidades-messi", en="lionel-messi-facts", ic="BALON",
  src=[("France Football", "https://www.francefootball.fr/"), ("TIKITEXTO · Balón de Oro", "BALON")]),
 
 dict(es="curiosidades-cristiano-ronaldo", en="cristiano-ronaldo-facts", ic="BALON",
- t=("Curiosidades de Cristiano Ronaldo", "Cristiano Ronaldo facts and curiosities"),
+ t=("Datos curiosos de Cristiano Ronaldo: récords y curiosidades", "Cristiano Ronaldo facts: records and curiosities"),
  d=("Datos curiosos de Cristiano Ronaldo: 5 Balones de Oro, 5 Champions, 140 goles en Champions, la Eurocopa de 2016 y sus récords con Portugal.",
     "Cristiano Ronaldo curiosities: 5 Ballons d'Or, 5 Champions Leagues, 140 Champions League goals, Euro 2016 and his Portugal records."),
  intro=("Cristiano Ronaldo es el máximo goleador de la historia de las selecciones y de la Champions League. Estas son algunas de sus curiosidades.",
@@ -154,7 +154,7 @@ dict(es="curiosidades-cristiano-ronaldo", en="cristiano-ronaldo-facts", ic="BALO
  src=[("UEFA.com", "https://www.uefa.com/"), ("TIKITEXTO · Goleadores de selecciones", "SELEC")]),
 
 dict(es="curiosidades-balon-de-oro", en="ballon-dor-facts", ic="BALON",
- t=("Curiosidades del Balón de Oro", "Ballon d'Or facts and curiosities"),
+ t=("Datos curiosos del Balón de Oro: récords y ganadores", "Ballon d'Or facts: records and winners"),
  d=("Datos curiosos del Balón de Oro: el primer ganador, el único portero, los récords de Messi y Cristiano y los últimos premiados.",
     "Ballon d'Or curiosities: the first winner, the only goalkeeper, the records of Messi and Cristiano and the latest winners."),
  intro=("El Balón de Oro lo entrega la revista France Football desde 1956. Estas son algunas de sus curiosidades.",
@@ -225,3 +225,28 @@ dict(es="curiosidades-liverpool", en="liverpool-facts", ic="COPA",
  ],
  src=[("Liverpool FC (web oficial)", "https://www.liverpoolfc.com/")]),
 ]
+
+# Datos añadidos el 6-nov-2026 (cifras públicas; las que cambian cada temporada llevan fecha en la página)
+_EXTRA = {
+ "curiosidades-messi": [
+  ("Debut a los 17 años", "Debut at 17", "Debutó con el primer equipo del Barcelona el 16 de octubre de 2004, contra el Espanyol, con 17 años. Empezó con el dorsal 30 y desde 2008 lleva el 10.", "He made his Barcelona first-team debut on 16 October 2004, against Espanyol, aged 17. He started with the number 30 and has worn the 10 since 2008."),
+  ("73 goles en una temporada", "73 goals in one season", "En la temporada 2011-12 marcó 73 goles en todas las competiciones con el Barcelona. En el año natural 2012 sumó 91 con el Barça y Argentina, el récord de goles en un año.", "In the 2011–12 season he scored 73 goals in all competitions for Barcelona. In calendar year 2012 he scored 91 for Barça and Argentina, the record for goals in a year."),
+  ("Cinco goles en un partido de Champions", "Five goals in one Champions League game", "En marzo de 2012 marcó cinco goles al Bayer Leverkusen (7-1) en los octavos de final de la Champions League, algo que nadie había hecho en la competición.", "In March 2012 he scored five goals against Bayer Leverkusen (7-1) in a Champions League last-16 tie, something no one had done in the competition."),
+  ("Dos Balones de Oro del Mundial", "Two World Cup Golden Balls", "Fue elegido mejor jugador del Mundial en 2014 y en 2022. Es el único jugador que ha ganado dos veces el Balón de Oro del torneo.", "He was named best player of the World Cup in 2014 and 2022. He is the only player to have won the tournament's Golden Ball twice."),
+  ("Su primer título con Argentina absoluta", "His first senior title with Argentina", "Ganó la Copa América 2021, en el Maracaná, venciendo 1-0 a Brasil. Fue su primer título con la selección absoluta, tras varias finales perdidas.", "He won the 2021 Copa América at the Maracanã, beating Brazil 1-0. It was his first senior title with the national team after several lost finals."),
+  ("Cuatro Champions con el Barça", "Four Champions Leagues with Barça", "El Barcelona ganó la Champions en 2006, 2009, 2011 y 2015 con Messi en la plantilla, aunque en la final de 2006 estaba lesionado.", "Barcelona won the Champions League in 2006, 2009, 2011 and 2015 with Messi in the squad, although he was injured for the 2006 final."),
+ ],
+ "curiosidades-cristiano-ronaldo": [
+  ("Debut a los 17 años", "Debut at 17", "Debutó con el Sporting de Portugal en 2002, con 17 años, y en 2003 fichó por el Manchester United, donde ganó tres Premier League (2007, 2008 y 2009).", "He made his Sporting debut in 2002, aged 17, and signed for Manchester United in 2003, where he won three Premier League titles (2007, 2008 and 2009)."),
+  ("17 goles en una edición de la Champions", "17 goals in one Champions League", "En la Champions 2013-14 marcó 17 goles, el récord de una sola edición de la competición.", "In the 2013–14 Champions League he scored 17 goals, the record for a single edition."),
+  ("Más títulos con Portugal", "More titles with Portugal", "Además de la Eurocopa de 2016, ganó con Portugal la primera Liga de Naciones (2019) y la de 2025.", "Besides Euro 2016, he won the first UEFA Nations League with Portugal (2019) and the 2025 edition."),
+  ("Campeón en tres países", "Champion in three countries", "Ha ganado ligas en Inglaterra (Manchester United), España (Real Madrid) e Italia (Juventus, 2019 y 2020).", "He has won league titles in England (Manchester United), Spain (Real Madrid) and Italy (Juventus, 2019 and 2020)."),
+  ("Más de 900 goles", "More than 900 goals", "Supera los 900 goles oficiales en su carrera entre clubes y selección.", "He has passed 900 official career goals for clubs and country."),
+ ],
+ "curiosidades-real-madrid": [
+  ("Club del siglo XX", "Club of the 20th century", "En el año 2000 la FIFA eligió al Real Madrid como el mejor club del siglo XX.", "In 2000 FIFA named Real Madrid the best club of the 20th century."),
+  ("Los máximos goleadores de su historia", "The club's all-time top scorers", "Cristiano Ronaldo (450 goles) lidera la lista, seguido de Karim Benzema (354) y Raúl (323).", "Cristiano Ronaldo (450 goals) leads the list, followed by Karim Benzema (354) and Raúl (323)."),
+  ("Los Blancos y los Merengues", "Los Blancos and Los Merengues", "Sus apodos más conocidos son «los Blancos», por el color de su camiseta, y «los Merengues», por el parecido del blanco con el merengue.", "Its best-known nicknames are «Los Blancos», for the colour of its shirt, and «Los Merengues», after the meringue dessert."),
+ ],
+}
+for _t in TEMAS: _t["hechos"] = list(_t["hechos"]) + _EXTRA.get(_t["es"], [])

@@ -13,6 +13,10 @@ META = {
     "que-son-los-goles-esperados-xg": dict(c=("#a21caf", "#e879f9"), e="📈"),
     "numeros-camiseta-dorsales-historia": dict(c=("#92400e", "#fbbf24"), e="🔟"),
     "remontadas-historicas-champions-league": dict(c=("#1d4ed8", "#60a5fa"), e="🔥"),
+    "liga-de-futbol-mas-antigua-del-mundo": dict(c=("#0f766e", "#2dd4bf"), e="🏴"),
+    "trofeos-mas-importantes-del-futbol": dict(c=("#b45309", "#fbbf24"), e="🏆"),
+    "paises-con-mas-balones-de-oro": dict(c=("#be123c", "#fb7185"), e="🌍"),
+    "messi-o-cristiano-comparacion-en-numeros": dict(c=("#1747d6", "#6b9bff"), e="⚖️"),
 }
 def meta(slug):
     return META.get(slug, dict(c=("#1747d6", "#6b9bff"), e="📖"))

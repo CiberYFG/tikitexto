@@ -430,6 +430,103 @@ def resultado(L, texto):
     if "liguilla" in texto: return u["round"].format(s=texto.split(" ")[0])
     return texto
 
+
+FAQ_LIGAS = [
+ ("¿Cuál es la liga de fútbol más antigua del mundo?", "What is the oldest football league in the world?",
+  "La Football League inglesa, fundada el 17 de abril de 1888 en Manchester con 12 clubes. Su primera campeona fue el Preston North End. Es la primera liga profesional de la historia y la Premier League es su evolución desde 1992.",
+  "The English Football League, founded on 17 April 1888 in Manchester with 12 clubs. Its first champions were Preston North End. It is the first professional league in history, and the Premier League is its evolution since 1992."),
+ ("¿Cuál fue la primera liga de fútbol del mundo?", "What was the first football league in the world?",
+  "La Football League de Inglaterra, en la temporada 1888-89. La ganó el Preston North End.",
+  "The Football League of England, in the 1888–89 season. Preston North End won it."),
+ ("¿Cuándo se fundó LaLiga?", "When was La Liga founded?",
+  "La primera temporada de LaLiga se jugó en 1929 con diez equipos en Primera, y el primer campeón fue el FC Barcelona.",
+  "La Liga's first season was played in 1929 with ten teams in the top flight, and the first champions were FC Barcelona."),
+ ("¿Cuándo se fundó la Serie A, la Bundesliga y la Ligue 1?", "When were Serie A, the Bundesliga and Ligue 1 founded?",
+  "La Serie A con grupo único empezó en 1929-30 (el primer campeonato italiano fue en 1898), la Bundesliga en 1963 y la liga profesional francesa en 1932; el nombre Ligue 1 se usa desde 2002.",
+  "Serie A as a single league began in 1929–30 (the first Italian championship was in 1898), the Bundesliga in 1963 and the French professional league in 1932; the name Ligue 1 has been used since 2002."),
+ ("¿Cuál es la liga más antigua de Sudamérica?", "What is the oldest league in South America?",
+  "La de Argentina: su primer campeonato se jugó en 1891 y lo ganó el Old Caledonians. Se profesionalizó en 1931.",
+  "Argentina's: its first championship was played in 1891 and won by Old Caledonians. It turned professional in 1931."),
+]
+FAQ_TROFEOS = [
+ ("¿Cuál es el trofeo más importante del fútbol?", "What is the most important trophy in football?",
+  "A nivel de selecciones, la Copa del Mundo de la FIFA. A nivel de clubes, la Champions League (antes Copa de Europa), apodada «la Orejona» por sus asas.",
+  "For national teams, the FIFA World Cup. For clubs, the Champions League (formerly the European Cup), nicknamed «Big Ears» for its handles."),
+ ("¿Cuáles son los trofeos más importantes del fútbol?", "What are the most important football trophies?",
+  "Los principales son la Copa del Mundo, la Eurocopa, la Copa América, la Champions League, la Copa Libertadores, las ligas nacionales y el Balón de Oro como premio individual.",
+  "The main ones are the World Cup, the European Championship, the Copa América, the Champions League, the Copa Libertadores, the national leagues and the Ballon d'Or as an individual award."),
+ ("¿Cuál es la copa más antigua del mundo?", "What is the oldest cup competition in the world?",
+  "La FA Cup inglesa. Su primera final se jugó el 16 de marzo de 1872 en el Kennington Oval y la ganó el Wanderers por 1-0 al Royal Engineers.",
+  "England's FA Cup. Its first final was played on 16 March 1872 at the Kennington Oval, and Wanderers beat the Royal Engineers 1-0."),
+ ("¿Quién ganó el primer Mundial de fútbol?", "Who won the first football World Cup?",
+  "Uruguay, que ganó 4-2 a Argentina en la final de 1930, jugada en Montevideo.",
+  "Uruguay, who beat Argentina 4-2 in the 1930 final, played in Montevideo."),
+ ("¿Qué es el Scudetto?", "What is the Scudetto?",
+  "Un escudo con los colores de la bandera italiana que lleva en la camiseta el campeón de la liga de Italia desde 1924.",
+  "A badge in the colours of the Italian flag worn on the shirt by the Italian league champions since 1924."),
+]
+
+FAQ_T = {"pt": "Perguntas frequentes", "fr": "Questions fréquentes", "it": "Domande frequenti", "de": "Häufige Fragen"}
+def faq2(L, pares):
+    """FAQ (pregunta, respuesta) para pt/fr/it/de, con FAQPage."""
+    import json
+    if L.lang not in FAQ_T or not pares: return ""
+    h = f'<h2>{FAQ_T[L.lang]}</h2>\n<div class="faq">\n' + "".join(f'<details><summary>{e(q)}</summary><p>{e(a)}</p></details>\n' for q, a in pares)
+    ld = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in pares]}
+    return h + '</div>\n<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + '</script>\n'
+
+def faq_otros(L, tipo, ch_t=None, mu_t=None):
+    r = ch_t[0][1] if ch_t else 0; b = mu_t[0][1] if mu_t else 5
+    D = {
+    "campeones": {
+     "pt": [("Quem ganhou mais vezes a Liga dos Campeões?", f"O Real Madrid, com {r} títulos da Taça dos Campeões Europeus e da Liga dos Campeões."),
+            ("Quem ganhou a última Liga dos Campeões?", "O Paris Saint-Germain, que venceu a final de 2026 nos pênaltis (4-3) depois de empatar 1-1 com o Arsenal em Budapeste."),
+            ("Quais seleções ganharam mais Copas do Mundo?", f"O Brasil, com {b} títulos. Alemanha e Itália têm quatro cada, e a Argentina tem três."),
+            ("Quem foi campeão da última Copa do Mundo?", "A Espanha, que venceu a Argentina por 1-0 na final de 2026, após a prorrogação.")],
+     "fr": [("Quelle équipe a gagné le plus de Ligues des champions ?", f"Le Real Madrid, avec {r} titres en Coupe d'Europe et en Ligue des champions."),
+            ("Qui a gagné la dernière Ligue des champions ?", "Le Paris Saint-Germain, vainqueur de la finale 2026 aux tirs au but (4-3) après un 1-1 contre Arsenal à Budapest."),
+            ("Quelle sélection a gagné le plus de Coupes du monde ?", f"Le Brésil, avec {b} titres. L'Allemagne et l'Italie en ont quatre chacune, et l'Argentine trois."),
+            ("Qui a gagné la dernière Coupe du monde ?", "L'Espagne, qui a battu l'Argentine 1-0 en finale 2026 après prolongation.")],
+     "it": [("Quale squadra ha vinto più Champions League?", f"Il Real Madrid, con {r} titoli tra Coppa dei Campioni e Champions League."),
+            ("Chi ha vinto l'ultima Champions League?", "Il Paris Saint-Germain, vincitore della finale 2026 ai rigori (4-3) dopo l'1-1 con l'Arsenal a Budapest."),
+            ("Quale nazionale ha vinto più Mondiali?", f"Il Brasile, con {b} titoli. Germania e Italia ne hanno quattro ciascuna e l'Argentina tre."),
+            ("Chi ha vinto l'ultimo Mondiale?", "La Spagna, che ha battuto l'Argentina 1-0 nella finale del 2026 dopo i tempi supplementari.")],
+     "de": [("Welches Team hat die meisten Champions-League-Titel?", f"Real Madrid mit {r} Titeln im Europapokal der Landesmeister und in der Champions League."),
+            ("Wer hat die letzte Champions League gewonnen?", "Paris Saint-Germain, das das Finale 2026 im Elfmeterschießen (4:3) nach einem 1:1 gegen den FC Arsenal in Budapest gewann."),
+            ("Welche Nationalmannschaft hat die meisten Weltmeistertitel?", f"Brasilien mit {b} Titeln. Deutschland und Italien haben je vier, Argentinien drei."),
+            ("Wer ist der aktuelle Weltmeister?", "Spanien, das im Finale 2026 nach Verlängerung 1:0 gegen Argentinien gewann.")]},
+    "trofeos": {
+     "pt": [("Qual é o troféu mais importante do futebol?", "Entre seleções, a Copa do Mundo da FIFA. Entre clubes, a Liga dos Campeões da UEFA."),
+            ("Qual é a copa mais antiga do mundo?", "A FA Cup inglesa: a primeira final foi disputada em 16 de março de 1872."),
+            ("Quem ganhou a primeira Copa do Mundo?", "O Uruguai, que venceu a Argentina por 4-2 na final de 1930.")],
+     "fr": [("Quel est le trophée le plus important du football ?", "Pour les sélections, la Coupe du monde de la FIFA. Pour les clubs, la Ligue des champions de l'UEFA."),
+            ("Quelle est la plus ancienne coupe du monde ?", "La FA Cup anglaise : la première finale a eu lieu le 16 mars 1872."),
+            ("Qui a gagné la première Coupe du monde ?", "L'Uruguay, vainqueur de l'Argentine 4-2 en finale en 1930.")],
+     "it": [("Qual è il trofeo più importante del calcio?", "Per le nazionali, la Coppa del Mondo FIFA. Per i club, la UEFA Champions League."),
+            ("Qual è la coppa più antica del mondo?", "La FA Cup inglese: la prima finale si giocò il 16 marzo 1872."),
+            ("Chi ha vinto il primo Mondiale?", "L'Uruguay, che batté l'Argentina 4-2 nella finale del 1930.")],
+     "de": [("Welche Pokale gibt es im Fußball und welcher ist der wichtigste?", "Für Nationalmannschaften ist es die FIFA-Weltmeisterschaft, für Vereine die UEFA Champions League. Dazu kommen Kontinentalwettbewerbe, nationale Pokale und der Ballon d'Or."),
+            ("Was ist der Weltmeisterschaftspokal?", "Seit 1974 wird der FIFA-Weltpokal aus 18-karätigem Gold vergeben. Zuvor gab es von 1930 bis 1970 den Jules-Rimet-Pokal. Die Weltmeister erhalten eine Nachbildung."),
+            ("Wer war der erste Weltmeister?", "Uruguay, das 1930 im Finale Argentinien mit 4:2 besiegte.")]}}
+    return faq2(L, D[tipo].get(L.lang, []))
+
+def faq_campeones(L, ch_t, mu_t):
+    k = L.lang
+    if k not in ("es", "en"): return ""
+    return faq(L, [
+     ("¿Qué equipo ha ganado más Champions League?", "Which team has won the most Champions Leagues?",
+      f"El Real Madrid, con {ch_t[0][1]} títulos de la Copa de Europa y la Champions. Le siguen el Milan ({ch_t[1][1]}) y el Bayern de Múnich y el Liverpool ({ch_t[2][1]} cada uno).",
+      f"Real Madrid, with {ch_t[0][1]} European Cup and Champions League titles. Milan ({ch_t[1][1]}) and Bayern Munich and Liverpool ({ch_t[2][1]} each) follow."),
+     ("¿Quién ganó la última Champions League?", "Who won the latest Champions League?",
+      "El París Saint-Germain, que ganó la final de 2026 en los penaltis (4-3) tras empatar 1-1 con el Arsenal en Budapest.",
+      "Paris Saint-Germain, who won the 2026 final on penalties (4-3) after a 1-1 draw with Arsenal in Budapest."),
+     ("¿Qué selección ha ganado más Mundiales?", "Which national team has won the most World Cups?",
+      f"Brasil, con {mu_t[0][1]}. Alemania e Italia tienen {mu_t[1][1]} cada una, y Argentina, {mu_t[3][1]}.",
+      f"Brazil, with {mu_t[0][1]}. Germany and Italy have {mu_t[1][1]} each, and Argentina {mu_t[3][1]}."),
+     ("¿Quién ganó el último Mundial?", "Who won the latest World Cup?",
+      "España, que ganó 1-0 a Argentina en la final de 2026 tras la prórroga. El torneo se jugó en Estados Unidos, México y Canadá.",
+      "Spain, who beat Argentina 1-0 after extra time in the 2026 final. The tournament was played in the United States, Mexico and Canada.")])
+
 def pagina_campeones(L):
     u = L.ui; ruta = "curiosidades/campeones/"
     h = cabecera(L, u["ch_title"], u["ch_desc"], ruta, u["ch_h1"])
@@ -448,6 +545,7 @@ def pagina_campeones(L):
     h += f'<h2 id="titulos">{e(u["ch_h2c"])}</h2>\n'
     h += f'<p><b>{e(u["rk1"])}</b></p>' + tabla([u["th_club"], u["th_titles"]], ch_t[:8])
     h += f'<p style="margin-top:16px"><b>{e(u["rk2"])}</b></p>' + tabla([u["th_team"], u["th_titles"]], mu_t)
+    h += faq_campeones(L, ch_t, mu_t) + faq_otros(L, "campeones", ch_t, mu_t)
     h += f'\n<p class="fecha">{e(u["ch_src"])}</p>'
     return ruta, h + pie(L)
 
@@ -459,6 +557,7 @@ def pagina_ligas(L):
     h += '<p class="indice">' + "".join(f'<a href="#l{i}">{e(t)}</a>' for i, t in enumerate(u["li_idx"])) + '</p>\n'
     for i, (_, ano, tit, sub, ps, dato) in enumerate(L.ligas):
         h += entrada(L, LIGA, ano, f"{e(tit)} — {e(sub)}", ps, dato, f"l{i}")
+    h += faq(L, FAQ_LIGAS)
     h += f'<p class="fecha">{e(u["li_src"])}</p>'
     return ruta, h + pie(L)
 
@@ -469,6 +568,7 @@ def pagina_trofeos(L):
     h += '<p class="indice">' + "".join(f'<a href="#t{i}">{e(t)}</a>' for i, t in enumerate(u["tr_idx"])) + '</p>\n'
     for i, (_, ano, tit, sub, ps, dato) in enumerate(L.trofeos):
         h += entrada(L, COPA, ano, f"{e(tit)} — {e(sub)}", ps, dato, f"t{i}")
+    h += faq(L, FAQ_TROFEOS) + faq_otros(L, "trofeos")
     h += f'<p class="fecha">{e(u["tr_src"])}</p>'
     return ruta, h + pie(L)
 
@@ -499,7 +599,7 @@ def pagina_indice(L):
     # 1) artículos (solo español)
     if es:
         arts = articulos_a.ARTICULOS_A + articulos_b.ARTICULOS_B + articulos_c.ARTICULOS_C
-        h += grupo("#7c3aed", "✍️ Artículos de análisis", "Textos largos y originales: cómo se elige el Balón de Oro, penaltis, fuera de juego, xG, estadísticas propias de TIKITEXTO…", "/articulos/", "Ver los 12 artículos")
+        h += grupo("#7c3aed", "✍️ Artículos de análisis", "Textos largos y originales: la liga más antigua del mundo, los trofeos más importantes, países con más Balones de Oro, Messi o Cristiano en números, penaltis, fuera de juego, xG…", "/articulos/", "Ver los 16 artículos")
         h += '<div class="tarjetas">\n'
         for a in arts:
             m = meta(a["slug"]); mins = sum(len(p.split()) for _, ps in a["secciones"] for p in ps) // 200 + 1

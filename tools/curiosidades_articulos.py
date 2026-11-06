@@ -10,8 +10,9 @@ from curiosidades import e, cabecera, pie, Idioma, LIBRO
 from articulos_a import ARTICULOS_A
 from articulos_b import ARTICULOS_B
 from articulos_c import ARTICULOS_C
+from articulos_d import ARTICULOS_D
 
-ARTICULOS = ARTICULOS_A + ARTICULOS_B + ARTICULOS_C
+ARTICULOS = ARTICULOS_A + ARTICULOS_B + ARTICULOS_C + ARTICULOS_D
 SLUGS = {a["slug"] for a in ARTICULOS}
 FECHA = "Artículo de TIKITEXTO · 3 de noviembre de 2026"
 HUB = "articulos"
@@ -50,6 +51,7 @@ def pagina(L, a):
     for i, (t, ps) in enumerate(a["secciones"]):
         h += f'<h2 id="s{i}">{e(t)}</h2>\n' + "".join(f"<p>{e(p.replace(' %', chr(160) + '%'))}</p>\n" for p in ps)
     h += '</div>\n'
+    h += C.faq(L, a.get("faq", []))
     fu = []
     for n, u in a["fuentes"]:
         fu.append(f'<a href="{u}" rel="noopener" target="_blank">{e(n)}</a>' if u else e(n))

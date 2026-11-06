@@ -206,7 +206,7 @@ for m in MODOS_ES:
 
 # ---- página del Ahorcado (es/en): modo especial con su propia entrada de búsqueda ----
 AHORCADO = {
- "es": dict(slug="ahorcado-futbolistas", titulo="Ahorcado de futbolistas online gratis | TIKITEXTO", desc="Juega al ahorcado de futbolistas: adivina el nombre de un crack de fútbol letra a letra antes de cometer 5 fallos. Gratis, sin registro y con ranking.", h1="Ahorcado de futbolistas",
+ "es": dict(slug="ahorcado-futbolistas", titulo="Ahorcado de fútbol: juega al ahorcado de futbolistas online gratis | TIKITEXTO", desc="Juega al ahorcado de fútbol, el ahorcado futbolero: adivina el nombre de un crack de fútbol letra a letra antes de cometer 5 fallos. Gratis, sin registro y con ranking.", h1="Ahorcado de futbolistas",
         lead="El clásico ahorcado con un giro futbolero: hay un jugador famoso escondido y cada cuadrado es una letra de su nombre. Toca letras del teclado; si fallas, el muñeco avanza. Tienes 5 fallos y no hay pistas.",
         qa=[("¿Cuántos fallos puedo cometer?", "Cinco. Con el quinto fallo, el muñeco se completa y pierdes la partida."), ("¿Qué jugadores aparecen?", "Medio centenar de futbolistas famosos, de leyendas como Pelé o Maradona a estrellas actuales."), ("¿Se gana algo?", "Cada 3 victorias seguidas ganas +1 tikitexto, y se guarda tu mejor racha."), ("¿Es gratis?", "Sí, gratis y sin registro: puedes jugar como invitado.")],
         otros="Más modos para jugar", todos="Todos los modos", cta="Jugar al ahorcado"),

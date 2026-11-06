@@ -37,6 +37,14 @@ def paginas(L):
               "Haaland has scored 61 goals in just 60 games: more than one per match, the best ratio on the list."),
         src=[("UEFA.com", "https://www.uefa.com/uefachampionsleague/")],
         fecha=("Hasta la temporada 2025-26", "Through the 2025–26 season"),
+        faq=[('¿Quién es el máximo goleador de la historia de la Champions League?', 'Who is the all-time top scorer in the Champions League?',
+              'Cristiano Ronaldo, con 140 goles en 183 partidos. Le siguen Lionel Messi (129 en 163) y Robert Lewandowski (109 en 144).', 'Cristiano Ronaldo, with 140 goals in 183 games. Lionel Messi (129 in 163) and Robert Lewandowski (109 in 144) follow.'),
+             ('¿Cuántos goles ha marcado Messi en la Champions League?', 'How many Champions League goals has Messi scored?',
+              'Lionel Messi ha marcado 129 goles en 163 partidos, el segundo mejor registro de la historia.', 'Lionel Messi has scored 129 goals in 163 games, the second-best total in history.'),
+             ('¿Quién tiene la mejor media goleadora de la lista?', 'Who has the best goals-per-game ratio on the list?',
+              'Erling Haaland: 61 goles en 60 partidos, más de uno por partido.', 'Erling Haaland: 61 goals in 60 games, more than one per match.'),
+             ('¿Quién es el máximo goleador español de la Champions?', 'Who is the top Spanish scorer in the Champions League?',
+              'Raúl González, con 71 goles en 142 partidos, es el español con más goles de la lista.', 'Raúl González, with 71 goals in 142 games, is the Spaniard with the most goals on the list.')],
         btn=("⚽ ¿Eres capaz de adivinar al goleador? Juega", "⚽ Can you guess the scorer? Play")))
     # 2 Mundial
     pg.append(dict(slug="maximos-goleadores-mundial" if es else "world-cup-top-scorers", ic=COPA,
@@ -51,6 +59,14 @@ def paginas(L):
               "Just Fontaine scored 13 goals in a single World Cup (1958), and that remains the single-tournament record."),
         src=[("FIFA.com", "https://www.fifa.com/")],
         fecha=("Datos a 19 de julio de 2026 (tras la final)", "As of 19 July 2026 (after the final)"),
+        faq=[('¿Quién es el máximo goleador de la historia de los Mundiales?', 'Who is the all-time top scorer at the World Cup?',
+              'Kylian Mbappé, con 22 goles en 22 partidos tras el Mundial de 2026. Le siguen Lionel Messi (21) y Miroslav Klose (16).', 'Kylian Mbappé, with 22 goals in 22 games after the 2026 World Cup. Lionel Messi (21) and Miroslav Klose (16) follow.'),
+             ('¿Cuántos goles ha marcado Messi en los Mundiales?', 'How many World Cup goals has Messi scored?',
+              'Lionel Messi ha marcado 21 goles en 34 partidos mundialistas.', 'Lionel Messi has scored 21 goals in 34 World Cup matches.'),
+             ('¿Cuántos goles marcó Cristiano Ronaldo en los Mundiales?', 'How many World Cup goals did Cristiano Ronaldo score?',
+              'Cristiano Ronaldo marcó 11 goles en 27 partidos con Portugal en cinco Mundiales.', 'Cristiano Ronaldo scored 11 goals in 27 matches for Portugal across five World Cups.'),
+             ('¿Quién ha marcado más goles en un solo Mundial?', 'Who has scored the most goals in a single World Cup?',
+              'El francés Just Fontaine, con 13 goles en el Mundial de 1958. Sigue siendo el récord de una edición.', "France's Just Fontaine, with 13 goals at the 1958 World Cup. It is still the single-tournament record.")],
         btn=("⚽ Pon a prueba tu memoria mundialista: juega", "⚽ Test your World Cup memory: play")))
     # 3 Goles selecciones
     pg.append(dict(slug="maximos-goleadores-selecciones" if es else "international-top-scorers", ic=BALON,
@@ -65,6 +81,12 @@ def paginas(L):
               "Ferenc Puskás scored 84 goals in only 89 games for Hungary: the best ratio among the top twelve."),
         src=[("RSSSF", "https://www.rsssf.org/")],
         fecha=("Datos a 19 de julio de 2026", "As of 19 July 2026"),
+        faq=[('¿Quién ha marcado más goles con su selección?', 'Who has scored the most international goals?',
+              'Cristiano Ronaldo, con 146 goles en 233 partidos con Portugal. Lionel Messi es segundo con 125 en 207 con Argentina.', 'Cristiano Ronaldo, with 146 goals in 233 games for Portugal. Lionel Messi is second with 125 in 207 for Argentina.'),
+             ('¿Quién es el tercer máximo goleador de selecciones?', 'Who is the third-highest international scorer?',
+              'El iraní Ali Daei, con 108 goles en 148 partidos.', "Iran's Ali Daei, with 108 goals in 148 games."),
+             ('¿Quién tiene mejor media goleadora con su selección?', 'Who has the best international scoring ratio?',
+              'Ferenc Puskás: 84 goles en 89 partidos con Hungría, la mejor media de los doce primeros.', 'Ferenc Puskás: 84 goals in 89 games for Hungary, the best ratio among the top twelve.')],
         btn=("⚽ ¿Conoces a todos los goleadores? Juega", "⚽ Do you know every scorer? Play")))
     # 4 Caps
     pg.append(dict(slug="mas-partidos-con-la-seleccion" if es else "most-international-caps", ic=ESTADIO,
@@ -79,6 +101,12 @@ def paginas(L):
               "Modrić and Al-Mutawa share third place with 202 caps each."),
         src=[("RSSSF", "https://www.rsssf.org/")],
         fecha=("Datos a 18 de agosto de 2026", "As of 18 August 2026"),
+        faq=[('¿Quién es el jugador con más partidos con su selección?', 'Which player has the most international caps?',
+              'Cristiano Ronaldo, con 233 partidos con Portugal. Le siguen Lionel Messi (207), y Luka Modrić y Bader Al-Mutawa (202 cada uno).', 'Cristiano Ronaldo, with 233 caps for Portugal. Lionel Messi (207), and Luka Modrić and Bader Al-Mutawa (202 each) follow.'),
+             ('¿Cuántos partidos ha jugado Messi con Argentina?', 'How many caps does Messi have for Argentina?',
+              'Lionel Messi ha jugado 207 partidos con la selección argentina.', 'Lionel Messi has played 207 matches for Argentina.'),
+             ('¿Quién es el español con más partidos con la selección?', 'Who is the most-capped Spanish player?',
+              'Sergio Ramos, con 180 partidos con España, aparece en la lista de los doce jugadores con más internacionalidades del mundo.', 'Sergio Ramos, with 180 caps for Spain, appears on this list of the twelve most-capped players in the world.')],
         btn=("⚽ ¿Cuánto sabes de fútbol? Juega", "⚽ How much do you know about football? Play")))
     # 5 Balón de Oro
     pg.append(dict(slug="balon-de-oro-ganadores" if es else "ballon-dor-winners", ic=BALON,
@@ -134,6 +162,12 @@ def paginas(L):
               "Zidane is the only manager to win three Champions League titles in a row (2016, 2017 and 2018)."),
         src=[("UEFA.com", "https://www.uefa.com/uefachampionsleague/")],
         fecha=("Hasta la final de 2026", "Through the 2026 final"),
+        faq=[('¿Qué entrenador ha ganado más Champions League?', 'Which manager has won the most Champions Leagues?',
+              'Carlo Ancelotti, con cinco títulos de la Copa de Europa y la Champions: 2003 y 2007 con el Milan, y 2014, 2022 y 2024 con el Real Madrid.', 'Carlo Ancelotti, with five European Cup and Champions League titles: 2003 and 2007 with Milan, and 2014, 2022 and 2024 with Real Madrid.'),
+             ('¿Quién ganó tres Champions seguidas como entrenador?', 'Who won three Champions Leagues in a row as manager?',
+              'Zinedine Zidane, con el Real Madrid en 2016, 2017 y 2018.', 'Zinedine Zidane, with Real Madrid in 2016, 2017 and 2018.'),
+             ('¿Cuántas Champions ha ganado Guardiola?', 'How many Champions Leagues has Guardiola won?',
+              'Tres: 2009 y 2011 con el Barcelona y 2023 con el Manchester City.', 'Three: 2009 and 2011 with Barcelona and 2023 with Manchester City.')],
         btn=("⚽ ¿Adivinas al entrenador? Juega", "⚽ Can you guess the manager? Play")))
     # 7 Eurocopa
     pg.append(dict(slug="eurocopa-campeones-y-goleadores" if es else "european-championship-winners", ic=COPA,
@@ -148,6 +182,14 @@ def paginas(L):
               "Ten different teams have won the Euros."),
         src=[("UEFA.com", "https://www.uefa.com/")],
         fecha=("Hasta la edición de 2024", "Through the 2024 edition"),
+        faq=[('¿Qué selección ha ganado más Eurocopas?', 'Which national team has won the most European Championships?',
+              'España, con cuatro: 1964, 2008, 2012 y 2024.', 'Spain, with four: 1964, 2008, 2012 and 2024.'),
+             ('¿Quién ganó la Eurocopa 2024?', 'Who won Euro 2024?',
+              'España, que venció 2-1 a Inglaterra en la final.', 'Spain, who beat England 2-1 in the final.'),
+             ('¿Quién es el máximo goleador de la historia de la Eurocopa?', "Who is the Euros' all-time top scorer?",
+              'Cristiano Ronaldo, con 14 goles.', 'Cristiano Ronaldo, with 14 goals.'),
+             ('¿Cuántas selecciones han ganado la Eurocopa?', 'How many national teams have won the Euros?',
+              'Diez selecciones distintas han ganado el torneo.', 'Ten different teams have won the tournament.')],
         btn=("⚽ ¿Cuánto sabes de selecciones? Juega", "⚽ How much do you know about national teams? Play")))
     # 8 Pichichi
     pg.append(dict(slug="pichichi-historia" if es else "pichichi-trophy-history", ic=BALON,
@@ -164,6 +206,14 @@ def paginas(L):
               "Messi won five Pichichis in a row between 2016–17 and 2020–21."),
         src=[("LaLiga.com", "https://www.laliga.com/")],
         fecha=("Hasta la temporada 2025-26", "Through the 2025–26 season"),
+        faq=[('¿Quién ha ganado más Pichichis?', 'Who has won the most Pichichi awards?',
+              'Lionel Messi, con ocho. Le siguen Telmo Zarra, con seis, y Di Stéfano, Quini y Hugo Sánchez, con cinco cada uno.', 'Lionel Messi, with eight. Telmo Zarra (six), and Di Stéfano, Quini and Hugo Sánchez (five each) follow.'),
+             ('¿Quién ganó el Pichichi 2025-26?', 'Who won the 2025–26 Pichichi?',
+              'Kylian Mbappé, con 25 goles. También había ganado el de 2024-25, con 31.', 'Kylian Mbappé, with 25 goals. He had also won 2024–25, with 31.'),
+             ('¿Por qué se llama Pichichi el trofeo al máximo goleador de LaLiga?', "Why is La Liga's top-scorer award called the Pichichi?",
+              'Se llama así en honor a Rafael Moreno «Pichichi», delantero del Athletic Club en los años veinte. El diario Marca creó el trofeo en 1953.', 'It is named after Rafael Moreno «Pichichi», an Athletic Club forward in the 1920s. The newspaper Marca created the trophy in 1953.'),
+             ('¿Cuántos Pichichis consecutivos ganó Messi?', 'How many Pichichis in a row did Messi win?',
+              'Cinco, entre las temporadas 2016-17 y 2020-21.', 'Five, between the 2016–17 and 2020–21 seasons.')],
         btn=("⚽ ¿Quién es el goleador? Juega", "⚽ Who's the scorer? Play")))
     # 9 Bota de Oro
     pg.append(dict(slug="bota-de-oro-europea" if es else "european-golden-shoe", ic=BALON,
@@ -180,6 +230,14 @@ def paginas(L):
               "Lewandowski's 41 goals in 2020–21 are the highest total of the last eight editions."),
         src=[("UEFA.com", "https://www.uefa.com/")],
         fecha=("Hasta la temporada 2025-26", "Through the 2025–26 season"),
+        faq=[('¿Quién tiene más Botas de Oro europeas?', 'Who has the most European Golden Shoes?',
+              'Lionel Messi, con seis. Cristiano Ronaldo tiene cuatro.', 'Lionel Messi, with six. Cristiano Ronaldo has four.'),
+             ('¿Quién ganó la última Bota de Oro?', 'Who won the latest Golden Shoe?',
+              'Harry Kane, con 36 goles con el Bayern de Múnich en 2025-26.', 'Harry Kane, with 36 goals for Bayern Munich in 2025–26.'),
+             ('¿Quién ganó la primera Bota de Oro?', 'Who won the first Golden Shoe?',
+              'El portugués Eusébio, en la temporada 1967-68.', "Portugal's Eusébio, in the 1967–68 season."),
+             ('¿Cuántos goles necesitó Lewandowski para su Bota de Oro de 2020-21?', 'How many goals did Lewandowski score to win the 2020–21 Golden Shoe?',
+              '41 goles con el Bayern de Múnich, la cifra más alta de las últimas ocho ediciones.', '41 goals for Bayern Munich, the highest total of the last eight editions.')],
         btn=("⚽ Adivina al goleador: juega", "⚽ Guess the scorer: play")))
     return pg
 
