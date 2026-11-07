@@ -2,7 +2,9 @@
 """Genera las páginas de búsqueda (una por modo en español y una por idioma) y el sitemap.xml.
 Uso: python3 tools/seo.py   (desde cualquier carpeta). Las traducciones de los modos y de las
 preguntas frecuentes salen de i18n/fuente.txt; el resto de textos está aquí."""
-import html, json, os
+import html, json, os, sys as _sys
+_sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__))))
+import seo_extra as XT
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOM = "https://tikitexto.com/"
 LANGS = ["es", "en", "pt", "fr", "it", "de"]
@@ -196,7 +198,7 @@ for m in MODOS_ES:
     u = UI["es"]
     otros = "".join('<li><a href="../%s/">%s</a></li>' % (o["slug"], esc(o["h1"])) for o in MODOS_ES if o["slug"] != m["slug"])
     otros += '<li><a href="../ahorcado-futbolistas/">Ahorcado de futbolistas</a></li>'
-    bloques = '<h2>Más modos para jugar</h2><ul class="g">%s<li><a href="../">Todos los modos</a></li></ul>' % otros
+    bloques = XT.bloque("es", m["modo"], "../") + '<h2>Más modos para jugar</h2><ul class="g">%s<li><a href="../">Todos los modos</a></li></ul>' % otros
     faq = m["qa"] + [(FAQ_CLAVES[1], FAQ_RESP[1]), (FAQ_CLAVES[2], FAQ_RESP[2])]
     migas = [("TIKITEXTO", DOM), (m["h1"], DOM + m["slug"] + "/")]
     escribir(m["slug"], pagina("es", m["slug"] + "/", m["titulo"], m["desc"], m["h1"], m["lead"], m["modo"], bloques, faq,
@@ -218,7 +220,7 @@ AHORCADO = {
 _AH_ALTS = '<link rel="alternate" hreflang="es" href="%sahorcado-futbolistas/">\n<link rel="alternate" hreflang="en" href="%sen/football-hangman/">\n<link rel="alternate" hreflang="x-default" href="%sahorcado-futbolistas/">' % (DOM, DOM, DOM)
 for _l, _a in AHORCADO.items():
     _otros = "".join('<li><a href="%s">%s</a></li>' % (("../%s/" % o["slug"]) if _l == "es" else ("../%s/" % o["slug"]), esc(o["h1"])) for o in (MODOS_ES if _l == "es" else MODOS_EN))
-    _bl = '<h2>%s</h2><ul class="g">%s<li><a href="../">%s</a></li></ul>' % (_a["otros"], _otros, _a["todos"])
+    _bl = XT.bloque(_l, "ahorcado", "../" if _l == "es" else "../../") + '<h2>%s</h2><ul class="g">%s<li><a href="../">%s</a></li></ul>' % (_a["otros"], _otros, _a["todos"])
     _faq = _a["qa"]
     _ruta = ("" if _l == "es" else "en/") + _a["slug"] + "/"
     _migas = [("TIKITEXTO", DOM + ("" if _l == "es" else "en/")), (_a["h1"], DOM + _ruta)]
@@ -229,7 +231,7 @@ for lang, lista in (("en", MODOS_EN), ("de", MODOS_DE)):
         otros_t, todos_t = LABELS_ED[lang]
         otros = "".join('<li><a href="../%s/">%s</a></li>' % (o["slug"], esc(o["h1"])) for o in lista if o["slug"] != m["slug"])
         if lang == "en": otros += '<li><a href="../football-hangman/">Football hangman</a></li>'
-        bloques = '<h2>%s</h2><ul class="g">%s<li><a href="../">%s</a></li></ul>' % (otros_t, otros, todos_t)
+        bloques = (XT.bloque("en", m["modo"], "../../") if lang == "en" else "") + '<h2>%s</h2><ul class="g">%s<li><a href="../">%s</a></li></ul>' % (otros_t, otros, todos_t)
         faq = m["qa"] + [(T(FAQ_CLAVES[1], lang), T(FAQ_RESP[1], lang)), (T(FAQ_CLAVES[2], lang), T(FAQ_RESP[2], lang))]
         ruta = lang + "/" + m["slug"] + "/"
         migas = [("TIKITEXTO", DOM + lang + "/"), (m["h1"], DOM + ruta)]

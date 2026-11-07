@@ -135,3 +135,12 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 - **Tras tocar cualquier `<script>` en línea de cualquier página (o regenerar páginas), ejecutar `python3 tools/csp.py`** (último paso del orden: … → `seo.py` → `csp.py`). `python3 tools/csp.py --check` solo comprueba. Si se olvida, el script queda bloqueado y la página deja de funcionar. Test 3s.
 - `index.html` lleva un script anti-clickjacking (sustituye a `X-Frame-Options`, que la meta no puede dar). Las metas CSP de los generadores (`seo.py`, `curiosidades.py`) siguen con `unsafe-inline` y `csp.py` las reescribe.
 - **Hecho el 3-nov-2026:** el dominio está en Cloudflare (nameservers `elsa`/`mike`; DNS en Porkbun solo como registrador; SSL Full (strict)). Cabeceras: HSTS 6 meses (sin includeSubDomains ni preload) y `nosniff` desde SSL/TLS → Edge Certificates; `X-Frame-Options: DENY` con una Response Header Transform Rule. Observatory: **A+ (115)**. Los registros A/CNAME/TXT `_acme-challenge` no se tocan. No activar la configuración automática de Web Analytics (ya está el script a mano: contaría doble).
+
+## Auditoría y refuerzo de calidad para AdSense (8-nov-2026)
+- Auditoría completa: 0 referencias a Wikipedia/Wordle, fuentes externas solo oficiales (UEFA, FIFA, LaLiga, IFAB, RSSSF, France Football…), nicknames del ranking escapados con `esc()`, `?inv=` validado con regex, CSP con huellas sha256. Se corrigieron 5 enlaces rotos en los artículos nuevos (`relac` con prefijo `curiosidades/` de más en `articulos_d.py`).
+- `tools/articulos_e.py` (6 artículos nuevos de explicación, 22 en total): reglas básicas, posiciones, formaciones tácticas, árbitros y señales, historia del balón y formatos de competición. Cifras de reglas del IFAB/FIFA/UEFA; revisar si cambian las Reglas de Juego (cada verano) o los formatos (Champions, Mundial).
+- `tools/seo_extra.py`: bloque «Consejos para jugar mejor» + «Para leer mientras tanto» en las páginas de cada juego (es y en) y en el ahorcado. `seo.py` lo antepone a «Más modos para jugar». Las rutas de es son relativas a la raíz y las de en, relativas a `en/curiosidades/`.
+- `sobre-tikitexto.html`: nuevas secciones «Cómo elaboramos el contenido» (política editorial) y «Qué no hacemos».
+- `404.html`: página de error con navegación (noindex). La reescribe `csp.py` como al resto.
+- Test 3u en `check_site.py`: sin enlaces internos rotos en ninguna página HTML, artículos nuevos con FAQ y +700 palabras, 404 y bloques de las páginas de juego.
+

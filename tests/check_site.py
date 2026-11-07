@@ -619,7 +619,7 @@ with sync_playwright() as p:
         pa = br.new_page(); errs_r = []; pa.on("pageerror", lambda e: errs_r.append(str(e)))
         pa.goto(BASE + "articulos/", wait_until="domcontentloaded", timeout=60000)
         n_t = pa.evaluate("document.querySelectorAll('.tarjeta[href^=\"/articulos/\"]').length")
-        check("articulos: el índice lista los artículos", n_t >= 16, str(n_t))
+        check("articulos: el índice lista los artículos", n_t >= 22, str(n_t))
         enlaces = pa.evaluate("Array.from(document.querySelectorAll('.tarjeta[href^=\"/articulos/\"]')).map(a => a.getAttribute('href'))")
         pobres = []
         for hr in enlaces:
@@ -691,6 +691,35 @@ with sync_playwright() as p:
             check("ranking_top responde", False, str(e)[:150])
 
     br.close()
+
+# 3u) Enlaces internos de todas las páginas HTML (sin navegador) y artículos de explicación
+print("3u) Enlaces internos sin romper y artículos nuevos")
+import os as _os, posixpath as _pp
+_raiz = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+_rotos = []
+_n_html = 0
+for _d, _ds, _fs in _os.walk(_raiz):
+    if any(x in _d for x in ("/.git", "/node_modules", "/tests", "/tools")): continue
+    for _f in _fs:
+        if not _f.endswith(".html"): continue
+        _n_html += 1
+        _p = _os.path.join(_d, _f)
+        _h = open(_p, encoding="utf-8").read()
+        for _a in re.findall(r'(?:href|src)="([^"#?]+)', _h):
+            if _a.startswith(("http", "mailto", "tel", "data:", "javascript")) or "'" in _a or "+" in _a: continue
+            _t = _os.path.normpath(_os.path.join(_raiz, _a[1:]) if _a.startswith("/") else _os.path.join(_d, _a))
+            if _os.path.isdir(_t): _t = _os.path.join(_t, "index.html")
+            if not _os.path.exists(_t): _rotos.append(_os.path.relpath(_p, _raiz) + " -> " + _a)
+check("enlaces internos: ninguno roto en %d páginas" % _n_html, not _rotos, "; ".join(_rotos[:5]))
+for _slug in ("reglas-basicas-del-futbol-para-principiantes", "posiciones-del-futbol-que-hace-cada-jugador", "formaciones-tacticas-442-433-explicadas",
+              "quien-es-quien-en-un-partido-arbitros-y-senales", "historia-del-balon-de-futbol", "formatos-de-competicion-liga-copa-y-playoff"):
+    _fp = _os.path.join(_raiz, "articulos", _slug, "index.html")
+    _hh = open(_fp, encoding="utf-8").read() if _os.path.exists(_fp) else ""
+    check("artículo %s: existe, con FAQ y +700 palabras" % _slug, bool(_hh) and "FAQPage" in _hh and len(re.sub(r"<[^>]+>", " ", _hh).split()) > 700)
+check("404.html existe, con noindex y enlaces a la portada", _os.path.exists(_os.path.join(_raiz, "404.html")) and "noindex" in open(_os.path.join(_raiz, "404.html"), encoding="utf-8").read())
+for _g in ("adivina-el-jugador", "adivina-el-equipo", "adivina-la-seleccion", "adivina-el-entrenador", "adivina-el-estadio", "ahorcado-futbolistas"):
+    _hh = open(_os.path.join(_raiz, _g, "index.html"), encoding="utf-8").read()
+    check("página de juego %s: lleva consejos y lecturas" % _g, "Consejos para jugar mejor" in _hh and "Para leer mientras tanto" in _hh)
 
 print(f"\n{len(ok)} correctas, {len(fallos)} con fallo")
 if fallos:

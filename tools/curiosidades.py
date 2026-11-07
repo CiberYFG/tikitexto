@@ -599,7 +599,7 @@ def pagina_indice(L):
     # 1) artículos (solo español)
     if es:
         arts = articulos_a.ARTICULOS_A + articulos_b.ARTICULOS_B + articulos_c.ARTICULOS_C
-        h += grupo("#7c3aed", "✍️ Artículos de análisis", "Textos largos y originales: la liga más antigua del mundo, los trofeos más importantes, países con más Balones de Oro, Messi o Cristiano en números, penaltis, fuera de juego, xG…", "/articulos/", "Ver los 16 artículos")
+        h += grupo("#7c3aed", "✍️ Artículos de análisis", "Textos largos y originales: reglas, posiciones y tácticas explicadas, la liga más antigua del mundo, los trofeos más importantes, países con más Balones de Oro, Messi o Cristiano en números, penaltis, fuera de juego, xG…", "/articulos/", "Ver los 22 artículos")
         h += '<div class="tarjetas">\n'
         for a in arts:
             m = meta(a["slug"]); mins = sum(len(p.split()) for _, ps in a["secciones"] for p in ps) // 200 + 1

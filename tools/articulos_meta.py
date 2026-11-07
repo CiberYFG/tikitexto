@@ -17,6 +17,12 @@ META = {
     "trofeos-mas-importantes-del-futbol": dict(c=("#b45309", "#fbbf24"), e="🏆"),
     "paises-con-mas-balones-de-oro": dict(c=("#be123c", "#fb7185"), e="🌍"),
     "messi-o-cristiano-comparacion-en-numeros": dict(c=("#1747d6", "#6b9bff"), e="⚖️"),
+    "reglas-basicas-del-futbol-para-principiantes": dict(c=("#0f766e", "#5eead4"), e="📘"),
+    "posiciones-del-futbol-que-hace-cada-jugador": dict(c=("#15803d", "#86efac"), e="🧤"),
+    "formaciones-tacticas-442-433-explicadas": dict(c=("#6d28d9", "#c4b5fd"), e="🧠"),
+    "quien-es-quien-en-un-partido-arbitros-y-senales": dict(c=("#b91c1c", "#fca5a5"), e="🟨"),
+    "historia-del-balon-de-futbol": dict(c=("#0369a1", "#7dd3fc"), e="⚽"),
+    "formatos-de-competicion-liga-copa-y-playoff": dict(c=("#a16207", "#fde047"), e="🗂️"),
 }
 def meta(slug):
     return META.get(slug, dict(c=("#1747d6", "#6b9bff"), e="📖"))

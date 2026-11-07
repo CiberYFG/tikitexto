@@ -11,13 +11,14 @@ from articulos_a import ARTICULOS_A
 from articulos_b import ARTICULOS_B
 from articulos_c import ARTICULOS_C
 from articulos_d import ARTICULOS_D
+from articulos_e import ARTICULOS_E
 
-ARTICULOS = ARTICULOS_A + ARTICULOS_B + ARTICULOS_C + ARTICULOS_D
+ARTICULOS = ARTICULOS_A + ARTICULOS_B + ARTICULOS_C + ARTICULOS_D + ARTICULOS_E
 SLUGS = {a["slug"] for a in ARTICULOS}
 FECHA = "Artículo de TIKITEXTO · 3 de noviembre de 2026"
 HUB = "articulos"
 HUB_T = "Artículos de fútbol: análisis, reglas e historia explicados"
-HUB_D = "Artículos largos y originales sobre fútbol: cómo se elige el Balón de Oro, la Bota de Oro, penaltis, fuera de juego, xG, fichajes, dorsales y estadísticas propias de TIKITEXTO."
+HUB_D = "Artículos largos y originales sobre fútbol: reglas, posiciones, tácticas, Balón de Oro, penaltis, fuera de juego, xG, fichajes y dorsales."
 EXTRA_CSS = ".articulo p { font-size: 1.06rem; line-height: 1.78; margin: 0 0 17px; max-width: 72ch; } .articulo h2 { margin-top: 34px; } .articulo .fuentes { font-size: .92rem; color: var(--suave); }"
 
 def solo_es(h, col=None):
