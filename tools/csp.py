@@ -15,6 +15,12 @@ EXTRA = "https://static.cloudflareinsights.com https://www.googletagmanager.com"
 CONNECT_EXTRA = ["https://cloudflareinsights.com", "https://*.google-analytics.com", "https://*.analytics.google.com", "https://*.googletagmanager.com"]
 IMG_EXTRA = ["https://*.google-analytics.com", "https://*.googletagmanager.com"]
 CMP_TAG = '<script src="/cmp.js" defer></script>'
+GTM_ID = "GTM-WN89TQCM"
+# Código de Google Tag Manager con Consent Mode: todo DENEGADO hasta que cmp.js reciba el consentimiento
+GTM_TAG = ("<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}"
+           "gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});"
+           "dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>\n"
+           '<script async src="https://www.googletagmanager.com/gtm.js?id=' + GTM_ID + '"></script>')
 
 def completar(csp):
     """Asegura que connect-src e img-src permiten los dominios de medición (añade la directiva si falta)."""
@@ -56,8 +62,13 @@ def procesar(ruta, solo_comprobar=False):
     s = open(ruta, encoding="utf-8").read()
     m = CSP_RE.search(s)
     if not m: return None
-    nuevo = completar(SCRIPT_SRC_RE.sub(directiva(s), m.group(2), count=1))
-    res = s[:m.start(2)] + nuevo + s[m.end(2):]
+    fin = s.index(">", m.start()) + 1
+    s1 = s
+    if "gtm.js?id=" not in s1:                    # código de Google (consentimiento denegado por defecto)
+        s1 = s1[:fin] + "\n" + GTM_TAG + s1[fin:]
+    m = CSP_RE.search(s1)
+    nuevo = completar(SCRIPT_SRC_RE.sub(directiva(s1), m.group(2), count=1))
+    res = s1[:m.start(2)] + nuevo + s1[m.end(2):]
     if CMP_TAG not in res and "</body>" in res:   # aviso de cookies/medición en todas las páginas
         res = res.replace("</body>", CMP_TAG + "\n</body>", 1)
     if res == s: return True

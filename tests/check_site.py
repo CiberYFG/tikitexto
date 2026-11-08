@@ -264,7 +264,7 @@ with sync_playwright() as p:
         def _pag(c_, cf_, gt_, errs_):
             p_ = c_.new_page()
             p_.on("pageerror", lambda e: errs_.append(str(e)))
-            p_.on("request", lambda r: cf_.append(r.url) if "cloudflareinsights" in r.url else (gt_.append(r.url) if "googletagmanager" in r.url or "google-analytics" in r.url else None))
+            p_.on("request", lambda r: cf_.append(r.url) if "cloudflareinsights" in r.url else (gt_.append(r.url) if "google-analytics" in r.url else None))
             p_.route("**/rest/v1/rpc/*", lambda r: r.abort())
             p_.route("**/static.cloudflareinsights.com/**", lambda r: r.fulfill(status=200, content_type="text/javascript", body=""))
             p_.route("**/www.googletagmanager.com/**", lambda r: r.fulfill(status=200, content_type="text/javascript", body=""))
@@ -276,7 +276,9 @@ with sync_playwright() as p:
         pc.wait_for_timeout(500)
         check("el aviso aparece en la primera visita", pc.is_visible("#cmp"))
         check("la medición sin cookies está activa por defecto", len(cf) > 0)
-        check("Google Tag Manager NO se carga antes de decidir", not gt)
+        dl0 = pc.evaluate("JSON.stringify(window.dataLayer||[])")
+        check("el código de Google está en la página con el consentimiento DENEGADO por defecto (Consent Mode)", "analytics_storage" in dl0 and '"denied"' in dl0 and '"granted"' not in dl0)
+        check("antes de decidir no hay cookies de Google ni peticiones de medición", not gt and "_ga" not in pc.evaluate("document.cookie"))
         cf.clear()
         br_ = pc.locator("#cmpRechazar").bounding_box(); ba_ = pc.locator("#cmpAceptar").bounding_box()
         check("«Rechazar todo» y «Aceptar todo» se ven y tienen el mismo peso (tamaño igual)", br_["height"] >= 30 and ba_["height"] >= 30 and abs(br_["width"] - ba_["width"]) < 4 and abs(br_["height"] - ba_["height"]) < 4)
@@ -284,14 +286,14 @@ with sync_playwright() as p:
         pc.click("#cmpRechazar")
         check("rechazar todo guarda 'no' en ambas elecciones y oculta el aviso", pc.evaluate("localStorage.getItem('tikitexto:consentimiento')+localStorage.getItem('tikitexto:analitica')") == "nono" and not pc.is_visible("#cmp"))
         pc.reload(wait_until="networkidle")
-        check("tras rechazar no vuelve a salir ni mide ni carga Google", not pc.is_visible("#cmp") and not cf and not gt)
+        check("tras rechazar no vuelve a salir, ni mide ni concede nada a Google", not pc.is_visible("#cmp") and not cf and not gt and '"granted"' not in pc.evaluate("JSON.stringify(window.dataLayer||[])"))
         pc.evaluate("document.getElementById('abrirCookies').click()")
         check("Configurar cookies reabre el panel", pc.is_visible("#cmpAjustes"))
         check("los interruptores reflejan que todo está desactivado", not pc.is_checked("#cmpMed") and not pc.is_checked("#cmpGa"))
         pc.check("#cmpMed"); pc.check("#cmpGa")
         pc.click("#cmpGuardar")
         pc.wait_for_timeout(700)
-        check("activar ambos guarda 'si' y carga Cloudflare y Google Tag Manager", pc.evaluate("localStorage.getItem('tikitexto:consentimiento')+localStorage.getItem('tikitexto:analitica')") == "sisi" and len(cf) > 0 and any("GTM-" in u for u in gt))
+        check("activar ambos guarda 'si' y carga Cloudflare y Google Tag Manager", pc.evaluate("localStorage.getItem('tikitexto:consentimiento')+localStorage.getItem('tikitexto:analitica')") == "sisi" and len(cf) > 0 and '"granted"' in pc.evaluate("JSON.stringify(window.dataLayer||[])"))
         check("sin errores de JavaScript con el aviso", not errs_c, "; ".join(errs_c)[:200])
         cc.close()
         # aceptar todo con un solo botón
@@ -299,7 +301,7 @@ with sync_playwright() as p:
         c2 = _ctx(); p2 = _pag(c2, cf2, gt2, e2)
         p2.goto(BASE, wait_until="networkidle", timeout=60000); p2.wait_for_timeout(400)
         p2.click("#cmpAceptar"); p2.wait_for_timeout(700)
-        check("«Aceptar todo» activa ambas cosas con un solo clic", p2.evaluate("localStorage.getItem('tikitexto:consentimiento')+localStorage.getItem('tikitexto:analitica')") == "sisi" and any("GTM-" in u for u in gt2) and not p2.is_visible("#cmp"))
+        check("«Aceptar todo» activa ambas cosas con un solo clic", p2.evaluate("localStorage.getItem('tikitexto:consentimiento')+localStorage.getItem('tikitexto:analitica')") == "sisi" and '"granted"' in p2.evaluate("JSON.stringify(window.dataLayer||[])") and not p2.is_visible("#cmp"))
         # retirar el consentimiento de Google borra sus cookies
         p2.evaluate("document.cookie='_ga=1;path=/';document.cookie='_ga_ABC=1;path=/'")
         p2.evaluate("document.getElementById('abrirCookies').click()"); p2.uncheck("#cmpGa")
@@ -320,7 +322,8 @@ with sync_playwright() as p:
             p4.goto(BASE + ruta, wait_until="networkidle", timeout=60000); p4.wait_for_timeout(400)
             ok4 = p4.is_visible("#cmp") and not g4 and p4.locator("#cmpAceptar").count() == 1
             if idi == "en": ok4 = ok4 and p4.inner_text("#cmpAceptar") == "Accept all"
-            check("aviso de cookies presente en /" + ruta + " y sin cargar Google antes de decidir", ok4)
+            ok4 = ok4 and "gtm.js?id=GTM-WN89TQCM" in p4.content()
+            check("aviso de cookies y código de Google (denegado) presentes en /" + ruta, ok4)
             c4.close()
     except Exception as e:
         check("aviso de consentimiento", False, str(e)[:200])

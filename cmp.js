@@ -1,7 +1,7 @@
 /* TIKITEXTO · aviso de cookies y medición (compartido por todas las páginas).
  * - Almacenamiento necesario: siempre activo, no necesita consentimiento.
  * - Medición de visitas SIN cookies (Cloudflare Web Analytics): activa salvo que se rechace.
- * - Google Tag Manager / Google Analytics (CON cookies): desactivado por defecto; solo se carga si el visitante lo acepta.
+ * - Google Tag Manager / Google Analytics (CON cookies): el código está en el <head> (lo añade tools/csp.py) con el consentimiento DENEGADO por defecto (Consent Mode); aquí solo se concede si el visitante acepta.
  * Elección guardada en localStorage: "tikitexto:consentimiento" (si/no, medición sin cookies) y "tikitexto:analitica" (si/no, Google).
  * Cualquier otra etiqueta que se añada dentro de Tag Manager también queda bajo este consentimiento. */
 (function () {
@@ -34,7 +34,7 @@
   }
 
   /* ---- Cargas ---- */
-  var cfCargado = false, gtmCargado = false;
+  var cfCargado = false, gtmActivo = false;
   function cargarCf() {
     if (cfCargado) return; cfCargado = true;
     var s = document.createElement("script");
@@ -42,13 +42,9 @@
     s.setAttribute("data-cf-beacon", '{"token": "' + CF_TOKEN + '"}');
     document.head.appendChild(s);
   }
-  function cargarGtm() {
-    if (!GTM_ID || gtmCargado) return; gtmCargado = true;
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-    var s = document.createElement("script");
-    s.async = true; s.src = "https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(GTM_ID);
-    document.head.appendChild(s);
+  function consentir(v) { // modo de consentimiento de Google: el código de Tag Manager ya está en <head> con todo denegado
+    if (!GTM_ID || typeof window.gtag !== "function") return;
+    window.gtag("consent", "update", { analytics_storage: v ? "granted" : "denied" });
   }
   function borrarCookiesGoogle() {
     var partes = location.hostname.split("."), doms = ["", location.hostname, "." + location.hostname];
@@ -63,8 +59,11 @@
   }
   function aplicar() {
     if (medicion()) cargarCf();
-    if (leer(KG) === "si") cargarGtm();
-    else if (gtmCargado || /(^|;\s*)_ga/.test(document.cookie)) { borrarCookiesGoogle(); if (gtmCargado) location.reload(); }
+    if (leer(KG) === "si") { consentir(true); gtmActivo = true; }
+    else {
+      consentir(false);
+      if (gtmActivo || /(^|;\s*)_ga/.test(document.cookie)) { borrarCookiesGoogle(); if (gtmActivo) location.reload(); }
+    }
   }
 
   /* ---- Interfaz ---- */
