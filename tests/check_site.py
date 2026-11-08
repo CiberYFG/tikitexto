@@ -20,7 +20,7 @@ with sync_playwright() as p:
     br = p.chromium.launch()
     ctx = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
     # Las pruebas del juego van en español; el selector de idioma se prueba aparte (3d)
-    ctx.add_init_script("if(!localStorage.getItem('tikitexto:idioma'))localStorage.setItem('tikitexto:idioma','es');if(!localStorage.getItem('tikitexto:consentimiento'))localStorage.setItem('tikitexto:consentimiento','no');")
+    ctx.add_init_script("if(!localStorage.getItem('tikitexto:idioma'))localStorage.setItem('tikitexto:idioma','es');if(!localStorage.getItem('tikitexto:consentimiento'))localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');")
     api = ctx.request
 
     print("1) Archivos publicados")
@@ -90,7 +90,7 @@ with sync_playwright() as p:
         pg2 = ctx2.new_page()
         pg2.route("**/rest/v1/rpc/*", lambda r: r.abort())
         pg2.add_init_script(
-            "if(!sessionStorage.getItem('tt')){sessionStorage.setItem('tt','1');sessionStorage.setItem('tikitexto:intro','1');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');}")
+            "if(!sessionStorage.getItem('tt')){sessionStorage.setItem('tt','1');sessionStorage.setItem('tikitexto:intro','1');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');}")
         pg2.goto(BASE, wait_until="networkidle", timeout=60000)
         pg2.wait_for_timeout(800)
         check("tutorial: no aparece nada más entrar", not pg2.is_visible("#modalTutorial"))
@@ -184,6 +184,7 @@ with sync_playwright() as p:
         pi.evaluate("localStorage.setItem('tikitexto:idioma','es')")
         pi.reload(wait_until="networkidle")
         pi.wait_for_timeout(400)
+        if pi.is_visible("#cmp"): pi.click("#cmpRechazar")   # el aviso de cookies tapa el pie hasta que se decide
         pi.click("#botonAjustes")
         pi.wait_for_timeout(200)
         check("el botón de ajustes abre el panel con 6 idiomas y se puede cerrar", pi.is_visible(".ajustes") and pi.locator(".ajustes .idioma__op").count() == 6 and (pi.keyboard.press("Escape") or True) and not pi.is_visible(".ajustes"))
@@ -254,37 +255,75 @@ with sync_playwright() as p:
     except Exception as e:
         check("páginas de búsqueda", False, str(e)[:150])
 
-    print("3f) Aviso de consentimiento")
+    print("3f) Aviso de consentimiento (medición sin cookies + Google solo con aceptación)")
     try:
-        cc = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
-        cc.add_init_script("if(!localStorage.getItem('tikitexto:idioma'))localStorage.setItem('tikitexto:idioma','es');sessionStorage.setItem('tikitexto:intro','1');")
-        errs_c, cf = [], []
-        pc = cc.new_page()
-        pc.on("pageerror", lambda e: errs_c.append(str(e)))
-        pc.on("request", lambda r: cf.append(r.url) if "cloudflareinsights" in r.url else None)
-        pc.route("**/rest/v1/rpc/*", lambda r: r.abort())
-        pc.route("**/static.cloudflareinsights.com/**", lambda r: r.fulfill(status=200, content_type="text/javascript", body=""))
+        def _ctx(init=""):
+            c_ = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+            c_.add_init_script("if(!localStorage.getItem('tikitexto:idioma'))localStorage.setItem('tikitexto:idioma','es');sessionStorage.setItem('tikitexto:intro','1');" + init)
+            return c_
+        def _pag(c_, cf_, gt_, errs_):
+            p_ = c_.new_page()
+            p_.on("pageerror", lambda e: errs_.append(str(e)))
+            p_.on("request", lambda r: cf_.append(r.url) if "cloudflareinsights" in r.url else (gt_.append(r.url) if "googletagmanager" in r.url or "google-analytics" in r.url else None))
+            p_.route("**/rest/v1/rpc/*", lambda r: r.abort())
+            p_.route("**/static.cloudflareinsights.com/**", lambda r: r.fulfill(status=200, content_type="text/javascript", body=""))
+            p_.route("**/www.googletagmanager.com/**", lambda r: r.fulfill(status=200, content_type="text/javascript", body=""))
+            return p_
+        errs_c, cf, gt = [], [], []
+        cc = _ctx()
+        pc = _pag(cc, cf, gt, errs_c)
         pc.goto(BASE, wait_until="networkidle", timeout=60000)
         pc.wait_for_timeout(500)
-        check("el aviso informativo aparece en la primera visita", pc.is_visible("#cmp"))
+        check("el aviso aparece en la primera visita", pc.is_visible("#cmp"))
         check("la medición sin cookies está activa por defecto", len(cf) > 0)
+        check("Google Tag Manager NO se carga antes de decidir", not gt)
         cf.clear()
-        check("los botones del aviso se ven y se pueden pulsar", pc.locator("#cmpRechazar").bounding_box()["height"] >= 30 and pc.locator("#cmpAceptar").bounding_box()["height"] >= 30)
+        br_ = pc.locator("#cmpRechazar").bounding_box(); ba_ = pc.locator("#cmpAceptar").bounding_box()
+        check("«Rechazar todo» y «Aceptar todo» se ven y tienen el mismo peso (tamaño igual)", br_["height"] >= 30 and ba_["height"] >= 30 and abs(br_["width"] - ba_["width"]) < 4 and abs(br_["height"] - ba_["height"]) < 4)
+        check("los textos de los botones son «Rechazar todo» y «Aceptar todo»", pc.inner_text("#cmpRechazar") == "Rechazar todo" and pc.inner_text("#cmpAceptar") == "Aceptar todo")
         pc.click("#cmpRechazar")
-        check("desactivar guarda 'no' y oculta el aviso", pc.evaluate("localStorage.getItem('tikitexto:consentimiento')") == "no" and not pc.is_visible("#cmp"))
+        check("rechazar todo guarda 'no' en ambas elecciones y oculta el aviso", pc.evaluate("localStorage.getItem('tikitexto:consentimiento')+localStorage.getItem('tikitexto:analitica')") == "nono" and not pc.is_visible("#cmp"))
         pc.reload(wait_until="networkidle")
-        check("tras desactivarla no vuelve a salir ni mide", not pc.is_visible("#cmp") and not cf)
+        check("tras rechazar no vuelve a salir ni mide ni carga Google", not pc.is_visible("#cmp") and not cf and not gt)
         pc.evaluate("document.getElementById('abrirCookies').click()")
         check("Configurar cookies reabre el panel", pc.is_visible("#cmpAjustes"))
-        check("el interruptor refleja que está desactivada", not pc.is_checked("#cmpMed"))
-        pc.check("#cmpMed")
+        check("los interruptores reflejan que todo está desactivado", not pc.is_checked("#cmpMed") and not pc.is_checked("#cmpGa"))
+        pc.check("#cmpMed"); pc.check("#cmpGa")
         pc.click("#cmpGuardar")
-        pc.wait_for_timeout(500)
-        check("reactivarla vuelve a medir", pc.evaluate("localStorage.getItem('tikitexto:consentimiento')") == "si" and len(cf) > 0)
+        pc.wait_for_timeout(700)
+        check("activar ambos guarda 'si' y carga Cloudflare y Google Tag Manager", pc.evaluate("localStorage.getItem('tikitexto:consentimiento')+localStorage.getItem('tikitexto:analitica')") == "sisi" and len(cf) > 0 and any("GTM-" in u for u in gt))
         check("sin errores de JavaScript con el aviso", not errs_c, "; ".join(errs_c)[:200])
         cc.close()
+        # aceptar todo con un solo botón
+        cf2, gt2, e2 = [], [], []
+        c2 = _ctx(); p2 = _pag(c2, cf2, gt2, e2)
+        p2.goto(BASE, wait_until="networkidle", timeout=60000); p2.wait_for_timeout(400)
+        p2.click("#cmpAceptar"); p2.wait_for_timeout(700)
+        check("«Aceptar todo» activa ambas cosas con un solo clic", p2.evaluate("localStorage.getItem('tikitexto:consentimiento')+localStorage.getItem('tikitexto:analitica')") == "sisi" and any("GTM-" in u for u in gt2) and not p2.is_visible("#cmp"))
+        # retirar el consentimiento de Google borra sus cookies
+        p2.evaluate("document.cookie='_ga=1;path=/';document.cookie='_ga_ABC=1;path=/'")
+        p2.evaluate("document.getElementById('abrirCookies').click()"); p2.uncheck("#cmpGa")
+        with p2.expect_navigation(timeout=15000):
+            p2.click("#cmpGuardar")
+        p2.wait_for_timeout(400)
+        check("retirar Google borra sus cookies y guarda 'no'", p2.evaluate("localStorage.getItem('tikitexto:analitica')") == "no" and "_ga" not in p2.evaluate("document.cookie"))
+        c2.close()
+        # quien aceptó solo la medición antigua vuelve a ver el aviso (propósito nuevo)
+        c3 = _ctx("localStorage.setItem('tikitexto:consentimiento','si');"); e3 = []
+        p3 = _pag(c3, [], [], e3); p3.goto(BASE, wait_until="networkidle", timeout=60000); p3.wait_for_timeout(400)
+        check("quien solo había aceptado la medición sin cookies vuelve a ver el aviso por Google", p3.is_visible("#cmp"))
+        c3.close()
+        # el aviso está también fuera de la portada (curiosidades, artículo, legales) y en otros idiomas
+        for ruta, idi in (("curiosidades/", "es"), ("articulos/reglas-basicas-del-futbol-para-principiantes/", "es"), ("en/curiosidades/", "en"), ("cookies.html", "es")):
+            c4 = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block"); g4 = []
+            p4 = _pag(c4, [], g4, [])
+            p4.goto(BASE + ruta, wait_until="networkidle", timeout=60000); p4.wait_for_timeout(400)
+            ok4 = p4.is_visible("#cmp") and not g4 and p4.locator("#cmpAceptar").count() == 1
+            if idi == "en": ok4 = ok4 and p4.inner_text("#cmpAceptar") == "Accept all"
+            check("aviso de cookies presente en /" + ruta + " y sin cargar Google antes de decidir", ok4)
+            c4.close()
     except Exception as e:
-        check("aviso de consentimiento", False, str(e)[:150])
+        check("aviso de consentimiento", False, str(e)[:200])
 
     print("3g) Racha diaria y compartir")
     try:
@@ -295,7 +334,7 @@ with sync_playwright() as p:
         pgg.route("**/rest/v1/rpc/*", lambda r: r.abort())
         perf = {"pts": 0, "jugadas": 0, "aciertos": 0, "racha": 0, "mejor": 0, "dist": [0] * 6, "diario": "", "token": "T" * 24, "online": True, "pend": 0, "diaD": 2, "diaMejor": 2, "diaUlt": "AYER"}
         pgg.add_init_script("var d=new Date();d.setDate(d.getDate()-1);var a=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();var p=" + json.dumps(perf) + ";p.diaUlt=a;"
-            "localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');sessionStorage.setItem('tikitexto:intro','1');"
+            "localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');"
             "localStorage.setItem('tikitexto:jugadores',JSON.stringify({actual:'BotRacha',perfiles:{BotRacha:p}}));")
         pgg.goto(BASE, wait_until="networkidle", timeout=60000)
         pgg.click('[data-modo="diario"]')
@@ -343,7 +382,7 @@ with sync_playwright() as p:
         pi2 = ci.new_page()
         errs_i = []
         pi2.on("pageerror", lambda e: errs_i.append(str(e)))
-        pi2.add_init_script("sessionStorage.setItem('tikitexto:intro','1');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');")
+        pi2.add_init_script("sessionStorage.setItem('tikitexto:intro','1');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');")
         pi2.goto(BASE, wait_until="networkidle", timeout=60000)
         check("instalar app: oculto por defecto", pi2.evaluate("document.getElementById('instalarCaja').hidden"))
         pi2.evaluate("(()=>{const e=new Event('beforeinstallprompt');e.prompt=()=>{window.__p=1};window.dispatchEvent(e)})()")
@@ -364,7 +403,7 @@ with sync_playwright() as p:
         pu = cu.new_page()
         errs_u = []
         pu.on("pageerror", lambda e: errs_u.append(str(e)))
-        pu.add_init_script("sessionStorage.setItem('tikitexto:intro','1');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');")
+        pu.add_init_script("sessionStorage.setItem('tikitexto:intro','1');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');")
         pu.goto(BASE + "?modo=estadios_us", wait_until="networkidle", timeout=60000)
         pu.wait_for_timeout(800)
         check("estadios EE. UU.: el modo arranca sin errores", not errs_u and pu.locator("#tablero, .tablero, .fila").count() > 0, "; ".join(errs_u)[:120])
@@ -383,7 +422,7 @@ with sync_playwright() as p:
         pa.route("**/rest/v1/rpc/*", lambda r: r.abort())
         perfil_a = dict(perfil, nv={"t": 0, "f": 0, "tut": {}})
         pa.add_init_script(
-            "if(!sessionStorage.getItem('aht')){sessionStorage.setItem('aht','1');sessionStorage.setItem('tikitexto:intro','1');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');"
+            "if(!sessionStorage.getItem('aht')){sessionStorage.setItem('aht','1');sessionStorage.setItem('tikitexto:intro','1');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');"
             "localStorage.setItem('tikitexto:jugadores'," + json.dumps(json.dumps({"actual": "BotAh", "perfiles": {"BotAh": perfil_a}})) + ");}")
         pa.goto(BASE, wait_until="networkidle", timeout=60000)
         pa.wait_for_timeout(500)
@@ -437,7 +476,7 @@ with sync_playwright() as p:
             cuerpo = {"estado": "ok", "pts": 0, "puesto": 7} if n_ in ("reclamar_nombre", "registrar_acierto") else []
             r.fulfill(status=200, content_type="application/json", body=json.dumps(cuerpo))
         pgi.route("**/rest/v1/rpc/*", _rpc)
-        pgi.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');")
+        pgi.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');")
         pgi.goto(BASE, wait_until="domcontentloaded", timeout=60000)
         pgi.wait_for_selector("#intro", state="attached")
         check("intro: arranca sola (sin «Toca para empezar»)", pgi.evaluate("document.getElementById('intro').classList.contains('intro--play')") and "Toca para empezar" not in pgi.content())
@@ -610,7 +649,7 @@ with sync_playwright() as p:
         ph = br.new_context().new_page()
         ph.goto(BASE + "cookies.html", wait_until="networkidle")
         ph.click("#medicion-boton")
-        check("cookies.html: el botón de medición funciona (JS sin errores de sintaxis)", ph.evaluate("localStorage.getItem('tikitexto:consentimiento')") in ("si", "no"))
+        check("cookies.html: «Cambiar mi elección» abre el panel de configuración", ph.is_visible("#cmpAjustes"))
     except Exception as e:
         check("seguridad CSP", False, str(e)[:150])
 

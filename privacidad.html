@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="google-adsense-account" content="ca-pub-3562310629171137">
@@ -35,7 +35,7 @@ li { margin: 4px 0; }
 <p class="nota-idioma" translate="no" style="margin:0 0 14px;padding:10px 12px;border-radius:10px;background:rgba(127,127,127,.12);font-size:.85rem">🌐 Esta página está solo en español (versión oficial). · This page is only available in Spanish (official version): use your browser's translate feature. · Cette page n'existe qu'en espagnol. · Esta página só está em espanhol. · Questa pagina è disponibile solo in spagnolo. · Diese Seite gibt es nur auf Spanisch.</p>
   <p><a href="./">‹ Volver al juego</a></p>
   <h1>Política de privacidad</h1>
-  <p class="fecha">Última actualización: 1 de noviembre de 2026</p>
+  <p class="fecha">Última actualización: 8 de noviembre de 2026</p>
 
   <div class="caja">Esta política explica de forma sencilla qué datos trata TIKITEXTO, para qué y qué derechos tienes. Al crear tu cuenta aceptas lo que se indica aquí.</div>
 
@@ -49,6 +49,7 @@ li { margin: 4px 0; }
     <li><strong>Una huella de tu código de recuperación.</strong> El código lo guardas tú; en nuestro servidor solo se almacena una huella (hash) para comprobar que la cuenta es tuya.</li>
     <li><strong>Tus puntos</strong> (tikitextos) y la fecha y hora de tu último acierto.</li>
     <li><strong>Estadísticas agregadas de visitas</strong> (país aproximado, páginas vistas, tipo de navegador y de dispositivo), medidas con Cloudflare Web Analytics, que según indica no usa cookies ni rastrea a los visitantes de forma individual.</li>
+    <li><strong>Analítica de Google</strong> (solo si la aceptas): mediante Google Tag Manager y Google Analytics se instalan cookies (<code>_ga</code> y <code>_ga_&lt;identificador&gt;</code>) y Google recibe un identificador pseudónimo del navegador, tu dirección IP (que Google Analytics 4 no registra ni almacena), las páginas que visitas, el tiempo en ellas, el tipo de dispositivo y navegador, el idioma y la ubicación aproximada. Se usa para saber qué contenidos interesan y mejorar la web.</li>
     <li><strong>Invitaciones.</strong> Si abres un enlace de invitación (con <code>?inv=</code>), se guarda una huella (hash) de un identificador aleatorio de tu navegador y el nickname de quien te invitó, solo para evitar premios repetidos o abusos. No incluye datos personales y se borra si el invitador elimina su cuenta.</li>
     <li><strong>Datos técnicos</strong> (dirección IP, navegador, fecha de acceso) que los servidores de alojamiento y de base de datos registran de forma automática al conectarte.</li>
   </ul>
@@ -59,6 +60,7 @@ li { margin: 4px 0; }
     <li>Crear tu cuenta, contar tus puntos y mostrar el ranking: <em>ejecución del servicio que solicitas</em> (art. 6.1.b RGPD).</li>
     <li>Mantener la seguridad, evitar abusos y trampas en el ranking: <em>interés legítimo</em> (art. 6.1.f RGPD).</li>
     <li>Conocer de forma agregada cuánta gente usa el sitio para mejorarlo: <em>interés legítimo</em> (art. 6.1.f RGPD). Es una medición sin cookies y sin identificar a nadie; puedes oponerte y desactivarla en cualquier momento desde «Configurar cookies» o en el aviso informativo.</li>
+    <li>Analítica con Google Analytics: tu <em>consentimiento</em> (art. 6.1.a RGPD y art. 22.2 LSSI). Solo se activa si pulsas «Aceptar todo» o la activas en «Configurar»; puedes retirarlo en cualquier momento desde «Configurar cookies» con la misma facilidad con la que lo diste, y las cookies de Google se borran. Retirarlo no afecta al juego ni al ranking.</li>
   </ul>
   <p>ATENCIÓN: el ranking es <strong>público</strong>. Cualquier persona puede ver tu nickname y tus puntos.</p>
 
@@ -67,12 +69,13 @@ li { margin: 4px 0; }
     <li><strong>Supabase</strong> (base de datos del ranking). Región del servidor: Europa.</li>
     <li><strong>GitHub Pages</strong> (alojamiento de la web).</li>
     <li><strong>Cloudflare</strong> (medición de visitas agregada, Web Analytics).</li>
+    <li><strong>Google</strong> (Google Tag Manager y Google Analytics, solo si lo aceptas). Google Ireland Limited presta el servicio en el Espacio Económico Europeo y Google LLC, en Estados Unidos, puede tratar datos como proveedor; las transferencias se amparan en las garantías que ofrece Google (por ejemplo, el Marco de Privacidad de Datos UE-EE. UU. o cláusulas contractuales tipo). Más información en <a href="https://policies.google.com/privacy?hl=es" target="_blank" rel="noopener">policies.google.com/privacy</a>.</li>
   </ul>
   <p>No vendemos tus datos ni los cedemos con fines comerciales. Si algún proveedor trata datos fuera del Espacio Económico Europeo, lo hará con las garantías que exige la normativa (por ejemplo, cláusulas contractuales tipo).</p>
 
   <h2>5. Almacenamiento en tu dispositivo y cookies</h2>
   <p>El juego guarda en tu navegador (almacenamiento local) tu cuenta, tu partida en curso, tus estadísticas y tu preferencia de tema. Son datos <strong>estrictamente necesarios</strong> para que el juego funcione, y no se usan para seguirte. Puedes borrarlos desde los ajustes del navegador, aunque entonces perderás tu sesión (podrás recuperarla con tu código).</p>
-  <p>Encontrarás el detalle en la <a href="cookies.html">política de cookies</a>, donde también puedes <a href="cookies.html#configurar">configurar las cookies</a>. Actualmente la web <strong>no usa cookies de seguimiento</strong>. La medición de visitas (que funciona sin cookies y sin guardar nada en tu dispositivo) está activa por defecto, se te informa en un aviso al entrar y puedes desactivarla cuando quieras desde «Configurar cookies». Si en el futuro se incorporan cookies que requieran consentimiento, se te informará y se te pedirá antes de activarlas.</p>
+  <p>Encontrarás el detalle en la <a href="cookies.html">política de cookies</a>, donde también puedes <a href="cookies.html#configurar">configurar las cookies</a>. La web <strong>no usa cookies de redes sociales</strong>. La medición de visitas sin cookies (Cloudflare) está activa por defecto y puedes desactivarla. Las <strong>cookies de analítica de Google</strong> solo se instalan si las aceptas en el aviso que verás al entrar («Aceptar todo», «Rechazar todo» o «Configurar»), y puedes cambiar tu elección cuando quieras desde «Configurar cookies». Si en el futuro se incorporan otras cookies que requieran consentimiento, se te informará y se te pedirá antes de activarlas.</p>
 
   <h2>6. Cuánto tiempo conservamos los datos</h2>
   <p>Mientras tu cuenta exista. Si la eliminas, tu nickname, tus puntos y la huella del código se borran del servidor de inmediato. Los registros técnicos automáticos se conservan el tiempo que establezcan los proveedores.</p>
@@ -107,5 +110,6 @@ li { margin: 4px 0; }
   </nav>
   <p class="fecha">TIKITEXTO no está afiliado a clubes, jugadores, federaciones ni competiciones. Los nombres se usan solo como referencia informativa.</p>
 </main>
+<script src="/cmp.js" defer></script>
 </body>
 </html>

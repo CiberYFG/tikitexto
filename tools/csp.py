@@ -10,7 +10,24 @@ from html.parser import HTMLParser
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CSP_RE = re.compile(r'(<meta http-equiv="Content-Security-Policy" content=")([^"]*)(")')
 SCRIPT_SRC_RE = re.compile(r"script-src [^;]*")
-EXTRA = "https://static.cloudflareinsights.com"
+EXTRA = "https://static.cloudflareinsights.com https://www.googletagmanager.com"
+# Google Tag Manager / Analytics (solo se cargan tras el consentimiento, ver cmp.js)
+CONNECT_EXTRA = ["https://cloudflareinsights.com", "https://*.google-analytics.com", "https://*.analytics.google.com", "https://*.googletagmanager.com"]
+IMG_EXTRA = ["https://*.google-analytics.com", "https://*.googletagmanager.com"]
+CMP_TAG = '<script src="/cmp.js" defer></script>'
+
+def completar(csp):
+    """Asegura que connect-src e img-src permiten los dominios de medición (añade la directiva si falta)."""
+    for nombre, extra, base in (("connect-src", CONNECT_EXTRA, "'self'"), ("img-src", IMG_EXTRA, "'self' data:")):
+        m = re.search(nombre + r" ([^;]*)", csp)
+        if m:
+            vals = m.group(1).split()
+            for e in extra:
+                if e not in vals: vals.append(e)
+            csp = csp[:m.start()] + nombre + " " + " ".join(vals) + csp[m.end():]
+        else:
+            csp = csp.rstrip().rstrip(";") + "; " + nombre + " " + base + " " + " ".join(extra)
+    return csp
 
 class _P(HTMLParser):
     def __init__(self):
@@ -39,10 +56,13 @@ def procesar(ruta, solo_comprobar=False):
     s = open(ruta, encoding="utf-8").read()
     m = CSP_RE.search(s)
     if not m: return None
-    nuevo = SCRIPT_SRC_RE.sub(directiva(s), m.group(2), count=1)
-    if nuevo == m.group(2): return True
+    nuevo = completar(SCRIPT_SRC_RE.sub(directiva(s), m.group(2), count=1))
+    res = s[:m.start(2)] + nuevo + s[m.end(2):]
+    if CMP_TAG not in res and "</body>" in res:   # aviso de cookies/medición en todas las páginas
+        res = res.replace("</body>", CMP_TAG + "\n</body>", 1)
+    if res == s: return True
     if solo_comprobar: return False
-    open(ruta, "w", encoding="utf-8").write(s[:m.start(2)] + nuevo + s[m.end(2):])
+    open(ruta, "w", encoding="utf-8").write(res)
     return True
 
 def paginas():

@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="google-adsense-account" content="ca-pub-3562310629171137">
@@ -66,7 +66,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--acento); outlin
     <li>No copiamos ni traducimos textos de otras webs, ni usamos enciclopedias abiertas como fuente visible.</li>
     <li>No publicamos rumores, fichajes sin confirmar ni resultados de apuestas.</li>
     <li>No usamos escudos, fotografías ni logotipos de clubes, selecciones o jugadores.</li>
-    <li>No pedimos datos personales para leer ninguna página: se puede jugar como invitado y la medición de visitas funciona sin cookies y se puede desactivar.</li>
+    <li>No pedimos datos personales para leer ninguna página: se puede jugar como invitado. La medición de visitas funciona sin cookies, y las cookies de analítica de Google solo se activan si las aceptas; puedes rechazarlas en el aviso y cambiar tu elección cuando quieras.</li>
   </ul>
 
   <h2>Errores y correcciones</h2>
@@ -90,5 +90,6 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--acento); outlin
   </nav>
   <p class="fecha">TIKITEXTO no está afiliado a clubes, jugadores, federaciones ni competiciones. Los nombres se usan solo como referencia informativa.</p>
 </main>
+<script src="/cmp.js" defer></script>
 </body>
 </html>

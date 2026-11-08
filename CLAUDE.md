@@ -144,3 +144,10 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 - `404.html`: página de error con navegación (noindex). La reescribe `csp.py` como al resto.
 - Test 3u en `check_site.py`: sin enlaces internos rotos en ninguna página HTML, artículos nuevos con FAQ y +700 palabras, 404 y bloques de las páginas de juego.
 
+## Aviso de cookies compartido + Google Tag Manager con consentimiento (8-nov-2026)
+- `cmp.js` (raíz) es el aviso de cookies y medición de **todas** las páginas: botones «Rechazar todo» / «Configurar» / «Aceptar todo» (los dos primeros con el mismo tamaño), textos en 6 idiomas dentro del propio archivo (ya no están en `fuente.txt`) y las mismas ids (`#cmp`, `#cmpAceptar`, `#cmpRechazar`, `#cmpMed`, `#cmpGa`…). `tools/csp.py` añade `<script src="/cmp.js" defer>` a cada página con CSP, así que sigue siendo el último paso de la regeneración.
+- Elecciones en `localStorage`: `tikitexto:consentimiento` (si/no, Cloudflare sin cookies, activo salvo rechazo) y `tikitexto:analitica` (si/no, Google). Google Tag Manager (`GTM_ID` = `GTM-WN89TQCM`, en `cmp.js`) **solo se carga con `analitica` = si**; al retirarlo se borran `_ga*` y se recarga. Quien aceptó solo la medición antigua vuelve a ver el aviso una vez. `window.TIKI_CMP.abrir()` abre la configuración (`#abrirCookies` o `[data-abrir-cookies]`).
+- Dentro de GTM usar solo etiquetas integradas (GA4): las de HTML personalizado las bloquea la CSP (sin `unsafe-inline`/`unsafe-eval`). La CSP admite `googletagmanager.com`, `*.google-analytics.com` y `*.analytics.google.com` (`tools/csp.py`: `EXTRA`, `CONNECT_EXTRA`, `IMG_EXTRA`).
+- `cookies.html`, `privacidad.html` y `sobre-tikitexto.html` actualizados. Siguen sin mencionar anuncios (test 3t).
+- Test 3f reescrito (Google no carga antes de decidir, aceptar/rechazar todo, borrado de cookies, aviso en otras páginas e idiomas).
+
