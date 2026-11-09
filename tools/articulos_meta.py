@@ -29,6 +29,11 @@ META = {
     "historia-y-evolucion-del-portero": dict(c=("#a21caf", "#f0abfc"), e="🧤"),
     "champions-europa-league-conference-league-diferencias": dict(c=("#0e7490", "#67e8f9"), e="⭐"),
     "como-leer-las-estadisticas-de-un-partido": dict(c=("#be185d", "#f9a8d4"), e="🔢"),
+    "derbis-y-rivalidades-mas-famosas-del-futbol": dict(c=("#b91c1c", "#fca5a5"), e="🔥"),
+    "historia-del-futbol-femenino-de-los-origenes-a-hoy": dict(c=("#be185d", "#f9a8d4"), e="👩"),
+    "como-llegar-a-futbolista-profesional-camino-y-cantera": dict(c=("#15803d", "#86efac"), e="🌱"),
+    "como-funciona-un-club-de-futbol-por-dentro": dict(c=("#1d4ed8", "#93c5fd"), e="🏟️"),
+    "preparacion-fisica-del-futbolista-entrenamiento-alimentacion-y-descanso": dict(c=("#c2410c", "#fdba74"), e="💪"),
 }
 def meta(slug):
     return META.get(slug, dict(c=("#1747d6", "#6b9bff"), e="📖"))
