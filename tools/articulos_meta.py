@@ -34,6 +34,16 @@ META = {
     "como-llegar-a-futbolista-profesional-camino-y-cantera": dict(c=("#15803d", "#86efac"), e="🌱"),
     "como-funciona-un-club-de-futbol-por-dentro": dict(c=("#1d4ed8", "#93c5fd"), e="🏟️"),
     "preparacion-fisica-del-futbolista-entrenamiento-alimentacion-y-descanso": dict(c=("#c2410c", "#fdba74"), e="💪"),
+    "como-es-un-estadio-de-futbol-por-dentro-partes-y-funcionamiento": dict(c=("#0f766e", "#5eead4"), e="🏟️"),
+    "como-se-ficha-a-un-futbolista-paso-a-paso": dict(c=("#4d7c0f", "#bef264"), e="✍️"),
+    "que-es-el-control-economico-en-el-futbol-fair-play-financiero": dict(c=("#a16207", "#fde047"), e="💶"),
+    "historia-de-las-camisetas-de-futbol-colores-dorsales-y-patrocinios": dict(c=("#7c3aed", "#c4b5fd"), e="👕"),
+    "fundamentos-tecnicos-del-futbol-control-pase-regate-y-tiro": dict(c=("#0369a1", "#7dd3fc"), e="🎯"),
+    "como-organizar-un-torneo-de-futbol-con-amigos-formatos-y-calendario": dict(c=("#b45309", "#fdba74"), e="🏆"),
+    "futbol-sala-futbol-7-y-futbol-playa-diferencias-con-el-futbol-11": dict(c=("#0e7490", "#67e8f9"), e="🏖️"),
+    "estilos-de-juego-en-el-futbol-posesion-contraataque-y-presion": dict(c=("#be123c", "#fda4af"), e="🧠"),
+    "primera-vez-en-un-estadio-de-futbol-guia-practica-para-aficionados": dict(c=("#15803d", "#86efac"), e="🎟️"),
+    "cultura-de-grada-canticos-penas-y-rituales-del-aficionado": dict(c=("#c2410c", "#fdba74"), e="📣"),
 }
 def meta(slug):
     return META.get(slug, dict(c=("#1747d6", "#6b9bff"), e="📖"))
