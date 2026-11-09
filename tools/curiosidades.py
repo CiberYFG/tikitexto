@@ -361,7 +361,7 @@ def seguir(L):
         h += f'<a class="tarjeta" href="{L.url("curiosidades/" + sl)}">{icono}<b>{e(b)}</b><span>{e(sp)}</span></a>\n'
     return h + '</div></section>\n'
 
-def pie(L, extra="", con_seguir=True):
+def pie(L, extra="", con_seguir=False):
     u = L.ui; n = u["nav"]
     return f"""{extra}
 <p><a class="jugar" href="{L.play()}">{e(u['play'])}</a></p>
