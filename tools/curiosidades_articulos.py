@@ -12,8 +12,9 @@ from articulos_b import ARTICULOS_B
 from articulos_c import ARTICULOS_C
 from articulos_d import ARTICULOS_D
 from articulos_e import ARTICULOS_E
+from articulos_f import ARTICULOS_F
 
-ARTICULOS = ARTICULOS_A + ARTICULOS_B + ARTICULOS_C + ARTICULOS_D + ARTICULOS_E
+ARTICULOS = ARTICULOS_A + ARTICULOS_B + ARTICULOS_C + ARTICULOS_D + ARTICULOS_E + ARTICULOS_F
 SLUGS = {a["slug"] for a in ARTICULOS}
 FECHA = "Artículo de TIKITEXTO · 3 de noviembre de 2026"
 HUB = "articulos"

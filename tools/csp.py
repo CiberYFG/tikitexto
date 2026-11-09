@@ -58,6 +58,12 @@ def huellas(html):
 def directiva(html):
     return "script-src 'self' " + " ".join(sorted(set(huellas(html)))) + (" " if huellas(html) else "") + EXTRA
 
+# Páginas finas (traducciones cortas): fuera del índice de buscadores hasta que tengan contenido propio
+NOINDEX = {"pt/index.html", "fr/index.html", "it/index.html", "de/index.html",
+           "pt/curiosidades/index.html", "fr/curiosidades/index.html", "it/curiosidades/index.html", "de/curiosidades/index.html",
+           "de/fussballer-raten/index.html", "de/fussballverein-raten/index.html", "de/nationalmannschaft-raten/index.html",
+           "de/trainer-raten/index.html", "de/stadion-raten/index.html"}
+
 def procesar(ruta, solo_comprobar=False):
     s = open(ruta, encoding="utf-8").read()
     m = CSP_RE.search(s)
@@ -71,6 +77,8 @@ def procesar(ruta, solo_comprobar=False):
     res = s1[:m.start(2)] + nuevo + s1[m.end(2):]
     if CMP_TAG not in res and "</body>" in res:   # aviso de cookies/medición en todas las páginas
         res = res.replace("</body>", CMP_TAG + "\n</body>", 1)
+    if os.path.relpath(ruta, RAIZ).replace(os.sep, "/") in NOINDEX:
+        res = re.sub(r'(<meta name="robots" content=")[^"]*(")', r'\1noindex, follow\2', res, count=1)
     if res == s: return True
     if solo_comprobar: return False
     open(ruta, "w", encoding="utf-8").write(res)
@@ -87,4 +95,11 @@ if __name__ == "__main__":
     mal = [p for p in paginas() if procesar(p, chk) is False]
     if chk:
         print(("FALLAN: " + ", ".join(mal)) if mal else "CSP al día"); sys.exit(1 if mal else 0)
+    sm = os.path.join(RAIZ, "sitemap.xml")
+    if os.path.exists(sm):
+        x = open(sm, encoding="utf-8").read()
+        for r in NOINDEX:
+            u = "https://tikitexto.com/" + r.replace("index.html", "")
+            x = re.sub(r"  <url><loc>" + re.escape(u) + r"</loc>.*?</url>\n", "", x)
+        open(sm, "w", encoding="utf-8").write(x)
     print("CSP actualizada en", sum(1 for _ in paginas()), "páginas")

@@ -23,6 +23,12 @@ META = {
     "quien-es-quien-en-un-partido-arbitros-y-senales": dict(c=("#b91c1c", "#fca5a5"), e="🟨"),
     "historia-del-balon-de-futbol": dict(c=("#0369a1", "#7dd3fc"), e="⚽"),
     "formatos-de-competicion-liga-copa-y-playoff": dict(c=("#a16207", "#fde047"), e="🗂️"),
+    "origenes-del-futbol-moderno-de-1863-a-hoy": dict(c=("#9a3412", "#fdba74"), e="📜"),
+    "como-funciona-el-var-en-el-futbol": dict(c=("#1e40af", "#93c5fd"), e="📺"),
+    "como-se-decide-quien-gana-la-liga-desempates": dict(c=("#047857", "#6ee7b7"), e="📊"),
+    "historia-y-evolucion-del-portero": dict(c=("#a21caf", "#f0abfc"), e="🧤"),
+    "champions-europa-league-conference-league-diferencias": dict(c=("#0e7490", "#67e8f9"), e="⭐"),
+    "como-leer-las-estadisticas-de-un-partido": dict(c=("#be185d", "#f9a8d4"), e="🔢"),
 }
 def meta(slug):
     return META.get(slug, dict(c=("#1747d6", "#6b9bff"), e="📖"))
