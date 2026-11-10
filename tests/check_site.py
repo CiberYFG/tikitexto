@@ -604,20 +604,20 @@ with sync_playwright() as p:
     except Exception as e:
         check("huecos de anuncios", False, str(e)[:150])
 
-    print("3q) Linterna maldita (Halloween, tiempo limitado)")
+    print("3q) Linterna de Navidad (tiempo limitado)")
     try:
         ch = br.new_context(viewport={"width": 430, "height": 900}); ph = ch.new_page()
         errs_q = []; ph.on("pageerror", lambda e: errs_q.append(str(e)))
         ph.goto(BASE, wait_until="networkidle", timeout=60000)
         ph.evaluate("localStorage.setItem('tikitexto:idioma','es')"); ph.reload(wait_until="networkidle")
-        activo = ph.evaluate("Date.now() <= window.TIKI_HW_FIN")
-        visible = ph.evaluate("!document.getElementById('hwCard').hidden")
-        check("halloween: la tarjeta se ve solo mientras dura el evento", activo == visible)
+        activo = ph.evaluate("Date.now() <= window.TIKI_ND_FIN")
+        visible = ph.evaluate("!document.getElementById('ndCard').hidden")
+        check("navidad: la tarjeta se ve solo mientras dura el evento", activo == visible)
         if activo:
-            check("halloween: indica tiempo limitado y cuenta atrás", "TIEMPO LIMITADO" in ph.inner_text("#hwCard").upper() and "Termina" in ph.inner_text("#hwCuenta"))
-            ph.evaluate("document.getElementById('hwCard').click()")
+            check("navidad: indica tiempo limitado y cuenta atrás", "TIEMPO LIMITADO" in ph.inner_text("#ndCard").upper() and "Termina" in ph.inner_text("#ndCuenta"))
+            ph.evaluate("document.getElementById('ndCard').click()")
             ph.wait_for_timeout(500)
-            check("linterna: abre su pantalla con el tema html.hw", ph.evaluate("!document.getElementById('pantallaLinterna').hidden && document.documentElement.classList.contains('hw')"))
+            check("linterna: abre su pantalla con el tema html.nd", ph.evaluate("!document.getElementById('pantallaLinterna').hidden && document.documentElement.classList.contains('nd')"))
             ph.click("#lzEmpezar"); ph.wait_for_timeout(500)
             check("linterna: hay campo oscuro, letras, fantasmas y pila", ph.evaluate("!!document.querySelector('#lzCampo .lz-oscuro') && document.querySelectorAll('.lz-letra').length >= 8 && document.querySelectorAll('.lz-fantasma').length === 2 && !!document.getElementById('lzPilaBarra')"))
             for n in range(6):
@@ -632,12 +632,12 @@ with sync_playwright() as p:
             ph.wait_for_timeout(1500)
             check("linterna: se superan las 3 noches y aparece el resultado", ph.evaluate("TIKI.lz.fin && TIKI.lz.hechos === 3") and "+1 tikitexto" in ph.inner_text("#lzResultado"))
         else:
-            ph.goto(BASE + "?modo=halloween", wait_until="networkidle", timeout=60000)
-            check("halloween caducado: el enlace directo no abre la linterna", ph.evaluate("document.getElementById('pantallaLinterna').hidden"))
+            ph.goto(BASE + "?modo=navidad", wait_until="networkidle", timeout=60000)
+            check("navidad caducada: el enlace directo no abre la linterna", ph.evaluate("document.getElementById('pantallaLinterna').hidden"))
         check("linterna: sin errores de JavaScript", not errs_q, "; ".join(errs_q)[:150])
         ch.close()
     except Exception as e:
-        check("linterna maldita", False, str(e)[:150])
+        check("linterna de navidad", False, str(e)[:150])
 
     print("3s) Seguridad: CSP sin unsafe-inline en scripts y huellas al día")
     try:
