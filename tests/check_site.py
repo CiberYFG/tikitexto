@@ -744,6 +744,34 @@ with sync_playwright() as p:
         except Exception as e:
             check("ranking_top responde", False, str(e)[:150])
 
+    print("3v) Buscador global, temas desplegables y tarjeta de Juegos")
+    try:
+        import json as _j
+        bj = _j.loads(api.get(BASE + "buscador.json").text())
+        check("buscador.json: 100+ páginas y sin noindex", len(bj) > 100 and not any(x["u"].startswith("/pt/") and x["u"] == "/pt/" for x in bj), str(len(bj)))
+        cv = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+        pv = cv.new_page(); errs_v = []
+        pv.on("pageerror", lambda e: errs_v.append(str(e)))
+        pv.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');")
+        pv.goto(BASE, wait_until="networkidle", timeout=60000); pv.wait_for_timeout(300)
+        check("portada: tarjeta Juegos con campo de fútbol y balón", pv.locator(".portal__card--juegos .jg-campo").count() == 1 and pv.locator(".portal__card--juegos .jg-balon").count() == 1)
+        pv.fill(".bus__in", "fuera de juego"); pv.wait_for_timeout(500)
+        check("buscador (portada): encuentra artículos sin tildes", pv.locator(".bus__lista li").count() >= 1 and "fuera de juego" in pv.inner_text(".bus__lista li >> nth=0").lower())
+        pv.fill(".bus__in", "xyzqw"); pv.wait_for_timeout(400)
+        check("buscador: mensaje sin resultados", pv.is_visible(".bus__vacio"))
+        pv.goto(BASE + "curiosidades/", wait_until="networkidle", timeout=60000); pv.wait_for_timeout(300)
+        check("curiosidades: temas cerrados al entrar", pv.locator("details.tema[open]").count() == 0 and pv.locator("details.tema").count() >= 6)
+        check("curiosidades: buscador presente", pv.locator(".bus__in").count() == 1)
+        pv.click("details.tema >> nth=0 >> summary"); pv.wait_for_timeout(200)
+        check("curiosidades: al pulsar el tema se ven sus categorías", pv.locator("details.tema[open] details.tema").count() == 6)
+        pv.goto(BASE + "articulos/", wait_until="networkidle", timeout=60000)
+        n_art = pv.evaluate("document.querySelectorAll('details.tema a.tarjeta').length")
+        check("articulos: 43 artículos agrupados en 6 temas", n_art == 43 and pv.locator("details.tema").count() == 6, str(n_art))
+        check("temas/buscador: sin errores de JavaScript", not errs_v, "; ".join(errs_v)[:150])
+        cv.close()
+    except Exception as e:
+        check("buscador y temas", False, str(e)[:150])
+
     br.close()
 
 # 3u) Enlaces internos de todas las páginas HTML (sin navegador) y artículos de explicación

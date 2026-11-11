@@ -47,3 +47,67 @@ META = {
 }
 def meta(slug):
     return META.get(slug, dict(c=("#1747d6", "#6b9bff"), e="📖"))
+
+
+CATS = [
+    ('reglas', '📘', 'Reglas y cómo se juega', 'Las reglas, el fuera de juego, el VAR, los penaltis y cómo se decide cada liga o torneo.', '#0f766e', [
+        'reglas-basicas-del-futbol-para-principiantes',
+        'quien-es-quien-en-un-partido-arbitros-y-senales',
+        'fuera-de-juego-regla-historia-var',
+        'como-funciona-el-var-en-el-futbol',
+        'historia-tandas-de-penaltis',
+        'formatos-de-competicion-liga-copa-y-playoff',
+        'como-se-decide-quien-gana-la-liga-desempates',
+        'mundial-fase-de-grupos-desempates-y-formato-2026',
+        'futbol-sala-futbol-7-y-futbol-playa-diferencias-con-el-futbol-11',
+    ]),
+    ('tactica', '🧠', 'Tácticas, técnica y estadísticas', 'Posiciones, formaciones, estilos de juego, fundamentos técnicos, xG y cómo leer un partido.', '#6d28d9', [
+        'posiciones-del-futbol-que-hace-cada-jugador',
+        'formaciones-tacticas-442-433-explicadas',
+        'estilos-de-juego-en-el-futbol-posesion-contraataque-y-presion',
+        'fundamentos-tecnicos-del-futbol-control-pase-regate-y-tiro',
+        'como-leer-las-estadisticas-de-un-partido',
+        'que-son-los-goles-esperados-xg',
+        'historia-y-evolucion-del-portero',
+        'preparacion-fisica-del-futbolista-entrenamiento-alimentacion-y-descanso',
+    ]),
+    ('premios', '🏆', 'Premios y trofeos', 'Balón de Oro, Bota de Oro, trofeos, países con más premios y Messi frente a Cristiano.', '#c98a00', [
+        'como-se-elige-el-balon-de-oro',
+        'como-funciona-la-bota-de-oro',
+        'premios-individuales-futbol-diferencias',
+        'trofeos-mas-importantes-del-futbol',
+        'paises-con-mas-balones-de-oro',
+        'messi-o-cristiano-comparacion-en-numeros',
+    ]),
+    ('historia', '📜', 'Historia y competiciones', 'Orígenes del fútbol, el balón, los dorsales, las camisetas, las ligas, la Champions, los derbis y el fútbol femenino.', '#dc2626', [
+        'origenes-del-futbol-moderno-de-1863-a-hoy',
+        'historia-del-balon-de-futbol',
+        'numeros-camiseta-dorsales-historia',
+        'historia-de-las-camisetas-de-futbol-colores-dorsales-y-patrocinios',
+        'liga-de-futbol-mas-antigua-del-mundo',
+        'remontadas-historicas-champions-league',
+        'champions-europa-league-conference-league-diferencias',
+        'derbis-y-rivalidades-mas-famosas-del-futbol',
+        'historia-del-futbol-femenino-de-los-origenes-a-hoy',
+    ]),
+    ('clubes', '🏟️', 'Clubes, fichajes y estadios', 'Cómo funciona un club, los traspasos, la cantera, el control económico, los estadios y la afición.', '#ea580c', [
+        'sentencia-bosman-clausulas-de-rescision-y-traspasos',
+        'como-llegar-a-futbolista-profesional-camino-y-cantera',
+        'como-funciona-un-club-de-futbol-por-dentro',
+        'como-se-ficha-a-un-futbolista-paso-a-paso',
+        'que-es-el-control-economico-en-el-futbol-fair-play-financiero',
+        'como-es-un-estadio-de-futbol-por-dentro-partes-y-funcionamiento',
+        'primera-vez-en-un-estadio-de-futbol-guia-practica-para-aficionados',
+        'cultura-de-grada-canticos-penas-y-rituales-del-aficionado',
+        'como-organizar-un-torneo-de-futbol-con-amigos-formatos-y-calendario',
+    ]),
+    ('juego', '🎮', 'Juega mejor a TIKITEXTO', 'Estadística propia de las letras y trucos para adivinar el futbolista en 6 intentos.', '#16a34a', [
+        'letras-mas-frecuentes-nombres-futbolistas',
+        'trucos-adivinar-futbolista-6-intentos',
+    ]),
+]
+
+def todos():
+    """Todos los artículos (dicts) en orden de publicación."""
+    import articulos_a, articulos_b, articulos_c, articulos_d, articulos_e, articulos_f, articulos_g, articulos_h
+    return (articulos_a.ARTICULOS_A + articulos_b.ARTICULOS_B + articulos_c.ARTICULOS_C + articulos_d.ARTICULOS_D + articulos_e.ARTICULOS_E + articulos_f.ARTICULOS_F + articulos_g.ARTICULOS_G + articulos_h.ARTICULOS_H)

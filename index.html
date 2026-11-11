@@ -1641,6 +1641,34 @@ button.ir-juegos { border: 0; cursor: pointer; }
 .portal__chips a { display: inline-block; padding: 5px 10px; border-radius: 999px; font: 700 .76rem/1.2 var(--fuente); color: #fff; text-decoration: none; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.35); }
 .portal__chips a:hover, .portal__chips a:focus-visible { background: rgba(255,255,255,.3); outline: none; }
 @media (prefers-reduced-motion: reduce) { .portal__card--juegos, .portal__card--saber::before { animation: none; } }
+/* ===== Tarjeta Juegos: noche de estadio con neón RGB ===== */
+.portal__card--juegos { background: #04140c; animation: none; box-shadow: 0 0 0 3px transparent, 0 18px 44px rgba(0, 0, 0, .45); }
+.portal__card--juegos::before { content: ""; position: absolute; z-index: -1; inset: -60%; background: conic-gradient(from 0deg, #ff2d6f, #ff9f1a, #ffe600, #2ee66b, #19b8ff, #8a4dff, #ff2d6f); animation: jgGira 6s linear infinite; }
+.portal__card--juegos::after { content: ""; position: absolute; z-index: -1; inset: 3px; border-radius: 25px; background: #04140c; }
+@keyframes jgGira { to { transform: rotate(360deg); } }
+.portal__card--juegos > :not(.jg-fondo) { position: relative; z-index: 3; }
+.portal__card--juegos .portal__titulo { text-shadow: 0 0 8px rgba(255,255,255,.7), 0 0 26px #19b8ff, 0 0 46px #8a4dff; }
+.portal__card--juegos .portal__texto { text-shadow: 0 2px 8px #000, 0 0 12px rgba(0,0,0,.8); }
+.portal__card--juegos .portal__ir { background: linear-gradient(90deg, #ffe600, #ff9f1a); color: #2b1a00; box-shadow: 0 0 0 3px rgba(255,230,0,.25), 0 6px 22px rgba(255,170,0,.55); animation: jgLate 1.6s ease-in-out infinite; }
+@keyframes jgLate { 50% { transform: scale(1.06); box-shadow: 0 0 0 6px rgba(255,230,0,.15), 0 8px 28px rgba(255,170,0,.8); } }
+.jg-fondo { position: absolute; z-index: 1; inset: 3px; border-radius: 25px; overflow: hidden; pointer-events: none; }
+.jg-cesped { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, #0b5a2c 0 32px, #0e6a35 32px 64px); opacity: .9; }
+.jg-cesped::after { content: ""; position: absolute; inset: 0; background: radial-gradient(90% 80% at 50% 45%, transparent 35%, rgba(0, 8, 4, .85) 100%), linear-gradient(180deg, rgba(0,10,5,.55), transparent 40%, rgba(0,10,5,.6)); }
+.jg-campo { position: absolute; inset: 0; width: 100%; height: 100%; color: #fff; }
+.jg-lineas { stroke: #7dffb0; filter: drop-shadow(0 0 4px #2ee66b) drop-shadow(0 0 10px #19b8ff); animation: jgHue 6s linear infinite; opacity: .85; }
+@keyframes jgHue { to { filter: drop-shadow(0 0 4px #2ee66b) drop-shadow(0 0 10px #19b8ff) hue-rotate(360deg); } }
+.jg-foco { position: absolute; top: -20%; width: 70%; height: 130%; mix-blend-mode: screen; opacity: .55; transform-origin: 50% 0; }
+.jg-foco--i { left: -12%; background: conic-gradient(from 160deg at 50% 0, transparent 0 8deg, rgba(190, 225, 255, .75) 14deg 24deg, transparent 32deg); animation: jgBarre 7s ease-in-out infinite alternate; }
+.jg-foco--d { right: -12%; background: conic-gradient(from 160deg at 50% 0, transparent 0 8deg, rgba(255, 220, 190, .7) 14deg 24deg, transparent 32deg); animation: jgBarre 8s ease-in-out infinite alternate-reverse; }
+@keyframes jgBarre { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+.jg-pista { position: absolute; left: 0; right: 0; bottom: 16%; height: 44px; }
+.jg-balon { position: absolute; left: 0; bottom: 0; width: 40px; height: 40px; filter: drop-shadow(0 6px 4px rgba(0,0,0,.55)); animation: jgRueda 7s linear infinite, jgBota .9s cubic-bezier(.3,.6,.4,1) infinite alternate; }
+@keyframes jgRueda { from { left: -48px; rotate: 0deg; } to { left: 100%; rotate: 1080deg; } }
+@keyframes jgBota { from { translate: 0 0; } to { translate: 0 -34px; } }
+.jg-chispa { position: absolute; left: var(--x); top: var(--y); width: 7px; height: 7px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px 3px #ffe600, 0 0 18px 6px #ff2d6f; opacity: 0; animation: jgChispa 3.5s ease-in-out infinite; animation-delay: var(--d); }
+@keyframes jgChispa { 0%, 100% { opacity: 0; transform: scale(.3); } 45% { opacity: 1; transform: scale(1.2); } }
+@media (prefers-reduced-motion: reduce) { .portal__card--juegos::before, .jg-lineas, .jg-foco, .jg-balon, .jg-chispa, .portal__card--juegos .portal__ir { animation: none; } .jg-balon { left: 60%; } .jg-chispa { opacity: .8; } }
+
 html:has(.modal:not([hidden]), .idioma) :is(.curio,.info,.novedad,.ah-card,.modo,.tikis,.ir-juegos,#ndCard,.podio,.marca__icono),
 html:has(.modal:not([hidden]), .idioma) :is(.curio,.info,.novedad,.ah-card,.modo,.tikis,.ir-juegos,#ndCard,.podio,.marca__icono) *,
 html:has(.modal:not([hidden]), .idioma) :is(.curio,.info,.novedad,.ah-card,.modo,.tikis,.ir-juegos,#ndCard,.podio,.marca__icono)::before,
@@ -2121,8 +2149,26 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
   <main class="inicio__contenido">
     <p class="vp inicio__etiqueta">Datos y curiosidades del fútbol</p>
     <h1 class="vp inicio__titulo">Historia, datos y curiosidades<br><span>del fútbol</span></h1>
+    <div class="vp bus" data-buscador></div>
     <div class="vp portal" id="portal">
       <button type="button" class="portal__card portal__card--juegos" id="portalJuegos">
+        <span class="jg-fondo" aria-hidden="true">
+          <span class="jg-cesped"></span>
+          <svg class="jg-campo" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" focusable="false">
+            <g class="jg-lineas" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="18" y="22" width="364" height="256" rx="6"/>
+              <path d="M200 22v256"/><circle cx="200" cy="150" r="42"/><circle cx="200" cy="150" r="3.5" fill="currentColor"/>
+              <rect x="18" y="86" width="62" height="128"/><rect x="18" y="116" width="26" height="68"/>
+              <rect x="320" y="86" width="62" height="128"/><rect x="356" y="116" width="26" height="68"/>
+              <path d="M80 126a30 30 0 0 1 0 48M320 126a30 30 0 0 0 0 48"/>
+            </g>
+          </svg>
+          <span class="jg-foco jg-foco--i"></span><span class="jg-foco jg-foco--d"></span>
+          <span class="jg-pista">
+            <svg class="jg-balon" viewBox="0 0 40 40" focusable="false"><circle cx="20" cy="20" r="18" fill="#fff" stroke="#10131f" stroke-width="2"/><path d="M20 11l7 5-2.6 8h-8.8L13 16z" fill="#10131f"/><path d="M20 11V3M27 16l8-3M24.4 24l5 7M15.6 24l-5 7M13 16l-8-3" stroke="#10131f" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <i class="jg-chispa" style="--x:12%;--y:30%;--d:0s"></i><i class="jg-chispa" style="--x:82%;--y:22%;--d:.7s"></i><i class="jg-chispa" style="--x:68%;--y:74%;--d:1.4s"></i><i class="jg-chispa" style="--x:28%;--y:80%;--d:2.1s"></i><i class="jg-chispa" style="--x:50%;--y:14%;--d:2.8s"></i>
+        </span>
         <span class="portal__icono" aria-hidden="true">🎮</span>
         <span class="portal__titulo">Juegos</span>
         <span class="portal__texto">Adivina jugadores, equipos y estadios · Ahorcado · Ranking mundial</span>
@@ -7657,5 +7703,6 @@ document.addEventListener("click", function (e) { var a = e.target.closest && e.
   });
 })();
 </script>
+<script src="/buscador.js" defer></script>
 </body>
 </html>

@@ -121,6 +121,23 @@ html.huecos body { padding-bottom: 64px; }
 .tc svg { color: var(--c) !important; }
 .tc:hover, .tc:focus-visible { border-color: var(--c) !important; box-shadow: 0 14px 30px color-mix(in srgb, var(--c) 32%, transparent) !important; }
 .tc .min { display: inline-block; margin-top: 8px; padding: 2px 10px; border-radius: 999px; font-size: .76rem; font-weight: 800; color: var(--c); background: color-mix(in srgb, var(--c) 13%, transparent); }
+.tema { margin: 14px 0; border-radius: 22px; border: 1px solid color-mix(in srgb, var(--c) 42%, transparent); background: color-mix(in srgb, var(--c) 7%, var(--caja)); overflow: hidden; }
+.tema > summary, a.tema { list-style: none; cursor: pointer; display: grid; grid-template-columns: 3.4rem 1fr auto 1.4rem; gap: 14px; align-items: center; padding: 16px 18px; text-decoration: none; color: inherit; }
+.tema > summary::-webkit-details-marker { display: none; }
+.tema > summary:hover, a.tema:hover { background: color-mix(in srgb, var(--c) 14%, var(--caja)); }
+.tema > summary:focus-visible, a.tema:focus-visible { outline: 3px solid var(--c); outline-offset: -3px; }
+.tema .t-emo { display: grid; place-items: center; width: 3.4rem; height: 3.4rem; border-radius: 18px; font-size: 1.9rem; background: color-mix(in srgb, var(--c) 20%, var(--caja)); }
+.tema .t-t b { display: block; font-size: 1.18rem; line-height: 1.2; }
+.tema .t-t span { display: block; margin-top: 3px; font-size: .9rem; line-height: 1.4; color: var(--suave); font-weight: 500; }
+.tema .t-n { font-size: .78rem; font-weight: 800; padding: 4px 11px; border-radius: 999px; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); white-space: nowrap; }
+.tema .t-f::before { content: "›"; display: block; font-size: 1.9rem; font-weight: 800; line-height: 1; color: var(--c); transition: transform .2s; }
+.tema[open] > summary .t-f::before { transform: rotate(90deg); }
+.tema[open] > summary { background: color-mix(in srgb, var(--c) 16%, var(--caja)); }
+.tema-c { padding: 4px 16px 18px; }
+.tema-c .tarjetas { margin: 10px 0 0; }
+.tema-c .tema { background: var(--caja); }
+@media (max-width: 560px) { .tema > summary, a.tema { grid-template-columns: 2.8rem 1fr 1.2rem; padding: 14px; } .tema .t-n { display: none; } .tema .t-emo { width: 2.8rem; height: 2.8rem; font-size: 1.5rem; } }
+.tema-h { margin: 26px 0 6px; font-size: 1.15rem; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
 .chips a { border: 1px solid color-mix(in srgb, var(--c) 45%, transparent); background: color-mix(in srgb, var(--c) 10%, var(--caja)); color: var(--texto); border-radius: 999px; padding: 5px 14px; font-size: .88rem; font-weight: 700; text-decoration: none; }
 .chips a:hover { background: var(--c); color: #fff; }
@@ -136,26 +153,23 @@ html.huecos body { padding-bottom: 64px; }
 <p class="idiomas" translate="no">🌐 <a href="/curiosidades/" hreflang="es" lang="es">Español</a> · <b>English</b> · <a href="/pt/curiosidades/" hreflang="pt-BR" lang="pt-BR">Português</a> · <a href="/fr/curiosidades/" hreflang="fr" lang="fr">Français</a> · <a href="/it/curiosidades/" hreflang="it" lang="it">Italiano</a> · <a href="/de/curiosidades/" hreflang="de" lang="de">Deutsch</a></p>
 <div class="hero"><div><p class="etiqueta">Football trivia</p><h1>Football trivia</h1><p class="fecha">Data checked on 31 October 2026</p></div><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14c8-3 16-3 22 2 6-5 14-5 22-2v36c-8-3-16-3-22 2-6-5-14-5-22-2V14z"/><path d="M32 16v36"/></svg></div>
 <div class="caja">Facts, history and numbers from world football. If you enjoy it, test what you know in <a href="/?lang=en">TIKITEXTO</a>.</div>
-<div class="gr" style="--c:#0f9d58"><h2>📊 Records and rankings, with sources</h2></div>
-<p class="gr-d">Champions League and World Cup scorers, Ballon d&#x27;Or, Pichichi, the Euros, the Golden Shoe and more: nine pages with source and data date.</p>
-<div class="tarjetas"><a class="tarjeta tc" href="/en/curiosidades/datos/" style="--c:#0f9d58"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="32" cy="38" rx="24" ry="10"/><ellipse cx="32" cy="38" rx="12" ry="4"/><path d="M8 38V26c0-5 11-9 24-9s24 4 24 9v12"/></svg><b>Records and rankings, with sources</b><span>Open the records index</span></a></div>
-<div class="gr" style="--c:#dc2626"><h2>🏟️ History: Champions League and World Cups</h2></div>
-<p class="gr-d">The last 20 Champions League finals and all 23 World Cups, with scores, venues and trivia.</p>
-<div class="tarjetas">
+<div class="bus" data-buscador></div><script src="/buscador.js" defer></script>
+<h2 class="tema-h">Pick a topic</h2>
+<a class="tema" href="/en/curiosidades/datos/" style="--c:#0f9d58"><span class="t-emo" aria-hidden="true">📊</span><span class="t-t"><b>Records and rankings, with sources</b><span>Champions League and World Cup scorers, Ballon d&#x27;Or, Pichichi, the Euros, the Golden Shoe and more, with source and data date.</span></span><span class="t-n">9 pages</span><span class="t-f" aria-hidden="true"></span></a>
+<details class="tema" style="--c:#dc2626" name="cur"><summary><span class="t-emo" aria-hidden="true">🏟️</span><span class="t-t"><b>History: Champions League and World Cups</b><span>The last 20 Champions League finals and all 23 World Cups, with scores, venues and trivia.</span></span><span class="t-n">2 pages</span><span class="t-f" aria-hidden="true"></span></summary><div class="tema-c"><div class="tarjetas">
 <a class="tarjeta tc" href="/en/curiosidades/champions-league-last-20-finals/" style="--c:#dc2626"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10h24v14c0 9-5 15-12 15s-12-6-12-15V10z"/><path d="M20 14h-8c0 9 4 14 10 15M44 14h8c0 9-4 14-10 15"/><path d="M32 39v10M22 54h20M26 49h12"/></svg><b>The last 20 Champions League finals</b><span>2007-2026</span></a>
 <a class="tarjeta tc" href="/en/curiosidades/world-cups-edition-by-edition/" style="--c:#dc2626"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="22"/><path d="M32 22l9 7-3 11H26l-3-11 9-7z"/><path d="M32 22V10M41 29l12-4M38 40l7 10M26 40l-7 10M23 29l-12-4"/></svg><b>Every World Cup, edition by edition</b><span>1930-2026</span></a>
 </div>
-<div class="gr" style="--c:#ea580c"><aside class="hueco" aria-label="Advertisement" data-hueco="medio">Advertisement</aside>
-<h2>⚡ Trivia by club and player</h2><a class="todo" href="/en/curiosidades/football-trivia-by-topic/">See all →</a></div>
-<p class="gr-d">Real Madrid, Barça, Messi, Cristiano, the Premier League and more.</p>
-<div class="chips" style="--c:#ea580c"><a href="/en/curiosidades/champions-league-facts/">Champions League facts and curiosities</a><a href="/en/curiosidades/world-cup-facts/">World Cup facts and curiosities</a><a href="/en/curiosidades/real-madrid-facts/">Real Madrid facts: trophies and curiosities</a><a href="/en/curiosidades/fc-barcelona-facts/">FC Barcelona facts and curiosities</a><a href="/en/curiosidades/la-liga-facts/">La Liga facts and curiosities</a><a href="/en/curiosidades/premier-league-facts/">Premier League facts and curiosities</a><a href="/en/curiosidades/lionel-messi-facts/">Lionel Messi facts: records, trophies and curiosities</a><a href="/en/curiosidades/cristiano-ronaldo-facts/">Cristiano Ronaldo facts: records and curiosities</a><a href="/en/curiosidades/ballon-dor-facts/">Ballon d&#x27;Or facts: records and winners</a><a href="/en/curiosidades/euros-facts/">European Championship facts and curiosities</a><a href="/en/curiosidades/manchester-united-facts/">Manchester United facts and curiosities</a><a href="/en/curiosidades/liverpool-facts/">Liverpool facts and curiosities</a></div>
-<div class="gr" style="--c:#1747d6"><h2>🏆 Champions, leagues and trophies</h2></div>
-<p class="gr-d">Winners year by year, how the leagues began and the story of the cups.</p>
-<div class="tarjetas">
+</div></details>
+<details class="tema" style="--c:#ea580c" name="cur"><summary><span class="t-emo" aria-hidden="true">⚡</span><span class="t-t"><b>Trivia by club and player</b><span>Real Madrid, Barça, Messi, Cristiano, the Premier League and more.</span></span><span class="t-n">12 topics</span><span class="t-f" aria-hidden="true"></span></summary><div class="tema-c"><div class="chips" style="--c:#ea580c"><a href="/en/curiosidades/champions-league-facts/">Champions League facts and curiosities</a><a href="/en/curiosidades/world-cup-facts/">World Cup facts and curiosities</a><a href="/en/curiosidades/real-madrid-facts/">Real Madrid facts: trophies and curiosities</a><a href="/en/curiosidades/fc-barcelona-facts/">FC Barcelona facts and curiosities</a><a href="/en/curiosidades/la-liga-facts/">La Liga facts and curiosities</a><a href="/en/curiosidades/premier-league-facts/">Premier League facts and curiosities</a><a href="/en/curiosidades/lionel-messi-facts/">Lionel Messi facts: records, trophies and curiosities</a><a href="/en/curiosidades/cristiano-ronaldo-facts/">Cristiano Ronaldo facts: records and curiosities</a><a href="/en/curiosidades/ballon-dor-facts/">Ballon d&#x27;Or facts: records and winners</a><a href="/en/curiosidades/euros-facts/">European Championship facts and curiosities</a><a href="/en/curiosidades/manchester-united-facts/">Manchester United facts and curiosities</a><a href="/en/curiosidades/liverpool-facts/">Liverpool facts and curiosities</a></div>
+<p><a href="/en/curiosidades/football-trivia-by-topic/">See all trivia by topic →</a></p>
+</div></details>
+<details class="tema" style="--c:#1747d6" name="cur"><summary><span class="t-emo" aria-hidden="true">🏆</span><span class="t-t"><b>Champions, leagues and trophies</b><span>Winners year by year, how the leagues began and the story of the cups.</span></span><span class="t-n">3</span><span class="t-f" aria-hidden="true"></span></summary><div class="tema-c"><div class="tarjetas">
 <a class="tarjeta tc" href="/en/curiosidades/campeones/" style="--c:#1747d6"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10h24v14c0 9-5 15-12 15s-12-6-12-15V10z"/><path d="M20 14h-8c0 9 4 14 10 15M44 14h8c0 9-4 14-10 15"/><path d="M32 39v10M22 54h20M26 49h12"/></svg><b>Champions</b><span>Champions League and World Cup winners, with finals and scores.</span></a>
 <a class="tarjeta tc" href="/en/curiosidades/ligas/" style="--c:#0f9d58"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="14" width="48" height="36" rx="4"/><path d="M32 14v36M8 32h48"/><circle cx="32" cy="32" r="7"/><path d="M8 24h6v16H8M56 24h-6v16h6"/></svg><b>How leagues began</b><span>How 13 leagues around the world were born: years, first champions and curiosities.</span></a>
 <a class="tarjeta tc" href="/en/curiosidades/trofeos/" style="--c:#c98a00"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="22"/><path d="M32 22l9 7-3 11H26l-3-11 9-7z"/><path d="M32 22V10M41 29l12-4M38 40l7 10M26 40l-7 10M23 29l-12-4"/></svg><b>Trophies</b><span>The story behind the cups and awards of Spain, England, Italy, Germany, France, Portugal, Brazil, the USA and Argentina.</span></a>
 </div>
+</div></details>
 <h2>Latest</h2>
 <div class="caja"><b>World Cup 2026:</b> Spain are champions after beating Argentina 1-0 in extra time in the 19 July final at MetLife Stadium. <b>Champions League 2025-26:</b> PSG retained the title by beating Arsenal on penalties (1-1, 4-3) on 30 May in Budapest. <a href="/en/curiosidades/campeones/">See all champions</a>.</div>
 

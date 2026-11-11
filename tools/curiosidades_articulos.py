@@ -75,11 +75,11 @@ def hub(L):
     ruta = HUB + "/"
     h = cabecera(L, HUB_T + " | TIKITEXTO", HUB_D, ruta, HUB_T, LIBRO)
     h = solo_es(h).replace(L.ui["checked"], FECHA)
-    h += f'<div class="caja">{e(HUB_D)}</div>\n<div class="tarjetas">\n'
-    for a in ARTICULOS:
-        m = meta(a["slug"])
-        h += f'<a class="tarjeta tc" href="/{HUB}/{a["slug"]}/" style="--c:{m["c"][0]}"><span class="emo" aria-hidden="true">{m["e"]}</span><b>{e(a["titulo"])}</b><span>{e(a["desc"][:110].rsplit(" ", 1)[0])}…</span><span class="min">{mins(a)} min de lectura</span></a>\n'
-    return ruta, h + '</div>\n' + pie(L, "", False)
+    h = C.inyecta_css(h, C.CSS_TC)
+    h += f'<div class="caja">{e(HUB_D)}</div>\n'
+    h += '<div class="bus" data-buscador></div><script src="/buscador.js" defer></script>\n'
+    h += '<h2 class="tema-h">Elige un tema</h2>\n' + C.cats_articulos("art")
+    return ruta, h + pie(L, "", False)
 
 if __name__ == "__main__":
     C.LANGS = ["es"]

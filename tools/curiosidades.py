@@ -345,6 +345,23 @@ CSS_TC = """
 .tc svg { color: var(--c) !important; }
 .tc:hover, .tc:focus-visible { border-color: var(--c) !important; box-shadow: 0 14px 30px color-mix(in srgb, var(--c) 32%, transparent) !important; }
 .tc .min { display: inline-block; margin-top: 8px; padding: 2px 10px; border-radius: 999px; font-size: .76rem; font-weight: 800; color: var(--c); background: color-mix(in srgb, var(--c) 13%, transparent); }
+.tema { margin: 14px 0; border-radius: 22px; border: 1px solid color-mix(in srgb, var(--c) 42%, transparent); background: color-mix(in srgb, var(--c) 7%, var(--caja)); overflow: hidden; }
+.tema > summary, a.tema { list-style: none; cursor: pointer; display: grid; grid-template-columns: 3.4rem 1fr auto 1.4rem; gap: 14px; align-items: center; padding: 16px 18px; text-decoration: none; color: inherit; }
+.tema > summary::-webkit-details-marker { display: none; }
+.tema > summary:hover, a.tema:hover { background: color-mix(in srgb, var(--c) 14%, var(--caja)); }
+.tema > summary:focus-visible, a.tema:focus-visible { outline: 3px solid var(--c); outline-offset: -3px; }
+.tema .t-emo { display: grid; place-items: center; width: 3.4rem; height: 3.4rem; border-radius: 18px; font-size: 1.9rem; background: color-mix(in srgb, var(--c) 20%, var(--caja)); }
+.tema .t-t b { display: block; font-size: 1.18rem; line-height: 1.2; }
+.tema .t-t span { display: block; margin-top: 3px; font-size: .9rem; line-height: 1.4; color: var(--suave); font-weight: 500; }
+.tema .t-n { font-size: .78rem; font-weight: 800; padding: 4px 11px; border-radius: 999px; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); white-space: nowrap; }
+.tema .t-f::before { content: "›"; display: block; font-size: 1.9rem; font-weight: 800; line-height: 1; color: var(--c); transition: transform .2s; }
+.tema[open] > summary .t-f::before { transform: rotate(90deg); }
+.tema[open] > summary { background: color-mix(in srgb, var(--c) 16%, var(--caja)); }
+.tema-c { padding: 4px 16px 18px; }
+.tema-c .tarjetas { margin: 10px 0 0; }
+.tema-c .tema { background: var(--caja); }
+@media (max-width: 560px) { .tema > summary, a.tema { grid-template-columns: 2.8rem 1fr 1.2rem; padding: 14px; } .tema .t-n { display: none; } .tema .t-emo { width: 2.8rem; height: 2.8rem; font-size: 1.5rem; } }
+.tema-h { margin: 26px 0 6px; font-size: 1.15rem; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
 .chips a { border: 1px solid color-mix(in srgb, var(--c) 45%, transparent); background: color-mix(in srgb, var(--c) 10%, var(--caja)); color: var(--texto); border-radius: 999px; padding: 5px 14px; font-size: .88rem; font-weight: 700; text-decoration: none; }
 .chips a:hover { background: var(--c); color: #fff; }
@@ -575,6 +592,31 @@ def pagina_trofeos(L):
 def _col(c):
     return f' style="--c:{c}"'
 
+def tema(col, emoji, titulo, desc, n, cuerpo, name="cur", abierto=False):
+    """Tema desplegable: hay que pulsarlo para ver su contenido (name = acordeón exclusivo)."""
+    nn = f'<span class="t-n">{e(n)}</span>' if n else '<span class="t-n" style="padding:0"></span>'
+    return (f'<details class="tema"{_col(col)} name="{name}"{" open" if abierto else ""}><summary><span class="t-emo" aria-hidden="true">{emoji}</span>'
+            f'<span class="t-t"><b>{e(titulo)}</b><span>{e(desc)}</span></span>{nn}<span class="t-f" aria-hidden="true"></span></summary>'
+            f'<div class="tema-c">{cuerpo}</div></details>\n')
+
+def tema_enlace(col, emoji, titulo, desc, n, href):
+    nn = f'<span class="t-n">{e(n)}</span>' if n else '<span class="t-n" style="padding:0"></span>'
+    return (f'<a class="tema" href="{href}"{_col(col)}><span class="t-emo" aria-hidden="true">{emoji}</span>'
+            f'<span class="t-t"><b>{e(titulo)}</b><span>{e(desc)}</span></span>{nn}<span class="t-f" aria-hidden="true"></span></a>\n')
+
+def tarjetas_articulos(slugs):
+    from articulos_meta import meta, todos
+    por = {a["slug"]: a for a in todos()}
+    h = '<div class="tarjetas">\n'
+    for sl in slugs:
+        a = por[sl]; m = meta(sl); mins = sum(len(p.split()) for _, ps in a["secciones"] for p in ps) // 200 + 1
+        h += f'<a class="tarjeta tc" href="/articulos/{sl}/"{_col(m["c"][0])}><span class="emo" aria-hidden="true">{m["e"]}</span><b>{e(a["titulo"])}</b><span class="min">{mins} min de lectura</span></a>\n'
+    return h + '</div>\n'
+
+def cats_articulos(name="art"):
+    from articulos_meta import CATS
+    return "".join(tema(c, em, t, d, f"{len(sl)} artículos", tarjetas_articulos(sl), name) for _, em, t, d, c, sl in CATS)
+
 def pagina_indice(L):
     u = L.ui; ruta = "curiosidades/"
     es = L.lang == "es"
@@ -596,45 +638,40 @@ def pagina_indice(L):
     def grupo(col, titulo, desc, enlace=None, texto_enlace=""):
         a = f'<a class="todo" href="{enlace}">{e(texto_enlace)} →</a>' if enlace else ""
         return f'<div class="gr"{_col(col)}><h2>{e(titulo)}</h2>{a}</div>\n<p class="gr-d">{e(desc)}</p>\n'
-    # 1) artículos (solo español)
+    h += '<div class="bus" data-buscador></div><script src="/buscador.js" defer></script>\n'
+    h += f'<h2 class="tema-h">{"Elige un tema" if es else "Pick a topic"}</h2>\n'
+    # 1) artículos (solo español): categorías dentro del tema
     if es:
-        arts = articulos_a.ARTICULOS_A + articulos_b.ARTICULOS_B + articulos_c.ARTICULOS_C
-        h += grupo("#7c3aed", "✍️ Artículos de análisis", "Textos largos y originales: reglas, posiciones y tácticas explicadas, la liga más antigua del mundo, los trofeos más importantes, países con más Balones de Oro, Messi o Cristiano en números, penaltis, fuera de juego, xG…", "/articulos/", "Ver los 43 artículos")
-        h += '<div class="tarjetas">\n'
-        for a in arts:
-            m = meta(a["slug"]); mins = sum(len(p.split()) for _, ps in a["secciones"] for p in ps) // 200 + 1
-            h += f'<a class="tarjeta tc" href="/articulos/{a["slug"]}/"{_col(m["c"][0])}><span class="emo" aria-hidden="true">{m["e"]}</span><b>{e(a["titulo"])}</b><span class="min">{mins} min de lectura</span></a>\n'
-        h += '</div>\n'
+        h += tema("#7c3aed", "✍️", "Artículos de análisis", "43 textos largos y originales: reglas, tácticas, premios, historia y cómo funciona el fútbol por dentro.", "43 artículos", cats_articulos(), "cur")
     # 2) datos y récords
-    dt = ("Récords y rankings con fuentes", "Goleadores de la Champions y del Mundial, Balón de Oro, Pichichi, Eurocopa, Bota de Oro y más: nueve páginas con la fuente y la fecha de los datos.") if es else ("Records and rankings, with sources", "Champions League and World Cup scorers, Ballon d'Or, Pichichi, the Euros, the Golden Shoe and more: nine pages with source and data date.")
-    h += grupo("#0f9d58", "📊 " + dt[0], dt[1])
-    h += f'<div class="tarjetas"><a class="tarjeta tc" href="{L.url("curiosidades/datos/")}"{_col("#0f9d58")}>{ESTADIO}<b>{e(dt[0])}</b><span>{e("Entrar al índice de récords" if es else "Open the records index")}</span></a></div>\n'
+    dt = ("Récords y rankings con fuentes", "Goleadores de la Champions y del Mundial, Balón de Oro, Pichichi, Eurocopa, Bota de Oro y más, con la fuente y la fecha de los datos.") if es else ("Records and rankings, with sources", "Champions League and World Cup scorers, Ballon d'Or, Pichichi, the Euros, the Golden Shoe and more, with source and data date.")
+    h += tema_enlace("#0f9d58", "📊", dt[0], dt[1], "9 páginas" if es else "9 pages", L.url("curiosidades/datos/"))
     # 3) historia
     hs = [(sl, t, f, ic) for sl, t, f, ic in _H.cards_meta(L.lang) if sl not in (_T_HUB := {"curiosidades-por-temas", "football-trivia-by-topic"})]
-    h += grupo("#dc2626", "🏟️ " + ("Historia: Champions y Mundiales" if es else "History: Champions League and World Cups"), "Las últimas 20 finales de la Champions y los 23 Mundiales, con marcador, sede y curiosidades." if es else "The last 20 Champions League finals and all 23 World Cups, with scores, venues and trivia.")
-    h += '<div class="tarjetas">\n'
+    cu = '<div class="tarjetas">\n'
     for sl, t, f, ic in hs:
-        h += f'<a class="tarjeta tc" href="{L.url("curiosidades/" + sl + "/")}"{_col("#dc2626")}>{globals()[ic]}<b>{e(t)}</b><span>{e(f)}</span></a>\n'
-    h += '</div>\n'
+        cu += f'<a class="tarjeta tc" href="{L.url("curiosidades/" + sl + "/")}"{_col("#dc2626")}>{globals()[ic]}<b>{e(t)}</b><span>{e(f)}</span></a>\n'
+    cu += '</div>\n'
+    h += tema("#dc2626", "🏟️", "Historia: Champions y Mundiales" if es else "History: Champions League and World Cups", "Las últimas 20 finales de la Champions y los 23 Mundiales, con marcador, sede y curiosidades." if es else "The last 20 Champions League finals and all 23 World Cups, with scores, venues and trivia.", f"{len(hs)} " + ("páginas" if es else "pages"), cu)
     # 4) temas
     hub_t = ("curiosidades-por-temas", "football-trivia-by-topic")[k]
-    h += grupo("#ea580c", "⚡ " + ("Curiosidades por equipos y jugadores" if es else "Trivia by club and player"), "Real Madrid, Barça, Messi, Cristiano, Premier League y más." if es else "Real Madrid, Barça, Messi, Cristiano, the Premier League and more.", L.url("curiosidades/" + hub_t + "/"), "Ver todas" if es else "See all")
-    h += f'<div class="chips"{_col("#ea580c")}>' + "".join(f'<a href="{L.url("curiosidades/" + t[L.lang] + "/")}">{e(t["t"][k])}</a>' for t in _T.TEMAS) + '</div>\n'
+    cu = f'<div class="chips"{_col("#ea580c")}>' + "".join(f'<a href="{L.url("curiosidades/" + t[L.lang] + "/")}">{e(t["t"][k])}</a>' for t in _T.TEMAS) + f'</div>\n<p><a href="{L.url("curiosidades/" + hub_t + "/")}">{"Ver todas las curiosidades por temas →" if es else "See all trivia by topic →"}</a></p>\n'
+    h += tema("#ea580c", "⚡", "Curiosidades por equipos y jugadores" if es else "Trivia by club and player", "Real Madrid, Barça, Messi, Cristiano, Premier League y más." if es else "Real Madrid, Barça, Messi, Cristiano, the Premier League and more.", f"{len(_T.TEMAS)} " + ("temas" if es else "topics"), cu)
     # 4b) historias y peques (solo español)
     if es:
         import historias_data as _HD, peques_data as _PD
-        h += grupo("#7c3aed", "📖 Historias y anécdotas", "Relatos cortos y variados: Mundiales increíbles, quién inventó cada cosa, sorpresas, récords raros, mitos y leyendas.", "/historias/", "Ver todas")
-        h += '<div class="tarjetas">\n'
+        cu = '<div class="tarjetas">\n'
         for c in _HD.COLECCIONES:
-            h += f'<a class="tarjeta tc" href="/historias/{c["slug"]}/"{_col(c["c"][0])}><span class="emo" aria-hidden="true">{c["emoji"]}</span><b>{e(c["titulo"])}</b><span class="min">{len(c["items"])} historias</span></a>\n'
-        h += '</div>\n'
-        h += grupo("#16a34a", "🧒 Rincón de los peques", "Chistes, adivinanzas, trabalenguas, verdadero o falso y sopas de letras de fútbol para niños.", "/peques/", "Entrar")
+            cu += f'<a class="tarjeta tc" href="/historias/{c["slug"]}/"{_col(c["c"][0])}><span class="emo" aria-hidden="true">{c["emoji"]}</span><b>{e(c["titulo"])}</b><span class="min">{len(c["items"])} historias</span></a>\n'
+        cu += '</div>\n<p><a href="/historias/">Ver todas las historias →</a></p>\n'
+        h += tema("#7c3aed", "📖", "Historias y anécdotas", "Relatos cortos y variados: Mundiales increíbles, quién inventó cada cosa, sorpresas, récords raros, mitos y leyendas.", f"{sum(len(c['items']) for c in _HD.COLECCIONES)} historias", cu)
+        h += tema_enlace("#16a34a", "🧒", "Rincón de los peques", "Chistes, adivinanzas, trabalenguas, verdadero o falso y sopas de letras de fútbol para niños.", "", "/peques/")
     # 5) clásicas
-    h += grupo("#1747d6", "🏆 " + ("Campeones, ligas y trofeos" if es else "Champions, leagues and trophies"), "Ganadores año a año, el origen de las ligas y la historia de las copas." if es else "Winners year by year, how the leagues began and the story of the cups.")
-    h += '<div class="tarjetas">\n'
+    cu = '<div class="tarjetas">\n'
     for (icono, sl, col), (b, sp) in zip(clasicas, u["cards"]):
-        h += f'<a class="tarjeta tc" href="{L.url("curiosidades/" + sl)}"{_col(col)}>{icono}<b>{e(b)}</b><span>{e(sp)}</span></a>\n'
-    h += '</div>\n'
+        cu += f'<a class="tarjeta tc" href="{L.url("curiosidades/" + sl)}"{_col(col)}>{icono}<b>{e(b)}</b><span>{e(sp)}</span></a>\n'
+    cu += '</div>\n'
+    h += tema("#1747d6", "🏆", "Campeones, ligas y trofeos" if es else "Champions, leagues and trophies", "Ganadores año a año, el origen de las ligas y la historia de las copas." if es else "Winners year by year, how the leagues began and the story of the cups.", "3", cu)
     h += f'<h2>{e(u["latest_h"])}</h2>\n<div class="caja">{u["latest"].format(champ=L.url("curiosidades/campeones/"))}</div>\n'
     return ruta, h + pie(L, "", False)
 
