@@ -20,7 +20,7 @@ with sync_playwright() as p:
     br = p.chromium.launch()
     ctx = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
     # Las pruebas del juego van en español; el selector de idioma se prueba aparte (3d)
-    ctx.add_init_script("if(!localStorage.getItem('tikitexto:idioma'))localStorage.setItem('tikitexto:idioma','es');if(!localStorage.getItem('tikitexto:consentimiento'))localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');")
+    ctx.add_init_script("if(!localStorage.getItem('tikitexto:idioma'))localStorage.setItem('tikitexto:idioma','es');if(!localStorage.getItem('tikitexto:consentimiento'))localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:vista','juegos');")
     api = ctx.request
 
     print("1) Archivos publicados")
@@ -53,7 +53,7 @@ with sync_playwright() as p:
     perfil = {"pts": 0, "jugadas": 0, "aciertos": 0, "racha": 0, "mejor": 0, "dist": [0] * 6,
               "diario": "", "token": "T" * 24, "online": True, "pend": 0}
     pg.add_init_script(
-        "sessionStorage.setItem('tikitexto:intro','1');"
+        "sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');"
         "localStorage.setItem('tikitexto:jugadores'," + json.dumps(json.dumps({"actual": "BotPrueba", "perfiles": {"BotPrueba": perfil}})) + ");")
     pg.goto(BASE, wait_until="networkidle", timeout=60000)
     check("sin errores de JavaScript al cargar", not errores_js, "; ".join(errores_js)[:200])
@@ -90,7 +90,7 @@ with sync_playwright() as p:
         pg2 = ctx2.new_page()
         pg2.route("**/rest/v1/rpc/*", lambda r: r.abort())
         pg2.add_init_script(
-            "if(!sessionStorage.getItem('tt')){sessionStorage.setItem('tt','1');sessionStorage.setItem('tikitexto:intro','1');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');}")
+            "if(!sessionStorage.getItem('tt')){sessionStorage.setItem('tt','1');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');}")
         pg2.goto(BASE, wait_until="networkidle", timeout=60000)
         pg2.wait_for_timeout(800)
         check("tutorial: no aparece nada más entrar", not pg2.is_visible("#modalTutorial"))
@@ -113,7 +113,7 @@ with sync_playwright() as p:
         perfil3 = dict(perfil, nv={"t": 0, "f": 0, "tut": {}})
         pg3.route("**/rest/v1/rpc/*", lambda r: r.abort())
         pg3.add_init_script(
-            "if(!sessionStorage.getItem('nvt')){sessionStorage.setItem('nvt','1');localStorage.removeItem('tikitexto:partida');sessionStorage.setItem('tikitexto:intro','1');"
+            "if(!sessionStorage.getItem('nvt')){sessionStorage.setItem('nvt','1');localStorage.removeItem('tikitexto:partida');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');"
             "localStorage.setItem('tikitexto:jugadores'," + json.dumps(json.dumps({"actual": "BotNv", "perfiles": {"BotNv": perfil3}})) + ");}")
         pg3.goto(BASE, wait_until="networkidle", timeout=60000)
         pg3.wait_for_timeout(600)
@@ -160,7 +160,7 @@ with sync_playwright() as p:
         pi = ctx2.new_page()
         pi.on("pageerror", lambda e: errores_id.append(str(e)))
         pi.route("**/rest/v1/rpc/*", lambda r: r.abort())
-        pi.add_init_script("sessionStorage.setItem('tikitexto:intro','1');")
+        pi.add_init_script("sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');")
         pi.goto(BASE, wait_until="networkidle", timeout=60000)
         pi.wait_for_timeout(500)
         check("primera visita: aparece el selector de idioma", pi.is_visible(".idioma"))
@@ -171,8 +171,12 @@ with sync_playwright() as p:
         pi.wait_for_timeout(800)
         check("al elegir inglés se guarda y recarga", pi.evaluate("localStorage.getItem('tikitexto:idioma')") == "en" and pi.evaluate("document.documentElement.lang") == "en")
         check("ya no aparece el selector", not pi.is_visible(".idioma"))
+        if pi.is_visible("#volverPortal"): pi.click("#volverPortal"); pi.wait_for_timeout(300)
+        texto0 = pi.inner_text("body")
+        check("el portal está en inglés (Games / Learn)", "Games" in texto0 and "Learn" in texto0 and "Football history, facts and" in texto0)
+        pi.click("#portalJuegos"); pi.wait_for_timeout(300)
         texto = pi.inner_text("body")
-        check("la portada está en inglés", "Football history, facts and" in texto and "Interactive games" in texto and "Choose a mode" in texto.replace("CHOOSE A MODE", "Choose a mode"))
+        check("la portada está en inglés", "Football history, facts and" in texto0 and "Interactive games" in texto and "Choose a mode" in texto.replace("CHOOSE A MODE", "Choose a mode"))
         check("el menú de modos está traducido", "Goalkeepers" in texto and "Porteros" not in texto)
         for cod, frase in (("pt", "Escolha um modo"), ("fr", "Choisis un mode"), ("it", "Scegli una modalità"), ("de", "Wähle einen Modus")):
             pi.evaluate("localStorage.setItem('tikitexto:idioma','%s')" % cod)
@@ -233,7 +237,7 @@ with sync_playwright() as p:
         errs_e = []
         pe.on("pageerror", lambda e: errs_e.append(str(e)))
         pe.route("**/rest/v1/rpc/*", lambda r: r.abort())
-        pe.add_init_script("sessionStorage.setItem('tikitexto:intro','1');")
+        pe.add_init_script("sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');")
         pe.goto(BASE + "en/", wait_until="networkidle")
         pe.evaluate("localStorage.setItem('tikitexto:jugadores'," + json.dumps(json.dumps({"actual": "BotSeo", "perfiles": {"BotSeo": perfil}})) + ")")
         pe.click("a.cta")
@@ -259,7 +263,7 @@ with sync_playwright() as p:
     try:
         def _ctx(init=""):
             c_ = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
-            c_.add_init_script("if(!localStorage.getItem('tikitexto:idioma'))localStorage.setItem('tikitexto:idioma','es');sessionStorage.setItem('tikitexto:intro','1');" + init)
+            c_.add_init_script("if(!localStorage.getItem('tikitexto:idioma'))localStorage.setItem('tikitexto:idioma','es');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');" + init)
             return c_
         def _pag(c_, cf_, gt_, errs_):
             p_ = c_.new_page()
@@ -337,7 +341,7 @@ with sync_playwright() as p:
         pgg.route("**/rest/v1/rpc/*", lambda r: r.abort())
         perf = {"pts": 0, "jugadas": 0, "aciertos": 0, "racha": 0, "mejor": 0, "dist": [0] * 6, "diario": "", "token": "T" * 24, "online": True, "pend": 0, "diaD": 2, "diaMejor": 2, "diaUlt": "AYER"}
         pgg.add_init_script("var d=new Date();d.setDate(d.getDate()-1);var a=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();var p=" + json.dumps(perf) + ";p.diaUlt=a;"
-            "localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');"
+            "localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');"
             "localStorage.setItem('tikitexto:jugadores',JSON.stringify({actual:'BotRacha',perfiles:{BotRacha:p}}));")
         pgg.goto(BASE, wait_until="networkidle", timeout=60000)
         pgg.click('[data-modo="diario"]')
@@ -385,7 +389,7 @@ with sync_playwright() as p:
         pi2 = ci.new_page()
         errs_i = []
         pi2.on("pageerror", lambda e: errs_i.append(str(e)))
-        pi2.add_init_script("sessionStorage.setItem('tikitexto:intro','1');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');")
+        pi2.add_init_script("sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');")
         pi2.goto(BASE, wait_until="networkidle", timeout=60000)
         check("instalar app: oculto por defecto", pi2.evaluate("document.getElementById('instalarCaja').hidden"))
         pi2.evaluate("(()=>{const e=new Event('beforeinstallprompt');e.prompt=()=>{window.__p=1};window.dispatchEvent(e)})()")
@@ -406,7 +410,7 @@ with sync_playwright() as p:
         pu = cu.new_page()
         errs_u = []
         pu.on("pageerror", lambda e: errs_u.append(str(e)))
-        pu.add_init_script("sessionStorage.setItem('tikitexto:intro','1');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');")
+        pu.add_init_script("sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');")
         pu.goto(BASE + "?modo=estadios_us", wait_until="networkidle", timeout=60000)
         pu.wait_for_timeout(800)
         check("estadios EE. UU.: el modo arranca sin errores", not errs_u and pu.locator("#tablero, .tablero, .fila").count() > 0, "; ".join(errs_u)[:120])
@@ -425,7 +429,7 @@ with sync_playwright() as p:
         pa.route("**/rest/v1/rpc/*", lambda r: r.abort())
         perfil_a = dict(perfil, nv={"t": 0, "f": 0, "tut": {}})
         pa.add_init_script(
-            "if(!sessionStorage.getItem('aht')){sessionStorage.setItem('aht','1');sessionStorage.setItem('tikitexto:intro','1');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');"
+            "if(!sessionStorage.getItem('aht')){sessionStorage.setItem('aht','1');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');"
             "localStorage.setItem('tikitexto:jugadores'," + json.dumps(json.dumps({"actual": "BotAh", "perfiles": {"BotAh": perfil_a}})) + ");}")
         pa.goto(BASE, wait_until="networkidle", timeout=60000)
         pa.wait_for_timeout(500)
@@ -491,6 +495,7 @@ with sync_playwright() as p:
         pgi.click("#chipInvitado"); pgi.wait_for_timeout(300)
         check("invitado: el aviso lleva a Ajustes", pgi.is_visible("#ajusteCodigo") is False and pgi.locator(".ajustes").count() == 1)
         pgi.keyboard.press("Escape"); pgi.wait_for_timeout(200)
+        if pgi.is_visible("#portalJuegos"): pgi.click("#portalJuegos"); pgi.wait_for_timeout(300)
         pgi.click("[data-stats]"); pgi.wait_for_timeout(400)
         check("invitado: el ranking ofrece elegir nickname", pgi.is_visible("#botonNick"))
         pgi.click("#botonNick"); pgi.wait_for_timeout(300)
@@ -515,7 +520,7 @@ with sync_playwright() as p:
         pt = ct.new_page()
         errs_t = []
         pt.on("pageerror", lambda e: errs_t.append(str(e)))
-        pt.add_init_script("localStorage.setItem('tikitexto:idioma','es');sessionStorage.setItem('tikitexto:intro','1');")
+        pt.add_init_script("localStorage.setItem('tikitexto:idioma','es');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');")
         pt.goto(BASE, wait_until="networkidle", timeout=60000)
         pt.wait_for_timeout(500)
         pt.click("[data-novedad=tarjetas]"); pt.wait_for_timeout(300)
@@ -564,7 +569,7 @@ with sync_playwright() as p:
             check("historia: " + ru, r.status == 200 and t.count('<article class="entrada"') == n_ent and 'rel="alternate" hreflang="x-default"' in t, str(t.count('<article class="entrada"')))
         h = api.get(BASE).text()
         check("portada: nueva identidad (sin «juego diario»)", "base de datos" in h.lower() or "Datos y curiosidades del fútbol" in h)
-        check("portada: .curio antes de los juegos", h.index('class="curio"') < h.index('id="tituloJuegos"') < h.index('data-modo="diario"'))
+        check("portada: portal (Juegos + Saber) antes de los juegos", h.index('id="portal"') < h.index('id="tituloJuegos"') < h.index('data-modo="diario"') and 'portal__card--saber' in h)
         import sys as _s; _s.path.insert(0, "tools"); import temas_data as _td
         malas_t = []
         for tm in _td.TEMAS:
@@ -587,10 +592,17 @@ with sync_playwright() as p:
         ch = br.new_context(viewport={"width": 1366, "height": 800}, service_workers="block")
         ph = ch.new_page(); errs_h = []
         ph.on("pageerror", lambda e: errs_h.append(str(e)))
-        ph.add_init_script("localStorage.setItem('tikitexto:idioma','es');sessionStorage.setItem('tikitexto:intro','1');")
+        ph.add_init_script("localStorage.setItem('tikitexto:idioma','es');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');")
         ph.goto(BASE, wait_until="networkidle", timeout=60000); ph.wait_for_timeout(400)
         check("huecos: ocultos por defecto", ph.evaluate("[...document.querySelectorAll('.hueco')].every(e => getComputedStyle(e).display === 'none')"))
-        check("portada: curiosidades antes de «¿Qué es TIKITEXTO?»", ph.evaluate("!!(document.querySelector('.curio').compareDocumentPosition(document.querySelector('.info')) & 4)"))
+        ph.click('#volverPortal'); ph.wait_for_timeout(300)
+        check("portada: portal visible, juegos ocultos", ph.is_visible('#portal') and not ph.is_visible('[data-modo="diario"]'))
+        check("portada: Saber con enlaces reales", ph.evaluate("document.querySelectorAll('.portal__chips a[href]').length >= 8") and ph.get_attribute('.portal__enlace', 'href') == 'curiosidades/')
+        ph.click('#portalJuegos'); ph.wait_for_timeout(300)
+        check("portada: Juegos muestra los modos y #juegos", ph.is_visible('[data-modo="diario"]') and not ph.is_visible('#portal') and ph.url.endswith('#juegos'))
+        ph.click('#volverPortal'); ph.wait_for_timeout(300)
+        check("portada: volver al portal", ph.is_visible('#portal'))
+        check("portada: .info sigue tras el portal", ph.evaluate("!!(document.querySelector('#portal').compareDocumentPosition(document.querySelector('.info')) & 4)"))
         ph.goto(BASE + "?huecos=1", wait_until="networkidle", timeout=60000); ph.wait_for_timeout(400)
         check("huecos: se ven con ?huecos=1", ph.evaluate("[...document.querySelectorAll('.hueco')].some(e => getComputedStyle(e).display !== 'none')"))
         ph.goto(BASE + "?huecos=0", wait_until="networkidle", timeout=60000)

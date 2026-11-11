@@ -151,3 +151,7 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 - `cookies.html`, `privacidad.html` y `sobre-tikitexto.html` actualizados. Siguen sin mencionar anuncios (test 3t).
 - Test 3f reescrito (Google no carga antes de decidir, aceptar/rechazar todo, borrado de cookies, aviso en otras páginas e idiomas).
 
+
+## Portada en portal Juegos / Saber (11-nov-2026)
+- La portada (`#portal`) muestra dos cuadros: **Juegos** (RGB, `#portalJuegos`, abre la vista de juegos `.vj` con `#juegos` en la URL y botón `#volverPortal`) y **Saber** (azul con rayos, enlaza a `curiosidades/` y lleva chips con enlaces reales a artículos, historias, peques, datos, temas, Champions, Mundiales, campeones, ligas y trofeos; `data-solo-es`/`data-solo-es-en` y prefijo de idioma por `data-curio`). Los bloques de la portada marcados `.vp` se ven solo en el portal; `.vj` solo en la vista de juegos (`html.vista-j`, `sessionStorage tikitexto:vista`; `?modo=` y `#juegos` la activan). **No se cambió ninguna URL.**
+- Los tests arrancan con la vista de juegos activa (init script); los de portal usan `#volverPortal`. Textos en `fuente.txt` (6 idiomas).

@@ -1546,3 +1546,19 @@ Nombres encontrados ||| Names found ||| Nomes encontrados ||| Noms trouvés ||| 
 ¡Has sobrevivido a las 3 noches! ||| You survived all 3 nights! ||| Você sobreviveu às 3 noites! ||| Tu as survécu aux 3 nuits ! ||| Hai superato le 3 notti! ||| Du hast alle 3 Nächte überlebt!
 Se apagó la linterna ||| The flashlight went out ||| A lanterna apagou ||| La lampe s'est éteinte ||| La torcia si è spenta ||| Die Taschenlampe ist ausgegangen
 La leyenda era: ||| The legend was: ||| A lenda era: ||| La légende était : ||| La leggenda era: ||| Die Legende war:
+Juegos ||| Games ||| Jogos ||| Jeux ||| Giochi ||| Spiele
+Saber ||| Learn ||| Saber ||| Savoir ||| Scopri ||| Wissen
+Adivina jugadores, equipos y estadios · Ahorcado · Ranking mundial ||| Guess players, teams and stadiums · Hangman · World ranking ||| Adivinhe jogadores, times e estádios · Forca · Ranking mundial ||| Devinez joueurs, équipes et stades · Pendu · Classement mondial ||| Indovina giocatori, squadre e stadi · Impiccato · Classifica mondiale ||| Errate Spieler, Teams und Stadien · Galgenmännchen · Weltrangliste
+Leer ||| Read ||| Ler ||| Lire ||| Leggi ||| Lesen
+← Inicio ||| ← Home ||| ← Início ||| ← Accueil ||| ← Home ||| ← Start
+Historia, datos y curiosidades del fútbol ||| Football history, facts and trivia ||| História, dados e curiosidades do futebol ||| Histoire, données et anecdotes du football ||| Storia, dati e curiosità del calcio ||| Geschichte, Fakten und Kurioses zum Fußball
+Artículos ||| Articles ||| Artigos ||| Articles ||| Articoli ||| Artikel
+Historias ||| Stories ||| Histórias ||| Histoires ||| Storie ||| Geschichten
+Chistes y adivinanzas ||| Jokes and riddles ||| Piadas e adivinhas ||| Blagues et devinettes ||| Barzellette e indovinelli ||| Witze und Rätsel
+Por temas ||| By topic ||| Por temas ||| Par thème ||| Per tema ||| Nach Thema
+Champions ||| Champions League ||| Champions ||| Ligue des champions ||| Champions League ||| Champions League
+Mundiales ||| World Cups ||| Copas do Mundo ||| Coupes du monde ||| Mondiali ||| Weltmeisterschaften
+Campeones ||| Champions ||| Campeões ||| Champions ||| Campioni ||| Meister
+Ligas ||| Leagues ||| Ligas ||| Ligues ||| Campionati ||| Ligen
+Trofeos ||| Trophies ||| Troféus ||| Trophées ||| Trofei ||| Trophäen
+Récords y rankings ||| Records and rankings ||| Recordes e rankings ||| Records et classements ||| Record e classifiche ||| Rekorde und Ranglisten
