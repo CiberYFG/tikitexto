@@ -1689,3 +1689,38 @@ Próximamente ||| Coming soon ||| Em breve ||| Bientôt ||| Prossimamente ||| De
 Nuevos juegos dinámicos, también en 3D. ¡Vuelve pronto! ||| New dynamic games, including 3D ones. Come back soon! ||| Novos jogos dinâmicos, também em 3D. Volte em breve! ||| De nouveaux jeux dynamiques, aussi en 3D. Reviens bientôt ! ||| Nuovi giochi dinamici, anche in 3D. Torna presto! ||| Neue dynamische Spiele, auch in 3D. Komm bald wieder!
 Letras ||| Letters ||| Letras ||| Lettres ||| Lettere ||| Buchstaben
 Adivina y descifra ||| Guess and decode ||| Adivinhe e decifre ||| Devine et déchiffre ||| Indovina e decifra ||| Rate und entschlüssle
+NUEVO · 3D ||| NEW · 3D ||| NOVO · 3D ||| NOUVEAU · 3D ||| NUOVO · 3D ||| NEU · 3D
+PENALTIS 3D ||| 3D PENALTIES ||| PÊNALTIS 3D ||| PENALTYS 3D ||| RIGORI 3D ||| ELFMETER 3D
+Tanda de penaltis en un estadio en 3D: tira con tres barras de puntería y, cuando te tiran a ti, párala desde dentro de la portería. ||| A penalty shootout in a 3D stadium: shoot with three aiming bars and, when you face a shot, save it from inside the goal. ||| Disputa de pênaltis em um estádio 3D: chute com três barras de mira e, quando chutam em você, defenda de dentro do gol. ||| Une séance de tirs au but dans un stade en 3D : tire avec trois barres de visée et, quand on tire sur toi, arrête-le depuis l'intérieur du but. ||| Una serie di rigori in uno stadio 3D: tira con tre barre di mira e, quando tirano a te, parali da dentro la porta. ||| Ein Elfmeterschießen in einem 3D-Stadion: Schieße mit drei Zielbalken und halte, wenn auf dich geschossen wird, aus dem Tor heraus.
+TANDA DE PENALTIS ||| PENALTY SHOOTOUT ||| DISPUTA DE PÊNALTIS ||| TIRS AU BUT ||| SERIE DI RIGORI ||| ELFMETERSCHIESSEN
+Tira como en la vida real y párale el penalti a la máquina. ||| Shoot like in real life and save the machine's penalties. ||| Chute como na vida real e defenda os pênaltis da máquina. ||| Tire comme dans la vraie vie et arrête les penaltys de la machine. ||| Tira come nella vita reale e para i rigori della macchina. ||| Schieße wie im echten Leben und halte die Elfmeter der Maschine.
+Cuando tiras ||| When you shoot ||| Quando você chuta ||| Quand tu tires ||| Quando tiri ||| Wenn du schießt
+Para tres barras seguidas: dirección, altura y fuerza. Ojo: si te pasas de fuerza, la mandas a la grada. ||| Stop three bars in a row: direction, height and power. Careful: too much power and it flies into the stands. ||| Pare três barras seguidas: direção, altura e força. Cuidado: com força demais, a bola vai para a arquibancada. ||| Arrête trois barres de suite : direction, hauteur et puissance. Attention : trop de puissance et le ballon part dans les tribunes. ||| Ferma tre barre di fila: direzione, altezza e potenza. Attenzione: se esageri con la potenza, la palla finisce in tribuna. ||| Stoppe drei Balken nacheinander: Richtung, Höhe und Kraft. Vorsicht: Zu viel Kraft und der Ball fliegt auf die Tribüne.
+Cuando paras ||| When you keep goal ||| Quando você defende ||| Quand tu es dans les buts ||| Quando para ||| Wenn du im Tor stehst
+Muévete con el joystick o con A/D y lánzate a tiempo. Fíjate en la carrerilla del rival: puede delatar a dónde tira. ||| Move with the joystick or A/D and dive in time. Watch the rival's run-up: it can give away where he shoots. ||| Mova-se com o joystick ou com A/D e se jogue na hora certa. Observe a corrida do rival: ela pode revelar para onde ele chuta. ||| Déplace-toi avec le joystick ou A/D et plonge au bon moment. Observe l'élan de l'adversaire : il peut trahir où il tire. ||| Muoviti con il joystick o con A/D e tuffati al momento giusto. Osserva la rincorsa dell'avversario: può rivelare dove tira. ||| Bewege dich mit dem Joystick oder A/D und wirf dich rechtzeitig. Achte auf den Anlauf des Gegners: Er kann verraten, wohin er schießt.
+Dirección ||| Direction ||| Direção ||| Direction ||| Direzione ||| Richtung
+Altura ||| Height ||| Altura ||| Hauteur ||| Altezza ||| Höhe
+Fuerza ||| Power ||| Força ||| Puissance ||| Potenza ||| Kraft
+Espacio o clic para parar cada barra ||| Space or click to stop each bar ||| Espaço ou clique para parar cada barra ||| Espace ou clic pour arrêter chaque barre ||| Spazio o clic per fermare ogni barra ||| Leertaste oder Klick, um jeden Balken zu stoppen
+Toca la pantalla para parar cada barra ||| Tap the screen to stop each bar ||| Toque na tela para parar cada barra ||| Touche l'écran pour arrêter chaque barre ||| Tocca lo schermo per fermare ogni barra ||| Tippe auf den Bildschirm, um jeden Balken zu stoppen
+PARAR ||| SAVE ||| DEFENDER ||| ARRÊTER ||| PARA ||| HALTEN
+Espacio ||| Space ||| Espaço ||| Espace ||| Spazio ||| Leertaste
+A / D mover · W alto · S bajo · Espacio para lanzarte ||| A / D move · W high · S low · Space to dive ||| A / D mover · W alto · S baixo · Espaço para se jogar ||| A / D bouger · W haut · S bas · Espace pour plonger ||| A / D muovi · W alto · S basso · Spazio per tuffarti ||| A / D bewegen · W hoch · S tief · Leertaste zum Hechten
+Gira el móvil ||| Rotate your phone ||| Gire o celular ||| Tourne ton téléphone ||| Ruota il telefono ||| Drehe dein Handy
+Este modo solo funciona en horizontal. ||| This mode only works in landscape. ||| Este modo só funciona na horizontal. ||| Ce mode ne fonctionne qu'en mode paysage. ||| Questa modalità funziona solo in orizzontale. ||| Dieser Modus funktioniert nur im Querformat.
+No se puede mostrar el 3D ||| Can't show the 3D view ||| Não foi possível mostrar o 3D ||| Impossible d'afficher la 3D ||| Impossibile mostrare il 3D ||| 3D kann nicht angezeigt werden
+Tu dispositivo o navegador no admite gráficos 3D (WebGL). ||| Your device or browser doesn't support 3D graphics (WebGL). ||| Seu dispositivo ou navegador não suporta gráficos 3D (WebGL). ||| Ton appareil ou navigateur ne prend pas en charge la 3D (WebGL). ||| Il tuo dispositivo o browser non supporta la grafica 3D (WebGL). ||| Dein Gerät oder Browser unterstützt keine 3D-Grafik (WebGL).
+¡GOL! ||| GOAL! ||| GOL! ||| BUT ! ||| GOL! ||| TOR!
+¡PARADA! ||| SAVED! ||| DEFENDEU! ||| ARRÊT ! ||| PARATA! ||| GEHALTEN!
+¡POSTE! ||| POST! ||| NA TRAVE! ||| POTEAU ! ||| PALO! ||| PFOSTEN!
+¡LARGUERO! ||| CROSSBAR! ||| NO TRAVESSÃO! ||| BARRE ! ||| TRAVERSA! ||| LATTE!
+¡FUERA! ||| WIDE! ||| PARA FORA! ||| DEHORS ! ||| FUORI! ||| DANEBEN!
+¡Muerte súbita! ||| Sudden death! ||| Morte súbita! ||| Mort subite ! ||| Morte improvvisa! ||| Sudden Death!
+Tu turno: ¡tira! ||| Your turn: shoot! ||| Sua vez: chute! ||| À toi : tire ! ||| Tocca a te: tira! ||| Du bist dran: Schieß!
+Turno del rival: ¡párala! ||| Rival's turn: save it! ||| Vez do rival: defenda! ||| Au tour de l'adversaire : arrête-le ! ||| Turno dell'avversario: parala! ||| Der Gegner ist dran: Halte ihn!
+¡Has ganado la tanda! ||| You won the shootout! ||| Você venceu a disputa! ||| Tu as gagné la séance ! ||| Hai vinto la serie! ||| Du hast das Elfmeterschießen gewonnen!
+Has perdido la tanda ||| You lost the shootout ||| Você perdeu a disputa ||| Tu as perdu la séance ||| Hai perso la serie ||| Du hast das Elfmeterschießen verloren
+TÚ ||| YOU ||| VOCÊ ||| TOI ||| TU ||| DU
+Cargando… ||| Loading… ||| Carregando… ||| Chargement… ||| Caricamento… ||| Lädt…
+Salir ||| Exit ||| Sair ||| Quitter ||| Esci ||| Beenden
+Más juegos dinámicos en camino. ¡Vuelve pronto! ||| More dynamic games are on the way. Come back soon! ||| Mais jogos dinâmicos a caminho. Volte logo! ||| D'autres jeux dynamiques arrivent. Reviens vite ! ||| Altri giochi dinamici in arrivo. Torna presto! ||| Weitere dynamische Spiele sind unterwegs. Komm bald wieder!

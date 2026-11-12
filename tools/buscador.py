@@ -45,6 +45,7 @@ def main():
     # el ahorcado y los modos de la portada no tienen página propia
     extra = [("/?modo=ahorcado", "Ahorcado TIKITEXTO", "Ahorcado de fútbol: adivina el jugador letra a letra con 5 fallos.", "ahorcado hangman pendu forca"),
              ("/?modo=chapas", "Chapas TIKITEXTO", "Juego de chapas de fútbol: mueve una chapa por turno, empuja el balón a gol y desbloquea estilos de chapas, balones, estelas y estadios.", "chapas fútbol bottle caps metegol turnos rival estilos"),
+             ("/?modo=penaltis", "Penaltis 3D", "Juego de penaltis en 3D: tira con tres barras (dirección, altura y fuerza) y para los del rival como portero, con joystick o WASD.", "penaltis 3d portero tanda lanzar parar futbol"),
              ("/?modo=diario", "Adivina el futbolista en 6 intentos", "El juego de adivinar el nombre oculto de un futbolista, con ranking mundial.", "jugador diario nombre oculto ranking")]
     for u, n, d, k in extra:
         out.append({"u": u, "l": "es", "t": "jue", "n": n, "d": d, "k": k})

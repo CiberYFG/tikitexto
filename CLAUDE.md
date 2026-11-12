@@ -190,3 +190,10 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 ## Efectos en las pestañas de juegos + reloj de turno de Chapas (12-nov-2026)
 - La pestaña «Aa Tikitexto» pasó a llamarse **«Letras»** («Adivina y descifra»). **El fondo de la página no se anima**: los efectos van dentro de los propios botones de pestaña (`canvas.vj-tab__fx`): letras de colores que caen en «Letras» y explosiones saturadas cuyos aros empujan partículas ajenas (choques → chispas) en «Dinámicos». Se pausan fuera de la vista de juegos y se desactivan con `prefers-reduced-motion`.
 - Chapas: **10 s por turno** (`CH_TT`, `ch.tt`): aro alrededor del balón que se cierra; a ≤5 s pasa a naranja y se degrada a rojo; al agotarse se pierde el turno. Se pausa con cualquier `.modal` abierto. El marcador LED es `position: sticky` (`top: 66px`, bajo la cabecera). `CH_VSAQUE=8` (verificado por simulación).
+
+
+## Penaltis 3D (12-nov-2026, modo especial en «Dinámicos»)
+- Excepción a «todo en index.html»: `penaltis.js` (módulo ES, se importa al abrir), `penaltis.css` y `lib/three.module.min.js` (three.js r170, licencia en `lib/three.LICENSE.txt`). Todo con CSP `script-src 'self'`; sin recursos externos. Lanzador `abrirPenaltis()` en `index.html`; enlace directo `?modo=penaltis`; `TIKI.penaltis` solo para tests (`juego()` devuelve `{S,K,E,empezar,…}`). Tarjeta `.pn-card[data-penaltis]`.
+- Tanda de 5 + muerte súbita; tiras con 3 barras (dirección, altura, fuerza) y paras con vista de portero (joystick táctil / WASD). Solo horizontal en móvil (aviso de girar), pantalla completa en PC. Dificultades facil/normal/dificil/leyenda (`DIF`). +1 tikitexto por tanda ganada; estadísticas en `perfil().nv.p`.
+- Gráficos procedurales (sin modelos externos): `figura()` con miembros torneados, camiseta con textura y cara dibujadas en canvas; estadio cerrado (4 gradas + esquinas), vallas LED nítidas (`texPublicidad`, 4096 px, anisotropía máxima). Sin escudos ni fotos.
+- Textos en `fuente.txt` (6 idiomas). Test 3x. Está en el buscador.

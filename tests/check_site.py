@@ -827,6 +827,21 @@ with sync_playwright() as p:
     except Exception as e:
         check("chapas", False, str(e)[:200])
 
+    print("3x) Penaltis 3D")
+    try:
+        cx = br.new_context(viewport={"width": 844, "height": 390}, service_workers="block")
+        px = cx.new_page(); errs_x = []
+        px.on("pageerror", lambda e: errs_x.append(str(e)))
+        px.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');sessionStorage.setItem('tikitexto:grupo','dinamicos');")
+        px.goto(BASE, wait_until="networkidle", timeout=60000); px.wait_for_timeout(300)
+        check("penaltis: tarjeta en Dinámicos", px.locator("[data-penaltis]").count() == 1)
+        px.evaluate("document.querySelector('[data-penaltis]').click()"); px.wait_for_timeout(2500)
+        check("penaltis: se abre la pantalla (o aviso sin WebGL)", px.locator(".pn-raiz").count() == 1)
+        check("penaltis: sin errores de JavaScript", not errs_x, "; ".join(errs_x)[:150])
+        cx.close()
+    except Exception as e:
+        check("penaltis 3D", False, str(e)[:150])
+
     br.close()
 
 # 3u) Enlaces internos de todas las páginas HTML (sin navegador) y artículos de explicación
