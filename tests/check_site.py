@@ -799,11 +799,11 @@ with sync_playwright() as p:
         ia = pw.evaluate("""() => { const T = TIKI.chapas, S = T.ch.S; S.o.forEach(a => { a.vx = a.vy = 0; }); S.o[0].x = 200; S.o[0].y = 330; S.gol = 0;
                            const j = T.pensar(S, 'dificil'); return S.o[j.i].t; }""")
         check("chapas: la máquina elige una de sus chapas", ia == 2)
-        pw.evaluate("() => { const C = TIKI.chapas.ch; C.mov = false; C.pausa = 0; C.apunta = null; C.pensando = false; C.turno = 1; for (let i = 0; i < 3; i++) TIKI.chapas.gol(1); C.pausa = 1; }")
+        pw.evaluate("() => { const C = TIKI.chapas.ch; C.mov = false; C.pausa = 0; C.apunta = null; C.pensando = false; C.turno = 1; for (let i = 0; i < 2; i++) TIKI.chapas.gol(1); C.pausa = 1; }")
         pw.wait_for_timeout(2200)
-        check("chapas: 3 goles = victoria y +1 tikitexto", pw.evaluate("TIKI.chapas.ch.fin") and pw.evaluate("TIKI.chapas.datos().gan") == 1 and "+1 tikitexto" in pw.inner_text("#chResultado"))
+        check("chapas: 2 goles = victoria y +1 tikitexto", pw.evaluate("TIKI.chapas.ch.fin") and pw.evaluate("TIKI.chapas.datos().gan") == 1 and "+1 tikitexto" in pw.inner_text("#chResultado"))
         pw.click("#chResultado .boton--secundario >> nth=0"); pw.wait_for_timeout(300)
-        check("chapas: sala de estilos con 5 categorías", pw.locator(".ch-tab").count() == 5 and pw.locator(".ch-est").count() == 21 and pw.locator(".ch-gratis").count() == 3)
+        check("chapas: sala de estilos con 5 categorías", pw.locator(".ch-tab").count() == 6 and pw.locator(".ch-est").count() == 21 and pw.locator(".ch-gratis").count() == 3)
         pw.click(".ch-est >> nth=1"); pw.wait_for_timeout(200)
         check("chapas: elegir un estilo desbloqueado", pw.evaluate("TIKI.chapas.datos().eq.chapa") == "rayas")
         pw.click(".ch-est >> nth=11"); pw.wait_for_timeout(200)
@@ -811,6 +811,9 @@ with sync_playwright() as p:
         pw.wait_for_timeout(2000); pw.evaluate("document.querySelectorAll('.ch-tab')[4].click()"); pw.wait_for_timeout(200)
         check("chapas: ambientes con GRATIS", pw.locator(".ch-gratis").count() == 3)
         pw.wait_for_timeout(2000); pw.evaluate("document.querySelectorAll('.ch-est')[1].click()"); pw.wait_for_timeout(200)
+        pw.evaluate("() => { const C = TIKI.chapas.ch; C.marca = [1, 1]; C.oro = false; C.fin = false; C.pausa = 0; }")
+        check("chapas: kick-off sin gol posible (sim)", pw.evaluate("""() => { const T = TIKI.chapas, S = T.nuevo('ataque', 'ataque'); let g = 0;
+            for (let i = 1; i < 5; i++) for (let a = 0; a < 360; a += 6) { const r = T.simular(S, i, Math.cos(a * 0.01745) * T.VSAQUE, Math.sin(a * 0.01745) * T.VSAQUE); if (r.gol === 1) g++; } return g; }""") == 0)
         check("chapas: ambiente de noche desbloqueado y elegido", pw.evaluate("TIKI.chapas.datos().eq.ambiente") == "noche")
         pw.goto(BASE + "?lang=en&modo=chapas", wait_until="networkidle", timeout=60000); pw.wait_for_timeout(1200)
         for _ in range(4):

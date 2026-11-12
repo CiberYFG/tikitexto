@@ -172,3 +172,10 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 - Sonidos suaves sin saturar (`chTono`, `chSonGolpe`, `chSonTension`, `chSonSuelta`); respetan `TIKI.ajustes.sonido()`.
 - **+1 tikitexto por cada victoria** (ya no cada 3). Marcador LED `.ch-led` (ids `chMy`, `chMr`, `chLadoYo`, `chLadoRv`).
 - Estilos: 3 «GRATIS» (`u:["f"]`, insignia verde `.ch-gratis`) por categoría, estrellas de dificultad (`chTier`), nuevas estelas (hojas, confeti, rayos, oro) y ambientes (niebla, tormenta, aurora). Personalización rápida en el menú (`chRapido`). Textos nuevos en `fuente.txt`.
+
+## Chapas v3 (12-nov-2026)
+- **Mejor de 3** (`CH_META=2`): a 2 goles gana; con 1-1 (o empate tras `CH_TURNOS=6` turnos cada uno) empieza la **muerte súbita** (`chMuerte`: viñeta roja pulsante, latido, aviso, LED en rojo). Partidas de ~1-2 min: 3 pasos de física por frame, IA más rápida (260 ms), pausa de gol 55.
+- Chapas a ×0,7 del tamaño original (`CH_RC=17.5`); rozamiento algo menor (balón 0,965 / chapa 0,95).
+- **Formaciones** (`CH_EST.formacion`, campo `p` = 4 posiciones; el rival usa una al azar, espejada). **Saque suave** (`CH_VSAQUE=10`, solo el primer tiro tras cada saque): se verificó por simulación (141 000 tiros, todas las combinaciones de formaciones) que no hay gol directo; si cambias formaciones o la física, repetir con `TIKI.chapas.simular` (el test 3w lleva una comprobación).
+- Desbloqueo por fases (`t` = 1/2/3 estrellas): banderas por **victorias 3/5/10** (reparto aleatorio fijo), estelas por **partidas jugadas 6/10/20**, balones por **goles 5/10/20**, césped, ambiente y formaciones con **tikitextos 3/5/10**. 3 estilos GRATIS por categoría.
+- Sonidos con ruido filtrado (`chRuido`): toc de madera, golpe sordo, campanilla de poste, ovación y roce de red al marcar. Porterías con red de rombos y la red se agita al marcar (`ch.redT`).

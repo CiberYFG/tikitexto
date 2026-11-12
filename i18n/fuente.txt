@@ -1661,3 +1661,19 @@ GRATIS ||| FREE ||| GRÁTIS ||| GRATUIT ||| GRATIS ||| GRATIS
 ⚡ Cada partido que ganes te da +1 tikitexto. ||| ⚡ Every match you win gives you +1 tikitexto. ||| ⚡ Cada partida que você vencer dá +1 tikitexto. ||| ⚡ Chaque match gagné te rapporte +1 tikitexto. ||| ⚡ Ogni partita che vinci ti dà +1 tikitexto. ||| ⚡ Jedes gewonnene Spiel bringt dir +1 Tikitexto.
 Tu chapa ||| Your cap ||| Sua tampinha ||| Ta capsule ||| Il tuo tappo ||| Deine Kappe
 Tu balón ||| Your ball ||| Sua bola ||| Ton ballon ||| Il tuo pallone ||| Dein Ball
+Formación ||| Formation ||| Formação ||| Formation ||| Formazione ||| Aufstellung
+Tu formación ||| Your formation ||| Sua formação ||| Ta formation ||| La tua formazione ||| Deine Aufstellung
+Diamante ||| Diamond ||| Diamante ||| Diamant ||| Diamante ||| Diamant
+Muro ||| Wall ||| Muro ||| Mur ||| Muro ||| Mauer
+Búnker ||| Bunker ||| Bunker ||| Bunker ||| Bunker ||| Bunker
+Dos líneas ||| Two lines ||| Duas linhas ||| Deux lignes ||| Due linee ||| Zwei Reihen
+Abanico ||| Fan ||| Leque ||| Éventail ||| Ventaglio ||| Fächer
+Ataque ||| Attack ||| Ataque ||| Attaque ||| Attacco ||| Angriff
+Saque suave: arrastra una chapa hacia atrás y suéltala ||| Soft kick-off: drag a cap backwards and let go ||| Saída suave: arraste uma tampinha para trás e solte ||| Coup d'envoi doux : tire une capsule en arrière et lâche ||| Calcio d'inizio morbido: trascina un tappo indietro e rilascia ||| Weicher Anstoß: Kappe nach hinten ziehen und loslassen
+¡Muerte súbita! Tu turno ||| Sudden death! Your turn ||| Morte súbita! Sua vez ||| Mort subite ! À toi ||| Morte improvvisa! Tocca a te ||| Sudden Death! Du bist dran
+¡Muerte súbita! Turno del rival ||| Sudden death! Rival's turn ||| Morte súbita! Vez do rival ||| Mort subite ! Tour de l'adversaire ||| Morte improvvisa! Turno dell'avversario ||| Sudden Death! Gegner ist dran
+MUERTE SÚBITA ||| SUDDEN DEATH ||| MORTE SÚBITA ||| MORT SUBITE ||| MORTE IMPROVVISA ||| SUDDEN DEATH
+Empuja el balón a la portería rival. Gana el primero que marque 2 goles. ||| Push the ball into the rival goal. The first to score 2 goals wins. ||| Empurre a bola para o gol rival. Vence quem marcar 2 gols primeiro. ||| Pousse le ballon dans le but adverse. Le premier à marquer 2 buts gagne. ||| Spingi il pallone nella porta avversaria. Vince chi segna 2 gol per primo. ||| Schiebe den Ball ins gegnerische Tor. Wer zuerst 2 Tore erzielt, gewinnt.
+Si hay 1-1, ¡muerte súbita! El siguiente gol lo decide todo. ||| At 1-1 it's sudden death! The next goal decides everything. ||| Com 1-1, morte súbita! O próximo gol decide tudo. ||| À 1-1, mort subite ! Le prochain but décide de tout. ||| Sull'1-1 è morte improvvisa! Il prossimo gol decide tutto. ||| Bei 1:1 gilt Sudden Death! Das nächste Tor entscheidet alles.
+Gana el primero que marque 2 goles (al mejor de 3). ||| The first to score 2 goals wins (best of 3). ||| Vence quem marcar 2 gols primeiro (melhor de 3). ||| Le premier à marquer 2 buts gagne (au meilleur des 3). ||| Vince chi segna 2 gol per primo (al meglio di 3). ||| Wer zuerst 2 Tore erzielt, gewinnt (Best of 3).
+Con 1-1 empieza la muerte súbita: el siguiente gol lo decide todo. ||| At 1-1 sudden death begins: the next goal decides everything. ||| Com 1-1 começa a morte súbita: o próximo gol decide tudo. ||| À 1-1 commence la mort subite : le prochain but décide de tout. ||| Sull'1-1 inizia la morte improvvisa: il prossimo gol decide tutto. ||| Bei 1:1 beginnt Sudden Death: Das nächste Tor entscheidet alles.
