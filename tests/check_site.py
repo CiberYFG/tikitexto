@@ -117,8 +117,9 @@ with sync_playwright() as p:
             "localStorage.setItem('tikitexto:jugadores'," + json.dumps(json.dumps({"actual": "BotNv", "perfiles": {"BotNv": perfil3}})) + ");}")
         pg3.goto(BASE, wait_until="networkidle", timeout=60000)
         pg3.wait_for_timeout(600)
+        pg3.click("[data-grupo-btn=dinamicos]"); pg3.wait_for_timeout(200)
         check("la sección NOVEDAD se ve en el menú", pg3.is_visible(".novedad"))
-        pg3.click("[data-novedad=fichajes]")
+        pg3.evaluate("document.querySelector('[data-grupo-btn=dinamicos]').click()"); pg3.click("[data-novedad=fichajes]")
         pg3.wait_for_timeout(400)
         check("primera vez: tutorial obligatorio del modo", pg3.is_visible("#modalTutorial") and not pg3.is_visible("#tutCerrar"))
         for _ in range(3):
@@ -136,7 +137,7 @@ with sync_playwright() as p:
         if pg3.is_visible("#modalSalirNv"):
             pg3.click("#botonSalirNvSi")
             pg3.wait_for_timeout(200)
-        pg3.click("[data-novedad=fichajes]")
+        pg3.evaluate("document.querySelector('[data-grupo-btn=dinamicos]').click()"); pg3.click("[data-novedad=fichajes]")
         pg3.wait_for_timeout(300)
         check("el tutorial del modo no vuelve a salir", not pg3.is_visible("#modalTutorial"))
         pg3.click("#nvInicio")
@@ -176,7 +177,7 @@ with sync_playwright() as p:
         check("el portal está en inglés (Games / Learn)", "Games" in texto0 and "Learn" in texto0 and "Football history, facts and" in texto0)
         pi.click("#portalJuegos"); pi.wait_for_timeout(300)
         texto = pi.inner_text("body")
-        check("la portada está en inglés", "Football history, facts and" in texto0 and "Interactive games" in texto and "Choose a mode" in texto.replace("CHOOSE A MODE", "Choose a mode"))
+        check("la portada está en inglés", "Football history, facts and" in texto0 and "Word games" in texto and "Choose a mode" in texto.replace("CHOOSE A MODE", "Choose a mode"))
         check("el menú de modos está traducido", "Goalkeepers" in texto and "Porteros" not in texto)
         for cod, frase in (("pt", "Escolha um modo"), ("fr", "Choisis un mode"), ("it", "Scegli una modalità"), ("de", "Wähle einen Modus")):
             pi.evaluate("localStorage.setItem('tikitexto:idioma','%s')" % cod)
@@ -523,7 +524,7 @@ with sync_playwright() as p:
         pt.add_init_script("localStorage.setItem('tikitexto:idioma','es');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');")
         pt.goto(BASE, wait_until="networkidle", timeout=60000)
         pt.wait_for_timeout(500)
-        pt.click("[data-novedad=tarjetas]"); pt.wait_for_timeout(300)
+        pt.evaluate("document.querySelector('[data-grupo-btn=dinamicos]').click()"); pt.click("[data-novedad=tarjetas]"); pt.wait_for_timeout(300)
         pt.keyboard.press("Escape")
         pt.dispatch_event("#nvEmpezar", "click")
         validos = True; mismas = 0; rondas = 0

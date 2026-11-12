@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-+14OZHBYiYh9MwQjGovyb9vAcutGumI4+W1fSm2UN+k=' 'sha256-+bki06o94DiJytAvjonXWGrPQjQRDCUJsasap+qNzYQ=' 'sha256-BYYFXnIdHsmNRI2crJZxsMDUbf9uzg5afkhjgVLJh/E=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-i/uezubRZzZHSJf/pQ5SYUOkxpVDuy7MafHbdaR+erU=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-+14OZHBYiYh9MwQjGovyb9vAcutGumI4+W1fSm2UN+k=' 'sha256-BYYFXnIdHsmNRI2crJZxsMDUbf9uzg5afkhjgVLJh/E=' 'sha256-O+V7MlmzheeIXu2QTKtFJRWcPhzT815W+qZ7/wB2Gh4=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-i/uezubRZzZHSJf/pQ5SYUOkxpVDuy7MafHbdaR+erU=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>
 <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WN89TQCM"></script>
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -1698,6 +1698,23 @@ button.ir-juegos { border: 0; cursor: pointer; }
 .ch-aviso { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 90; padding: 10px 18px; border-radius: 999px; background: #10131f; color: #fff; font-weight: 700; }
 /* ===== PORTAL: Juegos / Saber ===== */
 .vj { display: none; } html.vista-j .vj { display: block; } html.vista-j .vp { display: none; }
+.vj-sel { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0 6px; }
+.vj-tab { position: relative; display: grid; justify-items: center; gap: 2px; padding: 12px 8px 11px; border: 2px solid rgba(127,127,127,.3); border-radius: 18px; background: var(--superficie, rgba(127,127,127,.08)); color: var(--texto); font: inherit; cursor: pointer; transition: transform .15s, box-shadow .2s, border-color .2s; }
+.vj-tab b { font: 900 1.1rem/1.1 var(--fuente-titulo); letter-spacing: .01em; }
+.vj-tab small { font-size: .7rem; font-weight: 700; opacity: .75; }
+.vj-tab__ico { font: 900 1.35rem/1 var(--fuente-titulo); }
+.vj-tab:active { transform: scale(.97); }
+.vj-tab[aria-selected="true"] { color: #fff; border-color: transparent; transform: translateY(-1px); }
+.vj-tab--letras[aria-selected="true"] { background: linear-gradient(135deg, #1f8f6a, #1b5fd6); box-shadow: 0 8px 22px rgba(27,95,214,.4); }
+.vj-tab--din[aria-selected="true"] { background: linear-gradient(#1a1030, #0c1b2e) padding-box, conic-gradient(from 0deg, #ff2e63, #ffd300, #2eff7b, #19c8ff, #a24bff, #ff2e63) border-box; border: 2px solid transparent; box-shadow: 0 8px 24px rgba(162,75,255,.45); }
+.vj-tab--din:not([aria-selected="true"])::after { content: "NUEVO"; position: absolute; top: -7px; right: 8px; padding: 2px 7px; border-radius: 999px; background: #ff2e63; color: #fff; font: 900 .56rem/1.2 var(--fuente); letter-spacing: .08em; }
+.vj-tab:focus-visible { outline: 3px solid var(--texto); outline-offset: 3px; }
+.vj-grupo[hidden] { display: none; }
+.vj-grupo > .ch-card, .vj-grupo > .ah-card, .vj-grupo > .nd-card, .vj-grupo > .novedad { margin-top: 14px; }
+.vj-pronto { display: flex; align-items: center; gap: 14px; margin-top: 16px; padding: 16px 18px; border: 2px dashed rgba(127,127,127,.5); border-radius: 20px; color: var(--texto); }
+.vj-pronto__ico { font-size: 2.2rem; filter: grayscale(.2); }
+.vj-pronto b { display: block; font: 900 1.05rem/1.1 var(--fuente-titulo); }
+.vj-pronto span span { display: block; margin-top: 3px; font-size: .85rem; opacity: .8; }
 .vj__cab { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 6px 0 10px; }
 .vj__volver { border: 0; cursor: pointer; padding: 10px 16px; border-radius: 999px; font: 800 .9rem/1 var(--fuente-titulo); color: var(--texto); background: rgba(127,127,127,.15); box-shadow: inset 0 0 0 1px rgba(127,127,127,.35); }
 .vj__volver:focus-visible { outline: 3px solid var(--texto); outline-offset: 3px; }
@@ -2278,10 +2295,15 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
 
     <div class="vj" id="vistaJuegos">
     <div class="vj__cab"><button type="button" class="vj__volver" id="volverPortal">← Inicio</button><button type="button" class="ir-juegos ir-ranking" data-stats aria-label="Ver ranking"><span aria-hidden="true">🏆</span> Ver ranking</button></div>
-    <h2 class="inicio__juegos" id="tituloJuegos">Juegos interactivos</h2>
-    <p class="inicio__descripcion">Seis intentos para descubrir el jugador oculto. Cada letra te dice si está en la posición correcta, si aparece en otro sitio o si no forma parte del nombre.</p>
+    <div class="vj-sel" role="tablist" aria-label="Tipo de juegos">
+      <button type="button" class="vj-tab vj-tab--letras" role="tab" id="tabLetras" data-grupo-btn="letras" aria-selected="true" aria-controls="grupoLetras"><span class="vj-tab__ico" aria-hidden="true">Aa</span><b>Tikitexto</b><small>Juegos de letras</small></button>
+      <button type="button" class="vj-tab vj-tab--din" role="tab" id="tabDin" data-grupo-btn="dinamicos" aria-selected="false" aria-controls="grupoDinamicos"><span class="vj-tab__ico" aria-hidden="true">🎮</span><b>Dinámicos</b><small>Física, reflejos y retos</small></button>
+    </div>
     <button type="button" class="tikis" data-stats aria-label="Ver estadísticas y ranking"><span>⚡</span><b id="tikisNum">0</b> tikitextos <em id="tikisNivel">Cantera</em><span>Ver ranking ›</span></button>
 
+    <div class="vj-grupo" id="grupoLetras" role="tabpanel" aria-labelledby="tabLetras" data-grupo="letras">
+    <h2 class="inicio__juegos" id="tituloJuegos">Juegos de letras</h2>
+    <p class="inicio__descripcion">Seis intentos para descubrir el jugador oculto. Cada letra te dice si está en la posición correcta, si aparece en otro sitio o si no forma parte del nombre.</p>
     <button type="button" class="tarjeta" data-modo="diario">
       <span class="tarjeta__icono" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -2303,6 +2325,58 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
       </span>
     </button>
 
+    <button type="button" class="ah-card" data-ahorcado>
+      <span class="ah-card__dib" aria-hidden="true"><svg viewBox="0 0 120 140" class="ah-svg ah-svg--bucle" aria-hidden="true"><g class="ah-horca"><path d="M12 128H72M30 128V14H84M30 36L52 14"/></g><g class="ah-fig"><path class="ah-cuerda" d="M84 14V30"/><circle class="ah-p ah-p1" pathLength="1" cx="84" cy="40" r="10"/><path class="ah-p ah-p2" pathLength="1" d="M84 50V88"/><path class="ah-p ah-p3" pathLength="1" d="M68 76L84 60L100 76"/><path class="ah-p ah-p4" pathLength="1" d="M84 88L71 114"/><path class="ah-p ah-p5" pathLength="1" d="M84 88L97 114"/><path class="ah-x" d="M78.5 35.5l4 4m0-4l-4 4M85.5 35.5l4 4m0-4l-4 4"/></g></svg></span>
+      <span>
+        <span class="ah-card__sello">MODO ESPECIAL</span>
+        <span class="ah-card__titulo ah-arco">AHORCADO TIKITEXTO</span>
+        <span class="ah-card__desc">Adivina al crack letra a letra antes de que se complete el muñeco. 5 fallos y sin pistas.</span>
+        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </button>
+
+    <section class="inicio__seccion" aria-labelledby="tituloModos">
+      <h2 class="inicio__seccion-titulo" id="tituloModos">Elige un modo</h2>
+      <div class="rejilla-modos" id="rejillaModos"></div>
+    </section>
+
+    <div class="leyenda">
+      <span class="leyenda__titulo">Cómo se lee el tablero</span>
+      <div class="leyenda__fila">
+        <span class="leyenda__ejemplo"><span class="muestra muestra--verde">M</span> Letra y posición correctas</span>
+        <span class="leyenda__ejemplo"><span class="muestra muestra--amarilla">A</span> Letra en otra casilla</span>
+        <span class="leyenda__ejemplo"><span class="muestra muestra--gris">R</span> Letra que no está</span>
+      </div>
+    </div>
+
+
+    </div>
+
+    </div>
+
+    <div class="vj-grupo" id="grupoDinamicos" role="tabpanel" aria-labelledby="tabDin" data-grupo="dinamicos" hidden>
+    <h2 class="inicio__juegos" id="tituloDinamicos">Juegos dinámicos</h2>
+    <p class="inicio__descripcion">Sin teclado: tú decides cuándo y cómo. Partidas rápidas con física, reflejos y estilos que desbloqueas jugando.</p>
+    <button type="button" class="nd-card" data-navidad id="ndCard" hidden>
+      <span class="nd-card__dib" aria-hidden="true"><i class="nd-arbol">🎄</i><i class="nd-muneco">⛄</i><i class="nd-estrella">⭐</i></span>
+      <span class="nd-card__cuerpo">
+        <span class="nd-card__sello">⏳ MODO DE TIEMPO LIMITADO</span>
+        <span class="nd-card__titulo">Linterna de Navidad</span>
+        <span class="nd-card__desc">Entra a oscuras en el bosque nevado: encuentra con tu linterna las letras de una leyenda antes de que se acabe la pila.</span>
+        <span class="nd-card__cuenta" id="ndCuenta" data-no-t></span>
+        <span class="nd-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </button>
+
+    <button type="button" class="ch-card" data-chapas>
+      <span class="ch-card__dib" aria-hidden="true"><svg viewBox="0 0 120 120"><rect x="6" y="6" width="108" height="108" rx="14" fill="#1f8f45" stroke="#fff" stroke-width="3"/><path d="M6 60h108" stroke="rgba(255,255,255,.8)" stroke-width="3"/><circle cx="60" cy="60" r="16" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="3"/><circle cx="38" cy="86" r="14" fill="#3b8bff" stroke="#fff" stroke-width="3"/><circle cx="38" cy="86" r="7" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2.5"/><circle cx="82" cy="34" r="14" fill="#ff5a6a" stroke="#fff" stroke-width="3"/><circle cx="82" cy="34" r="7" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2.5"/><circle cx="64" cy="66" r="7" fill="#fff" stroke="#10131f" stroke-width="2"/></svg></span>
+      <span>
+        <span class="ah-card__sello">NUEVO · MODO ESPECIAL</span>
+        <span class="ch-card__titulo">CHAPAS TIKITEXTO</span>
+        <span class="ah-card__desc">Cuatro chapas contra cuatro: mueve una por turno y empuja el balón a gol. Desbloquea chapas, balones, estelas y estadios.</span>
+        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </button>
 
         <section class="novedad" aria-labelledby="tituloNovedad">
       <span class="novedad__brillo" aria-hidden="true"></span>
@@ -2336,53 +2410,7 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
       </div>
     </section>
 
-    <button type="button" class="nd-card" data-navidad id="ndCard" hidden>
-      <span class="nd-card__dib" aria-hidden="true"><i class="nd-arbol">🎄</i><i class="nd-muneco">⛄</i><i class="nd-estrella">⭐</i></span>
-      <span class="nd-card__cuerpo">
-        <span class="nd-card__sello">⏳ MODO DE TIEMPO LIMITADO</span>
-        <span class="nd-card__titulo">Linterna de Navidad</span>
-        <span class="nd-card__desc">Entra a oscuras en el bosque nevado: encuentra con tu linterna las letras de una leyenda antes de que se acabe la pila.</span>
-        <span class="nd-card__cuenta" id="ndCuenta" data-no-t></span>
-        <span class="nd-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-      </span>
-    </button>
-
-    <button type="button" class="ah-card" data-ahorcado>
-      <span class="ah-card__dib" aria-hidden="true"><svg viewBox="0 0 120 140" class="ah-svg ah-svg--bucle" aria-hidden="true"><g class="ah-horca"><path d="M12 128H72M30 128V14H84M30 36L52 14"/></g><g class="ah-fig"><path class="ah-cuerda" d="M84 14V30"/><circle class="ah-p ah-p1" pathLength="1" cx="84" cy="40" r="10"/><path class="ah-p ah-p2" pathLength="1" d="M84 50V88"/><path class="ah-p ah-p3" pathLength="1" d="M68 76L84 60L100 76"/><path class="ah-p ah-p4" pathLength="1" d="M84 88L71 114"/><path class="ah-p ah-p5" pathLength="1" d="M84 88L97 114"/><path class="ah-x" d="M78.5 35.5l4 4m0-4l-4 4M85.5 35.5l4 4m0-4l-4 4"/></g></svg></span>
-      <span>
-        <span class="ah-card__sello">MODO ESPECIAL</span>
-        <span class="ah-card__titulo ah-arco">AHORCADO TIKITEXTO</span>
-        <span class="ah-card__desc">Adivina al crack letra a letra antes de que se complete el muñeco. 5 fallos y sin pistas.</span>
-        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-      </span>
-    </button>
-
-
-    <button type="button" class="ch-card" data-chapas>
-      <span class="ch-card__dib" aria-hidden="true"><svg viewBox="0 0 120 120"><rect x="6" y="6" width="108" height="108" rx="14" fill="#1f8f45" stroke="#fff" stroke-width="3"/><path d="M6 60h108" stroke="rgba(255,255,255,.8)" stroke-width="3"/><circle cx="60" cy="60" r="16" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="3"/><circle cx="38" cy="86" r="14" fill="#3b8bff" stroke="#fff" stroke-width="3"/><circle cx="38" cy="86" r="7" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2.5"/><circle cx="82" cy="34" r="14" fill="#ff5a6a" stroke="#fff" stroke-width="3"/><circle cx="82" cy="34" r="7" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2.5"/><circle cx="64" cy="66" r="7" fill="#fff" stroke="#10131f" stroke-width="2"/></svg></span>
-      <span>
-        <span class="ah-card__sello">NUEVO · MODO ESPECIAL</span>
-        <span class="ch-card__titulo">CHAPAS TIKITEXTO</span>
-        <span class="ah-card__desc">Cuatro chapas contra cuatro: mueve una por turno y empuja el balón a gol. Desbloquea chapas, balones, estelas y estadios.</span>
-        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-      </span>
-    </button>
-
-    <section class="inicio__seccion" aria-labelledby="tituloModos">
-      <h2 class="inicio__seccion-titulo" id="tituloModos">Elige un modo</h2>
-      <div class="rejilla-modos" id="rejillaModos"></div>
-    </section>
-
-    <div class="leyenda">
-      <span class="leyenda__titulo">Cómo se lee el tablero</span>
-      <div class="leyenda__fila">
-        <span class="leyenda__ejemplo"><span class="muestra muestra--verde">M</span> Letra y posición correctas</span>
-        <span class="leyenda__ejemplo"><span class="muestra muestra--amarilla">A</span> Letra en otra casilla</span>
-        <span class="leyenda__ejemplo"><span class="muestra muestra--gris">R</span> Letra que no está</span>
-      </div>
-    </div>
-
-
+    <div class="vj-pronto" aria-label="Próximamente"><span class="vj-pronto__ico" aria-hidden="true">🧊</span><span><b>Próximamente</b><span>Nuevos juegos dinámicos, también en 3D. ¡Vuelve pronto!</span></span></div>
     </div>
 
     <aside class="hueco hueco--medio" aria-label="Publicidad">Publicidad</aside>
@@ -8686,6 +8714,23 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   ];
 
   TIKI.chapas = { ch: ch, gol: chGol, datos: chDatos, pensar: chPensar, simular: chSimular, estilos: CH_EST, nuevo: chNuevoEstado, VSAQUE: CH_VSAQUE }; /* solo para las pruebas automáticas */
+
+  /* Juegos de letras / dinámicos */
+  (function () {
+    const tabs = Array.prototype.slice.call(document.querySelectorAll("[data-grupo-btn]")), paneles = Array.prototype.slice.call(document.querySelectorAll(".vj-grupo"));
+    if (!tabs.length) return;
+    function poner(g, guardar) {
+      tabs.forEach(function (t) { t.setAttribute("aria-selected", t.dataset.grupoBtn === g ? "true" : "false"); });
+      paneles.forEach(function (p) { p.hidden = p.dataset.grupo !== g; });
+      if (guardar) { try { sessionStorage.setItem("tikitexto:grupo", g); } catch (e) { /* sin almacenamiento */ } }
+    }
+    tabs.forEach(function (t) { t.addEventListener("click", function () { poner(t.dataset.grupoBtn, true); }); });
+    let g = "letras";
+    try { g = sessionStorage.getItem("tikitexto:grupo") || "letras"; } catch (e) { /* sin almacenamiento */ }
+    const m = new URLSearchParams(location.search).get("modo");
+    if (m && ["chapas", "navidad", "tarjetas", "fichajes"].indexOf(m) >= 0) g = "dinamicos";
+    poner(g === "dinamicos" ? "dinamicos" : "letras", false);
+  })();
 
   /* Enlace directo a un modo (?modo=jugadores), usado por las páginas de búsqueda */
   (function () {
