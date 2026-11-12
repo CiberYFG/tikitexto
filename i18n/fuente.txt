@@ -1562,3 +1562,85 @@ Campeones ||| Champions ||| Campeões ||| Champions ||| Campioni ||| Meister
 Ligas ||| Leagues ||| Ligas ||| Ligues ||| Campionati ||| Ligen
 Trofeos ||| Trophies ||| Troféus ||| Trophées ||| Trofei ||| Trophäen
 Récords y rankings ||| Records and rankings ||| Recordes e rankings ||| Records et classements ||| Record e classifiche ||| Rekorde und Ranglisten
+
+NUEVO · MODO ESPECIAL ||| NEW · SPECIAL MODE ||| NOVO · MODO ESPECIAL ||| NOUVEAU · MODE SPÉCIAL ||| NUOVO · MODALITÀ SPECIALE ||| NEU · SPEZIALMODUS
+Cuatro chapas contra cuatro: mueve una por turno y empuja el balón a gol. Desbloquea chapas, balones, estelas y estadios. ||| Four bottle caps against four: move one per turn and push the ball into the goal. Unlock caps, balls, trails and stadiums. ||| Quatro tampinhas contra quatro: mova uma por turno e empurre a bola para o gol. Desbloqueie tampinhas, bolas, rastros e estádios. ||| Quatre capsules contre quatre : déplace-en une par tour et pousse le ballon au but. Débloque capsules, ballons, traînées et stades. ||| Quattro tappi contro quattro: muovine uno per turno e spingi il pallone in porta. Sblocca tappi, palloni, scie e stadi. ||| Vier Kronkorken gegen vier: Bewege pro Zug einen und schieße den Ball ins Tor. Schalte Kappen, Bälle, Spuren und Stadien frei.
+Arrastra, suelta y mete gol ||| Drag, release and score ||| Arraste, solte e faça gol ||| Glisse, lâche et marque ||| Trascina, rilascia e segna ||| Ziehen, loslassen, Tor schießen
+Ganados ||| Won ||| Vitórias ||| Gagnés ||| Vinti ||| Gewonnen
+Empates ||| Draws ||| Empates ||| Nuls ||| Pareggi ||| Unentschieden
+Perdidos ||| Lost ||| Derrotas ||| Perdus ||| Persi ||| Verloren
+Goles ||| Goals ||| Gols ||| Buts ||| Gol ||| Tore
+Cada uno tiene 4 chapas. En tu turno mueves solo una: arrástrala hacia atrás y suéltala. ||| Each side has 4 caps. On your turn you move only one: drag it backwards and let go. ||| Cada um tem 4 tampinhas. No seu turno você move só uma: arraste-a para trás e solte. ||| Chacun a 4 capsules. À ton tour tu n'en déplaces qu'une : tire-la en arrière et lâche. ||| Ognuno ha 4 tappi. Al tuo turno ne muovi solo uno: trascinalo all'indietro e rilascialo. ||| Jede Seite hat 4 Kappen. Du bewegst pro Zug nur eine: nach hinten ziehen und loslassen.
+Empuja el balón a la portería rival. Gana el primero que marque 3 goles. ||| Push the ball into the rival goal. The first to score 3 goals wins. ||| Empurre a bola para o gol rival. Vence quem marcar 3 gols primeiro. ||| Pousse le ballon dans le but adverse. Le premier à marquer 3 buts gagne. ||| Spingi il pallone nella porta avversaria. Vince chi segna per primo 3 gol. ||| Schieße den Ball ins gegnerische Tor. Wer zuerst 3 Tore erzielt, gewinnt.
+⚡ Cada 3 victorias ganas +1 tikitexto. ||| ⚡ Every 3 wins you earn +1 tikitexto. ||| ⚡ A cada 3 vitórias você ganha +1 tikitexto. ||| ⚡ Toutes les 3 victoires, tu gagnes +1 tikitexto. ||| ⚡ Ogni 3 vittorie guadagni +1 tikitexto. ||| ⚡ Alle 3 Siege gibt es +1 Tikitexto.
+Rival ||| Rival ||| Rival ||| Adversaire ||| Avversario ||| Gegner
+Fácil ||| Easy ||| Fácil ||| Facile ||| Facile ||| Leicht
+Normal ||| Normal ||| Normal ||| Normal ||| Normale ||| Normal
+Difícil ||| Hard ||| Difícil ||| Difficile ||| Difficile ||| Schwer
+¡Jugar! ||| Play! ||| Jogar! ||| Jouer ! ||| Gioca! ||| Spielen!
+🎨 Sala de estilos ||| 🎨 Style room ||| 🎨 Sala de estilos ||| 🎨 Salle des styles ||| 🎨 Sala degli stili ||| 🎨 Stilraum
+← Volver ||| ← Back ||| ← Voltar ||| ← Retour ||| ← Indietro ||| ← Zurück
+Sala de estilos ||| Style room ||| Sala de estilos ||| Salle des styles ||| Sala degli stili ||| Stilraum
+Elige cómo lucen tus chapas. Unos estilos se ganan jugando y otros se compran con tus tikitextos. ||| Choose how your caps look. Some styles are earned by playing and others are bought with your tikitextos. ||| Escolha o visual das suas tampinhas. Alguns estilos se ganham jogando e outros se compram com seus tikitextos. ||| Choisis l'apparence de tes capsules. Certains styles se gagnent en jouant, d'autres s'achètent avec tes tikitextos. ||| Scegli l'aspetto dei tuoi tappi. Alcuni stili si ottengono giocando, altri si comprano con i tuoi tikitesti. ||| Wähle das Aussehen deiner Kappen. Manche Stile erspielst du, andere kaufst du mit deinen Tikitexten.
+Chapa ||| Cap ||| Tampinha ||| Capsule ||| Tappo ||| Kappe
+Balón ||| Ball ||| Bola ||| Ballon ||| Pallone ||| Ball
+Estela ||| Trail ||| Rastro ||| Traînée ||| Scia ||| Spur
+Césped ||| Pitch ||| Gramado ||| Pelouse ||| Prato ||| Rasen
+Ambiente ||| Ambience ||| Ambiente ||| Ambiance ||| Atmosfera ||| Stimmung
+Clásica ||| Classic ||| Clássica ||| Classique ||| Classica ||| Klassisch
+Rayas ||| Stripes ||| Listras ||| Rayures ||| Righe ||| Streifen
+Rombo ||| Diamond ||| Losango ||| Losange ||| Rombo ||| Raute
+Rayo ||| Lightning ||| Raio ||| Éclair ||| Fulmine ||| Blitz
+Sol ||| Sun ||| Sol ||| Soleil ||| Sole ||| Sonne
+Galaxia ||| Galaxy ||| Galáxia ||| Galaxie ||| Galassia ||| Galaxie
+Clásico ||| Classic ||| Clássico ||| Classique ||| Classico ||| Klassisch
+Dorado ||| Golden ||| Dourado ||| Doré ||| Dorato ||| Golden
+Neón ||| Neon ||| Neon ||| Néon ||| Neon ||| Neon
+Fuego ||| Fire ||| Fogo ||| Feu ||| Fuoco ||| Feuer
+Hielo ||| Ice ||| Gelo ||| Glace ||| Ghiaccio ||| Eis
+Sin estela ||| No trail ||| Sem rastro ||| Sans traînée ||| Senza scia ||| Keine Spur
+Humo ||| Smoke ||| Fumaça ||| Fumée ||| Fumo ||| Rauch
+Chispas ||| Sparks ||| Faíscas ||| Étincelles ||| Scintille ||| Funken
+Arcoíris ||| Rainbow ||| Arco-íris ||| Arc-en-ciel ||| Arcobaleno ||| Regenbogen
+Oscuro ||| Dark ||| Escuro ||| Sombre ||| Scuro ||| Dunkel
+Cuadros ||| Checks ||| Xadrez ||| Damier ||| Scacchi ||| Karo
+Diagonal ||| Diagonal ||| Diagonal ||| Diagonal ||| Diagonale ||| Diagonal
+Arena ||| Sand ||| Areia ||| Sable ||| Sabbia ||| Sand
+Día ||| Day ||| Dia ||| Jour ||| Giorno ||| Tag
+Atardecer ||| Sunset ||| Entardecer ||| Coucher de soleil ||| Tramonto ||| Sonnenuntergang
+Nieve ||| Snow ||| Neve ||| Neige ||| Neve ||| Schnee
+Lluvia ||| Rain ||| Chuva ||| Pluie ||| Pioggia ||| Regen
+Estrellas ||| Stars ||| Estrelas ||| Étoiles ||| Stelle ||| Sterne
+✓ En uso ||| ✓ In use ||| ✓ Em uso ||| ✓ Utilisé ||| ✓ In uso ||| ✓ Aktiv
+Usar ||| Use ||| Usar ||| Utiliser ||| Usa ||| Nutzen
+Te faltan tikitextos ||| You need more tikitextos ||| Faltam tikitextos ||| Il te manque des tikitextos ||| Ti mancano dei tikitesti ||| Dir fehlen Tikitexte
+Incluido ||| Included ||| Incluído ||| Inclus ||| Incluso ||| Inklusive
+Gana 1 partido ||| Win 1 match ||| Ganhe 1 partida ||| Gagne 1 match ||| Vinci 1 partita ||| Gewinne 1 Spiel
+Tú ||| You ||| Você ||| Toi ||| Tu ||| Du
+Tu turno: arrastra una chapa hacia atrás y suéltala ||| Your turn: drag a cap backwards and let go ||| Sua vez: arraste uma tampinha para trás e solte ||| À toi : tire une capsule en arrière et lâche ||| Tocca a te: trascina un tappo all'indietro e rilascialo ||| Du bist dran: Ziehe eine Kappe nach hinten und lass los
+¡Gol de oro! Tu turno ||| Golden goal! Your turn ||| Gol de ouro! Sua vez ||| But en or ! À toi ||| Golden gol! Tocca a te ||| Golden Goal! Du bist dran
+Turno del rival ||| Rival's turn ||| Vez do rival ||| Tour de l'adversaire ||| Turno dell'avversario ||| Gegner ist dran
+El rival está pensando… ||| The rival is thinking… ||| O rival está pensando… ||| L'adversaire réfléchit… ||| L'avversario sta pensando… ||| Der Gegner überlegt…
+← Salir de la partida ||| ← Leave the match ||| ← Sair da partida ||| ← Quitter le match ||| ← Esci dalla partita ||| ← Spiel verlassen
+¡Victoria! ||| Victory! ||| Vitória! ||| Victoire ! ||| Vittoria! ||| Sieg!
+Empate ||| Draw ||| Empate ||| Match nul ||| Pareggio ||| Unentschieden
+Has perdido ||| You lost ||| Você perdeu ||| Tu as perdu ||| Hai perso ||| Du hast verloren
+Menú ||| Menu ||| Menu ||| Menu ||| Menu ||| Menü
+Dos equipos de 4 chapas ||| Two teams of 4 caps ||| Duas equipes de 4 tampinhas ||| Deux équipes de 4 capsules ||| Due squadre da 4 tappi ||| Zwei Teams mit je 4 Kappen
+Tú juegas con las azules (abajo) y el rival con las rojas (arriba). Hay un balón en el centro. ||| You play with the blue ones (bottom) and the rival with the red ones (top). There is a ball in the middle. ||| Você joga com as azuis (embaixo) e o rival com as vermelhas (em cima). Há uma bola no centro. ||| Tu joues avec les bleues (en bas) et l'adversaire avec les rouges (en haut). Il y a un ballon au centre. ||| Tu giochi con i blu (in basso) e l'avversario con i rossi (in alto). C'è un pallone al centro. ||| Du spielst mit den blauen (unten), der Gegner mit den roten (oben). In der Mitte liegt ein Ball.
+Gana el primero que marque 3 goles. ||| The first to score 3 goals wins. ||| Vence quem marcar 3 gols primeiro. ||| Le premier à marquer 3 buts gagne. ||| Vince chi segna per primo 3 gol. ||| Wer zuerst 3 Tore erzielt, gewinnt.
+Si nadie llega, gana quien tenga más goles tras 12 turnos cada uno. ||| If nobody gets there, whoever has more goals after 12 turns each wins. ||| Se ninguém chegar lá, vence quem tiver mais gols após 12 turnos cada um. ||| Si personne n'y arrive, celui qui a le plus de buts après 12 tours chacun gagne. ||| Se nessuno ci arriva, vince chi ha più gol dopo 12 turni a testa. ||| Wenn niemand es schafft, gewinnt, wer nach je 12 Zügen mehr Tore hat.
+Arrastra hacia atrás y suelta ||| Drag backwards and release ||| Arraste para trás e solte ||| Tire en arrière et lâche ||| Trascina all'indietro e rilascia ||| Nach hinten ziehen und loslassen
+En tu turno solo puedes mover una chapa. Tócala, arrástrala en dirección contraria a donde quieres ir y suéltala: cuanto más tires, más fuerte sale. ||| On your turn you can only move one cap. Touch it, drag it away from where you want to go and let go: the more you pull, the harder it shoots. ||| No seu turno você só pode mover uma tampinha. Toque nela, arraste no sentido contrário ao que quer ir e solte: quanto mais puxar, mais forte sai. ||| À ton tour tu ne peux déplacer qu'une capsule. Touche-la, tire-la à l'opposé de là où tu veux aller et lâche : plus tu tires, plus elle part fort. ||| Al tuo turno puoi muovere solo un tappo. Toccalo, trascinalo nella direzione opposta a dove vuoi andare e rilascialo: più tiri, più forte parte. ||| Du darfst pro Zug nur eine Kappe bewegen. Berühre sie, ziehe sie entgegen der gewünschten Richtung und lass los: Je weiter du ziehst, desto kräftiger der Schuss.
+La flecha cambia de verde a rojo según la fuerza. ||| The arrow turns from green to red with the power. ||| A seta muda de verde para vermelho conforme a força. ||| La flèche passe du vert au rouge selon la force. ||| La freccia passa dal verde al rosso in base alla forza. ||| Der Pfeil wechselt je nach Kraft von Grün zu Rot.
+Cuando todo se para, juega el rival. ||| When everything stops, the rival plays. ||| Quando tudo para, o rival joga. ||| Quand tout s'arrête, l'adversaire joue. ||| Quando tutto si ferma, gioca l'avversario. ||| Wenn alles stillsteht, ist der Gegner dran.
+Mete gol y desbloquea estilos ||| Score and unlock styles ||| Faça gol e desbloqueie estilos ||| Marque et débloque des styles ||| Segna e sblocca stili ||| Tore schießen und Stile freischalten
+Empuja el balón a la portería de arriba. Con tus victorias y goles desbloqueas chapas, balones, estelas, céspedes y ambientes en la sala de estilos. ||| Push the ball into the goal at the top. With your wins and goals you unlock caps, balls, trails, pitches and ambiences in the style room. ||| Empurre a bola para o gol de cima. Com suas vitórias e gols você desbloqueia tampinhas, bolas, rastros, gramados e ambientes na sala de estilos. ||| Pousse le ballon dans le but du haut. Avec tes victoires et tes buts, tu débloques capsules, ballons, traînées, pelouses et ambiances dans la salle des styles. ||| Spingi il pallone nella porta in alto. Con vittorie e gol sblocchi tappi, palloni, scie, prati e atmosfere nella sala degli stili. ||| Schieße den Ball ins obere Tor. Mit Siegen und Toren schaltest du im Stilraum Kappen, Bälle, Spuren, Rasen und Stimmungen frei.
+Algunos estilos también se compran con tikitextos. ||| Some styles can also be bought with tikitextos. ||| Alguns estilos também se compram com tikitextos. ||| Certains styles s'achètent aussi avec des tikitextos. ||| Alcuni stili si comprano anche con i tikitesti. ||| Manche Stile kann man auch mit Tikitexten kaufen.
+P ||| ^Gana (\d+) partidos$ ||| Win $1 matches ||| Ganhe $1 partidas ||| Gagne $1 matchs ||| Vinci $1 partite ||| Gewinne $1 Spiele
+P ||| ^Marca (\d+) goles$ ||| Score $1 goals ||| Marque $1 gols ||| Marque $1 buts ||| Segna $1 gol ||| Erziele $1 Tore
+P ||| ^Juega (\d+) partidos$ ||| Play $1 matches ||| Jogue $1 partidas ||| Joue $1 matchs ||| Gioca $1 partite ||| Spiele $1 Spiele
+P ||| ^Gana (\d+) seguidos$ ||| Win $1 in a row ||| Ganhe $1 seguidas ||| Gagne $1 d'affilée ||| Vinci $1 di fila ||| Gewinne $1 in Folge
+P ||| ^Cuesta (\d+) ⚡$ ||| Costs $1 ⚡ ||| Custa $1 ⚡ ||| Coûte $1 ⚡ ||| Costa $1 ⚡ ||| Kostet $1 ⚡
+P ||| ^🔒 (.+)$ ||| 🔒 $1 ||| 🔒 $1 ||| 🔒 $1 ||| 🔒 $1 ||| 🔒 $1
+P ||| ^🎁 Estilo desbloqueado: (.+)$ ||| 🎁 Style unlocked: $1 ||| 🎁 Estilo desbloqueado: $1 ||| 🎁 Style débloqué : $1 ||| 🎁 Stile sbloccato: $1 ||| 🎁 Stil freigeschaltet: $1

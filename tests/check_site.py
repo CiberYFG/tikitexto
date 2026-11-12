@@ -772,6 +772,55 @@ with sync_playwright() as p:
     except Exception as e:
         check("buscador y temas", False, str(e)[:150])
 
+    print("3w) Chapas TIKITEXTO")
+    try:
+        cw = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+        pw = cw.new_page(); errs_w = []
+        pw.on("pageerror", lambda e: errs_w.append(str(e)))
+        pw.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');")
+        pw.goto(BASE, wait_until="networkidle", timeout=60000); pw.wait_for_timeout(300)
+        check("portada: tarjeta de Chapas", pw.locator("[data-chapas]").count() == 1)
+        pw.goto(BASE + "?modo=chapas", wait_until="networkidle", timeout=60000); pw.wait_for_timeout(600)
+        check("chapas: enlace directo abre el modo con tutorial", pw.is_visible("#pantallaChapas") and pw.is_visible("#modalTutorial"))
+        for _ in range(4):
+            if pw.is_visible("#modalTutorial"): pw.click("#tutSiguiente"); pw.wait_for_timeout(120)
+        check("chapas: menú con niveles y sala de estilos", pw.locator(".ch-niv").count() == 3 and pw.locator(".ch-menu .boton").count() == 2)
+        pw.click("#chEmpezar"); pw.wait_for_timeout(400)
+        check("chapas: campo y marcador", pw.locator(".ch-campo").count() == 1 and pw.inner_text(".ch-marcador").replace("\n", "").count("0") >= 2)
+        box = pw.locator(".ch-campo").bounding_box()
+        pw.mouse.move(box["x"] + 105 / 400 * box["width"], box["y"] + 440 / 640 * box["height"]); pw.mouse.down()
+        pw.mouse.move(box["x"] + 130 / 400 * box["width"], box["y"] + 520 / 640 * box["height"], steps=4); pw.mouse.up()
+        pw.wait_for_timeout(300)
+        check("chapas: arrastrar y soltar lanza una chapa", pw.evaluate("TIKI.chapas.ch.turnos[0]") == 1)
+        for _ in range(60):
+            if pw.evaluate("TIKI.chapas.ch.turnos[1]") >= 1: break
+            pw.wait_for_timeout(500)
+        check("chapas: el rival juega su turno", pw.evaluate("TIKI.chapas.ch.turnos[1]") >= 1)
+        ia = pw.evaluate("""() => { const T = TIKI.chapas, S = T.ch.S; S.o.forEach(a => { a.vx = a.vy = 0; }); S.o[0].x = 200; S.o[0].y = 330; S.gol = 0;
+                           const j = T.pensar(S, 'dificil'); return S.o[j.i].t; }""")
+        check("chapas: la máquina elige una de sus chapas", ia == 2)
+        pw.evaluate("() => { const C = TIKI.chapas.ch; C.mov = false; C.pausa = 0; C.apunta = null; C.pensando = false; C.turno = 1; for (let i = 0; i < 3; i++) TIKI.chapas.gol(1); C.pausa = 1; }")
+        pw.wait_for_timeout(2200)
+        check("chapas: 3 goles = victoria y estilo desbloqueado", pw.evaluate("TIKI.chapas.ch.fin") and pw.evaluate("TIKI.chapas.datos().gan") == 1 and "Estilo desbloqueado" in pw.inner_text("#chResultado"))
+        pw.click("#chResultado .boton--secundario >> nth=0"); pw.wait_for_timeout(300)
+        check("chapas: sala de estilos con 5 categorías", pw.locator(".ch-tab").count() == 5 and pw.locator(".ch-est").count() == 7)
+        pw.click(".ch-est >> nth=1"); pw.wait_for_timeout(200)
+        check("chapas: elegir un estilo desbloqueado", pw.evaluate("TIKI.chapas.datos().eq.chapa") == "rayas")
+        pw.click(".ch-est >> nth=5"); pw.wait_for_timeout(200)
+        check("chapas: estilo de pago sin tikitextos no se compra", pw.evaluate("TIKI.chapas.datos().eq.chapa") == "rayas" and pw.is_visible(".ch-aviso"))
+        pw.click(".ch-tab >> nth=4"); pw.wait_for_timeout(200)
+        pw.click(".ch-est >> nth=1"); pw.wait_for_timeout(200)
+        check("chapas: ambiente de noche desbloqueado y elegido", pw.evaluate("TIKI.chapas.datos().eq.ambiente") == "noche")
+        pw.goto(BASE + "?lang=en&modo=chapas", wait_until="networkidle", timeout=60000); pw.wait_for_timeout(1200)
+        for _ in range(4):
+            if pw.is_visible("#modalTutorial"): pw.click("#tutSiguiente"); pw.wait_for_timeout(120)
+        txt = pw.inner_text("#chCuerpo")
+        check("chapas: textos en inglés", "Play!" in txt and "Style room" in txt and "Easy" in txt)
+        check("chapas: sin errores de JavaScript", not errs_w, "; ".join(errs_w)[:150])
+        cw.close()
+    except Exception as e:
+        check("chapas", False, str(e)[:200])
+
     br.close()
 
 # 3u) Enlaces internos de todas las páginas HTML (sin navegador) y artículos de explicación
