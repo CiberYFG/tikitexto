@@ -788,7 +788,7 @@ with sync_playwright() as p:
         check("chapas: menú con niveles y sala de estilos", pw.locator(".ch-niv").count() == 3 and pw.locator(".ch-menu .boton").count() == 2)
         pw.click("#chEmpezar"); pw.wait_for_timeout(400)
         check("chapas: campo y marcador", pw.locator(".ch-campo").count() == 1 and pw.locator(".ch-led").count() == 1 and pw.inner_text(".ch-led").replace("\n", "").count("0") >= 2)
-        check("chapas: reloj LED de 3 minutos", pw.inner_text("#chReloj").strip() in ("3:00", "2:59"))
+        check("chapas: reloj LED de 1 minuto", pw.inner_text("#chReloj").strip() in ("1:00", "0:59"))
         box = pw.locator(".ch-campo").bounding_box()
         pw.mouse.move(box["x"] + 105 / 400 * box["width"], box["y"] + 440 / 640 * box["height"]); pw.mouse.down()
         pw.mouse.move(box["x"] + 130 / 400 * box["width"], box["y"] + 520 / 640 * box["height"], steps=4); pw.mouse.up()
