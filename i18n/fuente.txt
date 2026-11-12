@@ -1644,3 +1644,20 @@ P ||| ^Gana (\d+) seguidos$ ||| Win $1 in a row ||| Ganhe $1 seguidas ||| Gagne 
 P ||| ^Cuesta (\d+) ⚡$ ||| Costs $1 ⚡ ||| Custa $1 ⚡ ||| Coûte $1 ⚡ ||| Costa $1 ⚡ ||| Kostet $1 ⚡
 P ||| ^🔒 (.+)$ ||| 🔒 $1 ||| 🔒 $1 ||| 🔒 $1 ||| 🔒 $1 ||| 🔒 $1
 P ||| ^🎁 Estilo desbloqueado: (.+)$ ||| 🎁 Style unlocked: $1 ||| 🎁 Estilo desbloqueado: $1 ||| 🎁 Style débloqué : $1 ||| 🎁 Stile sbloccato: $1 ||| 🎁 Stil freigeschaltet: $1
+EE. UU. ||| USA ||| EUA ||| États-Unis ||| USA ||| USA
+Retro ||| Retro ||| Retrô ||| Rétro ||| Retrò ||| Retro
+Rosa ||| Pink ||| Rosa ||| Rose ||| Rosa ||| Pink
+Oro puro ||| Pure gold ||| Ouro puro ||| Or pur ||| Oro puro ||| Reines Gold
+Hojas ||| Leaves ||| Folhas ||| Feuilles ||| Foglie ||| Blätter
+Confeti ||| Confetti ||| Confete ||| Confettis ||| Coriandoli ||| Konfetti
+Rayos ||| Lightning bolts ||| Raios ||| Éclairs ||| Fulmini ||| Blitze
+Oro ||| Gold ||| Ouro ||| Or ||| Oro ||| Gold
+Claro ||| Light ||| Claro ||| Clair ||| Chiaro ||| Hell
+Calle ||| Street ||| Rua ||| Rue ||| Strada ||| Straße
+Niebla ||| Fog ||| Névoa ||| Brouillard ||| Nebbia ||| Nebel
+Tormenta ||| Storm ||| Tempestade ||| Orage ||| Tempesta ||| Gewitter
+Aurora ||| Aurora ||| Aurora ||| Aurore ||| Aurora ||| Polarlicht
+GRATIS ||| FREE ||| GRÁTIS ||| GRATUIT ||| GRATIS ||| GRATIS
+⚡ Cada partido que ganes te da +1 tikitexto. ||| ⚡ Every match you win gives you +1 tikitexto. ||| ⚡ Cada partida que você vencer dá +1 tikitexto. ||| ⚡ Chaque match gagné te rapporte +1 tikitexto. ||| ⚡ Ogni partita che vinci ti dà +1 tikitexto. ||| ⚡ Jedes gewonnene Spiel bringt dir +1 Tikitexto.
+Tu chapa ||| Your cap ||| Sua tampinha ||| Ta capsule ||| Il tuo tappo ||| Deine Kappe
+Tu balón ||| Your ball ||| Sua bola ||| Ton ballon ||| Il tuo pallone ||| Dein Ball
