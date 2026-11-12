@@ -186,3 +186,6 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 
 ## Juegos de letras / Juegos dinámicos (12-nov-2026)
 - La vista de juegos (`.vj`) tiene dos pestañas (`.vj-sel`, botones `[data-grupo-btn]`, paneles `.vj-grupo[data-grupo]`): **Tikitexto · juegos de letras** (`#grupoLetras`: diario, ahorcado, «Elige un modo») y **Dinámicos** (`#grupoDinamicos`: Linterna de Navidad, Chapas, NOVEDAD —tarjetas/fichajes— y una tarjeta «Próximamente» para los futuros juegos, p. ej. 3D). La elección se guarda en `sessionStorage tikitexto:grupo`; `?modo=chapas|navidad|tarjetas|fichajes` abre «Dinámicos». **Un juego nuevo va en el panel que le toca**; los tests que pulsan tarjetas dinámicas deben cambiar antes de pestaña (`[data-grupo-btn=dinamicos]`). Textos en `fuente.txt`.
+
+## Fondo animado de la vista de juegos (12-nov-2026)
+- La pestaña «Aa Tikitexto» pasó a llamarse **«Letras»** («Adivina y descifra»). Un `<canvas id="fondoVj">` fijo detrás de `.vj` anima: en **Letras**, letras A–Ñ que caen despacio y muy tenues; en **Dinámicos**, explosiones aleatorias cuyos aros empujan las partículas de otras y cuyos choques generan chispas/destellos; tocar el fondo vacío lanza una explosión grande. Se pausa fuera de la vista de juegos o con la pestaña oculta y se desactiva con `prefers-reduced-motion`. Textos nuevos en `fuente.txt`.

@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-+14OZHBYiYh9MwQjGovyb9vAcutGumI4+W1fSm2UN+k=' 'sha256-BYYFXnIdHsmNRI2crJZxsMDUbf9uzg5afkhjgVLJh/E=' 'sha256-O+V7MlmzheeIXu2QTKtFJRWcPhzT815W+qZ7/wB2Gh4=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-i/uezubRZzZHSJf/pQ5SYUOkxpVDuy7MafHbdaR+erU=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-+14OZHBYiYh9MwQjGovyb9vAcutGumI4+W1fSm2UN+k=' 'sha256-BYYFXnIdHsmNRI2crJZxsMDUbf9uzg5afkhjgVLJh/E=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-UYT/oXLzdI8i3pGx8vDI/oa6npwBp4+rpLckJ2+E9Hw=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-i/uezubRZzZHSJf/pQ5SYUOkxpVDuy7MafHbdaR+erU=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>
 <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WN89TQCM"></script>
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -1710,6 +1710,9 @@ button.ir-juegos { border: 0; cursor: pointer; }
 .vj-tab--din:not([aria-selected="true"])::after { content: "NUEVO"; position: absolute; top: -7px; right: 8px; padding: 2px 7px; border-radius: 999px; background: #ff2e63; color: #fff; font: 900 .56rem/1.2 var(--fuente); letter-spacing: .08em; }
 .vj-tab:focus-visible { outline: 3px solid var(--texto); outline-offset: 3px; }
 .vj-grupo[hidden] { display: none; }
+.fondo-vj { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: none; }
+html.vista-j .fondo-vj { display: block; }
+html.vista-j .vj { position: relative; z-index: 1; }
 .vj-grupo > .ch-card, .vj-grupo > .ah-card, .vj-grupo > .nd-card, .vj-grupo > .novedad { margin-top: 14px; }
 .vj-pronto { display: flex; align-items: center; gap: 14px; margin-top: 16px; padding: 16px 18px; border: 2px dashed rgba(127,127,127,.5); border-radius: 20px; color: var(--texto); }
 .vj-pronto__ico { font-size: 2.2rem; filter: grayscale(.2); }
@@ -2295,8 +2298,9 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
 
     <div class="vj" id="vistaJuegos">
     <div class="vj__cab"><button type="button" class="vj__volver" id="volverPortal">← Inicio</button><button type="button" class="ir-juegos ir-ranking" data-stats aria-label="Ver ranking"><span aria-hidden="true">🏆</span> Ver ranking</button></div>
+    <canvas class="fondo-vj" id="fondoVj" aria-hidden="true"></canvas>
     <div class="vj-sel" role="tablist" aria-label="Tipo de juegos">
-      <button type="button" class="vj-tab vj-tab--letras" role="tab" id="tabLetras" data-grupo-btn="letras" aria-selected="true" aria-controls="grupoLetras"><span class="vj-tab__ico" aria-hidden="true">Aa</span><b>Tikitexto</b><small>Juegos de letras</small></button>
+      <button type="button" class="vj-tab vj-tab--letras" role="tab" id="tabLetras" data-grupo-btn="letras" aria-selected="true" aria-controls="grupoLetras"><span class="vj-tab__ico" aria-hidden="true">Aa</span><b>Letras</b><small>Adivina y descifra</small></button>
       <button type="button" class="vj-tab vj-tab--din" role="tab" id="tabDin" data-grupo-btn="dinamicos" aria-selected="false" aria-controls="grupoDinamicos"><span class="vj-tab__ico" aria-hidden="true">🎮</span><b>Dinámicos</b><small>Física, reflejos y retos</small></button>
     </div>
     <button type="button" class="tikis" data-stats aria-label="Ver estadísticas y ranking"><span>⚡</span><b id="tikisNum">0</b> tikitextos <em id="tikisNivel">Cantera</em><span>Ver ranking ›</span></button>
@@ -8730,6 +8734,96 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     const m = new URLSearchParams(location.search).get("modo");
     if (m && ["chapas", "navidad", "tarjetas", "fichajes"].indexOf(m) >= 0) g = "dinamicos";
     poner(g === "dinamicos" ? "dinamicos" : "letras", false);
+  })();
+
+  /* Fondo animado de la vista de juegos: letras que caen (Letras) y explosiones que reaccionan entre sí (Dinámicos) */
+  (function () {
+    const cv = document.getElementById("fondoVj"), vj = document.getElementById("vistaJuegos");
+    if (!cv || !vj || (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
+    const x = cv.getContext("2d");
+    let W = 0, H = 0, dpr = 1, letras = [], parts = [], aros = [], destellos = [], tNext = 0, uid = 0, ultimo = 0, modo = "";
+    const ABC = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+    function medir() {
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      W = window.innerWidth; H = window.innerHeight;
+      cv.width = Math.floor(W * dpr); cv.height = Math.floor(H * dpr);
+      x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    window.addEventListener("resize", medir); medir();
+    function nuevaLetra(arriba) {
+      const s = 16 + Math.random() * 26;
+      return { c: ABC[Math.floor(Math.random() * ABC.length)], x: Math.random() * W, y: arriba ? -s - Math.random() * H * 0.3 : Math.random() * H, s: s, v: 0.25 + Math.random() * 0.7 + s / 60, r: (Math.random() - 0.5) * 0.6, w: (Math.random() - 0.5) * 0.004, a: 0.07 + Math.random() * 0.13, hue: Math.random() < 0.18 };
+    }
+    function explosion(px, py, grande) {
+      const id = ++uid, n = grande ? 34 : 24, hue = Math.random() * 360;
+      for (let i = 0; i < n && parts.length < 260; i++) {
+        const a = (i / n) * 6.2832 + Math.random() * 0.3, v = (1.2 + Math.random() * 2.6) * (grande ? 1.25 : 1);
+        parts.push({ x: px, y: py, vx: Math.cos(a) * v, vy: Math.sin(a) * v, id: id, h: (hue + Math.random() * 60) % 360, l: 0, m: 70 + Math.random() * 60, r: 1.6 + Math.random() * 1.6 });
+      }
+      aros.push({ x: px, y: py, r: 4, max: grande ? 120 : 90, id: id, h: hue });
+    }
+    function chispas(px, py, h) {
+      const id = ++uid;
+      for (let i = 0; i < 6 && parts.length < 300; i++) { const a = Math.random() * 6.2832, v = 0.8 + Math.random() * 1.6; parts.push({ x: px, y: py, vx: Math.cos(a) * v, vy: Math.sin(a) * v, id: id, h: h, l: 0, m: 30 + Math.random() * 25, r: 1.2 + Math.random(), chis: 1 }); }
+      destellos.push({ x: px, y: py, t: 0, h: h });
+    }
+    function colorTexto() { try { return getComputedStyle(document.body).color; } catch (e) { return "rgb(20,20,40)"; } }
+    function paso(ts) {
+      requestAnimationFrame(paso);
+      const visible = document.documentElement.classList.contains("vista-j") && vj.offsetParent !== null && !document.hidden;
+      if (!visible) { if (modo) { x.clearRect(0, 0, W, H); modo = ""; } return; }
+      if (ts - ultimo < 33) return;
+      const dt = Math.min((ts - ultimo) / 16.7, 3); ultimo = ts;
+      const pl = document.getElementById("grupoLetras"), m = pl && !pl.hidden ? "letras" : "din";
+      if (m !== modo) { modo = m; letras = []; parts = []; aros = []; destellos = []; tNext = ts + 200; const n = W < 600 ? 16 : 28; if (m === "letras") for (let i = 0; i < n; i++) letras.push(nuevaLetra(false)); }
+      x.clearRect(0, 0, W, H);
+      if (m === "letras") {
+        const col = colorTexto(), rgb = (col.match(/\d+/g) || [20, 20, 40]).slice(0, 3).join(",");
+        x.textAlign = "center"; x.textBaseline = "middle";
+        for (let i = 0; i < letras.length; i++) {
+          const l = letras[i];
+          l.y += l.v * dt; l.r += l.w * dt;
+          if (l.y > H + 40) letras[i] = nuevaLetra(true);
+          x.save(); x.translate(l.x, l.y); x.rotate(l.r);
+          x.font = "900 " + l.s + "px Inter, system-ui, sans-serif";
+          x.fillStyle = l.hue ? "hsla(" + ((l.x * 0.4 + ts * 0.02) % 360) + ",85%,55%," + (l.a + 0.05) + ")" : "rgba(" + rgb + "," + l.a + ")";
+          x.fillText(l.c, 0, 0); x.restore();
+        }
+      } else {
+        if (ts > tNext) { explosion(40 + Math.random() * (W - 80), 60 + Math.random() * (H - 120), Math.random() < 0.25); tNext = ts + 650 + Math.random() * 900; }
+        /* aros: empujan las partículas de otras explosiones */
+        for (let i = aros.length - 1; i >= 0; i--) {
+          const a = aros[i]; a.r += 2.6 * dt;
+          if (a.r > a.max) { aros.splice(i, 1); continue; }
+          for (let j = 0; j < parts.length; j++) { const p = parts[j]; if (p.id === a.id) continue; const dx = p.x - a.x, dy = p.y - a.y, d = Math.hypot(dx, dy); if (Math.abs(d - a.r) < 7 && d > 0) { p.vx += dx / d * 0.35 * dt; p.vy += dy / d * 0.35 * dt; } }
+          x.strokeStyle = "hsla(" + a.h + ",90%,60%," + (0.35 * (1 - a.r / a.max)) + ")"; x.lineWidth = 2; x.beginPath(); x.arc(a.x, a.y, a.r, 0, 6.2832); x.stroke();
+        }
+        /* choques entre partículas de explosiones distintas → mini explosión */
+        const rej = {}, nuevas = [];
+        for (let i = 0; i < parts.length; i++) { const p = parts[i]; if (p.chis) continue; const k = Math.floor(p.x / 12) + "_" + Math.floor(p.y / 12); (rej[k] = rej[k] || []).push(i); }
+        for (const k in rej) {
+          const g = rej[k];
+          for (let a = 0; a < g.length; a++) for (let b = a + 1; b < g.length; b++) {
+            const p = parts[g[a]], q = parts[g[b]];
+            if (p.id !== q.id && !p.rx && !q.rx && Math.hypot(p.x - q.x, p.y - q.y) < 7) { p.rx = q.rx = 1; p.l += 40; q.l += 40; nuevas.push([(p.x + q.x) / 2, (p.y + q.y) / 2, (p.h + q.h) / 2]); }
+          }
+        }
+        for (let i = 0; i < nuevas.length && i < 4; i++) chispas(nuevas[i][0], nuevas[i][1], nuevas[i][2]);
+        for (let i = parts.length - 1; i >= 0; i--) {
+          const p = parts[i]; p.l += dt; if (p.l > p.m) { parts.splice(i, 1); continue; }
+          p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= Math.pow(0.975, dt); p.vy = p.vy * Math.pow(0.975, dt) + 0.02 * dt;
+          const al = Math.max(0, 1 - p.l / p.m) * 0.75;
+          x.fillStyle = "hsla(" + p.h + ",95%," + (p.chis ? 70 : 58) + "%," + al + ")"; x.beginPath(); x.arc(p.x, p.y, p.r * (p.chis ? 1 : 0.6 + al * 0.6), 0, 6.2832); x.fill();
+        }
+        for (let i = destellos.length - 1; i >= 0; i--) { const d = destellos[i]; d.t += dt; if (d.t > 14) { destellos.splice(i, 1); continue; } const k = 1 - d.t / 14; x.fillStyle = "hsla(" + d.h + ",100%,75%," + (0.5 * k) + ")"; x.beginPath(); x.arc(d.x, d.y, 4 + d.t * 1.4, 0, 6.2832); x.fill(); }
+      }
+    }
+    requestAnimationFrame(paso);
+    /* tocar el fondo vacío en «Dinámicos» lanza una explosión */
+    document.addEventListener("pointerdown", function (e) {
+      if (modo !== "din" || e.target.closest("button, a, input, .vj-grupo > *, .vj__cab, .tikis, .vj-sel")) return;
+      explosion(e.clientX, e.clientY, true);
+    });
   })();
 
   /* Enlace directo a un modo (?modo=jugadores), usado por las páginas de búsqueda */
