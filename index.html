@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-+14OZHBYiYh9MwQjGovyb9vAcutGumI4+W1fSm2UN+k=' 'sha256-BYYFXnIdHsmNRI2crJZxsMDUbf9uzg5afkhjgVLJh/E=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-Ppska9tvhnXmFGP93J0EO+pkuiAGNzMAr00TfjuCRKI=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-i/uezubRZzZHSJf/pQ5SYUOkxpVDuy7MafHbdaR+erU=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-+14OZHBYiYh9MwQjGovyb9vAcutGumI4+W1fSm2UN+k=' 'sha256-BYYFXnIdHsmNRI2crJZxsMDUbf9uzg5afkhjgVLJh/E=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-by9YVshL6S58ad7BOlqfSUBAIZZOw03K5FwXwhmu5E0=' 'sha256-i/uezubRZzZHSJf/pQ5SYUOkxpVDuy7MafHbdaR+erU=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>
 <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WN89TQCM"></script>
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -8828,7 +8828,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       const l = document.createElement("link"); l.rel = "stylesheet"; l.id = "pnCss"; l.href = "penaltis.css"; l.onload = ok; l.onerror = ok; document.head.appendChild(l);
     });
     const mod = import("./penaltis.js");
-    Promise.all([mod, css]).then(function (r) {
+    Promise.all([mod, css]).then(function (r) { return r[0].precargar().then(function () { return r; }); }).then(function (r) {
       const api = {
         t: function (s) { return TIKI.t ? TIKI.t(s) : s; },
         sonido: function () { return TIKI.ajustes.sonido(); },

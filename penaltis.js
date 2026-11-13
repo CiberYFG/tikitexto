@@ -2,6 +2,10 @@
    Módulo propio (carga diferida desde index.html). Usa three.js (lib/three.module.min.js, MIT).
    Todo se dibuja con código: sin escudos, fotos, logos ni marcas. */
 import * as THREE from "./lib/three.module.min.js";
+import { cargarCuerpos, crearFigura } from "./penaltis_cuerpo.js";
+
+/* Los cuerpos (lib/cuerpo/*.bin) se descargan antes de abrir el juego */
+export function precargar() { return cargarCuerpos(["jugador", "portero", "jugador-lo"]); }
 
 /* ───────── Medidas (metros). Portería en z = 0; el punto de penalti en z = 11 ───────── */
 const GW = 7.32, GH = 2.44, HW = GW / 2, SPOT = 11, DEPTH = 2.0, RB = 0.11;
@@ -118,17 +122,6 @@ function texCielo() {
   x.fillStyle = g; x.fillRect(0, 0, 4, 256);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
-function texDorsal(num, color, nombre) {
-  const c = lienzo(256, 256), x = c.getContext("2d");
-  x.clearRect(0, 0, 256, 256);
-  x.fillStyle = color; x.textAlign = "center"; x.textBaseline = "middle";
-  const n = String(nombre || "").toUpperCase().slice(0, 16);
-  let fs = 62; x.font = "900 " + fs + "px Arial, Helvetica, sans-serif";
-  while (fs > 18 && x.measureText(n).width > 236) { fs -= 2; x.font = "900 " + fs + "px Arial, Helvetica, sans-serif"; }
-  x.fillText(n, 128, 40);
-  x.font = "900 170px Arial, Helvetica, sans-serif"; x.fillText(String(num), 128, 150);
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
-}
 function texBrillo() {
   const c = lienzo(128, 128), x = c.getContext("2d"), g = x.createRadialGradient(64, 64, 0, 64, 64, 64);
   g.addColorStop(0, "rgba(255,250,235,1)"); g.addColorStop(0.25, "rgba(255,240,200,.5)"); g.addColorStop(1, "rgba(255,240,200,0)");
@@ -136,158 +129,6 @@ function texBrillo() {
   return new THREE.CanvasTexture(c);
 }
 
-/* ───────── Figura humana más realista: miembros con perfil anatómico, camiseta con tejido, cara con rasgos ───────── */
-const _tx = {};
-function perfilR(rs, n) {
-  const out = [];
-  for (let i = 0; i < n; i++) {
-    const t = i / (n - 1) * (rs.length - 1), a = Math.floor(t), b = Math.min(a + 1, rs.length - 1), f = (1 - Math.cos((t - a) * Math.PI)) / 2;
-    out.push(lerp(rs[a], rs[b], f));
-  }
-  return out;
-}
-/* tubo cónico suave que cuelga hacia -y desde el origen */
-function tuboGeo(rs, L, seg) {
-  const n = 12, r = perfilR(rs, n), pts = [];
-  for (let i = 0; i < n; i++) pts.push(new THREE.Vector2(Math.max(r[i], 0.001), -L * i / (n - 1)));
-  return new THREE.LatheGeometry(pts, seg || 20);
-}
-function texTela() {
-  if (_tx.tela) return _tx.tela;
-  const c = lienzo(128, 128), x = c.getContext("2d"); x.fillStyle = "#808080"; x.fillRect(0, 0, 128, 128);
-  for (let j = 0; j < 128; j += 2) for (let i = 0; i < 128; i += 2) { const v = 118 + ((i + j) % 4 === 0 ? 22 : 0) + Math.random() * 14; x.fillStyle = "rgb(" + v + "," + v + "," + v + ")"; x.fillRect(i, j, 2, 2); }
-  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(10, 10); return (_tx.tela = t);
-}
-function hexCss(h) { return "#" + (h >>> 0).toString(16).padStart(6, "0"); }
-function texCamiseta(c1, c2, patron, piel) {
-  const W = 512, H = 256, c = lienzo(W, H), x = c.getContext("2d");
-  x.fillStyle = hexCss(c1); x.fillRect(0, 0, W, H);
-  if (patron === "rayas") { x.fillStyle = hexCss(c2); for (let i = 0; i < 16; i++) if (i % 2) x.fillRect(i * W / 16, 0, W / 16, H); }
-  else if (patron === "aros") { x.fillStyle = hexCss(c2); for (let j = 0; j < 8; j++) if (j % 2) x.fillRect(0, j * H / 8, W, H / 8); }
-  const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "rgba(255,255,255,.10)"); g.addColorStop(0.55, "rgba(0,0,0,0)"); g.addColorStop(1, "rgba(0,0,0,.22)");
-  x.fillStyle = g; x.fillRect(0, 0, W, H);
-  x.fillStyle = "rgba(0,0,0,.2)"; x.fillRect(W * 0.2 - 3, 0, 6, H); x.fillRect(W * 0.8 - 3, 0, 6, H);   /* costuras laterales */
-  /* cuello en V (el frente está en u = 0.5) */
-  x.fillStyle = hexCss(piel); x.beginPath(); x.moveTo(W / 2 - 40, 0); x.lineTo(W / 2 + 40, 0); x.lineTo(W / 2, 62); x.closePath(); x.fill();
-  x.strokeStyle = hexCss(c2); x.lineWidth = 7; x.beginPath(); x.moveTo(W / 2 - 42, 0); x.lineTo(W / 2, 66); x.lineTo(W / 2 + 42, 0); x.stroke();
-  x.fillStyle = hexCss(c2); x.fillRect(0, 0, W, 9);
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
-}
-function texMedia(c1, c2) {
-  const c = lienzo(64, 128), x = c.getContext("2d"); x.fillStyle = hexCss(c1); x.fillRect(0, 0, 64, 128);
-  x.fillStyle = hexCss(c2); x.fillRect(0, 6, 64, 9); x.fillRect(0, 20, 64, 4);   /* bandas en la parte alta */
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = THREE.RepeatWrapping; return t;
-}
-function texCara(piel, ojos) {
-  const W = 512, H = 256, c = lienzo(W, H), x = c.getContext("2d"), p = hexCss(piel);
-  x.fillStyle = p; x.fillRect(0, 0, W, H);
-  const fx = 128;   /* el frente está en u = 0.25 */
-  let g = x.createRadialGradient(fx, 122, 4, fx, 122, 64); g.addColorStop(0, "rgba(255,225,205,.18)"); g.addColorStop(1, "rgba(0,0,0,.0)"); x.fillStyle = g; x.fillRect(fx - 80, 40, 160, 180);
-  g = x.createRadialGradient(fx, 170, 4, fx, 170, 50); g.addColorStop(0, "rgba(120,50,40,.10)"); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(fx - 60, 120, 120, 100);
-  [-1, 1].forEach(function (s) {
-    const ex = fx + s * 24, ey = 120;
-    x.fillStyle = "rgba(90,40,30,.16)"; x.beginPath(); x.ellipse(ex, ey - 1, 17, 11, 0, 0, 6.2832); x.fill();
-    x.fillStyle = "#f4efe9"; x.beginPath(); x.ellipse(ex, ey, 11.5, 6.3, 0, 0, 6.2832); x.fill();
-    x.fillStyle = hexCss(ojos); x.beginPath(); x.arc(ex, ey, 5.2, 0, 6.2832); x.fill();
-    x.fillStyle = "#0a0806"; x.beginPath(); x.arc(ex, ey, 2.5, 0, 6.2832); x.fill();
-    x.fillStyle = "rgba(255,255,255,.9)"; x.beginPath(); x.arc(ex - 1.8, ey - 1.8, 1.4, 0, 6.2832); x.fill();
-    x.strokeStyle = "rgba(25,12,8,.85)"; x.lineWidth = 2; x.beginPath(); x.ellipse(ex, ey, 11.5, 6.3, 0, Math.PI * 1.05, Math.PI * 1.95); x.stroke();
-    x.strokeStyle = "rgba(30,18,12,.9)"; x.lineWidth = 3.6; x.beginPath(); x.moveTo(ex - s * 14, 104); x.quadraticCurveTo(ex, 96, ex + s * 12, 103); x.stroke();
-  });
-  x.strokeStyle = "rgba(110,55,45,.35)"; x.lineWidth = 2; x.beginPath(); x.moveTo(fx - 3, 126); x.lineTo(fx - 6, 150); x.moveTo(fx + 3, 126); x.lineTo(fx + 6, 150); x.stroke();
-  x.fillStyle = "rgba(80,30,25,.55)"; x.beginPath(); x.ellipse(fx - 5, 154, 2.4, 1.6, 0, 0, 6.2832); x.ellipse(fx + 5, 154, 2.4, 1.6, 0, 0, 6.2832); x.fill();
-  x.fillStyle = "rgba(150,60,60,.8)"; x.beginPath(); x.ellipse(fx, 172, 13, 3.8, 0, 0, 6.2832); x.fill();
-  x.strokeStyle = "rgba(70,25,25,.8)"; x.lineWidth = 1.8; x.beginPath(); x.moveTo(fx - 13, 172); x.quadraticCurveTo(fx, 175, fx + 13, 172); x.stroke();
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
-}
-function texPelo(col) {
-  const c = lienzo(256, 128), x = c.getContext("2d"); x.fillStyle = hexCss(col); x.fillRect(0, 0, 256, 128);
-  for (let i = 0; i < 520; i++) { const v = Math.random(); x.strokeStyle = v < 0.5 ? "rgba(0,0,0,.28)" : "rgba(255,255,255,.1)"; x.lineWidth = 1; const px = Math.random() * 256, py = Math.random() * 128; x.beginPath(); x.moveTo(px, py); x.lineTo(px + (Math.random() - 0.5) * 6, py + 8 + Math.random() * 14); x.stroke(); }
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
-}
-function manoGeo(guante, M) {
-  const g = new THREE.Group();
-  const mat = guante ? M.guante : M.piel, k = guante ? 1.35 : 1;
-  const palma = new THREE.Mesh(new THREE.SphereGeometry(0.042 * k, 14, 10), mat); palma.scale.set(1, 1.1, 0.55); palma.position.y = -0.02; palma.castShadow = true; g.add(palma);
-  for (let i = 0; i < 4; i++) {
-    const d = new THREE.Mesh(new THREE.CapsuleGeometry(0.0085 * k, 0.04 * k, 3, 6), mat); d.position.set((i - 1.5) * 0.0165 * k, -0.075 * k, 0.004); d.rotation.x = -0.12; g.add(d);
-  }
-  const p = new THREE.Mesh(new THREE.CapsuleGeometry(0.0095 * k, 0.034 * k, 3, 6), mat); p.position.set(0.04 * k, -0.04, 0.012); p.rotation.z = -0.8; g.add(p);
-  if (guante) { const cinta = new THREE.Mesh(new THREE.CylinderGeometry(0.036 * k, 0.036 * k, 0.018, 12), M.camisa); cinta.position.y = 0.012; g.add(cinta); }
-  return g;
-}
-function figura(o) {
-  const MS = (col, r, extra) => new THREE.MeshStandardMaterial(Object.assign({ color: col, roughness: r == null ? 0.7 : r }, extra || {}));
-  const tela = texTela(), ctela = { bumpMap: tela, bumpScale: 0.6 };
-  const M = {
-    camisa: MS(0xffffff, 0.86, Object.assign({ map: texCamiseta(o.camisa, o.camisa2 || o.camisa, o.patron || "liso", o.piel) }, ctela)),
-    manga: MS(o.camisa, 0.86, ctela),
-    pantalon: MS(o.pantalon, 0.8, ctela),
-    media: MS(0xffffff, 0.88, { map: texMedia(o.media, o.media2 || o.camisa) }),
-    piel: new THREE.MeshPhysicalMaterial({ color: o.piel, roughness: 0.58, sheen: 0.4, sheenRoughness: 0.5, sheenColor: new THREE.Color(0xffb7a0) }),
-    cabeza: new THREE.MeshPhysicalMaterial({ map: texCara(o.piel, o.ojos || 0x4a2f1c), roughness: 0.58, sheen: 0.4, sheenRoughness: 0.5, sheenColor: new THREE.Color(0xffb7a0) }),
-    pelo: MS(0xffffff, 0.75, { map: texPelo(o.pelo) }),
-    bota: MS(o.bota || 0x101216, 0.38, { metalness: 0.15 }),
-    suela: MS(0xe9e9e9, 0.6),
-    guante: MS(o.guante || o.camisa, 0.5),
-  };
-  const raiz = new THREE.Group(), alto = o.alto || 1;
-  const cast = (m) => { m.castShadow = true; return m; };
-  const esf = (r, mat, sx, sy, sz) => { const m = cast(new THREE.Mesh(new THREE.SphereGeometry(r, 16, 12), mat)); m.scale.set(sx || 1, sy || 1, sz || 1); return m; };
-  const cadera = new THREE.Group(); cadera.position.y = 0.95; raiz.add(cadera);
-  /* pantalón corto: cinturón y pelvis */
-  const pel = cast(new THREE.Mesh(new THREE.LatheGeometry([new THREE.Vector2(0.125, 0.09), new THREE.Vector2(0.152, 0.03), new THREE.Vector2(0.162, -0.05), new THREE.Vector2(0.158, -0.13)], 24), M.pantalon)); pel.scale.set(1, 1, 0.78); cadera.add(pel);
-  const torso = new THREE.Group(); torso.position.y = 0.06; cadera.add(torso);
-  const tg = new THREE.LatheGeometry([new THREE.Vector2(0.12, 0.0), new THREE.Vector2(0.138, 0.07), new THREE.Vector2(0.136, 0.19), new THREE.Vector2(0.15, 0.31), new THREE.Vector2(0.168, 0.41), new THREE.Vector2(0.168, 0.48), new THREE.Vector2(0.12, 0.545), new THREE.Vector2(0.07, 0.575)], 32, Math.PI, Math.PI * 2);
-  const pecho = cast(new THREE.Mesh(tg, M.camisa)); pecho.scale.set(1.02, 1, 0.7); torso.add(pecho);
-  [-1, 1].forEach(function (s) { const h = esf(0.058, M.manga); h.position.set(s * 0.205, 0.49, 0); torso.add(h); });
-  const cuello = cast(new THREE.Mesh(new THREE.CylinderGeometry(0.046, 0.052, 0.1, 14), M.piel)); cuello.position.y = 0.6; torso.add(cuello);
-  /* cabeza */
-  const cabeza = new THREE.Group(); cabeza.position.y = 0.73; torso.add(cabeza);
-  const hg = new THREE.SphereGeometry(0.105, 40, 28), hp = hg.attributes.position;
-  for (let i = 0; i < hp.count; i++) {
-    let px = hp.getX(i), py = hp.getY(i), pz = hp.getZ(i);
-    if (py < 0) { const f = Math.pow(-py / 0.105, 1.3); px *= 1 - 0.2 * f; pz *= 1 - 0.08 * f; py *= 1.14; }
-    hp.setXYZ(i, px * 0.93, py * 1.04, pz * 1.02);
-  }
-  hg.computeVertexNormals();
-  const craneo = cast(new THREE.Mesh(hg, M.cabeza)); cabeza.add(craneo);
-  const nariz = esf(0.0165, M.piel, 1, 1.35, 1.5); nariz.position.set(0, -0.012, 0.104); cabeza.add(nariz);
-  [-1, 1].forEach(function (s) { const e = esf(0.019, M.piel, 0.4, 1, 0.75); e.position.set(s * 0.098, -0.005, -0.005); cabeza.add(e); });
-  const pg = new THREE.SphereGeometry(0.111, 36, 20, 0, 6.2832, 0, o.rapado ? 1.25 : 1.7);
-  const cabello = cast(new THREE.Mesh(pg, M.pelo)); cabello.scale.set(0.95, 1.05, 1.03); cabello.rotation.x = -0.32; cabello.position.set(0, 0.012, -0.004); cabeza.add(cabello);
-  if (o.dorsal) {
-    const d = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3), new THREE.MeshBasicMaterial({ map: texDorsal(o.dorsal, o.numColor || "#fff", o.nombre), transparent: true }));
-    d.position.set(0, 0.29, -0.133); d.rotation.y = Math.PI; torso.add(d);
-  }
-  function brazo(lado) {
-    const s = new THREE.Group(); s.position.set(lado * 0.205, 0.49, 0); torso.add(s);
-    const manga = cast(new THREE.Mesh(tuboGeo([0.058, 0.052, 0.046], o.largo ? 0.33 : 0.16, 18), M.manga)); s.add(manga);
-    if (!o.largo) { const br = cast(new THREE.Mesh(tuboGeo([0.047, 0.046, 0.046], 0.18, 16), M.piel)); br.position.y = -0.15; s.add(br); }
-    const e = new THREE.Group(); e.position.y = -0.325; s.add(e);
-    e.add(esf(0.046, o.largo ? M.manga : M.piel));
-    const fa = cast(new THREE.Mesh(tuboGeo([0.046, 0.04, 0.03], 0.285, 16), o.largo ? M.manga : M.piel)); e.add(fa);
-    const mano = manoGeo(!!o.guante, M); mano.position.y = -0.3; mano.rotation.set(0, lado * 0.15, lado * -0.06); e.add(mano);
-    return { s: s, e: e };
-  }
-  function pierna(lado) {
-    const h = new THREE.Group(); h.position.set(lado * 0.092, -0.02, 0); cadera.add(h);
-    const cor = cast(new THREE.Mesh(tuboGeo([0.108, 0.108, 0.102], 0.3, 20), M.pantalon)); cor.position.y = -0.04; h.add(cor);
-    const mus = cast(new THREE.Mesh(tuboGeo([0.092, 0.08, 0.062], 0.46, 20), M.piel)); h.add(mus);
-    const k = new THREE.Group(); k.position.y = -0.46; h.add(k);
-    k.add(esf(0.062, M.piel));
-    const pant = cast(new THREE.Mesh(tuboGeo([0.062, 0.064, 0.056, 0.045, 0.04], 0.42, 20), M.media)); pant.position.y = -0.02; k.add(pant);
-    const bota = new THREE.Group(); bota.position.y = -0.455; k.add(bota);
-    const cuerpo = cast(new THREE.Mesh(new THREE.CapsuleGeometry(0.043, 0.13, 6, 12), M.bota)); cuerpo.rotation.x = Math.PI / 2; cuerpo.scale.set(1, 1, 0.7); cuerpo.position.set(0, -0.05, 0.07); bota.add(cuerpo);
-    const caña = cast(new THREE.Mesh(new THREE.CylinderGeometry(0.043, 0.047, 0.06, 14), M.bota)); caña.position.set(0, -0.01, 0); bota.add(caña);
-    const suela = cast(new THREE.Mesh(new THREE.BoxGeometry(0.098, 0.016, 0.27), M.suela)); suela.position.set(0, -0.087, 0.075); bota.add(suela);
-    for (let i = 0; i < 6; i++) { const t = cast(new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.01, 0.016, 6), M.suela)); t.position.set((i % 2 ? 1 : -1) * 0.03, -0.1, 0.0 + Math.floor(i / 2) * 0.095); bota.add(t); }
-    return { h: h, k: k };
-  }
-  const brI = brazo(-1), brD = brazo(1), pI = pierna(-1), pD = pierna(1);
-  raiz.scale.setScalar(alto);
-  return { raiz: raiz, cadera: cadera, torso: torso, cabeza: cabeza, brI: brI, brD: brD, pI: pI, pD: pD };
-}
 function poseBase(f) {
   f.cadera.position.y = 0.95; f.cadera.rotation.set(0, 0, 0); f.torso.rotation.set(0, 0, 0); f.cabeza.rotation.set(0, 0, 0);
   [f.brI, f.brD].forEach(function (b) { b.s.rotation.set(0, 0, 0); b.e.rotation.set(0, 0, 0); });
@@ -454,20 +295,20 @@ function crearEscena(canvas, movil, nombre) {
     s.scale.set(46, 46, 1); s.position.set(0, 40, 0.6); t.add(s); focos.push(s);
   });
 
-  const mk = (o) => figura(o);
+  const mk = (o) => crearFigura(o);
   const piel = [0xf0c8a0, 0xd9a273, 0xa8764d, 0x7a5233];
-  const yo = mk({ camisa: 0x1d5fd6, pantalon: 0xf2f4f8, media: 0x1d5fd6, piel: piel[0], pelo: 0x2b1b12, dorsal: 7, nombre: nombre, numColor: "#ffffff", manga: true });
-  const cpu = mk({ camisa: 0xd62839, pantalon: 0xf2f4f8, media: 0xd62839, piel: piel[2], pelo: 0x14100c, dorsal: 9, nombre: "RIVAL", numColor: "#ffffff", manga: true });
-  const porCpu = mk({ camisa: 0xff8a00, pantalon: 0x1a1a1a, media: 0x1a1a1a, piel: piel[1], pelo: 0x3a2a1a, guante: 0xe8ff3a, largo: true, alto: 1.03 });
-  const porYo = mk({ camisa: 0x1fb86a, pantalon: 0x1a1a1a, media: 0x1a1a1a, piel: piel[0], pelo: 0x2b1b12, guante: 0xe8ff3a, largo: true });
-  const arbitro = mk({ camisa: 0x111111, pantalon: 0x111111, media: 0x111111, piel: piel[3], pelo: 0x0e0a08, manga: true });
+  const yo = mk({ cuerpo: "jugador", camisa2: 0xffffff, camisa: 0x1d5fd6, pantalon: 0xf2f4f8, media: 0x1d5fd6, piel: piel[0], pelo: 0x2b1b12, dorsal: 7, nombre: nombre, numColor: "#ffffff", manga: true });
+  const cpu = mk({ cuerpo: "jugador", camisa2: 0xffffff, camisa: 0xd62839, pantalon: 0xf2f4f8, media: 0xd62839, piel: piel[2], pelo: 0x14100c, dorsal: 9, nombre: "RIVAL", numColor: "#ffffff", manga: true });
+  const porCpu = mk({ cuerpo: "portero", camisa2: 0x1a1a1a, camisa: 0xff8a00, pantalon: 0x1a1a1a, media: 0x1a1a1a, piel: piel[1], pelo: 0x3a2a1a, guante: 0xe8ff3a, largo: true, alto: 1.03 });
+  const porYo = mk({ cuerpo: "portero", camisa2: 0x1a1a1a, camisa: 0x1fb86a, pantalon: 0x1a1a1a, media: 0x1a1a1a, piel: piel[0], pelo: 0x2b1b12, guante: 0xe8ff3a, largo: true });
+  const arbitro = mk({ cuerpo: "jugador-lo", cara: false, camisa: 0x111111, pantalon: 0x111111, media: 0x111111, piel: piel[3], pelo: 0x0e0a08, manga: true });
   const figuras = [yo, cpu, porCpu, porYo, arbitro];
   figuras.forEach(function (f) { scene.add(f.raiz); });
   arbitro.raiz.position.set(-9.5, 0, SPOT + 5.5); arbitro.raiz.rotation.y = Math.PI * 0.85;
   /* resto de jugadores esperando en el círculo central de la zona */
   const espera = [];
   [[-6, 24], [-4.2, 25.5], [-2.2, 26], [2.4, 26], [4.4, 25.4], [6.2, 24]].forEach(function (p, i) {
-    const f = mk({ camisa: i < 3 ? 0x1d5fd6 : 0xd62839, pantalon: 0xf2f4f8, media: i < 3 ? 0x1d5fd6 : 0xd62839, piel: piel[i % 4], pelo: 0x1c140f, manga: true });
+    const f = mk({ cuerpo: "jugador-lo", cara: false, camisa2: 0xffffff, camisa: i < 3 ? 0x1d5fd6 : 0xd62839, pantalon: 0xf2f4f8, media: i < 3 ? 0x1d5fd6 : 0xd62839, piel: piel[i % 4], pelo: 0x1c140f, manga: true });
     f.raiz.position.set(p[0], 0, p[1]); f.raiz.rotation.y = Math.PI + (p[0] > 0 ? 0.2 : -0.2); scene.add(f.raiz); espera.push(f);
   });
 
@@ -485,10 +326,10 @@ function crearEscena(canvas, movil, nombre) {
     const palma = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 12), gmat); palma.scale.set(1, 1.15, 0.6); g.add(palma);
     for (let i = 0; i < 4; i++) { const d = new THREE.Mesh(new THREE.CapsuleGeometry(0.02, 0.09, 4, 8), gmat); d.position.set(-0.07 + i * 0.047, 0.15, 0); d.rotation.z = (i - 1.5) * -0.12; g.add(d); }
     const pulgar = new THREE.Mesh(new THREE.CapsuleGeometry(0.022, 0.08, 4, 8), gmat); pulgar.position.set(lado * -0.12, 0.04, 0); pulgar.rotation.z = lado * 0.9; g.add(pulgar);
-    const brazo = new THREE.Mesh(new THREE.CapsuleGeometry(0.06, 0.5, 4, 10), mmat); brazo.position.set(0, -0.38, 0.0); g.add(brazo);
+    const brazo = new THREE.Mesh(new THREE.CapsuleGeometry(0.05, 0.5, 6, 12), mmat); brazo.position.set(0, -0.38, 0.0); g.add(brazo);
     return g;
   };
-  const mI = mano(-1), mD = mano(1); manos.add(mI, mD); manos.scale.setScalar(0.78);
+  const mI = mano(-1), mD = mano(1); manos.add(mI, mD); manos.scale.setScalar(0.52);
 
   return { renderer, scene, camara, sol, cesped, goal, red, balon, grupoGradas, destellos, vallaTex: publi, focos, yo, cpu, porCpu, porYo, arbitro, espera, retic, manos, mI, mD };
 }
@@ -580,10 +421,8 @@ const PLANTILLA = `
   <p class="pn-pista-txt"><span class="pn-solo-pc">Espacio o clic para parar cada barra</span><span class="pn-solo-tactil">Toca la pantalla para parar cada barra</span></p>
 </div>
 <div class="pn-por" data-por hidden>
-  <div class="pn-mapa"><div class="pn-mapa__cab"><svg class="pn-logo" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 28 9v14l-12 7L4 23V9z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="16" cy="16" r="6" fill="none" stroke="#fff" stroke-width="1.4"/></svg><span>Apunta</span></div><div class="pn-mapa__porteria"><u></u><u></u><u></u><u></u><i data-mira></i></div></div>
-  <div class="pn-joy" data-joy><i></i></div>
-  <button type="button" class="pn-parar" data-pn="parar"><b>PARAR</b><small class="pn-solo-pc">Espacio</small></button>
-  <p class="pn-pista-txt pn-solo-pc">WASD apunta · Espacio para lanzarte</p>
+  <div class="pn-cuad" data-cuad><button type="button" class="pn-celda" data-celda="0"><i>Q</i></button><button type="button" class="pn-celda" data-celda="1"><i>W</i></button><button type="button" class="pn-celda" data-celda="2"><i>E</i></button><button type="button" class="pn-celda" data-celda="3"><i>A</i></button><button type="button" class="pn-celda" data-celda="4"><i>S</i></button><button type="button" class="pn-celda" data-celda="5"><i>D</i></button></div>
+  <p class="pn-pista-txt"><span class="pn-solo-pc">Pulsa Q W E / A S D para lanzarte a un cuadrante</span><span class="pn-solo-tactil">Toca el cuadrante al que te lanzas</span></p>
 </div>
 <div class="pn-menu" data-menu>
   <div class="pn-caja">
@@ -595,7 +434,7 @@ const PLANTILLA = `
     </div>
     <ul class="pn-como">
       <li><b>Cuando tiras</b><span>Para tres barras seguidas: dirección, altura y fuerza. Ojo: si te pasas de fuerza, la mandas a la grada.</span></li>
-      <li><b>Cuando paras</b><span>Apunta con el joystick o WASD hacia dónde te lanzarás y pulsa PARAR a tiempo. Fíjate en la carrerilla del rival: puede delatar a dónde tira.</span></li>
+      <li><b>Cuando paras</b><span>Elige uno de los 6 cuadrantes de la portería (toca la zona o pulsa Q W E / A S D). Si el balón va a ese cuadrante, la paras. Fíjate en la carrerilla del rival: puede delatar a dónde tira.</span></li>
     </ul>
     <p class="pn-rec" data-rec></p>
     <button type="button" class="pn-jugar" data-pn="jugar">¡Jugar!</button>
@@ -632,7 +471,7 @@ export function abrir(api, raiz) {
     fase: "menu", dif: datos().dif, turno: "yo", res: { yo: [], cpu: [] }, t: 0, tFase: 0, hist: [0, 0, 0], activo: true, slow: 1,
     barI: 0, barV: [0.5, 0.5, 0.5], barF: [0, 0, 0], barT0: 0, tiro: null, shake: 0, orbita: 0, ciclo: 0, cel: null, libre: null, bt: 0,
   };
-  const K = { x: 0, ax: 0, ay: 0, jx: 0, jy: 0, dive: null, teclas: {} };
+  const K = { x: 0, dive: null };
   const camBase = new THREE.Vector3(), mira = new THREE.Vector3();
   let raf = 0, ultimo = 0, vivo = true, fpsAcum = 0, fpsN = 0, escala = 1, tFlash = 0;
 
@@ -671,7 +510,7 @@ export function abrir(api, raiz) {
     S.port = null;
     if (S.turno === "yo") { S.port = porCpu; porCpu.raiz.visible = true; porCpu.raiz.position.set(0, 0, 0.2); porCpu.raiz.rotation.set(0, 0, 0); }
     S.pdx = 0; S.pgx = 0; S.pgy = 1; S.pt0 = -1; S.pp = 0;
-    K.x = 0; K.ax = 0; K.ay = 0; K.dive = null; K.jx = 0; K.jy = 0;
+    K.x = 0; K.dive = null; $$("[data-celda]").forEach(function (c) { c.classList.remove("sel", "off"); });
   }
   function preparar() {
     colocaFiguras(); pintaMarcador();
@@ -751,10 +590,18 @@ export function abrir(api, raiz) {
     else {
       let z;
       if (ti.quien === "yo") z = zona(0, ti.gx, ti.gy, ti.T - RETRASO_PORTERO, DIF[S.dif].mult);
-      else if (K.dive) z = zona(K.dive.x0, K.dive.gx, K.dive.gy, ti.t0 + ti.T - K.dive.t0, 1.12);
+      else if (K.dive) z = zona(K.dive.x0, K.dive.gx, K.dive.gy, 1, 1.0);
       else z = zona(K.x, 0, 1, 0, 1.0);
       S.zonaP = z;
-      if (dentroZona(z, tx, ty)) tipo = "parada";
+      if (ti.quien === "cpu") {
+        /* si el balón va al cuadrante elegido (con 35 cm de margen en los bordes), es parada */
+        const dv = K.dive;
+        if (dv) {
+          const col = dv.celda % 3, alto = dv.celda < 3, tol = 0.35;
+          const xs = [[HW / 3, HW + 0.4], [-HW / 3, HW / 3], [-HW - 0.4, -HW / 3]][col], ys = alto ? [GH / 2, GH + 0.4] : [-0.4, GH / 2];
+          if (tx > xs[0] - tol && tx < xs[1] + tol && ty > ys[0] - tol && ty < ys[1] + tol) tipo = "parada";
+        }
+      } else if (dentroZona(z, tx, ty)) tipo = "parada";
     }
     ti.tipo = tipo;
     /* velocidad al llegar a la línea */
@@ -812,7 +659,6 @@ export function abrir(api, raiz) {
   }
 
   /* ── Entrada ── */
-  const entrada = () => ({ x: clamp(K.jx + (K.teclas.r ? 1 : 0) - (K.teclas.l ? 1 : 0), -1, 1), y: clamp(K.jy + (K.teclas.u ? 1 : 0) - (K.teclas.d ? 1 : 0), -1, 1) });
   function accion() {
     if (!S.activo) return;
     au.iniciar();
@@ -821,35 +667,33 @@ export function abrir(api, raiz) {
       const i = S.barI; S.barF[i] = 1; au.golpe(0.2);
       if (i < 2) { S.barI++; S.barT0 = S.t; activaBarra(S.barI); }
       else { activaBarra(3); lanzarTuyo(); }
-    } else if (S.turno === "cpu" && (S.fase === "espera" || S.fase === "carrera" || S.fase === "vuelo")) {
-      if (K.dive) return;
-      K.dive = { t0: S.t, gx: K.ax, gy: 1 + K.ay, x0: K.x };
-      au.golpe(0.3);
     }
   }
+  /* Portero: 6 cuadrantes (arriba/abajo × izquierda/centro/derecha, tal como los ves) */
+  function elegirCelda(n) {
+    if (!S.activo || S.turno !== "cpu" || K.dive || !(S.fase === "espera" || S.fase === "carrera" || S.fase === "vuelo")) return;
+    au.iniciar();
+    const col = n % 3, alto = n < 3;
+    K.dive = { t0: S.t, gx: -(col - 1), gy: alto ? 1.75 : 0.45, x0: 0, celda: n };
+    au.golpe(0.3);
+    $$("[data-celda]").forEach(function (c) { c.classList.toggle("sel", +c.dataset.celda === n); c.classList.toggle("off", +c.dataset.celda !== n); });
+  }
+  const TECLAS_CELDA = { q: 0, w: 1, e: 2, a: 3, s: 4, d: 5 };
   function tecla(e, abajo) {
     const k = e.key;
     if (k === " " || k === "Enter") { if (abajo && !e.repeat) { if (!$("[data-menu]").hidden || !$("[data-fin]").hidden) return; accion(); } e.preventDefault(); return; }
-    const m = { a: "l", arrowleft: "l", d: "r", arrowright: "r", w: "u", arrowup: "u", s: "d", arrowdown: "d" }[k.toLowerCase()];
-    if (m) { K.teclas[m] = abajo; e.preventDefault(); }
+    const c = TECLAS_CELDA[k.toLowerCase()];
+    if (abajo && !e.repeat && c != null) { elegirCelda(c); e.preventDefault(); }
   }
-  const kd = (e) => tecla(e, true), ku = (e) => tecla(e, false);
+  const kd = (e) => tecla(e, true), ku = () => {};
   window.addEventListener("keydown", kd); window.addEventListener("keyup", ku);
-  /* joystick táctil */
-  const joy = $("[data-joy]"); let joyId = null, joyO = null;
-  joy.addEventListener("pointerdown", function (e) { joyId = e.pointerId; joy.setPointerCapture(e.pointerId); const r = joy.getBoundingClientRect(); joyO = { x: r.left + r.width / 2, y: r.top + r.height / 2, r: r.width / 2 }; moverJoy(e); e.preventDefault(); });
-  joy.addEventListener("pointermove", function (e) { if (e.pointerId === joyId) moverJoy(e); });
-  const soltarJoy = function (e) { if (e.pointerId === joyId) { joyId = null; K.jx = 0; K.jy = 0; joy.firstElementChild.style.transform = ""; } };
-  joy.addEventListener("pointerup", soltarJoy); joy.addEventListener("pointercancel", soltarJoy);
-  function moverJoy(e) {
-    let dx = (e.clientX - joyO.x) / joyO.r, dy = (joyO.y - e.clientY) / joyO.r; const l = Math.hypot(dx, dy); if (l > 1) { dx /= l; dy /= l; }
-    K.jx = dx; K.jy = dy; joy.firstElementChild.style.transform = "translate(" + (dx * joyO.r * 0.55) + "px," + (-dy * joyO.r * 0.55) + "px)";
-  }
   raiz.addEventListener("pointerdown", function (e) {
     au.iniciar();
     const b = e.target.closest ? e.target.closest("[data-pn]") : null;
     if (b) return;
-    if (e.target.closest && e.target.closest("[data-joy], [data-menu], [data-fin], .pn-cab")) return;
+    const ce = e.target.closest ? e.target.closest("[data-celda]") : null;
+    if (ce) { elegirCelda(+ce.dataset.celda); e.preventDefault(); return; }
+    if (e.target.closest && e.target.closest("[data-menu], [data-fin], .pn-cab")) return;
     if (S.turno === "yo") accion();
   });
   raiz.addEventListener("click", function (e) {
@@ -857,7 +701,7 @@ export function abrir(api, raiz) {
     if (b.dataset.dif) { S.dif = b.dataset.dif; pintaRecord(); return; }
     const a = b.dataset.pn;
     if (a === "salir") cerrar(); else if (a === "jugar" || a === "otra") empezar();
-    else if (a === "fs") alternarPantallaCompleta(); else if (a === "parar") accion();
+    else if (a === "fs") alternarPantallaCompleta();
   });
   function alternarPantallaCompleta() {
     try { if (document.fullscreenElement) document.exitFullscreen(); else if (raiz.requestFullscreen) raiz.requestFullscreen(); } catch (e) { /* opcional */ }
@@ -902,7 +746,7 @@ export function abrir(api, raiz) {
         E.manos.position.set(0, 0, 0);
       }
       const px = K.x + dx;
-      c.position.set(px * 0.92, 1.72 + dy, -0.35); mira.set(px * 0.35 + (K.dive ? K.dive.gx * 0.4 : K.ax * 0.5), 1.15 + (K.dive ? Math.max(0, K.dive.gy - 1) * 0.5 : K.ay * 0.18), SPOT);
+      c.position.set(px * 0.92, 1.72 + dy, -0.35); mira.set(px * 0.35 + (K.dive ? K.dive.gx * 0.4 : 0), 1.15 + (K.dive ? Math.max(0, K.dive.gy - 1) * 0.5 : 0), SPOT);
       c.fov = 58; fx = tilt;
     }
     if (reducido) S.shake = 0;
@@ -912,7 +756,7 @@ export function abrir(api, raiz) {
     c.updateProjectionMatrix();
     /* guantes */
     if (S.turno === "cpu") {
-      const z = K.dive ? clamp((S.t - K.dive.t0) / DUR_PARADA, 0, 1) : 0, e = easeOut(z), gx = K.dive ? K.dive.gx : K.ax * 0.5, gy = K.dive ? K.dive.gy : 1 + K.ay * 0.5;
+      const z = K.dive ? clamp((S.t - K.dive.t0) / DUR_PARADA, 0, 1) : 0, e = easeOut(z), gx = K.dive ? K.dive.gx : 0, gy = K.dive ? K.dive.gy : 1;
       const alz = lerp(-0.18, 0.55, clamp(gy / 2, 0, 1));
       E.mI.position.set(-0.38 + gx * e * 0.22, -0.52 + e * (0.55 + alz) + Math.sin(t * 2) * 0.01, -0.85 + e * -0.35);
       E.mD.position.set(0.38 + gx * e * 0.22, -0.52 + e * (0.55 + alz) + Math.sin(t * 2.2) * 0.01, -0.85 + e * -0.35);
@@ -935,12 +779,6 @@ export function abrir(api, raiz) {
     if (S.fase === "vuelo" && S.turno === "yo" && S.tiro && (S.t - S.tiro.t0) / S.tiro.T > 0.7) esc = 0.5;
     const dtS = dt * esc; S.t += dtS; S.ciclo += dtS * 12; S.shake = Math.max(0, S.shake - dt * 0.9);
     const T = S.t;
-
-    /* movimiento del portero (tú) */
-    if (S.turno === "cpu" && !K.dive && (S.fase === "espera" || S.fase === "carrera" || S.fase === "vuelo")) {
-      const en = entrada(), dz = (v) => Math.abs(v) < 0.12 ? 0 : v, k = Math.min(1, dt * 12);
-      K.ax += (dz(en.x) - K.ax) * k; K.ay += (dz(en.y) - K.ay) * k;
-    }
 
     /* fases */
     const yo = E.yo, cpu = E.cpu, bal = E.balon;
@@ -1028,15 +866,6 @@ export function abrir(api, raiz) {
     E.grupoGradas.forEach(function (g, i) { g.offset.y = Math.sin(T * 3 + i) * 0.0016; });
     E.espera.forEach(function (f, i) { poseQuieto(f, T + i, false); });
     poseQuieto(E.arbitro, T, false);
-    /* radar del portero */
-    if (S.turno === "cpu") {
-      const m = $("[data-mira]");
-      if (m) {
-        const gx = K.dive ? K.dive.gx : K.ax, gy = K.dive ? K.dive.gy - 1 : K.ay;
-        m.style.left = (50 + gx * 42).toFixed(1) + "%"; m.style.top = (50 - gy * 38).toFixed(1) + "%";
-        m.parentNode.classList.toggle("lock", !!K.dive);
-      }
-    }
     ponCamara(dt, T);
     E.renderer.render(E.scene, E.camara);
   }
