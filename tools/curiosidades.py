@@ -642,7 +642,7 @@ def pagina_indice(L):
     h += f'<h2 class="tema-h">{"Elige un tema" if es else "Pick a topic"}</h2>\n'
     # 1) artículos (solo español): categorías dentro del tema
     if es:
-        h += tema("#7c3aed", "✍️", "Artículos de análisis", "49 textos largos y originales: reglas, tácticas, premios, historia y cómo funciona el fútbol por dentro.", "49 artículos", cats_articulos(), "cur")
+        h += tema("#7c3aed", "✍️", "Artículos de análisis", "57 textos largos y originales: reglas, tácticas, premios, historia y cómo funciona el fútbol por dentro.", "57 artículos", cats_articulos(), "cur")
     # 2) datos y récords
     dt = ("Récords y rankings con fuentes", "Goleadores de la Champions y del Mundial, Balón de Oro, Pichichi, Eurocopa, Bota de Oro y más, con la fuente y la fecha de los datos.") if es else ("Records and rankings, with sources", "Champions League and World Cup scorers, Ballon d'Or, Pichichi, the Euros, the Golden Shoe and more, with source and data date.")
     h += tema_enlace("#0f9d58", "📊", dt[0], dt[1], "9 páginas" if es else "9 pages", L.url("curiosidades/datos/"))

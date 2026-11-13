@@ -50,6 +50,14 @@ META = {
     "tecnologia-en-el-futbol-linea-de-gol-balon-con-sensor-y-fuera-de-juego-semiautomatico": dict(c=("#4338ca", "#a5b4fc"), e="📡"),
     "balon-parado-en-el-futbol-corners-faltas-y-jugadas-ensayadas": dict(c=("#b45309", "#fcd34d"), e="🚩"),
     "psicologia-del-futbolista-presion-confianza-y-penaltis": dict(c=("#be185d", "#f9a8d4"), e="🧠"),
+    "futbol-base-que-debe-aprender-un-nino-segun-su-edad-y-como-elegir-escuela": dict(c=("#15803d", "#86efac"), e="🧒"),
+    "historia-de-los-mundiales-de-futbol-por-etapas-de-1930-a-2026": dict(c=("#0891b2", "#67e8f9"), e="🌍"),
+    "historia-de-la-eurocopa-de-1960-a-hoy-formato-y-campeones": dict(c=("#1d4ed8", "#93c5fd"), e="🇪🇺"),
+    "torneos-continentales-de-selecciones-copa-america-copa-africana-y-copa-asiatica": dict(c=("#b45309", "#fcd34d"), e="🗺️"),
+    "como-ver-un-partido-de-futbol-como-un-analista-que-mirar-ademas-del-balon": dict(c=("#6d28d9", "#c4b5fd"), e="👀"),
+    "de-donde-sale-el-dinero-de-un-club-de-futbol-ingresos-y-gastos": dict(c=("#a16207", "#fde047"), e="💶"),
+    "como-trabaja-un-ojeador-de-futbol-scouting-y-seguimiento-de-jugadores": dict(c=("#0f766e", "#5eead4"), e="🔭"),
+    "historia-del-futbol-en-espana-de-los-primeros-clubes-a-laliga": dict(c=("#b91c1c", "#fca5a5"), e="🇪🇸"),
 }
 def meta(slug):
     return META.get(slug, dict(c=("#1747d6", "#6b9bff"), e="📖"))
@@ -72,6 +80,7 @@ CATS = [
         'formaciones-tacticas-442-433-explicadas',
         'estilos-de-juego-en-el-futbol-posesion-contraataque-y-presion',
         'balon-parado-en-el-futbol-corners-faltas-y-jugadas-ensayadas',
+        'como-ver-un-partido-de-futbol-como-un-analista-que-mirar-ademas-del-balon',
         'psicologia-del-futbolista-presion-confianza-y-penaltis',
         'tecnologia-en-el-futbol-linea-de-gol-balon-con-sensor-y-fuera-de-juego-semiautomatico',
         'fundamentos-tecnicos-del-futbol-control-pase-regate-y-tiro',
@@ -99,6 +108,10 @@ CATS = [
         'derbis-y-rivalidades-mas-famosas-del-futbol',
         'historia-del-futbol-femenino-de-los-origenes-a-hoy',
         'historia-de-la-champions-league-de-la-copa-de-europa-a-hoy',
+        'historia-de-los-mundiales-de-futbol-por-etapas-de-1930-a-2026',
+        'historia-de-la-eurocopa-de-1960-a-hoy-formato-y-campeones',
+        'torneos-continentales-de-selecciones-copa-america-copa-africana-y-copa-asiatica',
+        'historia-del-futbol-en-espana-de-los-primeros-clubes-a-laliga',
     ]),
     ('clubes', '🏟️', 'Clubes, fichajes y estadios', 'Cómo funciona un club, los traspasos, la cantera, el control económico, los estadios y la afición.', '#ea580c', [
         'sentencia-bosman-clausulas-de-rescision-y-traspasos',
@@ -111,6 +124,9 @@ CATS = [
         'cultura-de-grada-canticos-penas-y-rituales-del-aficionado',
         'como-organizar-un-torneo-de-futbol-con-amigos-formatos-y-calendario',
         'que-hace-un-entrenador-de-futbol-funciones-y-cuerpo-tecnico',
+        'futbol-base-que-debe-aprender-un-nino-segun-su-edad-y-como-elegir-escuela',
+        'de-donde-sale-el-dinero-de-un-club-de-futbol-ingresos-y-gastos',
+        'como-trabaja-un-ojeador-de-futbol-scouting-y-seguimiento-de-jugadores',
         'calendario-del-futbol-temporadas-ventanas-de-fichajes-y-fechas-fifa',
     ]),
     ('juego', '🎮', 'Juega mejor a TIKITEXTO', 'Estadística propia de las letras y trucos para adivinar el futbolista en 6 intentos.', '#16a34a', [
@@ -121,5 +137,5 @@ CATS = [
 
 def todos():
     """Todos los artículos (dicts) en orden de publicación."""
-    import articulos_a, articulos_b, articulos_c, articulos_d, articulos_e, articulos_f, articulos_g, articulos_h, articulos_i
-    return (articulos_a.ARTICULOS_A + articulos_b.ARTICULOS_B + articulos_c.ARTICULOS_C + articulos_d.ARTICULOS_D + articulos_e.ARTICULOS_E + articulos_f.ARTICULOS_F + articulos_g.ARTICULOS_G + articulos_h.ARTICULOS_H + articulos_i.ARTICULOS_I)
+    import articulos_a, articulos_b, articulos_c, articulos_d, articulos_e, articulos_f, articulos_g, articulos_h, articulos_i, articulos_j, articulos_k
+    return (articulos_a.ARTICULOS_A + articulos_b.ARTICULOS_B + articulos_c.ARTICULOS_C + articulos_d.ARTICULOS_D + articulos_e.ARTICULOS_E + articulos_f.ARTICULOS_F + articulos_g.ARTICULOS_G + articulos_h.ARTICULOS_H + articulos_i.ARTICULOS_I + articulos_j.ARTICULOS_J + articulos_k.ARTICULOS_K)
