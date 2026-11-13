@@ -118,13 +118,16 @@ function texCielo() {
   x.fillStyle = g; x.fillRect(0, 0, 4, 256);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
-function texDorsal(num, color) {
-  const c = lienzo(128, 160), x = c.getContext("2d");
-  x.clearRect(0, 0, 128, 160);
-  x.fillStyle = color; x.font = "900 96px Inter, Arial, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle";
-  x.fillText(String(num), 64, 96);
-  x.font = "800 26px Inter, Arial, sans-serif"; x.fillText("TIKI", 64, 26);
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+function texDorsal(num, color, nombre) {
+  const c = lienzo(256, 256), x = c.getContext("2d");
+  x.clearRect(0, 0, 256, 256);
+  x.fillStyle = color; x.textAlign = "center"; x.textBaseline = "middle";
+  const n = String(nombre || "").toUpperCase().slice(0, 16);
+  let fs = 62; x.font = "900 " + fs + "px Arial, Helvetica, sans-serif";
+  while (fs > 18 && x.measureText(n).width > 236) { fs -= 2; x.font = "900 " + fs + "px Arial, Helvetica, sans-serif"; }
+  x.fillText(n, 128, 40);
+  x.font = "900 170px Arial, Helvetica, sans-serif"; x.fillText(String(num), 128, 150);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
 }
 function texBrillo() {
   const c = lienzo(128, 128), x = c.getContext("2d"), g = x.createRadialGradient(64, 64, 0, 64, 64, 64);
@@ -237,7 +240,7 @@ function figura(o) {
   const torso = new THREE.Group(); torso.position.y = 0.06; cadera.add(torso);
   const tg = new THREE.LatheGeometry([new THREE.Vector2(0.12, 0.0), new THREE.Vector2(0.138, 0.07), new THREE.Vector2(0.136, 0.19), new THREE.Vector2(0.15, 0.31), new THREE.Vector2(0.168, 0.41), new THREE.Vector2(0.168, 0.48), new THREE.Vector2(0.12, 0.545), new THREE.Vector2(0.07, 0.575)], 32, Math.PI, Math.PI * 2);
   const pecho = cast(new THREE.Mesh(tg, M.camisa)); pecho.scale.set(1.02, 1, 0.7); torso.add(pecho);
-  [-1, 1].forEach(function (s) { const h = esf(0.062, M.manga); h.position.set(s * 0.178, 0.49, 0); torso.add(h); });
+  [-1, 1].forEach(function (s) { const h = esf(0.058, M.manga); h.position.set(s * 0.205, 0.49, 0); torso.add(h); });
   const cuello = cast(new THREE.Mesh(new THREE.CylinderGeometry(0.046, 0.052, 0.1, 14), M.piel)); cuello.position.y = 0.6; torso.add(cuello);
   /* cabeza */
   const cabeza = new THREE.Group(); cabeza.position.y = 0.73; torso.add(cabeza);
@@ -254,26 +257,26 @@ function figura(o) {
   const pg = new THREE.SphereGeometry(0.111, 36, 20, 0, 6.2832, 0, o.rapado ? 1.25 : 1.7);
   const cabello = cast(new THREE.Mesh(pg, M.pelo)); cabello.scale.set(0.95, 1.05, 1.03); cabello.rotation.x = -0.32; cabello.position.set(0, 0.012, -0.004); cabeza.add(cabello);
   if (o.dorsal) {
-    const d = new THREE.Mesh(new THREE.PlaneGeometry(0.27, 0.34), new THREE.MeshBasicMaterial({ map: texDorsal(o.dorsal, o.numColor || "#fff"), transparent: true }));
-    d.position.set(0, 0.3, -0.133); d.rotation.y = Math.PI; torso.add(d);
+    const d = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3), new THREE.MeshBasicMaterial({ map: texDorsal(o.dorsal, o.numColor || "#fff", o.nombre), transparent: true }));
+    d.position.set(0, 0.29, -0.133); d.rotation.y = Math.PI; torso.add(d);
   }
   function brazo(lado) {
     const s = new THREE.Group(); s.position.set(lado * 0.205, 0.49, 0); torso.add(s);
-    const manga = cast(new THREE.Mesh(tuboGeo([0.058, 0.054, 0.05], o.largo ? 0.33 : 0.16, 18), M.manga)); s.add(manga);
-    if (!o.largo) { const br = cast(new THREE.Mesh(tuboGeo([0.047, 0.042, 0.038], 0.18, 16), M.piel)); br.position.y = -0.15; s.add(br); }
+    const manga = cast(new THREE.Mesh(tuboGeo([0.058, 0.052, 0.046], o.largo ? 0.33 : 0.16, 18), M.manga)); s.add(manga);
+    if (!o.largo) { const br = cast(new THREE.Mesh(tuboGeo([0.047, 0.046, 0.046], 0.18, 16), M.piel)); br.position.y = -0.15; s.add(br); }
     const e = new THREE.Group(); e.position.y = -0.325; s.add(e);
-    e.add(esf(0.036, o.largo ? M.manga : M.piel));
-    const fa = cast(new THREE.Mesh(tuboGeo([0.041, 0.038, 0.03], 0.285, 16), o.largo ? M.manga : M.piel)); e.add(fa);
+    e.add(esf(0.046, o.largo ? M.manga : M.piel));
+    const fa = cast(new THREE.Mesh(tuboGeo([0.046, 0.04, 0.03], 0.285, 16), o.largo ? M.manga : M.piel)); e.add(fa);
     const mano = manoGeo(!!o.guante, M); mano.position.y = -0.3; mano.rotation.set(0, lado * 0.15, lado * -0.06); e.add(mano);
     return { s: s, e: e };
   }
   function pierna(lado) {
     const h = new THREE.Group(); h.position.set(lado * 0.092, -0.02, 0); cadera.add(h);
     const cor = cast(new THREE.Mesh(tuboGeo([0.108, 0.108, 0.102], 0.3, 20), M.pantalon)); cor.position.y = -0.04; h.add(cor);
-    const mus = cast(new THREE.Mesh(tuboGeo([0.092, 0.082, 0.066], 0.46, 20), M.piel)); h.add(mus);
+    const mus = cast(new THREE.Mesh(tuboGeo([0.092, 0.08, 0.062], 0.46, 20), M.piel)); h.add(mus);
     const k = new THREE.Group(); k.position.y = -0.46; h.add(k);
-    k.add(esf(0.054, M.piel));
-    const pant = cast(new THREE.Mesh(tuboGeo([0.058, 0.063, 0.057, 0.045, 0.038], 0.42, 20), M.media)); pant.position.y = -0.02; k.add(pant);
+    k.add(esf(0.062, M.piel));
+    const pant = cast(new THREE.Mesh(tuboGeo([0.062, 0.064, 0.056, 0.045, 0.04], 0.42, 20), M.media)); pant.position.y = -0.02; k.add(pant);
     const bota = new THREE.Group(); bota.position.y = -0.455; k.add(bota);
     const cuerpo = cast(new THREE.Mesh(new THREE.CapsuleGeometry(0.043, 0.13, 6, 12), M.bota)); cuerpo.rotation.x = Math.PI / 2; cuerpo.scale.set(1, 1, 0.7); cuerpo.position.set(0, -0.05, 0.07); bota.add(cuerpo);
     const caña = cast(new THREE.Mesh(new THREE.CylinderGeometry(0.043, 0.047, 0.06, 14), M.bota)); caña.position.set(0, -0.01, 0); bota.add(caña);
@@ -348,7 +351,7 @@ function poseParada(f, p, gx, gy) {
 }
 
 /* ───────── Escena: estadio nocturno ───────── */
-function crearEscena(canvas, movil) {
+function crearEscena(canvas, movil, nombre) {
   const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, movil ? 1.5 : 2));
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -453,8 +456,8 @@ function crearEscena(canvas, movil) {
 
   const mk = (o) => figura(o);
   const piel = [0xf0c8a0, 0xd9a273, 0xa8764d, 0x7a5233];
-  const yo = mk({ camisa: 0x1d5fd6, pantalon: 0xf2f4f8, media: 0x1d5fd6, piel: piel[0], pelo: 0x2b1b12, dorsal: 10, numColor: "#ffffff", manga: true });
-  const cpu = mk({ camisa: 0xd62839, pantalon: 0xf2f4f8, media: 0xd62839, piel: piel[2], pelo: 0x14100c, dorsal: 9, numColor: "#ffffff", manga: true });
+  const yo = mk({ camisa: 0x1d5fd6, pantalon: 0xf2f4f8, media: 0x1d5fd6, piel: piel[0], pelo: 0x2b1b12, dorsal: 7, nombre: nombre, numColor: "#ffffff", manga: true });
+  const cpu = mk({ camisa: 0xd62839, pantalon: 0xf2f4f8, media: 0xd62839, piel: piel[2], pelo: 0x14100c, dorsal: 9, nombre: "RIVAL", numColor: "#ffffff", manga: true });
   const porCpu = mk({ camisa: 0xff8a00, pantalon: 0x1a1a1a, media: 0x1a1a1a, piel: piel[1], pelo: 0x3a2a1a, guante: 0xe8ff3a, largo: true, alto: 1.03 });
   const porYo = mk({ camisa: 0x1fb86a, pantalon: 0x1a1a1a, media: 0x1a1a1a, piel: piel[0], pelo: 0x2b1b12, guante: 0xe8ff3a, largo: true });
   const arbitro = mk({ camisa: 0x111111, pantalon: 0x111111, media: 0x111111, piel: piel[3], pelo: 0x0e0a08, manga: true });
@@ -619,7 +622,7 @@ export function abrir(api, raiz) {
   const $ = (s) => raiz.querySelector(s), $$ = (s) => Array.prototype.slice.call(raiz.querySelectorAll(s));
   const cv = $(".pn-cv");
   let E = null;
-  try { E = crearEscena(cv, movil); } catch (e) { E = null; }
+  try { E = crearEscena(cv, movil, (api.nombre ? api.nombre() : "") || ("INVITADO " + (api.invitado ? api.invitado() : "")).trim()); } catch (e) { E = null; }
   if (!E) { $("[data-sin]").hidden = false; $("[data-menu]").hidden = true; $("[data-gira]").style.display = "none"; }
   const au = crearAudio(api);
   const datos = () => { const d = api.datos(); ["gan", "per", "par", "gol", "racha", "mejor", "tandas"].forEach(function (k) { if (typeof d[k] !== "number") d[k] = 0; }); if (!d.dif) d.dif = "normal"; return d; };
