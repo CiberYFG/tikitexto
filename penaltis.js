@@ -338,13 +338,13 @@ function poseDerrota(f, t) {
 /* Portero: p = progreso del salto, gx lado (-1, 0, 1), gy altura (0 bajo, 1 medio, 2 alto) */
 function poseParada(f, p, gx, gy) {
   poseBase(f);
-  const arriba = gy === 2 ? 1 : gy === 1 ? 0.55 : 0.1;
+  const arriba = lerp(0.1, 1, clamp(gy / 2, 0, 1));
   f.brI.s.rotation.x = -lerp(0.1, Math.PI * (0.55 + 0.4 * arriba), p); f.brD.s.rotation.x = f.brI.s.rotation.x;
   f.brI.s.rotation.z = lerp(0.35, 0.12, p); f.brD.s.rotation.z = -f.brI.s.rotation.z;
   f.pI.h.rotation.x = -lerp(0.2, 0.1, p); f.pD.h.rotation.x = -lerp(0.2, 0.1, p);
   f.pI.k.rotation.x = lerp(0.35, 0.05, p); f.pD.k.rotation.x = lerp(0.35, 0.05, p);
   f.cabeza.rotation.x = -0.15 * p;
-  if (gx !== 0) f.pI.h.rotation.z = gx * 0.15 * p, f.pD.h.rotation.z = gx * 0.25 * p;
+  if (Math.abs(gx) > 0.05) f.pI.h.rotation.z = gx * 0.15 * p, f.pD.h.rotation.z = gx * 0.25 * p;
 }
 
 /* ───────── Escena: estadio nocturno ───────── */
@@ -547,8 +547,11 @@ const DIF = {
 const EY = [0.5, 1.05, 1.95];
 const DUR_PARADA = 0.42, RETRASO_PORTERO = 0.14;
 function zona(x0, gx, gy, tt, mult) {
-  const p = clamp(tt / DUR_PARADA, 0, 1), e = easeOut(p), ex = x0 + gx * 2.75, ey = EY[gy];
-  return { cx: lerp(x0, ex, e), cy: lerp(1.0, (gx === 0 && gy === 1) ? 1.0 : ey, e), rx: (0.82 + 0.5 * e * (gx !== 0 ? 1 : 0.4)) * mult, ry: (0.85 + 0.35 * e * (gy !== 1 ? 1 : 0.2)) * mult, p: p };
+  /* gx: -1..1 (lado), gy: 0..2 (0 = raso, 1 = medio, 2 = alto); valores continuos */
+  const p = clamp(tt / DUR_PARADA, 0, 1), e = easeOut(p), ex = x0 + gx * 2.75;
+  const ey = gy <= 1 ? lerp(EY[0], EY[1], gy) : lerp(EY[1], EY[2], gy - 1);
+  const fx = Math.min(1, Math.abs(gx) * 1.5), fy = Math.min(1, Math.abs(gy - 1) * 1.5);
+  return { cx: lerp(x0, ex, e), cy: lerp(1.0, ey, e), rx: (0.82 + 0.5 * e * (0.4 + 0.6 * fx)) * mult, ry: (0.85 + 0.35 * e * (0.2 + 0.8 * fy)) * mult, p: p };
 }
 const dentroZona = (z, bx, by) => Math.pow((bx - z.cx) / z.rx, 2) + Math.pow((by - z.cy) / z.ry, 2) < 1;
 
@@ -567,16 +570,17 @@ const PLANTILLA = `
 <div class="pn-turno" data-turno></div>
 <div class="pn-aviso" data-aviso></div>
 <div class="pn-barras" data-barras hidden>
+  <div class="pn-bhead"><svg class="pn-logo" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 28 9v14l-12 7L4 23V9z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="16" cy="16" r="6" fill="none" stroke="#fff" stroke-width="1.4"/><path d="m16 12.6 3.2 2.3-1.2 3.8h-4l-1.2-3.8z" fill="#fff"/></svg><b>TIKI<i>TEXTO</i></b><small>3D</small></div>
   <div class="pn-barra" data-barra="0"><span>Dirección</span><div class="pn-pista pn-pista--dir"><i></i><u></u></div></div>
   <div class="pn-barra" data-barra="1"><span>Altura</span><div class="pn-pista pn-pista--alt"><i></i><u></u></div></div>
   <div class="pn-barra" data-barra="2"><span>Fuerza</span><div class="pn-pista pn-pista--fza"><i></i><u></u></div></div>
   <p class="pn-pista-txt"><span class="pn-solo-pc">Espacio o clic para parar cada barra</span><span class="pn-solo-tactil">Toca la pantalla para parar cada barra</span></p>
 </div>
 <div class="pn-por" data-por hidden>
-  <div class="pn-radar"><i data-radar></i><span></span><span></span></div>
+  <div class="pn-mapa"><div class="pn-mapa__cab"><svg class="pn-logo" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 28 9v14l-12 7L4 23V9z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="16" cy="16" r="6" fill="none" stroke="#fff" stroke-width="1.4"/></svg><span>Apunta</span></div><div class="pn-mapa__porteria"><u></u><u></u><u></u><u></u><i data-mira></i></div></div>
   <div class="pn-joy" data-joy><i></i></div>
   <button type="button" class="pn-parar" data-pn="parar"><b>PARAR</b><small class="pn-solo-pc">Espacio</small></button>
-  <p class="pn-pista-txt pn-solo-pc">A / D mover · W alto · S bajo · Espacio para lanzarte</p>
+  <p class="pn-pista-txt pn-solo-pc">WASD apunta · Espacio para lanzarte</p>
 </div>
 <div class="pn-menu" data-menu>
   <div class="pn-caja">
@@ -588,7 +592,7 @@ const PLANTILLA = `
     </div>
     <ul class="pn-como">
       <li><b>Cuando tiras</b><span>Para tres barras seguidas: dirección, altura y fuerza. Ojo: si te pasas de fuerza, la mandas a la grada.</span></li>
-      <li><b>Cuando paras</b><span>Muévete con el joystick o con A/D y lánzate a tiempo. Fíjate en la carrerilla del rival: puede delatar a dónde tira.</span></li>
+      <li><b>Cuando paras</b><span>Apunta con el joystick o WASD hacia dónde te lanzarás y pulsa PARAR a tiempo. Fíjate en la carrerilla del rival: puede delatar a dónde tira.</span></li>
     </ul>
     <p class="pn-rec" data-rec></p>
     <button type="button" class="pn-jugar" data-pn="jugar">¡Jugar!</button>
@@ -625,7 +629,7 @@ export function abrir(api, raiz) {
     fase: "menu", dif: datos().dif, turno: "yo", res: { yo: [], cpu: [] }, t: 0, tFase: 0, hist: [0, 0, 0], activo: true, slow: 1,
     barI: 0, barV: [0.5, 0.5, 0.5], barF: [0, 0, 0], barT0: 0, tiro: null, shake: 0, orbita: 0, ciclo: 0, cel: null, libre: null, bt: 0,
   };
-  const K = { x: 0, jx: 0, jy: 0, dive: null, teclas: {} };
+  const K = { x: 0, ax: 0, ay: 0, jx: 0, jy: 0, dive: null, teclas: {} };
   const camBase = new THREE.Vector3(), mira = new THREE.Vector3();
   let raf = 0, ultimo = 0, vivo = true, fpsAcum = 0, fpsN = 0, escala = 1, tFlash = 0;
 
@@ -664,7 +668,7 @@ export function abrir(api, raiz) {
     S.port = null;
     if (S.turno === "yo") { S.port = porCpu; porCpu.raiz.visible = true; porCpu.raiz.position.set(0, 0, 0.2); porCpu.raiz.rotation.set(0, 0, 0); }
     S.pdx = 0; S.pgx = 0; S.pgy = 1; S.pt0 = -1; S.pp = 0;
-    K.x = 0; K.dive = null; K.jx = 0; K.jy = 0;
+    K.x = 0; K.ax = 0; K.ay = 0; K.dive = null; K.jx = 0; K.jy = 0;
   }
   function preparar() {
     colocaFiguras(); pintaMarcador();
@@ -744,7 +748,7 @@ export function abrir(api, raiz) {
     else {
       let z;
       if (ti.quien === "yo") z = zona(0, ti.gx, ti.gy, ti.T - RETRASO_PORTERO, DIF[S.dif].mult);
-      else if (K.dive) z = zona(K.dive.x0, K.dive.gx, K.dive.gy, ti.t0 + ti.T - K.dive.t0, 1.0);
+      else if (K.dive) z = zona(K.dive.x0, K.dive.gx, K.dive.gy, ti.t0 + ti.T - K.dive.t0, 1.12);
       else z = zona(K.x, 0, 1, 0, 1.0);
       S.zonaP = z;
       if (dentroZona(z, tx, ty)) tipo = "parada";
@@ -816,8 +820,8 @@ export function abrir(api, raiz) {
       else { activaBarra(3); lanzarTuyo(); }
     } else if (S.turno === "cpu" && (S.fase === "espera" || S.fase === "carrera" || S.fase === "vuelo")) {
       if (K.dive) return;
-      const en = entrada(), gx = Math.abs(en.x) > 0.35 ? Math.sign(en.x) : 0, gy = en.y > 0.45 ? 2 : en.y < -0.45 ? 0 : 1;
-      K.dive = { t0: S.t, gx: gx, gy: gy, x0: K.x };
+      K.dive = { t0: S.t, gx: K.ax, gy: 1 + K.ay, x0: K.x };
+      au.golpe(0.3);
     }
   }
   function tecla(e, abajo) {
@@ -871,9 +875,9 @@ export function abrir(api, raiz) {
   /* ── Bucle ── */
   function figuraPortero(f, p, gx, gy, x0, t) {
     if (!f) return;
-    const e = easeOut(p), y = gy === 2 ? Math.sin(Math.PI * p) * 0.55 : gy === 1 ? Math.sin(Math.PI * p) * 0.12 : 0;
+    const e = easeOut(p), g = clamp(gy - 1, -1, 1), y = Math.sin(Math.PI * p) * (g > 0 ? 0.12 + 0.43 * g : 0.12 * (1 + g));
     f.raiz.position.x = lerp(x0, x0 + gx * 2.75, e); f.raiz.position.y = y;
-    f.raiz.rotation.z = -gx * e * (gy === 0 ? 1.45 : gy === 1 ? 1.2 : 1.0);
+    f.raiz.rotation.z = -gx * e * (g < 0 ? 1.2 - 0.25 * g : 1.2 - 0.2 * g);
     if (p <= 0.001) poseQuieto(f, t, true); else poseParada(f, p, gx, gy);
   }
   function ponCamara(dt, t) {
@@ -891,11 +895,11 @@ export function abrir(api, raiz) {
       let tilt = 0, dy = 0, dx = 0;
       if (K.dive) {
         const z = clamp((S.t - K.dive.t0) / DUR_PARADA, 0, 1), e = easeOut(z);
-        tilt = -K.dive.gx * e * 0.55; dy = (K.dive.gy === 2 ? Math.sin(Math.PI * z) * 0.35 : K.dive.gy === 0 ? -e * 0.85 : -e * 0.35); dx = K.dive.gx * 2.75 * e;
+        const gg = clamp(K.dive.gy - 1, -1, 1); tilt = -K.dive.gx * e * 0.55; dy = gg > 0 ? Math.sin(Math.PI * z) * 0.35 * gg : gg * 0.85 * e - 0.2 * e * (1 + gg); dx = K.dive.gx * 2.75 * e;
         E.manos.position.set(0, 0, 0);
       }
       const px = K.x + dx;
-      c.position.set(px * 0.92, 1.72 + dy, -0.35); mira.set(px * 0.35 + (K.dive ? K.dive.gx * 0.4 : 0), 1.15 + (K.dive && K.dive.gy === 2 ? 0.5 : 0), SPOT);
+      c.position.set(px * 0.92, 1.72 + dy, -0.35); mira.set(px * 0.35 + (K.dive ? K.dive.gx * 0.4 : K.ax * 0.5), 1.15 + (K.dive ? Math.max(0, K.dive.gy - 1) * 0.5 : K.ay * 0.18), SPOT);
       c.fov = 58; fx = tilt;
     }
     if (reducido) S.shake = 0;
@@ -905,8 +909,8 @@ export function abrir(api, raiz) {
     c.updateProjectionMatrix();
     /* guantes */
     if (S.turno === "cpu") {
-      const z = K.dive ? clamp((S.t - K.dive.t0) / DUR_PARADA, 0, 1) : 0, e = easeOut(z), gx = K.dive ? K.dive.gx : 0, gy = K.dive ? K.dive.gy : 1;
-      const alz = gy === 2 ? 0.55 : gy === 1 ? 0.18 : -0.18;
+      const z = K.dive ? clamp((S.t - K.dive.t0) / DUR_PARADA, 0, 1) : 0, e = easeOut(z), gx = K.dive ? K.dive.gx : K.ax * 0.5, gy = K.dive ? K.dive.gy : 1 + K.ay * 0.5;
+      const alz = lerp(-0.18, 0.55, clamp(gy / 2, 0, 1));
       E.mI.position.set(-0.38 + gx * e * 0.22, -0.52 + e * (0.55 + alz) + Math.sin(t * 2) * 0.01, -0.85 + e * -0.35);
       E.mD.position.set(0.38 + gx * e * 0.22, -0.52 + e * (0.55 + alz) + Math.sin(t * 2.2) * 0.01, -0.85 + e * -0.35);
       E.mI.rotation.set(0.45 - e * 0.5, 0, gx * e * 0.3 - 0.12 * (1 - e)); E.mD.rotation.set(0.45 - e * 0.5, 0, gx * e * 0.3 + 0.12 * (1 - e));
@@ -931,7 +935,8 @@ export function abrir(api, raiz) {
 
     /* movimiento del portero (tú) */
     if (S.turno === "cpu" && !K.dive && (S.fase === "espera" || S.fase === "carrera" || S.fase === "vuelo")) {
-      K.x = clamp(K.x + entrada().x * 3.6 * dt, -3.3, 3.3);
+      const en = entrada(), dz = (v) => Math.abs(v) < 0.12 ? 0 : v, k = Math.min(1, dt * 12);
+      K.ax += (dz(en.x) - K.ax) * k; K.ay += (dz(en.y) - K.ay) * k;
     }
 
     /* fases */
@@ -1021,7 +1026,14 @@ export function abrir(api, raiz) {
     E.espera.forEach(function (f, i) { poseQuieto(f, T + i, false); });
     poseQuieto(E.arbitro, T, false);
     /* radar del portero */
-    if (S.turno === "cpu") { const r = $("[data-radar]"); if (r) r.style.left = ((K.x / HW) * 46 + 50).toFixed(1) + "%"; }
+    if (S.turno === "cpu") {
+      const m = $("[data-mira]");
+      if (m) {
+        const gx = K.dive ? K.dive.gx : K.ax, gy = K.dive ? K.dive.gy - 1 : K.ay;
+        m.style.left = (50 + gx * 42).toFixed(1) + "%"; m.style.top = (50 - gy * 38).toFixed(1) + "%";
+        m.parentNode.classList.toggle("lock", !!K.dive);
+      }
+    }
     ponCamara(dt, T);
     E.renderer.render(E.scene, E.camara);
   }
