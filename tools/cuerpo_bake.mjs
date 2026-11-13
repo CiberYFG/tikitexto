@@ -59,7 +59,7 @@ function crear(cfg) {
 
   /* tronco */
   E(FB, H.cadera, R.SHORT, [0, 0.985, -0.004], [0.15, 0.115, 0.104], { clip: [ymenos(1.085)], tela: 1 });
-  [-1, 1].forEach((s) => E(FB, H.cadera, R.SHORT, [s * 0.062, 0.945, -0.04], [0.062, 0.072, 0.06], { tela: 1 }));
+  E(FB, H.cadera, R.SHORT, [0, 0.93, -0.046], [0.132, 0.078, 0.056], { tela: 1 });
   E(FB, H.torso, R.CAMISA, [0, 1.13, -0.002], [0.14, 0.15, 0.092], { clip: [ypos(1.04)], tela: 1, bias: -0.004 });
   E(FB, H.torso, R.CAMISA, [0, 1.31, -0.006], [0.176, 0.185, 0.1], { tela: 1, bias: -0.004 });
   E(FB, H.torso, R.CAMISA, [0, 1.445, -0.012], [0.182, 0.08, 0.092], { tela: 1, bias: -0.004 });
@@ -83,7 +83,6 @@ function crear(cfg) {
   E(FB, H.cabeza, R.LABIO, [0, 1.676, 0.093], [0.027, 0.009, 0.014], { bias: -0.001 });
   [-1, 1].forEach((s) => {
     E(FB, H.cabeza, R.PIEL, [s * 0.015, 1.708, 0.098], [0.011, 0.011, 0.011]);
-    E(FB, H.cabeza, R.PIEL, [s * 0.05, 1.695, 0.05], [0.02, 0.026, 0.02]);
     E(FB, H.cabeza, R.PIEL, [s * 0.079, 1.74, -0.004], [0.011, 0.028, 0.02]);
   });
   E(FB, H.cabeza, R.PELO, [0, 1.775, -0.012], [0.092 + cfg.pelo, 0.112 + cfg.pelo, 0.106 + cfg.pelo], { clip: [{ n: [0, -0.625, 0.78], c: -1.125 }], bias: -0.002 });

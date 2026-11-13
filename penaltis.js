@@ -320,13 +320,55 @@ function crearEscena(canvas, movil, nombre) {
 
   /* guantes en primera persona (cuando paras tú) */
   const manos = new THREE.Group(); manos.visible = false; camara.add(manos);
-  const gmat = new THREE.MeshStandardMaterial({ color: 0xe8ff3a, roughness: 0.55 }), mmat = new THREE.MeshStandardMaterial({ color: 0x1fb86a, roughness: 0.8 });
+  /* Guantes de portero en primera persona: palma con relieve, 4 dedos de 3 falanges, pulgar de 2, almohadilla, correa de velcro y manga */
+  const texGuante = (dorso) => {
+    const c = document.createElement("canvas"); c.width = 256; c.height = 256; const g = c.getContext("2d");
+    if (dorso) {
+      const gr = g.createLinearGradient(0, 0, 0, 256); gr.addColorStop(0, "#f4ff5a"); gr.addColorStop(1, "#c4ee1a"); g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
+      g.fillStyle = "#0e1d36"; for (let i = 0; i < 4; i++) { g.beginPath(); g.moveTo(40 + i * 48, 250); g.lineTo(52 + i * 48, 120); g.lineTo(64 + i * 48, 250); g.fill(); }
+      g.strokeStyle = "rgba(10,20,40,.7)"; g.lineWidth = 4; g.strokeRect(14, 14, 228, 228);
+      g.fillStyle = "rgba(255,255,255,.9)"; g.font = "900 34px system-ui"; g.textAlign = "center"; g.fillText("TIKI", 128, 60);
+    } else {
+      g.fillStyle = "#f2f2ee"; g.fillRect(0, 0, 256, 256); g.strokeStyle = "rgba(0,0,0,.14)"; g.lineWidth = 2;
+      for (let y = 0; y < 256; y += 10) { g.beginPath(); g.moveTo(0, y); g.lineTo(256, y); g.stroke(); }
+    }
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
+  };
+  const mDorso = new THREE.MeshStandardMaterial({ map: texGuante(true), roughness: 0.62, metalness: 0.02 });
+  const mLatex = new THREE.MeshStandardMaterial({ color: 0xf2f2ee, roughness: 0.9 });
+  const mOscuro = new THREE.MeshStandardMaterial({ color: 0x0e1d36, roughness: 0.7 });
+  const mVelcro = new THREE.MeshStandardMaterial({ color: 0xdfe6ee, roughness: 1 });
+  const mmat = new THREE.MeshStandardMaterial({ color: 0x1fb86a, roughness: 0.8 });
   const mano = (lado) => {
     const g = new THREE.Group();
-    const palma = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 12), gmat); palma.scale.set(1, 1.15, 0.6); g.add(palma);
-    for (let i = 0; i < 4; i++) { const d = new THREE.Mesh(new THREE.CapsuleGeometry(0.02, 0.09, 4, 8), gmat); d.position.set(-0.07 + i * 0.047, 0.15, 0); d.rotation.z = (i - 1.5) * -0.12; g.add(d); }
-    const pulgar = new THREE.Mesh(new THREE.CapsuleGeometry(0.022, 0.08, 4, 8), gmat); pulgar.position.set(lado * -0.12, 0.04, 0); pulgar.rotation.z = lado * 0.9; g.add(pulgar);
-    const brazo = new THREE.Mesh(new THREE.CapsuleGeometry(0.05, 0.5, 6, 12), mmat); brazo.position.set(0, -0.38, 0.0); g.add(brazo);
+    const sh = new THREE.Shape(), w = 0.095, h = 0.1, r = 0.03;
+    sh.moveTo(-w + r, -h); sh.lineTo(w - r, -h); sh.quadraticCurveTo(w, -h, w, -h + r); sh.lineTo(w, h - r); sh.quadraticCurveTo(w, h, w - r, h); sh.lineTo(-w + r, h); sh.quadraticCurveTo(-w, h, -w, h - r); sh.lineTo(-w, -h + r); sh.quadraticCurveTo(-w, -h, -w + r, -h);
+    const palma = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 0.035, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 5, curveSegments: 10 }), [mDorso, mDorso]);
+    palma.position.z = -0.0175; g.add(palma);
+    const cara = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.21), new THREE.MeshStandardMaterial({ map: texGuante(false), roughness: 0.9 })); cara.position.z = -0.0565; cara.rotation.y = Math.PI; g.add(cara);
+    const dedo = (x, largo, rad, curv, abre) => {
+      const raiz = new THREE.Group(); raiz.position.set(x, h - 0.005, 0); raiz.rotation.z = abre; g.add(raiz);
+      let padre = raiz; const frac = [0.45, 0.32, 0.23];
+      for (let i = 0; i < 3; i++) {
+        const L = largo * frac[i], rr = rad * (1 - i * 0.08), art = new THREE.Group(); art.rotation.x = -curv * (0.5 + i * 0.5); padre.add(art);
+        const seg = new THREE.Mesh(new THREE.CapsuleGeometry(rr, L - rr * 0.6, 6, 14), i === 2 ? mDorso : mDorso); seg.scale.set(1, 1, 0.82); seg.position.y = L / 2; art.add(seg);
+        const dorso = new THREE.Mesh(new THREE.BoxGeometry(rr * 0.8, L * 0.8, 0.004), mOscuro); dorso.position.set(0, L / 2, rr * 0.8); art.add(dorso);
+        const pul = new THREE.Mesh(new THREE.CapsuleGeometry(rr * 0.82, L * 0.7, 4, 10), mLatex); pul.scale.set(1, 1, 0.5); pul.position.set(0, L / 2, -rr * 0.55); art.add(pul);
+        const n = new THREE.Group(); n.position.y = L; art.add(n); padre = n;
+      }
+    };
+    dedo(-0.07, 0.135, 0.0215, 0.28, 0.1); dedo(-0.023, 0.15, 0.0225, 0.24, 0.03); dedo(0.023, 0.14, 0.0215, 0.26, -0.04); dedo(0.068, 0.112, 0.019, 0.3, -0.13);
+    /* pulgar */
+    const pg = new THREE.Group(); pg.position.set(-lado * 0.09, -0.045, 0); pg.rotation.z = lado * 0.95; pg.rotation.y = lado * 0.25; g.add(pg);
+    [0.07, 0.055].forEach((L, i) => {
+      const art = new THREE.Group(); if (i) { art.position.y = 0.07; art.rotation.x = -0.35; } pg.add(art); if (i) { pg.add(art); }
+      const seg = new THREE.Mesh(new THREE.CapsuleGeometry(0.024 - i * 0.003, L, 6, 14), mDorso); seg.scale.set(1, 1, 0.85); seg.position.y = L / 2 + 0.01; art.add(seg);
+    });
+    /* muñeca: elástico + correa de velcro */
+    const cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.082, 0.07, 24), mOscuro); cuff.position.set(0, -0.135, 0); cuff.scale.z = 0.62; g.add(cuff);
+    const correa = new THREE.Mesh(new THREE.CylinderGeometry(0.081, 0.085, 0.05, 24, 1, true), mDorso); correa.position.set(0, -0.175, 0); correa.scale.z = 0.64; g.add(correa);
+    const vel = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.034, 0.008), mVelcro); vel.position.set(0, -0.175, 0.056); g.add(vel);
+    const brazo = new THREE.Mesh(new THREE.CylinderGeometry(0.068, 0.088, 0.55, 20), mmat); brazo.scale.z = 0.8; brazo.position.set(0, -0.5, 0); g.add(brazo);
     return g;
   };
   const mI = mano(-1), mD = mano(1); manos.add(mI, mD); manos.scale.setScalar(0.52);
@@ -415,10 +457,8 @@ const PLANTILLA = `
 <div class="pn-aviso" data-aviso></div>
 <div class="pn-barras" data-barras hidden>
   <div class="pn-bhead"><svg class="pn-logo" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 28 9v14l-12 7L4 23V9z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="16" cy="16" r="6" fill="none" stroke="#fff" stroke-width="1.4"/><path d="m16 12.6 3.2 2.3-1.2 3.8h-4l-1.2-3.8z" fill="#fff"/></svg><b>TIKI<i>TEXTO</i></b><small>3D</small></div>
-  <div class="pn-barra" data-barra="0"><span>Dirección</span><div class="pn-pista pn-pista--dir"><i></i><u></u></div></div>
-  <div class="pn-barra" data-barra="1"><span>Altura</span><div class="pn-pista pn-pista--alt"><i></i><u></u></div></div>
-  <div class="pn-barra" data-barra="2"><span>Fuerza</span><div class="pn-pista pn-pista--fza"><i></i><u></u></div></div>
-  <p class="pn-pista-txt"><span class="pn-solo-pc">Espacio o clic para parar cada barra</span><span class="pn-solo-tactil">Toca la pantalla para parar cada barra</span></p>
+  <div class="pn-barra" data-barra><span>Fuerza</span><div class="pn-pista pn-pista--fza"><i></i><u></u></div></div>
+  <p class="pn-pista-txt"><span class="pn-t-ap"><span class="pn-solo-pc">Haz clic en la portería para apuntar</span><span class="pn-solo-tactil">Toca la portería para apuntar</span></span><span class="pn-t-fz"><span class="pn-solo-pc">Clic o espacio: para en el verde</span><span class="pn-solo-tactil">Toca otra vez: para en el verde</span></span></p>
 </div>
 <div class="pn-por" data-por hidden>
   <div class="pn-cuad" data-cuad><button type="button" class="pn-celda" data-celda="0"><i>Q</i></button><button type="button" class="pn-celda" data-celda="1"><i>W</i></button><button type="button" class="pn-celda" data-celda="2"><i>E</i></button><button type="button" class="pn-celda" data-celda="3"><i>A</i></button><button type="button" class="pn-celda" data-celda="4"><i>S</i></button><button type="button" class="pn-celda" data-celda="5"><i>D</i></button></div>
@@ -433,7 +473,7 @@ const PLANTILLA = `
       <button type="button" data-dif="facil">Fácil</button><button type="button" data-dif="normal">Normal</button><button type="button" data-dif="dificil">Difícil</button><button type="button" data-dif="leyenda">Leyenda</button>
     </div>
     <ul class="pn-como">
-      <li><b>Cuando tiras</b><span>Para tres barras seguidas: dirección, altura y fuerza. Ojo: si te pasas de fuerza, la mandas a la grada.</span></li>
+      <li><b>Cuando tiras</b><span>Toca la portería para apuntar y para la barra de fuerza en el verde (muy estrecho). Fuera del verde el tiro se desvía.</span></li>
       <li><b>Cuando paras</b><span>Elige uno de los 6 cuadrantes de la portería (toca la zona o pulsa Q W E / A S D). Si el balón va a ese cuadrante, la paras. Fíjate en la carrerilla del rival: puede delatar a dónde tira.</span></li>
     </ul>
     <p class="pn-rec" data-rec></p>
@@ -496,8 +536,7 @@ export function abrir(api, raiz) {
     $("[data-rec]").textContent = d.gan || d.per ? "🏆 " + d.gan + " · " + d.per + " · ⚽ " + d.mejor : "";
     $$("[data-dif]").forEach(function (b) { b.classList.toggle("on", b.dataset.dif === S.dif); });
   }
-  function setBarra(i, v) { const b = $('[data-barra="' + i + '"] i'); if (b) b.style.left = (v * 100).toFixed(1) + "%"; }
-  function activaBarra(i) { $$("[data-barra]").forEach(function (b, k) { b.classList.toggle("on", k === i); b.classList.toggle("fija", k < i); }); }
+  function setBarra(i, v) { const b = $('[data-barra] i'); if (b) b.style.left = (v * 100).toFixed(1) + "%"; }
 
   /* ── Posiciones ── */
   const KICK0 = new THREE.Vector3(-0.9, 0, SPOT + 3.8);
@@ -519,10 +558,10 @@ export function abrir(api, raiz) {
     if (S.turno === "yo") {
       turnoTxt("Tu turno: ¡tira!");
       E.camara.fov = 50; E.camara.updateProjectionMatrix();
-      S.barI = 0; S.barF = [0, 0, 0]; S.barV = [0.5, 0.5, 0.5]; S.barT0 = S.t;
-      const D = DIF[S.dif]; S.barPh = [Math.random() * 2, Math.random() * 2, Math.random() * 2]; S.barVel = D.barras;
-      $$("[data-barra]").forEach(function (b) { b.classList.remove("on", "fija"); });
-      setTimeout(function () { if (vivo && S.fase === "espera" && S.turno === "yo") { S.fase = "barras"; S.tFase = S.t; S.barT0 = S.t; $("[data-barras]").hidden = false; activaBarra(0); E.retic.visible = true; au.pitido(); } }, 1100);
+      S.sub = "apuntar"; S.aim = null; S.hov = { x: 0, y: 1.3 }; S.barV = [0.5, 0.5, 0.0]; S.barT0 = S.t;
+      const D = DIF[S.dif]; S.barPh = Math.random() * 2; S.barVel = D.barras[2] * 0.85;
+      $("[data-barra]").classList.remove("on", "fija"); $("[data-barras]").classList.remove("fza");
+      setTimeout(function () { if (vivo && S.fase === "espera" && S.turno === "yo") { S.fase = "barras"; S.tFase = S.t; S.barT0 = S.t; $("[data-barras]").hidden = false; E.retic.visible = true; au.pitido(); } }, 1100);
     } else {
       turnoTxt("Turno del rival: ¡párala!");
       E.camara.fov = 58; E.camara.updateProjectionMatrix();
@@ -543,16 +582,30 @@ export function abrir(api, raiz) {
     }
     return { gx: gx, gy: gy };
   }
+  /* ¿el portero llegaría al balón con esa parada? (misma cuenta que resolver) */
+  function llegaP(gx, gy, tx, ty, T) {
+    if (!(Math.abs(tx) < HW - 0.1 && ty < GH - 0.1)) return false;
+    return dentroZona(zona(0, gx, gy, T - RETRASO_PORTERO, DIF[S.dif].mult), tx, ty);
+  }
   function lanzarTuyo() {
-    const d = S.barV[0] * 2 - 1, h = S.barV[1], p = S.barV[2];
-    let tx = d * 4.1, ty = h * 2.9;
-    const desv = 0.04 + Math.max(0, Math.abs(p - 0.76) - 0.14) * 1.4;
-    tx += (Math.random() - 0.5) * 2 * desv; ty += (Math.random() - 0.5) * 2 * desv * 0.7;
-    if (p > 0.93) ty += (p - 0.93) * 14;
-    const T = lerp(0.95, 0.46, clamp(p, 0, 1)) * (p < 0.2 ? 1.2 : 1);
-    const par = elegirParadaCpu(tx, ty), lado = tx < -1.3 ? -1 : tx > 1.3 ? 1 : 0;
+    /* apuntado con el toque (S.aim) + una sola barra de fuerza: verde al centro = tiro limpio */
+    const pos = S.barV[2], e = Math.abs(pos - 0.5) * 2;
+    let tx = S.aim.x, ty = S.aim.y;
+    const desv = e < 0.08 ? 0.03 : 0.03 + Math.pow(e - 0.08, 1.2) * 2.1;
+    const a = Math.random() * Math.PI * 2, r = Math.sqrt(Math.random()) * desv;
+    tx += Math.cos(a) * r; ty += Math.sin(a) * r * 0.75;
+    if (pos > 0.5) ty += (e - 0.5 > 0 ? (e - 0.5) * 1.6 : 0);
+    const p = clamp(0.25 + pos * 0.75, 0, 1);
+    const T = lerp(1.0, 0.5, clamp(p, 0, 1)) * (pos < 0.12 ? 1.2 : 1);
+    let par = elegirParadaCpu(tx, ty);
+    const lado = tx < -1.3 ? -1 : tx > 1.3 ? 1 : 0;
     S.hist[lado + 1]++;
-    S.tiro = { tx: tx, ty: Math.max(ty, RB), T: T, p: p, sag: 0.18 + clamp(ty, 0, 2.5) * 0.12, sw: (Math.random() - 0.5) * 0.5 * p, gx: par.gx, gy: par.gy, quien: "yo", panenka: false };
+    if (llegaP(par.gx, par.gy, tx, ty, T)) {
+      /* parada: el portero se lanza hasta el punto exacto donde llega el balón */
+      const gx2 = clamp(tx / 2.75, -1.45, 1.45), gy2 = ty <= 1.05 ? clamp((ty - EY[0]) / (EY[1] - EY[0]), 0, 1) : clamp(1 + (ty - EY[1]) / (EY[2] - EY[1]), 1, 2);
+      if (llegaP(gx2, gy2, tx, ty, T)) par = { gx: gx2, gy: gy2 };
+    }
+    S.tiro = { tx: tx, ty: Math.max(ty, RB), T: T, p: p, sag: 0.18 + clamp(ty, 0, 2.5) * 0.1, sw: (Math.random() - 0.5) * 0.3 * e, gx: par.gx, gy: par.gy, quien: "yo", panenka: false };
     S.fase = "carrera"; S.tFase = S.t; S.xs = rnd(-1.6, -0.4); E.retic.visible = false;
     $("[data-barras]").hidden = true; turnoTxt("");
   }
@@ -664,10 +717,23 @@ export function abrir(api, raiz) {
     au.iniciar();
     if (S.fase === "barras" && S.turno === "yo") {
       if (S.t - S.tFase < 0.25) return;
-      const i = S.barI; S.barF[i] = 1; au.golpe(0.2);
-      if (i < 2) { S.barI++; S.barT0 = S.t; activaBarra(S.barI); }
-      else { activaBarra(3); lanzarTuyo(); }
+      if (S.sub === "apuntar") { fijaApunte(S.hov); return; }
+      if (S.sub === "fuerza") { S.sub = "tirado"; $("[data-barra]").classList.add("fija"); au.golpe(0.2); lanzarTuyo(); }
     }
+  }
+  /* Apuntar: el toque se proyecta sobre el plano de la portería */
+  const rayo = new THREE.Raycaster(), ndc = new THREE.Vector2(), plano = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), pt = new THREE.Vector3();
+  function apunteDe(e) {
+    const r = E.renderer.domElement.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    E.camara.updateMatrixWorld(); rayo.setFromCamera(ndc, E.camara);
+    if (!rayo.ray.intersectPlane(plano, pt)) return null;
+    return { x: clamp(pt.x, -HW - 0.45, HW + 0.45), y: clamp(pt.y, 0.12, GH + 0.45) };
+  }
+  function fijaApunte(a) {
+    if (!a) return;
+    S.aim = { x: a.x, y: a.y }; S.sub = "fuerza"; S.barT0 = S.t; au.golpe(0.2);
+    $("[data-barra]").classList.add("on"); $("[data-barras]").classList.add("fza");
   }
   /* Portero: 6 cuadrantes (arriba/abajo × izquierda/centro/derecha, tal como los ves) */
   function elegirCelda(n) {
@@ -694,7 +760,13 @@ export function abrir(api, raiz) {
     const ce = e.target.closest ? e.target.closest("[data-celda]") : null;
     if (ce) { elegirCelda(+ce.dataset.celda); e.preventDefault(); return; }
     if (e.target.closest && e.target.closest("[data-menu], [data-fin], .pn-cab")) return;
-    if (S.turno === "yo") accion();
+    if (S.turno === "yo") {
+      if (S.fase === "barras" && S.sub === "apuntar" && S.t - S.tFase >= 0.25) { const a = apunteDe(e); if (a) { S.hov = a; fijaApunte(a); } }
+      else accion();
+    }
+  });
+  raiz.addEventListener("pointermove", function (e) {
+    if (S.fase === "barras" && S.sub === "apuntar" && e.pointerType !== "touch") { const a = apunteDe(e); if (a) S.hov = a; }
   });
   raiz.addEventListener("click", function (e) {
     const b = e.target.closest ? e.target.closest("[data-pn], [data-dif]") : null; if (!b) return;
@@ -760,7 +832,7 @@ export function abrir(api, raiz) {
       const alz = lerp(-0.18, 0.55, clamp(gy / 2, 0, 1));
       E.mI.position.set(-0.38 + gx * e * 0.22, -0.52 + e * (0.55 + alz) + Math.sin(t * 2) * 0.01, -0.85 + e * -0.35);
       E.mD.position.set(0.38 + gx * e * 0.22, -0.52 + e * (0.55 + alz) + Math.sin(t * 2.2) * 0.01, -0.85 + e * -0.35);
-      E.mI.rotation.set(0.45 - e * 0.5, 0, gx * e * 0.3 - 0.12 * (1 - e)); E.mD.rotation.set(0.45 - e * 0.5, 0, gx * e * 0.3 + 0.12 * (1 - e));
+      E.mI.rotation.set(-0.25 - e * 0.15, 0, gx * e * 0.3 - 0.12 * (1 - e)); E.mD.rotation.set(-0.25 - e * 0.15, 0, gx * e * 0.3 + 0.12 * (1 - e));
     }
   }
   function paso(ahora) {
@@ -791,11 +863,15 @@ export function abrir(api, raiz) {
     if (S.fase === "barras") {
       if (S.kick) poseQuieto(S.kick, T, false);
       if (S.port) poseQuieto(S.port, T, true);
-      for (let i = 0; i <= S.barI; i++) { if (!S.barF[i]) { S.barV[i] = tri((T - S.barT0) * S.barVel[i] + S.barPh[i]); } }
-      for (let i = 0; i < 3; i++) setBarra(i, S.barV[i]);
-      const d = S.barV[0] * 2 - 1, h = S.barI >= 1 ? S.barV[1] : 0.42;
-      E.retic.position.set(d * 4.1, Math.max(0.12, h * 2.9), 0.12); E.retic.visible = true;
-      const col = Math.abs(d * 4.1) > HW - 0.1 || h * 2.9 > GH - 0.1 ? 0xff5a6a : 0xffdd33;
+      const ap = S.sub === "apuntar" ? S.hov : S.aim || S.hov;
+      if (S.sub === "fuerza") {
+        /* marcador no lineal: rapidísimo en el centro (verde), lento en los extremos (rojo) */
+        const sg = tri((T - S.barT0) * S.barVel + S.barPh) * 2 - 1;
+        S.barV[2] = 0.5 + 0.5 * Math.sign(sg) * Math.pow(Math.abs(sg), 0.55);
+      }
+      setBarra(2, S.barV[2]);
+      E.retic.position.set(ap.x, ap.y, 0.12); E.retic.visible = true;
+      const col = S.sub === "apuntar" ? (Math.abs(ap.x) > HW - 0.1 || ap.y > GH - 0.1 ? 0xff5a6a : 0xffdd33) : 0x19e6ff;
       E.retic.children[0].material.color.setHex(col);
       E.retic.scale.setScalar(1 + Math.sin(T * 8) * 0.06);
     }
