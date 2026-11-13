@@ -44,6 +44,12 @@ META = {
     "estilos-de-juego-en-el-futbol-posesion-contraataque-y-presion": dict(c=("#be123c", "#fda4af"), e="🧠"),
     "primera-vez-en-un-estadio-de-futbol-guia-practica-para-aficionados": dict(c=("#15803d", "#86efac"), e="🎟️"),
     "cultura-de-grada-canticos-penas-y-rituales-del-aficionado": dict(c=("#c2410c", "#fdba74"), e="📣"),
+    "que-hace-un-entrenador-de-futbol-funciones-y-cuerpo-tecnico": dict(c=("#1d4ed8", "#93c5fd"), e="📋"),
+    "calendario-del-futbol-temporadas-ventanas-de-fichajes-y-fechas-fifa": dict(c=("#0e7490", "#67e8f9"), e="📅"),
+    "historia-de-la-champions-league-de-la-copa-de-europa-a-hoy": dict(c=("#1e3a8a", "#93c5fd"), e="⭐"),
+    "tecnologia-en-el-futbol-linea-de-gol-balon-con-sensor-y-fuera-de-juego-semiautomatico": dict(c=("#4338ca", "#a5b4fc"), e="📡"),
+    "balon-parado-en-el-futbol-corners-faltas-y-jugadas-ensayadas": dict(c=("#b45309", "#fcd34d"), e="🚩"),
+    "psicologia-del-futbolista-presion-confianza-y-penaltis": dict(c=("#be185d", "#f9a8d4"), e="🧠"),
 }
 def meta(slug):
     return META.get(slug, dict(c=("#1747d6", "#6b9bff"), e="📖"))
@@ -65,6 +71,9 @@ CATS = [
         'posiciones-del-futbol-que-hace-cada-jugador',
         'formaciones-tacticas-442-433-explicadas',
         'estilos-de-juego-en-el-futbol-posesion-contraataque-y-presion',
+        'balon-parado-en-el-futbol-corners-faltas-y-jugadas-ensayadas',
+        'psicologia-del-futbolista-presion-confianza-y-penaltis',
+        'tecnologia-en-el-futbol-linea-de-gol-balon-con-sensor-y-fuera-de-juego-semiautomatico',
         'fundamentos-tecnicos-del-futbol-control-pase-regate-y-tiro',
         'como-leer-las-estadisticas-de-un-partido',
         'que-son-los-goles-esperados-xg',
@@ -89,6 +98,7 @@ CATS = [
         'champions-europa-league-conference-league-diferencias',
         'derbis-y-rivalidades-mas-famosas-del-futbol',
         'historia-del-futbol-femenino-de-los-origenes-a-hoy',
+        'historia-de-la-champions-league-de-la-copa-de-europa-a-hoy',
     ]),
     ('clubes', '🏟️', 'Clubes, fichajes y estadios', 'Cómo funciona un club, los traspasos, la cantera, el control económico, los estadios y la afición.', '#ea580c', [
         'sentencia-bosman-clausulas-de-rescision-y-traspasos',
@@ -100,6 +110,8 @@ CATS = [
         'primera-vez-en-un-estadio-de-futbol-guia-practica-para-aficionados',
         'cultura-de-grada-canticos-penas-y-rituales-del-aficionado',
         'como-organizar-un-torneo-de-futbol-con-amigos-formatos-y-calendario',
+        'que-hace-un-entrenador-de-futbol-funciones-y-cuerpo-tecnico',
+        'calendario-del-futbol-temporadas-ventanas-de-fichajes-y-fechas-fifa',
     ]),
     ('juego', '🎮', 'Juega mejor a TIKITEXTO', 'Estadística propia de las letras y trucos para adivinar el futbolista en 6 intentos.', '#16a34a', [
         'letras-mas-frecuentes-nombres-futbolistas',
@@ -109,5 +121,5 @@ CATS = [
 
 def todos():
     """Todos los artículos (dicts) en orden de publicación."""
-    import articulos_a, articulos_b, articulos_c, articulos_d, articulos_e, articulos_f, articulos_g, articulos_h
-    return (articulos_a.ARTICULOS_A + articulos_b.ARTICULOS_B + articulos_c.ARTICULOS_C + articulos_d.ARTICULOS_D + articulos_e.ARTICULOS_E + articulos_f.ARTICULOS_F + articulos_g.ARTICULOS_G + articulos_h.ARTICULOS_H)
+    import articulos_a, articulos_b, articulos_c, articulos_d, articulos_e, articulos_f, articulos_g, articulos_h, articulos_i
+    return (articulos_a.ARTICULOS_A + articulos_b.ARTICULOS_B + articulos_c.ARTICULOS_C + articulos_d.ARTICULOS_D + articulos_e.ARTICULOS_E + articulos_f.ARTICULOS_F + articulos_g.ARTICULOS_G + articulos_h.ARTICULOS_H + articulos_i.ARTICULOS_I)

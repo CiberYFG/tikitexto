@@ -767,7 +767,7 @@ with sync_playwright() as p:
         check("curiosidades: al pulsar el tema se ven sus categorías", pv.locator("details.tema[open] details.tema").count() == 6)
         pv.goto(BASE + "articulos/", wait_until="networkidle", timeout=60000)
         n_art = pv.evaluate("document.querySelectorAll('details.tema a.tarjeta').length")
-        check("articulos: 43 artículos agrupados en 6 temas", n_art == 43 and pv.locator("details.tema").count() == 6, str(n_art))
+        check("articulos: 49 artículos agrupados en 6 temas", n_art == 49 and pv.locator("details.tema").count() == 6, str(n_art))
         check("temas/buscador: sin errores de JavaScript", not errs_v, "; ".join(errs_v)[:150])
         cv.close()
     except Exception as e:
