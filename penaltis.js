@@ -5,7 +5,7 @@ import * as THREE from "./lib/three.module.min.js";
 import { cargarCuerpos, crearFigura } from "./penaltis_cuerpo.js";
 
 /* Los cuerpos (lib/cuerpo/*.bin) se descargan antes de abrir el juego */
-export function precargar() { return cargarCuerpos(["jugador", "portero", "jugador-lo"]); }
+export function precargar() { return cargarCuerpos(["jugador", "portero"]); }
 
 /* ───────── Medidas (metros). Portería en z = 0; el punto de penalti en z = 11 ───────── */
 const GW = 7.32, GH = 2.44, HW = GW / 2, SPOT = 11, DEPTH = 2.0, RB = 0.11;
@@ -129,67 +129,116 @@ function texBrillo() {
   return new THREE.CanvasTexture(c);
 }
 
+/* Convenciones del esqueleto (el cuerpo mira a +z; I = x negativa, D = x positiva):
+   hombro s.rotation.x < 0 sube el brazo por delante · brazos(f, a) los separa del cuerpo · codo e.rotation.x < 0 lo dobla
+   cadera h.rotation.x < 0 adelanta el muslo · rodilla k.rotation.x > 0 la dobla · pie f.rotation.x > 0 estira el empeine */
+const L_MUSLO = 0.402, L_PIERNA = 0.399, H_TOBILLO = 0.119;
 function poseBase(f) {
   f.cadera.position.y = 0.95; f.cadera.rotation.set(0, 0, 0); f.torso.rotation.set(0, 0, 0); f.cabeza.rotation.set(0, 0, 0);
-  [f.brI, f.brD].forEach(function (b) { b.s.rotation.set(0, 0, 0); b.e.rotation.set(0, 0, 0); });
-  [f.pI, f.pD].forEach(function (p) { p.h.rotation.set(0, 0, 0); p.k.rotation.set(0, 0, 0); });
+  [f.brI, f.brD].forEach(function (b) { b.s.rotation.set(0, 0, 0); b.e.rotation.set(0, 0, 0); b.m.rotation.set(0, 0, 0); });
+  [f.pI, f.pD].forEach(function (p) { p.h.rotation.set(0, 0, 0); p.k.rotation.set(0, 0, 0); p.f.rotation.set(0, 0, 0); });
 }
-/* Quieto, con respiración */
+function brazos(f, a) { f.brI.s.rotation.z = -a; f.brD.s.rotation.z = a; }
+function piernas(f, a) { f.pI.h.rotation.z = -a; f.pD.h.rotation.z = a; }
+/* Apoya en el césped la pierna que llega más abajo (más «salto») y deja plano el pie que pisa */
+function apoya(f, salto) {
+  let mx = 0;
+  [f.pI, f.pD].forEach(function (p) {
+    const a = p.h.rotation.x, b = a + p.k.rotation.x;
+    p.d = (L_MUSLO * Math.cos(a) + L_PIERNA * Math.cos(b)) * Math.cos(p.h.rotation.z); if (p.d > mx) mx = p.d;
+  });
+  f.cadera.position.y = mx + H_TOBILLO + 0.03 + (salto || 0);
+  [f.pI, f.pD].forEach(function (p) { if (mx - p.d < 0.035 && !(salto > 0.04)) { p.f.rotation.x = -(p.h.rotation.x + p.k.rotation.x); p.f.rotation.z = -p.h.rotation.z; } });
+}
+/* Quieto, con respiración. activo = portero preparado (flexionado, manos abiertas por delante) */
 function poseQuieto(f, t, activo) {
   poseBase(f);
-  const r = Math.sin(t * 2.2) * 0.012;
-  f.torso.rotation.x = r; f.cabeza.rotation.y = Math.sin(t * 0.7) * 0.15;
-  f.brI.s.rotation.z = 0.12; f.brD.s.rotation.z = -0.12; f.brI.e.rotation.x = -0.25; f.brD.e.rotation.x = -0.25;
-  if (activo) {
-    f.cadera.position.y = 0.9; f.pI.h.rotation.x = -0.28; f.pD.h.rotation.x = -0.28; f.pI.k.rotation.x = 0.55; f.pD.k.rotation.x = 0.55;
-    f.torso.rotation.x = 0.12; f.brI.s.rotation.z = 0.7; f.brD.s.rotation.z = -0.7; f.brI.s.rotation.x = -0.4; f.brD.s.rotation.x = -0.4;
+  const r = Math.sin(t * 2.2);
+  if (!activo) {
+    f.torso.rotation.x = 0.03 + r * 0.012; f.cabeza.rotation.y = Math.sin(t * 0.7) * 0.2; f.cabeza.rotation.x = 0.02;
+    brazos(f, 0.06 + r * 0.008); f.brI.e.rotation.x = -0.24; f.brD.e.rotation.x = -0.28;
+    f.brI.s.rotation.x = 0.05 * Math.sin(t * 0.9); f.brD.s.rotation.x = -0.05 * Math.sin(t * 0.9);
+    piernas(f, 0.035); f.pI.h.rotation.x = -0.05; f.pI.k.rotation.x = 0.1; f.pD.h.rotation.x = -0.02; f.pD.k.rotation.x = 0.04;
+    f.cadera.rotation.y = 0.05; apoya(f);
+    return;
   }
+  const b = Math.sin(t * 5.2) * 0.035;
+  piernas(f, 0.24);
+  f.pI.h.rotation.x = -0.52 + b; f.pD.h.rotation.x = -0.52 - b; f.pI.k.rotation.x = 0.9 - b * 1.5; f.pD.k.rotation.x = 0.9 + b * 1.5;
+  f.torso.rotation.x = 0.3 + r * 0.01; f.cabeza.rotation.x = -0.24;
+  brazos(f, 0.55); f.brI.s.rotation.x = -0.5; f.brD.s.rotation.x = -0.5; f.brI.e.rotation.x = -1.05; f.brD.e.rotation.x = -1.05;
+  f.brI.m.rotation.x = -0.25; f.brD.m.rotation.x = -0.25;
+  apoya(f);
 }
-/* Carrerilla: fase 0..1 con zancadas; el último tramo arma la pierna */
+/* Carrerilla: fase 0..1 con zancadas; brazo contrario a cada pierna */
 function poseCarrera(f, fase, ciclo) {
   poseBase(f);
-  const a = Math.sin(ciclo), b = Math.sin(ciclo + Math.PI), amp = 0.75 * (1 - 0.35 * fase);
-  f.pI.h.rotation.x = -a * amp; f.pD.h.rotation.x = -b * amp;
-  f.pI.k.rotation.x = Math.max(0, a) * 1.1 + 0.1; f.pD.k.rotation.x = Math.max(0, b) * 1.1 + 0.1;
-  f.brI.s.rotation.x = b * 0.7; f.brD.s.rotation.x = a * 0.7; f.brI.e.rotation.x = -0.7; f.brD.e.rotation.x = -0.7;
-  f.torso.rotation.x = 0.16; f.cadera.position.y = 0.93 + Math.abs(Math.sin(ciclo)) * 0.03;
+  const amp = 0.82 * (1 - 0.3 * fase);
+  [[f.pI, ciclo, f.brD], [f.pD, ciclo + Math.PI, f.brI]].forEach(function (q) {
+    const p = q[0], s = Math.sin(q[1]), c = Math.cos(q[1]), br = q[2];
+    p.h.rotation.x = -s * amp - 0.08;
+    p.k.rotation.x = 0.22 + Math.max(0, c) * 1.15 + Math.max(0, -s) * 0.35;
+    p.f.rotation.x = 0.35;
+    br.s.rotation.x = -s * 0.8 + 0.1; br.e.rotation.x = -1.35 - s * 0.25;
+  });
+  brazos(f, 0.14);
+  f.torso.rotation.x = 0.22; f.torso.rotation.y = Math.sin(ciclo) * 0.14; f.cabeza.rotation.x = -0.12;
+  apoya(f, 0.012 + Math.abs(Math.cos(ciclo)) * 0.02);
 }
-/* Golpeo con la pierna derecha: k = 0..1 (0 = pierna atrás, 0.55 = contacto, 1 = acompañamiento) */
+/* Golpeo con la pierna D: k = 0..1 (0 = arma la pierna, 0.55 = contacto, 1 = acompañamiento) */
 function poseGolpeo(f, k) {
   poseBase(f);
-  const atras = clamp(k / 0.5, 0, 1), fuerza = clamp((k - 0.4) / 0.25, 0, 1), sigue = clamp((k - 0.62) / 0.38, 0, 1);
-  f.pD.h.rotation.x = lerp(0.2, 0.95, easeOut(atras)) - fuerza * 2.0 - sigue * 0.3;
-  f.pD.k.rotation.x = lerp(0.3, 1.5, atras) - fuerza * 1.4 + sigue * 0.5;
-  f.pI.h.rotation.x = -0.25; f.pI.k.rotation.x = 0.35;
-  f.cadera.position.y = 0.92;
-  f.torso.rotation.x = 0.08 + fuerza * 0.28; f.torso.rotation.y = -0.2 * fuerza;
-  f.brI.s.rotation.z = 0.9; f.brD.s.rotation.z = -0.9; f.brI.s.rotation.x = -0.2; f.brD.s.rotation.x = 0.2;
+  const a = easeOut(clamp(k / 0.45, 0, 1)), gg = clamp((k - 0.42) / 0.2, 0, 1), g = gg * gg * (3 - 2 * gg), sigue = clamp((k - 0.62) / 0.38, 0, 1);
+  f.pD.h.rotation.x = lerp(0.1, 0.78, a) - g * 1.7 - sigue * 0.42;
+  f.pD.k.rotation.x = lerp(0.3, 1.6, a) * (1 - g) + g * 0.1 + sigue * 0.3;
+  f.pD.f.rotation.x = 0.6; f.pD.h.rotation.z = 0.1 * a;
+  f.pI.h.rotation.x = -0.34 + g * 0.14; f.pI.k.rotation.x = 0.55 - sigue * 0.25; f.pI.h.rotation.z = -0.06;
+  f.torso.rotation.x = lerp(0.06, -0.1, a) + g * 0.4 - sigue * 0.12; f.torso.rotation.y = lerp(0, 0.38, a) - g * 0.7; f.torso.rotation.z = 0.14 * a - sigue * 0.06;
+  f.cabeza.rotation.x = 0.28 - sigue * 0.2; f.cabeza.rotation.y = -(lerp(0, 0.3, a) - g * 0.5);
+  /* el brazo contrario (I) se abre para equilibrar y cruza al golpear; el del lado de golpeo (D) va atrás */
+  f.brI.s.rotation.z = -(lerp(0.3, 1.3, a) - g * 0.55); f.brI.s.rotation.x = lerp(0, 0.25, a) - g * 0.9; f.brI.e.rotation.x = -0.35 - g * 0.3;
+  f.brD.s.rotation.z = lerp(0.2, 0.5, a) + g * 0.25; f.brD.s.rotation.x = lerp(0, -0.35, a) + g * 1.0; f.brD.e.rotation.x = -0.5;
+  apoya(f);
 }
 function poseFesteja(f, t) {
   poseBase(f);
   const s = Math.abs(Math.sin(t * 6));
-  f.cadera.position.y = 0.95 + s * 0.18;
-  f.brI.s.rotation.x = -Math.PI * 0.92; f.brD.s.rotation.x = -Math.PI * 0.92; f.brI.s.rotation.z = 0.25; f.brD.s.rotation.z = -0.25;
-  f.pI.h.rotation.x = -0.1 - s * 0.3; f.pD.h.rotation.x = -0.1 - s * 0.3; f.pI.k.rotation.x = s * 0.5; f.pD.k.rotation.x = s * 0.5;
-  f.cabeza.rotation.x = -0.3;
+  brazos(f, 0.32); f.brI.s.rotation.x = -2.7 - s * 0.12; f.brD.s.rotation.x = -2.7 - s * 0.12; f.brI.e.rotation.x = -0.3; f.brD.e.rotation.x = -0.3;
+  f.pI.h.rotation.x = -0.12 - s * 0.3; f.pD.h.rotation.x = -0.12 - s * 0.3; f.pI.k.rotation.x = 0.25 + s * 0.55; f.pD.k.rotation.x = 0.25 + s * 0.55;
+  f.pI.f.rotation.x = 0.4 * s; f.pD.f.rotation.x = 0.4 * s; piernas(f, 0.06);
+  f.torso.rotation.x = -0.08; f.cabeza.rotation.x = -0.3;
+  apoya(f, s * 0.2);
 }
+/* Fallo: manos a la cabeza */
 function poseDerrota(f, t) {
   poseBase(f);
-  f.torso.rotation.x = 0.4; f.cabeza.rotation.x = 0.5; f.cadera.position.y = 0.93;
-  f.brI.s.rotation.x = 0.3; f.brD.s.rotation.x = 0.3; f.brI.e.rotation.x = -0.4; f.brD.e.rotation.x = -0.4;
-  f.pI.h.rotation.x = -0.1; f.pD.h.rotation.x = -0.1;
+  const r = Math.sin(t * 1.7) * 0.03;
+  f.torso.rotation.x = 0.16 + r; f.cabeza.rotation.x = 0.42;
+  brazos(f, 0.95); f.brI.s.rotation.x = -1.55; f.brD.s.rotation.x = -1.55; f.brI.e.rotation.x = -2.35; f.brD.e.rotation.x = -2.35;
+  piernas(f, 0.05); f.pI.h.rotation.x = -0.08; f.pI.k.rotation.x = 0.14; f.pD.h.rotation.x = -0.03; f.pD.k.rotation.x = 0.06;
+  apoya(f);
 }
-/* Portero: p = progreso del salto, gx lado (-1, 0, 1), gy altura (0 bajo, 1 medio, 2 alto) */
+/* Portero: p = progreso de la estirada, gx lado (−1..1), gy altura (0 bajo, 1 medio, 2 alto) */
 function poseParada(f, p, gx, gy) {
   poseBase(f);
-  const arriba = lerp(0.1, 1, clamp(gy / 2, 0, 1));
-  f.brI.s.rotation.x = -lerp(0.1, Math.PI * (0.55 + 0.4 * arriba), p); f.brD.s.rotation.x = f.brI.s.rotation.x;
-  f.brI.s.rotation.z = lerp(0.35, 0.12, p); f.brD.s.rotation.z = -f.brI.s.rotation.z;
-  f.pI.h.rotation.x = -lerp(0.2, 0.1, p); f.pD.h.rotation.x = -lerp(0.2, 0.1, p);
-  f.pI.k.rotation.x = lerp(0.35, 0.05, p); f.pD.k.rotation.x = lerp(0.35, 0.05, p);
-  f.cabeza.rotation.x = -0.15 * p;
-  if (Math.abs(gx) > 0.05) f.pI.h.rotation.z = gx * 0.15 * p, f.pD.h.rotation.z = gx * 0.25 * p;
+  const arriba = lerp(0.1, 1, clamp(gy / 2, 0, 1)), e = easeOut(clamp(p * 1.6, 0, 1)), lat = clamp(Math.abs(gx), 0, 1), sg = gx < 0 ? -1 : 1;
+  const sube = lerp(0.5, Math.PI * (0.52 + 0.42 * arriba), e);
+  f.brI.s.rotation.x = -sube; f.brD.s.rotation.x = -sube; brazos(f, lerp(0.55, 0.16, e));
+  f.brI.e.rotation.x = lerp(-1.05, -0.12, e); f.brD.e.rotation.x = lerp(-1.05, -0.12, e);
+  f.brI.m.rotation.x = -0.2; f.brD.m.rotation.x = -0.2;
+  f.torso.rotation.x = lerp(0.3, -0.06, e); f.cabeza.rotation.x = lerp(-0.24, -0.1 - 0.25 * arriba, e);
+  /* piernas: la del lado de la estirada empuja y se estira; la otra sube la rodilla */
+  const fl = lerp(0.52, 0.12, e), kn = lerp(0.9, 0.2, e);
+  f.pI.h.rotation.x = -fl; f.pD.h.rotation.x = -fl; f.pI.k.rotation.x = kn; f.pD.k.rotation.x = kn; piernas(f, lerp(0.24, 0.1, e));
+  if (lat > 0.05) {
+    const lejos = sg > 0 ? f.pI : f.pD, cerca = sg > 0 ? f.pD : f.pI;
+    lejos.h.rotation.x = -lerp(0.52, 0.75, e * lat); lejos.k.rotation.x = lerp(0.9, 1.05, e * lat);
+    cerca.h.rotation.z += sg * 0.16 * e * lat; lejos.h.rotation.z += sg * 0.3 * e * lat;
+    f.pI.f.rotation.x = 0.45 * e; f.pD.f.rotation.x = 0.45 * e;
+    f.cadera.position.y = 0.95;
+  } else apoya(f, 0);
 }
+export const POSES = { base: poseBase, quieto: poseQuieto, carrera: poseCarrera, golpeo: poseGolpeo, festeja: poseFesteja, derrota: poseDerrota, parada: poseParada };
 
 /* ───────── Escena: estadio nocturno ───────── */
 function crearEscena(canvas, movil, nombre) {
@@ -378,7 +427,7 @@ function crearEscena(canvas, movil, nombre) {
 
 /* ───────── Sonido (sintetizado; respeta el ajuste de sonido de la web) ───────── */
 function crearAudio(api) {
-  let ctx = null, ruido = null, amb = null, ambG = null;
+  let ctx = null, ruido = null, blanco = null, amb = null, ambG = null, ambV = 0, ambT = 0;
   function iniciar() {
     if (ctx) { if (ctx.state === "suspended") ctx.resume(); return; }
     try {
@@ -386,10 +435,20 @@ function crearAudio(api) {
       const n = ctx.sampleRate * 2, b = ctx.createBuffer(1, n, ctx.sampleRate), d = b.getChannelData(0); let l = 0;
       for (let i = 0; i < n; i++) { l = (l + 0.02 * (Math.random() * 2 - 1)) / 1.02; d[i] = l * 3.6; }
       ruido = b;
-      amb = ctx.createBufferSource(); amb.buffer = ruido; amb.loop = true;
-      const f = ctx.createBiquadFilter(); f.type = "bandpass"; f.frequency.value = 520; f.Q.value = 0.5;
-      ambG = ctx.createGain(); ambG.gain.value = 0; amb.connect(f); f.connect(ambG); ambG.connect(ctx.destination); amb.start();
-      const lfo = ctx.createOscillator(), lg = ctx.createGain(); lfo.frequency.value = 0.23; lg.gain.value = 120; lfo.connect(lg); lg.connect(f.frequency); lfo.start();
+      const nb = ctx.sampleRate, bb = ctx.createBuffer(1, nb, ctx.sampleRate), db = bb.getChannelData(0);
+      for (let i = 0; i < nb; i++) db[i] = Math.random() * 2 - 1;
+      blanco = bb;
+      /* grada: tres bandas de murmullo con vaivén propio + un coro grave; todo sale por ambG */
+      ambG = ctx.createGain(); ambG.gain.value = 0; ambG.connect(ctx.destination);
+      [[260, 0.6, 1.0, 0.11, 60], [620, 0.7, 0.8, 0.17, 150], [1350, 0.9, 0.42, 0.29, 320], [2600, 1.1, 0.16, 0.41, 500]].forEach(function (c, i) {
+        const src = ctx.createBufferSource(); src.buffer = ruido; src.loop = true; src.playbackRate.value = 0.8 + i * 0.17;
+        const f = ctx.createBiquadFilter(); f.type = "bandpass"; f.frequency.value = c[0]; f.Q.value = c[1];
+        const g = ctx.createGain(); g.gain.value = c[2];
+        const lfo = ctx.createOscillator(), lg = ctx.createGain(); lfo.frequency.value = c[3]; lg.gain.value = c[4]; lfo.connect(lg); lg.connect(f.frequency); lfo.start();
+        const l2 = ctx.createOscillator(), l2g = ctx.createGain(); l2.frequency.value = 0.07 + i * 0.045; l2g.gain.value = c[2] * 0.35; l2.connect(l2g); l2g.connect(g.gain); l2.start();
+        src.connect(f); f.connect(g); g.connect(ambG); src.start(0, Math.random() * 1.5);
+      });
+      amb = true;
     } catch (e) { ctx = null; }
   }
   const ok = () => ctx && api.sonido();
@@ -404,10 +463,51 @@ function crearAudio(api) {
     g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + Math.min(0.06, dur / 3)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
     s.connect(fl); fl.connect(g); g.connect(ctx.destination); s.start(t, Math.random()); s.stop(t + dur + 0.05);
   }
+  function chasquido(dur, vol, f, q) {
+    if (!ok()) return; const src = ctx.createBufferSource(), fl = ctx.createBiquadFilter(), g = ctx.createGain(), t = ctx.currentTime;
+    src.buffer = blanco; fl.type = "bandpass"; fl.frequency.value = f; fl.Q.value = q || 1;
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(fl); fl.connect(g); g.connect(ctx.destination); src.start(t, Math.random() * 0.5); src.stop(t + dur + 0.03);
+  }
+  /* la grada «vive»: de vez en cuando palmas a compás, un bombo o un «oooh» */
+  function palmas(n, paso, vol) {
+    if (!ok()) return; const t0 = ctx.currentTime;
+    for (let i = 0; i < n; i++) for (let k = 0; k < 3; k++) {
+      const src = ctx.createBufferSource(), fl = ctx.createBiquadFilter(), g = ctx.createGain(), t = t0 + i * paso + k * 0.012 + Math.random() * 0.01;
+      src.buffer = blanco; fl.type = "bandpass"; fl.frequency.value = 1100 + Math.random() * 900; fl.Q.value = 0.9;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.006); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+      src.connect(fl); fl.connect(g); g.connect(ctx.destination); src.start(t, Math.random() * 0.5); src.stop(t + 0.12);
+    }
+  }
+  function bombo(n, paso, vol) {
+    if (!ok()) return; const t0 = ctx.currentTime;
+    for (let i = 0; i < n; i++) { const o = ctx.createOscillator(), g = ctx.createGain(), t = t0 + i * paso; o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(48, t + 0.16); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22); o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + 0.25); }
+  }
+  function animar() {
+    if (!(ambV > 0)) return;
+    const r = Math.random(), v = Math.min(1, ambV / 0.4);
+    if (r < 0.4) palmas(6 + Math.floor(Math.random() * 5), 0.36, 0.05 * v);
+    else if (r < 0.65) { bombo(4, 0.5, 0.16 * v); palmas(4, 0.5, 0.04 * v); }
+    else if (r < 0.85) soplo(1.8, 0.3 * v, 480 + Math.random() * 250, "bandpass", 0.6);
+    else tono(2300 + Math.random() * 500, 0.5, 0.012 * v, "sine", 1900);
+    ambT = setTimeout(animar, 4500 + Math.random() * 6500);
+  }
   return {
     iniciar: iniciar,
-    ambiente: function (v) { if (ctx && ambG) ambG.gain.setTargetAtTime(api.sonido() ? v : 0, ctx.currentTime, 0.4); },
-    golpe: function (f) { tono(140 + f * 80, 0.16, 0.5, "sine", 55); soplo(0.1, 0.35, 900, "bandpass", 0.9); },
+    ambiente: function (v) {
+      ambV = v; clearTimeout(ambT);
+      if (ctx && ambG) ambG.gain.setTargetAtTime(api.sonido() ? v : 0, ctx.currentTime, 0.5);
+      if (v > 0) ambT = setTimeout(animar, 3500 + Math.random() * 4000);
+    },
+    /* sube la grada un momento (carrerilla) y vuelve a su nivel */
+    tension: function () { if (ctx && ambG && api.sonido() && ambV > 0) { const t = ctx.currentTime; ambG.gain.cancelScheduledValues(t); ambG.gain.setTargetAtTime(ambV * 1.9, t, 0.35); ambG.gain.setTargetAtTime(ambV, t + 1.6, 0.9); } },
+    clic: function () { tono(520, 0.07, 0.12, "sine", 380); },
+    /* chut: golpe seco de cuero (grave que cae + chasquido + aire) */
+    golpe: function (f) {
+      const p = 0.6 + (f || 0) * 0.5;
+      tono(190 + f * 70, 0.24, 0.95 * p, "sine", 42); tono(95, 0.18, 0.5 * p, "triangle", 38);
+      chasquido(0.05, 0.7 * p, 1700, 1.1); chasquido(0.025, 0.35 * p, 4200, 0.8); soplo(0.22, 0.22 * p, 520, "bandpass", 0.6);
+    },
     red: function () { soplo(0.55, 0.28, 2600, "highpass", 0.5); tono(90, 0.2, 0.18, "sine", 50); },
     poste: function () { tono(1150, 0.7, 0.3, "triangle", 1100); tono(760, 0.5, 0.18, "sine", 740); soplo(0.08, 0.3, 3000, "highpass"); },
     parada: function () { tono(120, 0.14, 0.45, "sine", 70); soplo(0.12, 0.35, 1400, "bandpass", 1.2); },
@@ -606,7 +706,7 @@ export function abrir(api, raiz) {
       if (llegaP(gx2, gy2, tx, ty, T)) par = { gx: gx2, gy: gy2 };
     }
     S.tiro = { tx: tx, ty: Math.max(ty, RB), T: T, p: p, sag: 0.18 + clamp(ty, 0, 2.5) * 0.1, sw: (Math.random() - 0.5) * 0.3 * e, gx: par.gx, gy: par.gy, quien: "yo", panenka: false };
-    S.fase = "carrera"; S.tFase = S.t; S.xs = rnd(-1.6, -0.4); E.retic.visible = false;
+    S.fase = "carrera"; S.tFase = S.t; S.xs = rnd(-1.6, -0.4); E.retic.visible = false; au.tension();
     $("[data-barras]").hidden = true; turnoTxt("");
   }
   function lanzarCpu() {
@@ -621,7 +721,7 @@ export function abrir(api, raiz) {
     const verdad = Math.random() < D.pista;
     S.xs = lado === 0 ? (Math.random() < 0.5 ? -1 : 1) * rnd(0.9, 1.6) : (verdad ? -lado : lado) * rnd(1.8, 2.6);
     S.tiro = { tx: tx, ty: ty, T: T, p: 0.75, sag: panenka ? 1.5 : 0.18 + ty * 0.1, sw: (Math.random() - 0.5) * 0.4, quien: "cpu", panenka: panenka, lado: lado };
-    S.fase = "carrera"; S.tFase = S.t; turnoTxt("");
+    S.fase = "carrera"; S.tFase = S.t; turnoTxt(""); au.tension();
   }
   const RUN = 0.85, GOLPE = 0.42, CONTACTO = GOLPE * 0.55;
   function contacto() {
@@ -705,7 +805,7 @@ export function abrir(api, raiz) {
     if (gana) { try { api.tiki(); api.victoria(); } catch (e) { /* opcional */ } au.rugido(true); } else au.suspiro();
   }
   function empezar() {
-    au.iniciar(); au.ambiente(0.1);
+    au.iniciar(); au.ambiente(0.4);
     S.res = { yo: [], cpu: [] }; S.hist = [0, 0, 0]; S.turno = "yo";
     $("[data-menu]").hidden = true; $("[data-fin]").hidden = true;
     datos().dif = S.dif; api.guardar(); preparar();
@@ -718,7 +818,7 @@ export function abrir(api, raiz) {
     if (S.fase === "barras" && S.turno === "yo") {
       if (S.t - S.tFase < 0.25) return;
       if (S.sub === "apuntar") { fijaApunte(S.hov); return; }
-      if (S.sub === "fuerza") { S.sub = "tirado"; $("[data-barra]").classList.add("fija"); au.golpe(0.2); lanzarTuyo(); }
+      if (S.sub === "fuerza") { S.sub = "tirado"; $("[data-barra]").classList.add("fija"); au.clic(); lanzarTuyo(); }
     }
   }
   /* Apuntar: el toque se proyecta sobre el plano de la portería */
@@ -732,7 +832,7 @@ export function abrir(api, raiz) {
   }
   function fijaApunte(a) {
     if (!a) return;
-    S.aim = { x: a.x, y: a.y }; S.sub = "fuerza"; S.barT0 = S.t; au.golpe(0.2);
+    S.aim = { x: a.x, y: a.y }; S.sub = "fuerza"; S.barT0 = S.t; au.clic();
     $("[data-barra]").classList.add("on"); $("[data-barras]").classList.add("fza");
   }
   /* Portero: 6 cuadrantes (arriba/abajo × izquierda/centro/derecha, tal como los ves) */
@@ -741,7 +841,7 @@ export function abrir(api, raiz) {
     au.iniciar();
     const col = n % 3, alto = n < 3;
     K.dive = { t0: S.t, gx: -(col - 1), gy: alto ? 1.75 : 0.45, x0: 0, celda: n };
-    au.golpe(0.3);
+    au.clic();
     $$("[data-celda]").forEach(function (c) { c.classList.toggle("sel", +c.dataset.celda === n); c.classList.toggle("off", +c.dataset.celda !== n); });
   }
   const TECLAS_CELDA = { q: 0, w: 1, e: 2, a: 3, s: 4, d: 5 };
