@@ -1,0 +1,96 @@
+TIKITEXTO · Licencia / License
+https://tikitexto.com
+
+Copyright (c) 2026 Yago Fernández Galán. Todos los derechos reservados.
+Copyright (c) 2026 Yago Fernández Galán. All rights reserved.
+
+──────────────────────────────────────────────────────────────────────
+ESPAÑOL
+──────────────────────────────────────────────────────────────────────
+
+1. Obra protegida
+   Este repositorio y el sitio web https://tikitexto.com incluyen, entre
+   otros: el código fuente (HTML, CSS, JavaScript, Python), los textos, los
+   artículos, curiosidades e historias, las traducciones, la selección y
+   organización de los datos, las lecciones animadas, las ilustraciones
+   y los diseños propios, y los juegos. Todo ello pertenece al titular
+   y está protegido por la normativa de propiedad intelectual (Real Decreto
+   Legislativo 1/1996) y los tratados internacionales aplicables.
+
+2. Qué NO está permitido sin permiso previo y por escrito
+   - Copiar, reproducir, distribuir, comunicar públicamente, publicar de
+     nuevo o vender la obra, total o parcialmente.
+   - Modificarla o crear obras derivadas (clones, «forks» para publicar,
+     versiones traducidas, reempaquetados) y ponerlas a disposición de
+     terceros.
+   - Usar el contenido o el código para crear otro sitio web, aplicación o
+     servicio, ya sea gratuito o de pago.
+   - Extraer contenido de forma automática (scraping) para republicarlo.
+   - Usar la obra para entrenar, ajustar o evaluar sistemas de inteligencia
+     artificial o de minería de textos y datos. El titular se reserva
+     expresamente este derecho de exclusión (art. 67 del Real Decreto
+     Legislativo 1/1996 y art. 4.3 de la Directiva (UE) 2019/790).
+   - Quitar o alterar avisos de autoría o de licencia.
+
+3. Qué SÍ está permitido
+   - Visitar y usar el sitio web con normalidad, para uso personal y no
+     comercial.
+   - Leer el código para aprender, y ver y bifurcar («fork») el repositorio
+     dentro de GitHub en los términos que permiten las Condiciones de
+     Servicio de GitHub, sin publicar el resultado fuera de GitHub.
+   - Citar fragmentos breves con fines de información, crítica o enseñanza,
+     indicando la fuente y enlazando a https://tikitexto.com (derecho de
+     cita).
+   - Enlazar libremente a las páginas del sitio.
+
+4. Componentes de terceros
+   Esta licencia no se aplica a los componentes de terceros, que conservan
+   sus propias licencias:
+   - three.js (licencia MIT): lib/three.LICENSE.txt
+   - Microsoft Rocketbox (licencia MIT): lib/cuerpo/LICENCIA-Rocketbox.txt
+   Los nombres de futbolistas, clubes, competiciones y otras marcas que
+   aparezcan son de sus respectivos titulares y se citan solo como texto
+   informativo. TIKITEXTO no está afiliado a ellos. El nombre y el logotipo
+   de TIKITEXTO no se licencian.
+
+5. Sin garantía
+   La obra se ofrece «tal cual», sin garantía de ningún tipo. Los datos
+   deportivos pueden contener errores o quedar desactualizados; las
+   correcciones se pueden enviar a admin.tikitexto@gmail.com.
+
+6. Permisos
+   Para pedir autorización (colaboraciones, reutilización, uso educativo),
+   escribe a admin.tikitexto@gmail.com.
+
+──────────────────────────────────────────────────────────────────────
+ENGLISH
+──────────────────────────────────────────────────────────────────────
+
+All rights reserved. The source code, texts, articles, translations, data
+selection and arrangement, animated lessons, illustrations and games in this
+repository and on https://tikitexto.com are the property of Yago Fernández
+Galán.
+
+You may NOT, without prior written permission: copy, redistribute, republish
+or sell the work in whole or in part; modify it or create derivative works
+and make them available to others; use it to build another website, app or
+service; scrape it for republication; or use it to train, fine-tune or
+evaluate AI systems or for text and data mining (the rights holder expressly
+reserves this opt-out under Article 4(3) of Directive (EU) 2019/790); or
+remove authorship or licence notices.
+
+You MAY: use the website normally for personal, non-commercial purposes; read
+the code for learning; view and fork the repository within GitHub as allowed
+by the GitHub Terms of Service, without publishing the result outside GitHub;
+quote short excerpts with attribution and a link to https://tikitexto.com;
+and link freely to the site.
+
+Third-party components keep their own licences (three.js, MIT; Microsoft
+Rocketbox, MIT; see lib/). Player, club and competition names and other
+trademarks belong to their owners and are used for informational purposes
+only; TIKITEXTO is not affiliated with them. The TIKITEXTO name and logo are
+not licensed.
+
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+
+To request permission, write to admin.tikitexto@gmail.com.
