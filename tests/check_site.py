@@ -842,6 +842,13 @@ with sync_playwright() as p:
         px.evaluate("document.querySelector('[data-penaltis]').click()"); px.wait_for_timeout(2500)
         check("penaltis: se abre la pantalla (o aviso sin WebGL)", px.locator(".pn-raiz").count() == 1)
         check("penaltis: sin errores de JavaScript", not errs_x, "; ".join(errs_x)[:150])
+        r = px.evaluate("""async () => { const m = await import('/penaltis.js'); let fuera = 0, lejos = 0, n = 0, sin = 0;
+          for (let x = -3.6; x <= 3.6; x += 0.3) for (let y = 0.15; y <= 2.3; y += 0.25) { const pl = m.planPortero(x, y), e = m.estadoPortero(pl, 1); n++;
+            const punta = Math.max(Math.abs(e.x), Math.abs(e.x + 2.1 * Math.sin(e.th))); if (punta > 3.66 + 0.35 || Math.abs(e.x) > 2.7) fuera++;
+            if (Math.abs(x) < 2.4 && y < 1.6 && !m.tocaPortero(e, x, y, 0.47)) sin++; if (m.tocaPortero(e, x, y, 0.2) && Math.abs(Math.abs(x) - 3.4) < 0.01) lejos++; }
+          const q = m.estadoPortero(m.planPortero(0, 1), 0); return { fuera, sin, n, quieto: m.tocaPortero(q, 3, 1, 0.47) }; }""")
+        check("penaltis: el cuerpo del portero no sale de la portería", r["fuera"] == 0, str(r))
+        check("penaltis: el portero llega con el cuerpo a los balones alcanzables y no a los lejanos", r["sin"] == 0 and not r["quieto"], str(r))
         cx.close()
     except Exception as e:
         check("penaltis 3D", False, str(e)[:150])

@@ -4,7 +4,7 @@
    en el verde. La barrera salta, el portero lee el tiro y el balón curva de verdad (física propia con arrastre y efecto Magnus).
    Todo se dibuja con código: sin escudos, fotos, logos ni marcas. */
 import * as THREE from "./lib/three.module.min.js";
-import { crearEscena, crearAudio, POSES, precargar as precargarCuerpos } from "./penaltis.js";
+import { crearEscena, crearAudio, POSES, precargar as precargarCuerpos, planPortero, estadoPortero, tocaPortero } from "./penaltis.js";
 
 export function precargar() { return precargarCuerpos(); }
 
@@ -191,8 +191,8 @@ export function abrir(api, raiz) {
     S.shot = { v: tiro.v, p0: tiro.p0, c: S.efecto, m: m, cr: cr, tx: tiro.tx, ty: tiro.ty };
     /* el portero lee el tiro con retraso y con más error cuanto más efecto lleva */
     const sig = D.sig * (1 + Math.abs(S.efecto) * 0.8), px = cr.x + gauss() * sig, py = cr.y + gauss() * sig * 0.6;
-    const alcance = 7.5 * Math.max(0.05, cr.t - D.rt), gx = Math.sign(px) * Math.min(Math.abs(px), 3.7, alcance);
-    S.plan = { rt: D.rt, gx: gx, gy: clamp(py, 0.3, 2.15), reach: D.reach };
+    /* el portero se queda dentro de la portería: el plan solo fija a dónde se lanza su cuerpo (ver planPortero) */
+    S.plan = Object.assign(planPortero(clamp(px, -HW, HW), clamp(py, 0.2, 2.3)), { rt: D.rt, reach: D.reach });
     S.jump = D.salta > 0 && Math.random() < D.salta ? 1 : 0;
     S.fase = "carrera"; S.tFase = S.t; E.retic.visible = false; scene_puntos(false);
     $("[data-pie]").hidden = true; pista(""); au.tension();
@@ -230,8 +230,9 @@ export function abrir(api, raiz) {
         au.poste(); S.shake = 0.5; termina("palo", "¡AL PALO!", "par"); return;
       }
       if (Math.abs(x) < HW && y < GH) {
-        const e = easeOut(clamp((B.t - S.plan.rt) / DUR_PARADA, 0, 1)), kx = e * S.plan.gx, ky = lerp(1.0, S.plan.gy, e);
-        if (Math.hypot(x - kx, y - ky) < S.plan.reach + 0.25 * e) {
+        /* parada solo si el balón toca el cuerpo del portero (piernas, torso, cabeza o brazos) en ese instante */
+        const es = estadoPortero(S.plan, (B.t - S.plan.rt) / DUR_PARADA);
+        if (tocaPortero(es, x, y, 0.22 + S.plan.reach * 0.3 + RB)) {
           p.z = 0.12; v.set((Math.random() - 0.5) * 7, 3 + Math.random() * 2, 5 + Math.random() * 3); au.parada(); S.shake = 0.35; termina("parada", "¡PARADA!", "par"); return;
         }
         E.red.x = x; E.red.y = y; E.red.t = 0; E.red.a = clamp(Math.hypot(v.x, v.z) / 14, 0.3, 1.6); au.red();
@@ -312,10 +313,9 @@ export function abrir(api, raiz) {
   /* ── Figuras y cámara ── */
   function figuraPortero(f, tt, T) {
     const pl = S.plan; if (!f) return;
-    const p = pl ? clamp((tt - pl.rt) / DUR_PARADA, 0, 1) : 0, e = easeOut(p), gx = pl ? pl.gx : 0, gy = pl ? pl.gy : 1;
-    const g = clamp((gy - 1.0) / 1.0, -1, 1), alto = clamp((gy - 0.4) / 1.8, 0, 1) * 2, y = Math.sin(Math.PI * p) * (g > 0 ? 0.12 + 0.4 * g : 0.12 * (1 + g));
-    f.raiz.position.x = e * gx; f.raiz.position.y = y; f.raiz.rotation.z = -Math.sign(gx || 1) * e * Math.min(1, Math.abs(gx) / 2.4) * 1.15;
-    if (p <= 0.001) POSES.quieto(f, T, true); else POSES.parada(f, p, Math.sign(gx) * Math.min(1, Math.abs(gx) / 2.6), alto);
+    const p = pl ? clamp((tt - pl.rt) / DUR_PARADA, 0, 1) : 0, es = estadoPortero(pl, p);
+    f.raiz.position.x = es.x; f.raiz.position.y = es.y; f.raiz.rotation.z = -es.th;
+    if (p <= 0.001 || !pl) POSES.quieto(f, T, true); else POSES.parada(f, p, pl.side, pl.alto);
   }
   function ponCamara(dt, T) {
     const c = E.camara; let tp = camP, ml = mira, fov = 42;

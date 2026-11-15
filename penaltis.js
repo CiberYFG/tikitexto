@@ -539,6 +539,35 @@ function zona(x0, gx, gy, tt, mult) {
   const fx = Math.min(1, Math.abs(gx) * 1.5), fy = Math.min(1, Math.abs(gy - 1) * 1.5);
   return { cx: lerp(x0, ex, e), cy: lerp(1.0, ey, e), rx: (0.82 + 0.5 * e * (0.4 + 0.6 * fx)) * mult, ry: (0.85 + 0.35 * e * (0.2 + 0.8 * fy)) * mult, p: p };
 }
+/* ── Cuerpo del portero (compartido con tirolibre.js) ──
+   El portero se lanza con la cadera como mucho a 2,5 m del centro y su cuerpo (eje inclinado de 2,1 m: piernas, torso, cabeza y brazos
+   estirados) nunca pasa del poste. Solo hay parada si el balón TOCA ese cuerpo en el instante en que cruza la línea. */
+export const CUERPO = { largo: 2.1, pie: 0.15, maxRx: 2.6, tope: HW + 0.3 };
+export function planPortero(px, py) {
+  const sg = px < 0 ? -1 : 1, ax = Math.abs(px), g = clamp(py - 1, -1, 1), SC = 1.7;
+  const h = g > 0 ? 0.12 + 0.4 * g : 0.12 * (1 + g);
+  /* inclinación del cuerpo según la altura del balón (raso = casi horizontal) y pies donde haga falta */
+  /* punto del cuerpo que toca el balón: se prueba primero con las manos (1,7 m del pie) y, si queda demasiado cerca, más abajo */
+  let th = 0, rx = 0;
+  for (const sc of [SC, 1.2, 0.8, 0.45]) {
+    th = Math.acos(clamp((py - h * 0.6 - CUERPO.pie) / sc, 0.2, 1)); rx = ax - sc * Math.sin(th);
+    if (rx >= -0.3) break;
+  }
+  if (rx < -0.6) { rx = -0.6; th = Math.asin(clamp((ax + 0.6) / SC, 0, 1)); }
+  rx = Math.min(rx, CUERPO.maxRx);
+  if (ax - rx > 0.01) th = Math.max(th, Math.asin(clamp((ax - rx) / SC, 0, 1)));
+  th = Math.min(th, Math.asin(clamp((CUERPO.tope - rx) / CUERPO.largo, 0, 1)));
+  return { sg: sg, rx: rx, th: th, h: h, side: sg * Math.min(1, th / 1.2), alto: clamp((py - 0.4) / 1.8, 0, 1) * 2 };
+}
+export function estadoPortero(pl, p) {
+  const e = easeOut(clamp(p, 0, 1));
+  return { x: pl ? pl.sg * pl.rx * e : 0, y: pl ? Math.sin(Math.PI * clamp(p, 0, 1)) * pl.h : 0, th: pl ? pl.sg * pl.th * e : 0 };
+}
+export function tocaPortero(es, bx, by, R) {
+  const ux = Math.sin(es.th), uy = Math.cos(es.th), ax = es.x + ux * CUERPO.pie, ay = es.y + uy * CUERPO.pie, L = CUERPO.largo - CUERPO.pie;
+  const t = clamp(((bx - ax) * ux + (by - ay) * uy) / L, 0, 1);
+  return Math.hypot(bx - (ax + ux * L * t), by - (ay + uy * L * t)) < R;
+}
 const dentroZona = (z, bx, by) => Math.pow((bx - z.cx) / z.rx, 2) + Math.pow((by - z.cy) / z.ry, 2) < 1;
 
 const PLANTILLA = `
@@ -648,7 +677,7 @@ export function abrir(api, raiz) {
     S.kick.raiz.visible = true; S.kick.raiz.position.set(KICK0.x, 0, KICK0.z); S.kick.raiz.rotation.set(0, Math.PI, 0);
     S.port = null;
     if (S.turno === "yo") { S.port = porCpu; porCpu.raiz.visible = true; porCpu.raiz.position.set(0, 0, 0.2); porCpu.raiz.rotation.set(0, 0, 0); }
-    S.pdx = 0; S.pgx = 0; S.pgy = 1; S.pt0 = -1; S.pp = 0;
+    S.pdx = 0; S.pplan = null; S.pt0 = -1; S.pp = 0;
     K.x = 0; K.dive = null; $$("[data-celda]").forEach(function (c) { c.classList.remove("sel", "off"); });
   }
   function preparar() {
@@ -683,10 +712,13 @@ export function abrir(api, raiz) {
     return { gx: gx, gy: gy };
   }
   /* ¿el portero llegaría al balón con esa parada? (misma cuenta que resolver) */
-  function llegaP(gx, gy, tx, ty, T) {
+  function radioP() { return 0.36 * DIF[S.dif].mult + RB; }
+  function llegaP(plan, tx, ty, T) {
     if (!(Math.abs(tx) < HW - 0.1 && ty < GH - 0.1)) return false;
-    return dentroZona(zona(0, gx, gy, T - RETRASO_PORTERO, DIF[S.dif].mult), tx, ty);
+    return tocaPortero(estadoPortero(plan, (T - RETRASO_PORTERO) / DUR_PARADA), tx, ty, radioP());
   }
+  /* punto del marco al que se lanza el portero según su elección (lado -1/0/1, altura 0..2) */
+  function objetivoPar(par) { return { x: par.gx * 2.5, y: par.gy <= 1 ? lerp(EY[0], EY[1], par.gy) : lerp(EY[1], EY[2], par.gy - 1) }; }
   function lanzarTuyo() {
     /* apuntado con el toque (S.aim) + una sola barra de fuerza: verde al centro = tiro limpio */
     const pos = S.barV[2], e = Math.abs(pos - 0.5) * 2;
@@ -700,12 +732,13 @@ export function abrir(api, raiz) {
     let par = elegirParadaCpu(tx, ty);
     const lado = tx < -1.3 ? -1 : tx > 1.3 ? 1 : 0;
     S.hist[lado + 1]++;
-    if (llegaP(par.gx, par.gy, tx, ty, T)) {
-      /* parada: el portero se lanza hasta el punto exacto donde llega el balón */
-      const gx2 = clamp(tx / 2.75, -1.45, 1.45), gy2 = ty <= 1.05 ? clamp((ty - EY[0]) / (EY[1] - EY[0]), 0, 1) : clamp(1 + (ty - EY[1]) / (EY[2] - EY[1]), 1, 2);
-      if (llegaP(gx2, gy2, tx, ty, T)) par = { gx: gx2, gy: gy2 };
+    const ob = objetivoPar(par); let plan = planPortero(ob.x, ob.y);
+    if (llegaP(plan, tx, ty, T)) {
+      /* parada: el portero se lanza hasta el punto exacto donde llega el balón (y solo cuenta si su cuerpo lo toca) */
+      const plan2 = planPortero(tx, ty);
+      if (llegaP(plan2, tx, ty, T)) plan = plan2;
     }
-    S.tiro = { tx: tx, ty: Math.max(ty, RB), T: T, p: p, sag: 0.18 + clamp(ty, 0, 2.5) * 0.1, sw: (Math.random() - 0.5) * 0.3 * e, gx: par.gx, gy: par.gy, quien: "yo", panenka: false };
+    S.tiro = { tx: tx, ty: Math.max(ty, RB), T: T, p: p, sag: 0.18 + clamp(ty, 0, 2.5) * 0.1, sw: (Math.random() - 0.5) * 0.3 * e, plan: plan, quien: "yo", panenka: false };
     S.fase = "carrera"; S.tFase = S.t; S.xs = rnd(-1.6, -0.4); E.retic.visible = false; au.tension();
     $("[data-barras]").hidden = true; turnoTxt("");
   }
@@ -729,7 +762,7 @@ export function abrir(api, raiz) {
     S.fase = "vuelo"; S.tFase = S.t; S.bt = 0;
     ti.t0 = S.t; ti.x0 = 0;
     au.golpe(ti.p); S.shake = 0.06;
-    if (S.turno === "yo") { S.pt0 = S.t + RETRASO_PORTERO; S.pgx = ti.gx; S.pgy = ti.gy; }
+    if (S.turno === "yo") { S.pt0 = S.t + RETRASO_PORTERO; S.pplan = ti.plan; }
   }
   function resolver() {
     const ti = S.tiro, tx = ti.tx, ty = ti.ty, R = RB + 0.06;
@@ -742,7 +775,7 @@ export function abrir(api, raiz) {
     else if (tocaLarg) tipo = "larguero";
     else {
       let z;
-      if (ti.quien === "yo") z = zona(0, ti.gx, ti.gy, ti.T - RETRASO_PORTERO, DIF[S.dif].mult);
+      if (ti.quien === "yo") { const es = estadoPortero(ti.plan, (ti.T - RETRASO_PORTERO) / DUR_PARADA); z = { cx: es.x, cy: 1 }; }
       else if (K.dive) z = zona(K.dive.x0, K.dive.gx, K.dive.gy, 1, 1.0);
       else z = zona(K.x, 0, 1, 0, 1.0);
       S.zonaP = z;
@@ -754,7 +787,7 @@ export function abrir(api, raiz) {
           const xs = [[HW / 3, HW + 0.4], [-HW / 3, HW / 3], [-HW - 0.4, -HW / 3]][col], ys = alto ? [GH / 2, GH + 0.4] : [-0.4, GH / 2];
           if (tx > xs[0] - tol && tx < xs[1] + tol && ty > ys[0] - tol && ty < ys[1] + tol) tipo = "parada";
         }
-      } else if (dentroZona(z, tx, ty)) tipo = "parada";
+      } else if (llegaP(ti.plan, tx, ty, ti.T)) tipo = "parada";
     }
     ti.tipo = tipo;
     /* velocidad al llegar a la línea */
@@ -892,12 +925,11 @@ export function abrir(api, raiz) {
   intentaHorizontal();
 
   /* ── Bucle ── */
-  function figuraPortero(f, p, gx, gy, x0, t) {
+  function figuraPortero(f, p, pl, x0, t) {
     if (!f) return;
-    const e = easeOut(p), g = clamp(gy - 1, -1, 1), y = Math.sin(Math.PI * p) * (g > 0 ? 0.12 + 0.43 * g : 0.12 * (1 + g));
-    f.raiz.position.x = lerp(x0, x0 + gx * 2.75, e); f.raiz.position.y = y;
-    f.raiz.rotation.z = -gx * e * (g < 0 ? 1.2 - 0.25 * g : 1.2 - 0.2 * g);
-    if (p <= 0.001) poseQuieto(f, t, true); else poseParada(f, p, gx, gy);
+    const es = estadoPortero(pl, p);
+    f.raiz.position.x = x0 + es.x; f.raiz.position.y = es.y; f.raiz.rotation.z = -es.th;
+    if (p <= 0.001 || !pl) poseQuieto(f, t, true); else poseParada(f, p, pl.side, pl.alto);
   }
   function ponCamara(dt, t) {
     const c = E.camara; let fx = 0, fy = 0;
@@ -993,7 +1025,7 @@ export function abrir(api, raiz) {
       bal.rotation.x -= dtS * 18 * (ti.panenka ? 0.2 : 1); bal.rotation.z += dtS * 4;
       if (S.turno === "yo" && S.port) {
         const p = S.pt0 < 0 ? 0 : clamp((T - S.pt0) / DUR_PARADA, 0, 1);
-        figuraPortero(S.port, p, S.pgx, S.pgy, 0, T);
+        figuraPortero(S.port, p, S.pplan, 0, T);
       }
       if (S.turno === "cpu" && K.dive) { /* guantes en cámara */ }
       if (s >= 1) resolver();
@@ -1007,7 +1039,7 @@ export function abrir(api, raiz) {
       }
       if (S.turno === "yo" && S.port && ti) {
         const p = clamp((T - S.pt0) / DUR_PARADA, 0, 1);
-        figuraPortero(S.port, p, S.pgx, S.pgy, 0, T);
+        figuraPortero(S.port, p, S.pplan, 0, T);
         if (S.cel === "parada" && S.zonaP) { /* el portero ya está en posición */ }
       }
       /* balón libre */
