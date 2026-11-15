@@ -917,6 +917,83 @@ with sync_playwright() as p:
     except Exception as e:
         check("cracks ocultos", False, str(e)[:150])
 
+    print("3ac) Tiros libres 3D")
+    try:
+        cl = br.new_context(viewport={"width": 844, "height": 390}, service_workers="block")
+        pl = cl.new_page(); errs_l = []
+        pl.on("pageerror", lambda e: errs_l.append(str(e)))
+        pl.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');sessionStorage.setItem('tikitexto:grupo','dinamicos');")
+        pl.goto(BASE, wait_until="networkidle", timeout=60000); pl.wait_for_timeout(300)
+        check("tiros libres: tarjeta en Dinámicos", pl.locator("[data-tirolibre]").count() == 1)
+        pl.evaluate("document.querySelector('[data-tirolibre]').click()"); pl.wait_for_timeout(3500)
+        check("tiros libres: se abre la pantalla (o aviso sin WebGL)", pl.locator(".tl-raiz").count() == 1)
+        if pl.locator("[data-sin]:not([hidden])").count() == 0 and pl.locator("[data-menu]").count() == 1:
+            fis = pl.evaluate("""(()=>{const j=TIKI.tirolibre.juego(); const P=new (j.E.balon.position.constructor)(5,0.11,20); let mx=0; let curva=[];
+              for (const c of [-1,-0.5,0,0.5,1]) for (const [tx,ty] of [[-3,0.5],[0,1.2],[3,2.1],[2,1.8]]) { const v=j.resolver(P,tx,ty,30,c), r=j.vuela(P,v,c,false); mx=Math.max(mx,Math.hypot(r.x-tx,r.y-ty)); }
+              const a=j.resolver(P,0,1.2,30,1), b=j.resolver(P,0,1.2,30,-1); return {mx:mx, ax:a.x, bx:b.x}})()""")
+            check("tiros libres: la física resuelve el tiro al punto apuntado con cualquier efecto", fis["mx"] < 0.1, str(fis))
+            check("tiros libres: el efecto curva el balón en sentidos opuestos", fis["ax"] != fis["bx"] and (fis["ax"] - fis["bx"]) * 1 != 0, str(fis))
+            pl.click("[data-menu] [data-tl=jugar]"); pl.wait_for_timeout(1500)
+            check("tiros libres: 5 bolitas y distancia", pl.locator("[data-bolas] s").count() == 5 and "m" in pl.inner_text("[data-tl-dist]"))
+            disp = pl.evaluate("TIKI.tirolibre.juego().disparar(1.8, 1.9, 0.4, 0.81)")
+            for _ in range(60):
+                pl.wait_for_timeout(1000)
+                if pl.evaluate("TIKI.tirolibre.juego().S.res.length") >= 1: break
+            r = pl.evaluate("(()=>{const S=TIKI.tirolibre.juego().S; return {n:S.res.length, fase:S.fase, cel:S.cel}})()")
+            check("tiros libres: un disparo termina con resultado (gol, parada, barrera, palo o fuera)", disp and r["n"] >= 1, str(r))
+            pl.evaluate("(()=>{const j=TIKI.tirolibre.juego(); for(let i=0;i<8;i++){ j.S.fase='apuntar'; j.disparar(0,3.5,0,0.8); }})()")
+            pl.click(".tl-raiz [data-tl=salir]", timeout=5000) if pl.locator(".tl-raiz [data-tl=salir]:visible").count() else pl.evaluate("document.querySelector('[data-tl=salir]').click()")
+            pl.wait_for_timeout(500)
+            check("tiros libres: salir cierra la pantalla", pl.locator(".tl-raiz").count() == 0)
+        check("tiros libres: sin errores de JavaScript", not errs_l, "; ".join(errs_l)[:150])
+        cl.close()
+    except Exception as e:
+        check("tiros libres", False, str(e)[:150])
+
+    print("3ab) Cuartetos TIKITEXTO")
+    try:
+        cb2 = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
+        pb2 = cb2.new_page(); errs_b2 = []
+        pb2.on("pageerror", lambda e: errs_b2.append(str(e)))
+        pb2.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');")
+        pb2.goto(BASE, wait_until="networkidle", timeout=60000); pb2.wait_for_timeout(300)
+        check("cuartetos: tarjeta en Letras", pb2.locator("[data-cuartetos]").count() == 1)
+        pb2.evaluate("document.querySelector('[data-cuartetos]').click()"); pb2.wait_for_timeout(1500)
+        check("cuartetos: se abre la pantalla", pb2.locator(".cu-raiz").count() == 1)
+        gen = pb2.evaluate("""(()=>{const j=TIKI.cuartetos.juego(); let ok=0, uni=0; for(let i=0;i<80;i++){ const p=j.generar(Math.random); if(p){ ok++; const t=p.cats.flatMap(c=>c.items); if(t.length===16&&new Set(t).size===16&&p.cats.every(c=>c.items.length===4)) uni++; } }
+          const a=j.generar(j.mulberry(20261115)), b=j.generar(j.mulberry(20261115)); return {ok,uni,igual:JSON.stringify(a)===JSON.stringify(b),cats:j.DB.cats.length}})()""")
+        check("cuartetos: el generador no falla y reparte 16 fichas distintas", gen["ok"] == 80 and gen["uni"] == 80, str(gen))
+        check("cuartetos: el reto diario sale igual con la misma semilla", gen["igual"] and gen["cats"] >= 20, str(gen))
+        pb2.click("[data-menu] [data-cu=libre]"); pb2.wait_for_timeout(300)
+        check("cuartetos: 16 fichas y 4 vidas", pb2.locator(".cu-ficha").count() == 16 and pb2.locator("[data-vidas] i.on").count() == 4)
+        pb2.evaluate("TIKI.cuartetos.juego().fallar()"); pb2.wait_for_timeout(200)
+        check("cuartetos: un fallo quita una vida", pb2.locator("[data-vidas] i.on").count() == 3)
+        pb2.click("[data-cu=pista]"); pb2.wait_for_timeout(100)
+        check("cuartetos: la pista muestra el título de un grupo", "Pista" in pb2.inner_text("[data-info]"))
+        pb2.click(".cu-ficha >> nth=0"); pb2.click(".cu-ficha >> nth=1"); pb2.wait_for_timeout(100)
+        check("cuartetos: seleccionar fichas y deseleccionar", pb2.locator(".cu-ficha.sel").count() == 2)
+        pb2.click("[data-cu=quitar]"); pb2.wait_for_timeout(100)
+        check("cuartetos: deseleccionar", pb2.locator(".cu-ficha.sel").count() == 0)
+        pb2.evaluate("(()=>{const j=TIKI.cuartetos.juego(); j.resolverGrupo(); j.resolverGrupo();})()"); pb2.wait_for_timeout(300)
+        check("cuartetos: acertar dos grupos los coloca arriba", pb2.locator(".cu-res").count() == 2 and pb2.locator(".cu-ficha").count() == 8)
+        pb2.evaluate("(()=>{const j=TIKI.cuartetos.juego(); j.resolverGrupo(); })()"); pb2.wait_for_timeout(1800)
+        check("cuartetos: al tercer grupo se completa el último y sale el final", pb2.locator(".cu-res").count() == 4 and pb2.locator("[data-fin]:not([hidden])").count() == 1, pb2.inner_text("[data-fin]")[:80])
+        pb2.evaluate("TIKI.cuartetos.juego().empezar('libre')"); pb2.wait_for_timeout(200)
+        pb2.evaluate("(()=>{const j=TIKI.cuartetos.juego(); for(let i=0;i<4;i++) j.fallar();})()"); pb2.wait_for_timeout(2500)
+        check("cuartetos: 4 fallos terminan la partida y revelan los grupos", pb2.locator("[data-fin]:not([hidden])").count() == 1 and pb2.locator(".cu-res").count() == 4)
+        pb2.click("[data-fin] [data-cu=menu]"); pb2.wait_for_timeout(200)
+        pb2.click("[data-menu] [data-cu=diario]"); pb2.wait_for_timeout(300)
+        check("cuartetos: reto diario con número", "#" in pb2.inner_text("[data-modo-txt]"))
+        pb2.evaluate("(()=>{const j=TIKI.cuartetos.juego(); for(let i=0;i<4;i++) j.resolverGrupo();})()"); pb2.wait_for_timeout(2200)
+        pb2.click("[data-fin] [data-cu=menu]"); pb2.wait_for_timeout(200)
+        check("cuartetos: el diario resuelto no se repite (muestra el resultado)", "resultado" in pb2.inner_text("[data-diario-txt]").lower() or "result" in pb2.inner_text("[data-diario-txt]").lower())
+        pb2.click("[data-menu] [data-cu=salir]"); pb2.wait_for_timeout(300)
+        check("cuartetos: salir cierra la pantalla", pb2.locator(".cu-raiz").count() == 0)
+        check("cuartetos: sin errores de JavaScript", not errs_b2, "; ".join(errs_b2)[:150])
+        cb2.close()
+    except Exception as e:
+        check("cuartetos", False, str(e)[:150])
+
     print("3aa) Vídeos (clases animadas)")
     try:
         ca = br.new_context(viewport={"width": 1000, "height": 760}, service_workers="block")

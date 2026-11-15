@@ -1824,3 +1824,51 @@ Clases animadas con profe, pizarra y voz ||| Animated lessons with a teacher, wh
 Ver ||| Watch ||| Assistir ||| Regarder ||| Guarda ||| Ansehen
 Videojuegos ||| Video games ||| Videogames ||| Jeux vidéo ||| Videogiochi ||| Videospiele
 ¿Cómo quieres jugar? ||| How do you want to play? ||| Como você quer jogar? ||| Comment veux-tu jouer ? ||| Come vuoi giocare? ||| Wie möchtest du spielen?
+Agrupa 16 nombres en 4 grupos de 4 que comparten algo. ||| Sort 16 names into 4 groups of 4 that share something. ||| Agrupe 16 nomes em 4 grupos de 4 que têm algo em comum. ||| Classe 16 noms en 4 groupes de 4 qui ont un point commun. ||| Raggruppa 16 nomi in 4 gruppi da 4 con qualcosa in comune. ||| Ordne 16 Namen in 4 Gruppen zu je 4 mit einer Gemeinsamkeit.
+Reto de hoy ||| Today's challenge ||| Desafio de hoje ||| Défi du jour ||| Sfida di oggi ||| Heutige Aufgabe
+Ver resultado de hoy ||| See today's result ||| Ver o resultado de hoje ||| Voir le résultat du jour ||| Vedi il risultato di oggi ||| Heutiges Ergebnis ansehen
+Modo libre ||| Free mode ||| Modo livre ||| Mode libre ||| Modalità libera ||| Freier Modus
+Racha diaria ||| Daily streak ||| Sequência diária ||| Série quotidienne ||| Serie giornaliera ||| Tagesserie
+Victorias ||| Wins ||| Vitórias ||| Victoires ||| Vittorie ||| Siege
+Partidas ||| Games ||| Partidas ||| Parties ||| Partite ||| Partien
+Toca 4 nombres que tengan algo en común y pulsa Enviar. ||| Tap 4 names that have something in common and press Submit. ||| Toque em 4 nomes que tenham algo em comum e pressione Enviar. ||| Touche 4 noms qui ont un point commun et appuie sur Envoyer. ||| Tocca 4 nomi che hanno qualcosa in comune e premi Invia. ||| Tippe 4 Namen mit einer Gemeinsamkeit an und drücke Senden.
+Cada grupo es de un color: amarillo es el más fácil y morado el más difícil. ||| Each group has a colour: yellow is the easiest and purple the hardest. ||| Cada grupo tem uma cor: amarelo é o mais fácil e roxo o mais difícil. ||| Chaque groupe a une couleur : le jaune est le plus facile et le violet le plus difficile. ||| Ogni gruppo ha un colore: il giallo è il più facile e il viola il più difficile. ||| Jede Gruppe hat eine Farbe: Gelb ist am leichtesten, Lila am schwersten.
+Puedes fallar 4 veces. Cuidado: algunos nombres encajan en dos grupos. ||| You can miss 4 times. Careful: some names fit in two groups. ||| Você pode errar 4 vezes. Cuidado: alguns nomes cabem em dois grupos. ||| Tu peux te tromper 4 fois. Attention : certains noms vont dans deux groupes. ||| Puoi sbagliare 4 volte. Attenzione: alcuni nomi stanno in due gruppi. ||| Du darfst 4 Fehler machen. Vorsicht: Manche Namen passen in zwei Gruppen.
+🔀 Mezclar ||| 🔀 Shuffle ||| 🔀 Embaralhar ||| 🔀 Mélanger ||| 🔀 Mescola ||| 🔀 Mischen
+Deseleccionar ||| Deselect ||| Desmarcar ||| Désélectionner ||| Deseleziona ||| Auswahl aufheben
+Reto completado ||| Challenge complete ||| Desafio concluído ||| Défi relevé ||| Sfida completata ||| Aufgabe geschafft
+¡Lo has resuelto! ||| You solved it! ||| Você resolveu! ||| Tu l'as résolu ! ||| Ce l'hai fatta! ||| Gelöst!
+¡Perfecto! Sin fallos ||| Perfect! No mistakes ||| Perfeito! Sem erros ||| Parfait ! Sans faute ||| Perfetto! Nessun errore ||| Perfekt! Ohne Fehler
+Casi lo tenías ||| You were close ||| Quase lá ||| Presque ! ||| Ci eri quasi ||| Fast geschafft
+¡Copiado! ||| Copied! ||| Copiado! ||| Copié ! ||| Copiato! ||| Kopiert!
+Otra partida libre ||| Another free game ||| Outra partida livre ||| Une autre partie libre ||| Un'altra partita libera ||| Noch ein freies Spiel
+Ya lo habías probado ||| You already tried that ||| Você já tentou isso ||| Tu as déjà essayé ça ||| L'hai già provato ||| Das hast du schon probiert
+¡Casi! Te falta uno ||| So close! One is off ||| Quase! Falta um ||| Presque ! Il en manque un ||| Quasi! Ne manca uno ||| Fast! Einer passt nicht
+Ese grupo no es ||| That's not a group ||| Esse não é um grupo ||| Ce n'est pas un groupe ||| Non è un gruppo ||| Das ist keine Gruppe
+Cómo se juega ||| How to play ||| Como jogar ||| Comment jouer ||| Come si gioca ||| Spielanleitung
+Fallos restantes ||| Mistakes left ||| Erros restantes ||| Erreurs restantes ||| Errori rimasti ||| Verbleibende Fehler
+16 nombres, 4 grupos escondidos. Descubre qué tienen en común y completa el reto diario. ||| 16 names, 4 hidden groups. Find what they have in common and complete the daily challenge. ||| 16 nomes, 4 grupos escondidos. Descubra o que têm em comum e complete o desafio diário. ||| 16 noms, 4 groupes cachés. Trouve ce qu'ils ont en commun et relève le défi quotidien. ||| 16 nomi, 4 gruppi nascosti. Scopri cosa hanno in comune e completa la sfida giornaliera. ||| 16 Namen, 4 versteckte Gruppen. Finde die Gemeinsamkeit und schaffe die Tagesaufgabe.
+Centrocampistas ||| Midfielders ||| Meio-campistas ||| Milieux de terrain ||| Centrocampisti ||| Mittelfeldspieler
+Campeones del Mundo ||| World Cup winners ||| Campeões do mundo ||| Champions du monde ||| Campioni del mondo ||| Weltmeister
+P ||| ^Selección: (.+)$ ||| National team: $1 ||| Seleção: $1 ||| Sélection : $1 ||| Nazionale: $1 ||| Nationalteam: $1
+P ||| ^Jugaron en (.+)$ ||| Played for $1 ||| Jogaram no $1 ||| Ont joué à $1 ||| Hanno giocato nel $1 ||| Spielten bei $1
+P ||| ^Pasaron por (.+) y (.+)$ ||| Played for $1 and $2 ||| Passaram por $1 e $2 ||| Sont passés par $1 et $2 ||| Passati per $1 e $2 ||| Spielten bei $1 und $2
+P ||| ^Clubes: (.+)$ ||| Clubs: $1 ||| Clubes: $1 ||| Clubs : $1 ||| Club: $1 ||| Vereine: $1
+P ||| ^Estadios: (.+)$ ||| Stadiums: $1 ||| Estádios: $1 ||| Stades : $1 ||| Stadi: $1 ||| Stadien: $1
+Videojuego 3D ||| 3D video game ||| Videogame 3D ||| Jeu vidéo 3D ||| Videogioco 3D ||| 3D-Videospiel
+Cinco faltas, una barrera y un portero que te lee. Haz que el balón dé la vuelta a la barrera. ||| Five free kicks, a wall and a keeper who reads you. Bend the ball around the wall. ||| Cinco faltas, uma barreira e um goleiro que te lê. Faça a bola contornar a barreira. ||| Cinq coups francs, un mur et un gardien qui te lit. Fais contourner le mur au ballon. ||| Cinque punizioni, una barriera e un portiere che ti legge. Fai girare il pallone attorno alla barriera. ||| Fünf Freistöße, eine Mauer und ein Torwart, der dich liest. Zirkle den Ball um die Mauer.
+Toca la portería para apuntar. Verás la trayectoria en puntos. ||| Tap the goal to aim. You will see the path as dots. ||| Toque no gol para mirar. Você verá a trajetória em pontos. ||| Touche le but pour viser. Tu verras la trajectoire en points. ||| Tocca la porta per mirare. Vedrai la traiettoria a puntini. ||| Tippe aufs Tor zum Zielen. Die Flugbahn siehst du als Punkte.
+Mueve el deslizador para dar efecto y rodear la barrera. ||| Move the slider to add spin and curl round the wall. ||| Mova o controle para dar efeito e contornar a barreira. ||| Bouge le curseur pour donner de l'effet et contourner le mur. ||| Muovi il cursore per dare effetto e aggirare la barriera. ||| Bewege den Regler, um Effet zu geben und die Mauer zu umspielen.
+Pulsa ¡CHUTAR! y vuelve a tocar para parar la barra de fuerza en el verde. ||| Press SHOOT! and tap again to stop the power bar in the green. ||| Toque em CHUTAR! e toque de novo para parar a barra de força no verde. ||| Appuie sur TIRER ! puis touche à nouveau pour arrêter la barre de puissance dans le vert. ||| Premi TIRA! e tocca di nuovo per fermare la barra della forza nel verde. ||| Drücke SCHIESSEN! und tippe erneut, um die Kraftleiste im Grünen zu stoppen.
+¡CHUTAR! ||| SHOOT! ||| CHUTAR! ||| TIRER ! ||| TIRA! ||| SCHIESSEN!
+¡YA! ||| NOW! ||| JÁ! ||| MAINTENANT ! ||| ORA! ||| JETZT!
+⟲ Efecto ⟳ ||| ⟲ Spin ⟳ ||| ⟲ Efeito ⟳ ||| ⟲ Effet ⟳ ||| ⟲ Effetto ⟳ ||| ⟲ Effet ⟳
+Efecto ||| Spin ||| Efeito ||| Effet ||| Effetto ||| Effet
+Pantalla completa ||| Full screen ||| Tela cheia ||| Plein écran ||| Schermo intero ||| Vollbild
+Toca para parar la barra en el verde ||| Tap to stop the bar in the green ||| Toque para parar a barra no verde ||| Touche pour arrêter la barre dans le vert ||| Tocca per fermare la barra nel verde ||| Tippe, um die Leiste im Grünen zu stoppen
+¡BARRERA! ||| WALL! ||| BARREIRA! ||| MUR ! ||| BARRIERA! ||| MAUER!
+¡GOLAZO! ||| WHAT A GOAL! ||| GOLAÇO! ||| QUEL BUT ! ||| GOLAZO! ||| WAHNSINNSTOR!
+¡Serie superada! ||| Round cleared! ||| Série superada! ||| Série réussie ! ||| Serie superata! ||| Serie geschafft!
+Serie fallida ||| Round failed ||| Série falhou ||| Série ratée ||| Serie fallita ||| Serie verpasst
+Necesitas ||| You need ||| Você precisa de ||| Il te faut ||| Ti servono ||| Du brauchst
+Cinco faltas en un estadio en 3D: apunta, da efecto al balón para rodear la barrera y supera a un portero que te lee. ||| Five free kicks in a 3D stadium: aim, curl the ball round the wall and beat a keeper who reads you. ||| Cinco faltas em um estádio 3D: mire, dê efeito à bola para contornar a barreira e vença um goleiro que te lê. ||| Cinq coups francs dans un stade en 3D : vise, donne de l'effet au ballon pour contourner le mur et bats un gardien qui te lit. ||| Cinque punizioni in uno stadio 3D: mira, dai effetto al pallone per aggirare la barriera e batti un portiere che ti legge. ||| Fünf Freistöße in einem 3D-Stadion: Ziele, gib dem Ball Effet um die Mauer und überliste einen Torwart, der dich liest.

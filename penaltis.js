@@ -241,7 +241,7 @@ function poseParada(f, p, gx, gy) {
 export const POSES = { base: poseBase, quieto: poseQuieto, carrera: poseCarrera, golpeo: poseGolpeo, festeja: poseFesteja, derrota: poseDerrota, parada: poseParada };
 
 /* ───────── Escena: estadio nocturno ───────── */
-function crearEscena(canvas, movil, nombre) {
+export function crearEscena(canvas, movil, nombre) {
   const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, movil ? 1.5 : 2));
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -426,7 +426,7 @@ function crearEscena(canvas, movil, nombre) {
 }
 
 /* ───────── Sonido (sintetizado; respeta el ajuste de sonido de la web) ───────── */
-function crearAudio(api) {
+export function crearAudio(api) {
   let ctx = null, ruido = null, blanco = null, amb = null, ambG = null, ambV = 0, ambT = 0;
   function iniciar() {
     if (ctx) { if (ctx.state === "suspended") ctx.resume(); return; }

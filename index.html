@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BYYFXnIdHsmNRI2crJZxsMDUbf9uzg5afkhjgVLJh/E=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-Sc/U/2u/L6kJGHrVUmGCBMKBUIE7nq0FE2ewtiPeiH0=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-i/uezubRZzZHSJf/pQ5SYUOkxpVDuy7MafHbdaR+erU=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BYYFXnIdHsmNRI2crJZxsMDUbf9uzg5afkhjgVLJh/E=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-HML5OzvPN4R34CJJYcQ4AlP/XEWaA7p5000vzbDyQfk=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-i/uezubRZzZHSJf/pQ5SYUOkxpVDuy7MafHbdaR+erU=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>
 <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WN89TQCM"></script>
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -1618,6 +1618,8 @@ button.ir-juegos { border: 0; cursor: pointer; }
 /* ===== CHAPAS TIKITEXTO ===== */
 .ch-card { position: relative; isolation: isolate; overflow: hidden; display: grid; grid-template-columns: 92px 1fr; align-items: center; gap: 14px; width: 100%; margin: 16px 0 6px; padding: 16px; text-align: left; color: #fff; background: linear-gradient(145deg, #0b3d22, #0a2a4d); border: 2px solid rgba(255,255,255,.25); border-radius: 26px; cursor: pointer; box-shadow: 0 14px 40px rgba(31, 143, 69, .3); transition: transform .15s ease; font: inherit; }
 .pn-card { background: linear-gradient(145deg, #0a1a3c, #07324a 55%, #0b5a3a); }
+.tl-card { background: linear-gradient(145deg, #07224a, #0a4a52 55%, #1d6b2a); }
+.cu-card { background: linear-gradient(145deg, #1b1250, #0f2a5e 55%, #14573f); }
 .ch-card:hover { transform: translateY(-3px); }
 .ch-card:focus-visible { outline: 4px solid var(--texto); outline-offset: 4px; }
 .ch-card__dib svg { width: 92px; height: 92px; display: block; filter: drop-shadow(0 6px 10px rgba(0,0,0,.4)); }
@@ -2422,6 +2424,16 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
       </span>
     </button>
 
+    <button type="button" class="ch-card cu-card" data-cuartetos>
+      <span class="ch-card__dib" aria-hidden="true"><svg viewBox="0 0 120 120"><rect x="6" y="6" width="108" height="108" rx="14" fill="#140f3a" stroke="#ffd23a" stroke-width="3"/><g font-family="system-ui,sans-serif" font-weight="900" font-size="9" text-anchor="middle" fill="#0a1020"><rect x="14" y="16" width="40" height="20" rx="5" fill="#ffd23a"/><text x="34" y="30">MESSI</text><rect x="60" y="16" width="40" height="20" rx="5" fill="#ffd23a"/><text x="80" y="30">XAVI</text><rect x="14" y="42" width="40" height="20" rx="5" fill="#41ff8a"/><text x="34" y="56">BUFFON</text><rect x="60" y="42" width="40" height="20" rx="5" fill="#41ff8a"/><text x="80" y="56">PIRLO</text><rect x="14" y="68" width="40" height="20" rx="5" fill="#4aa8ff"/><text x="34" y="82">ZIDANE</text><rect x="60" y="68" width="40" height="20" rx="5" fill="#4aa8ff"/><text x="80" y="82">HENRY</text><rect x="14" y="94" width="86" height="14" rx="5" fill="#c77dff"/><text x="57" y="105">? ? ? ?</text></g></svg></span>
+      <span>
+        <span class="ah-card__sello">NUEVO · LETRAS</span>
+        <span class="ch-card__titulo">CUARTETOS TIKITEXTO</span>
+        <span class="ah-card__desc">16 nombres, 4 grupos escondidos. Descubre qué tienen en común y completa el reto diario.</span>
+        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </button>
+
     <section class="inicio__seccion" aria-labelledby="tituloModos">
       <h2 class="inicio__seccion-titulo" id="tituloModos">Elige un modo</h2>
       <div class="rejilla-modos" id="rejillaModos"></div>
@@ -2481,6 +2493,16 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
         <span class="ah-card__sello">NUEVO · 3D</span>
         <span class="ch-card__titulo">PENALTIS 3D</span>
         <span class="ah-card__desc">Tanda de penaltis en un estadio en 3D: tira con tres barras de puntería y, cuando te tiran a ti, párala desde dentro de la portería.</span>
+        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </button>
+
+    <button type="button" class="ch-card tl-card" data-tirolibre>
+      <span class="ch-card__dib" aria-hidden="true"><svg viewBox="0 0 120 120"><rect x="6" y="6" width="108" height="108" rx="14" fill="#07224a" stroke="#ffe94a" stroke-width="3"/><path d="M6 84h108v30H6z" fill="#1f8f45"/><path d="M60 30V84M40 30V84M80 30V84" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/><path d="M22 84V36h76v48" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round"/><g fill="#d9dee8" stroke="#10131f" stroke-width="1.5"><rect x="46" y="58" width="8" height="26" rx="3"/><rect x="56" y="58" width="8" height="26" rx="3"/><rect x="66" y="58" width="8" height="26" rx="3"/></g><path d="M24 104C34 88 70 66 96 50" fill="none" stroke="#ffe94a" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/><circle cx="24" cy="104" r="8" fill="#fff" stroke="#10131f" stroke-width="2"/></svg></span>
+      <span>
+        <span class="ah-card__sello">NUEVO · 3D</span>
+        <span class="ch-card__titulo">TIROS LIBRES 3D</span>
+        <span class="ah-card__desc">Cinco faltas en un estadio en 3D: apunta, da efecto al balón para rodear la barrera y supera a un portero que te lee.</span>
         <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </span>
     </button>
@@ -8840,8 +8862,10 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (!o.closest) return;
     if (o.closest("[data-chapas]")) { abrirChapas(); return; }
     if (o.closest("[data-penaltis]")) { abrirPenaltis(); return; }
+    if (o.closest("[data-tirolibre]")) { abrirTiroLibre(); return; }
     if (o.closest("[data-pinball]")) { abrirPinball(); return; }
     if (o.closest("[data-serpiente]")) { abrirSerpiente(); return; }
+    if (o.closest("[data-cuartetos]")) { abrirCuartetos(); return; }
     if (o.closest("[data-clases]")) { e.preventDefault(); abrirClases(); return; }
     if (o.closest("#chLogo, #chInicio")) { if (ch.activo && !ch.fin && !pantallaCh.hidden) modalSalirNv.hidden = false; else salirNovedad(); return; }
     if (o.closest("#chVerTutorial")) { abrirTutNv("chapas", false); return; }
@@ -8859,8 +8883,10 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   ];
 
   TIKI.penaltis = { juego: function () { return pnActivo; } };
+  TIKI.tirolibre = { juego: function () { return tlActivo; } };
   TIKI.pinball = { juego: function () { return pbActivo; } };
   TIKI.serpiente = { juego: function () { return spActivo; } };
+  TIKI.cuartetos = { juego: function () { return cuActivo; } };
   TIKI.clases = { juego: function () { return clActivo; } };
   TIKI.chapas = { ch: ch, gol: chGol, datos: chDatos, pensar: chPensar, simular: chSimular, estilos: CH_EST, nuevo: chNuevoEstado, VSAQUE: CH_VSAQUE }; /* solo para las pruebas automáticas */
 
@@ -8877,8 +8903,8 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     let g = "letras";
     try { g = sessionStorage.getItem("tikitexto:grupo") || "letras"; } catch (e) { /* sin almacenamiento */ }
     const m = new URLSearchParams(location.search).get("modo");
-    if (m && ["chapas", "navidad", "tarjetas", "fichajes", "penaltis", "pinball"].indexOf(m) >= 0) g = "dinamicos";
-    if (m === "serpiente") g = "letras";
+    if (m && ["chapas", "navidad", "tarjetas", "fichajes", "penaltis", "pinball", "tirolibre"].indexOf(m) >= 0) g = "dinamicos";
+    if (m === "serpiente" || m === "cuartetos") g = "letras";
     poner(g === "dinamicos" ? "dinamicos" : "letras", false);
   })();
 
@@ -8965,6 +8991,36 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     }).catch(function () { raiz.remove(); pnCargando = false; });
   }
 
+  /* ===================== TIROS LIBRES 3D · lanzador (el juego vive en tirolibre.js, que reutiliza penaltis.js y three.js) ===================== */
+  let tlCargando = false, tlActivo = null;
+  function abrirTiroLibre() {
+    if (tlActivo || tlCargando) return;
+    if (!tieneCuenta()) { mostrarCuenta(); return; }
+    tlCargando = true;
+    const raiz = document.createElement("div"); raiz.className = "tl-raiz"; raiz.id = "tlRaiz";
+    raiz.innerHTML = '<div class="pn-carga"><div><i></i>Cargando…</div></div>';
+    document.body.appendChild(raiz);
+    try { if (raiz.requestFullscreen) { const p = raiz.requestFullscreen({ navigationUI: "hide" }); if (p && p.catch) p.catch(function () { /* opcional */ }); } } catch (error) { /* opcional */ }
+    const css = function (id, href) { return new Promise(function (ok) {
+      if (document.getElementById(id)) { ok(); return; }
+      const l = document.createElement("link"); l.rel = "stylesheet"; l.id = id; l.href = href; l.onload = ok; l.onerror = ok; document.head.appendChild(l);
+    }); };
+    Promise.all([import("./tirolibre.js"), css("pnCss", "penaltis.css"), css("tlCss", "tirolibre.css")]).then(function (r) { return r[0].precargar().then(function () { return r; }); }).then(function (r) {
+      const api = {
+        t: function (s) { return TIKI.t ? TIKI.t(s) : s; },
+        sonido: function () { return TIKI.ajustes.sonido(); },
+        datos: function () { const n = nvDatos(); if (!n.tl) n.tl = {}; return n.tl; },
+        nombre: function () { return datosJ.actual || ""; },
+        invitado: function () { try { let n = localStorage.getItem("tikitexto:inv-n"); if (!n) { n = String(100 + Math.floor(Math.random() * 900)); localStorage.setItem("tikitexto:inv-n", n); } return n; } catch (error) { return "000"; } },
+        guardar: guardarJ, tiki: nvSumarTikitexto, victoria: sonidoVictoria,
+        salir: function () { raiz.remove(); tlActivo = null; document.title = "TIKITEXTO · Adivina el nombre del día"; },
+      };
+      raiz.innerHTML = "";
+      tlActivo = r[0].abrir(api, raiz); tlCargando = false;
+      document.title = "TIKITEXTO · Tiros libres 3D";
+    }).catch(function () { raiz.remove(); tlCargando = false; });
+  }
+
   /* ===================== PINBALL GOLAZO · lanzador (el juego vive en pinball.js) ===================== */
   let pbCargando = false, pbActivo = null;
   function abrirPinball() {
@@ -9018,6 +9074,32 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     }).catch(function () { raiz.remove(); spCargando = false; });
   }
 
+  /* ===================== CUARTETOS TIKITEXTO · lanzador (el juego vive en cuartetos.js + cuartetos_datos.js) ===================== */
+  let cuCargando = false, cuActivo = null;
+  function abrirCuartetos() {
+    if (cuActivo || cuCargando) return;
+    if (!tieneCuenta()) { mostrarCuenta(); return; }
+    cuCargando = true;
+    const raiz = document.createElement("div"); raiz.className = "cu-raiz"; raiz.id = "cuRaiz";
+    document.body.appendChild(raiz);
+    const css = new Promise(function (ok) {
+      if (document.getElementById("cuCss")) { ok(); return; }
+      const l = document.createElement("link"); l.rel = "stylesheet"; l.id = "cuCss"; l.href = "cuartetos.css"; l.onload = ok; l.onerror = ok; document.head.appendChild(l);
+    });
+    Promise.all([import("./cuartetos.js"), css]).then(function (r) {
+      const api = {
+        t: function (s) { return TIKI.t ? TIKI.t(s) : s; },
+        locale: TIKI.locale,
+        sonido: function () { return TIKI.ajustes.sonido(); },
+        datos: function () { const n = nvDatos(); if (!n.cu) n.cu = {}; return n.cu; },
+        guardar: guardarJ, tiki: nvSumarTikitexto, victoria: sonidoVictoria,
+        salir: function () { raiz.remove(); cuActivo = null; document.title = "TIKITEXTO · Adivina el nombre del día"; },
+      };
+      cuActivo = r[0].abrir(api, raiz); cuCargando = false;
+      document.title = "TIKITEXTO · Cuartetos";
+    }).catch(function () { raiz.remove(); cuCargando = false; });
+  }
+
   /* ===================== CLASES ANIMADAS · lanzador (vive en clases.js + clases_datos.js) ===================== */
   let clCargando = false, clActivo = null;
   function abrirClases() {
@@ -9053,7 +9135,9 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (m === "chapas" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirChapas(); return; }
     if (m === "clases") { abrirClases(); return; }
     if (m === "serpiente" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirSerpiente(); return; }
+    if (m === "cuartetos" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirCuartetos(); return; }
     if (m === "pinball" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirPinball(); return; }
+    if (m === "tirolibre" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirTiroLibre(); return; }
     if (m === "penaltis" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirPenaltis(); return; }
     if (m === "navidad") { if (navidadActivo() && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) abrirLinterna("navidad"); return; }
     if (MODOS_POR_ID[m] && m !== "diario" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) iniciarPartida(m);
