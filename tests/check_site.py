@@ -924,7 +924,7 @@ with sync_playwright() as p:
         pa.on("pageerror", lambda e: errs_a.append(str(e)))
         pa.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');")
         pa.goto(BASE + "?modo=clases", wait_until="networkidle", timeout=60000); pa.wait_for_timeout(1200)
-        check("vídeos: se abre con enlace directo y muestra 12 miniaturas", pa.locator(".cl-raiz [data-leccion]").count() == 12 and pa.locator("canvas[data-mini]").count() == 12)
+        check("vídeos: se abre con enlace directo y muestra 18 miniaturas", pa.locator(".cl-raiz [data-leccion]").count() == 18 and pa.locator("canvas[data-mini]").count() == 18)
         check("vídeos: botón «Personalizar profesor» siempre visible", pa.locator("[data-cl=profe]").is_visible())
         comp = pa.evaluate("""(async()=>{ const D=await import('/clases_datos.js'), I=await import('/clases_idiomas.js'); const falta=[];
           for(const l of D.LECCIONES){ const cl=[l.titulo,l.desc]; l.escenas.forEach(e=>{cl.push(e.say); e.items.forEach(it=>{ if((it.k==='texto'||it.k==='caja')&&it.t&&/[A-Za-zÁ-ú]{2}/.test(it.t)) cl.push(it.t); }); });
