@@ -876,6 +876,33 @@ with sync_playwright() as p:
     except Exception as e:
         check("pinball", False, str(e)[:150])
 
+    print("3z) Cracks Ocultos")
+    try:
+        cz = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
+        pz = cz.new_page(); errs_z = []
+        pz.on("pageerror", lambda e: errs_z.append(str(e)))
+        pz.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');")
+        pz.goto(BASE, wait_until="networkidle", timeout=60000); pz.wait_for_timeout(300)
+        check("cracks ocultos: tarjeta en Letras", pz.locator("[data-serpiente]").count() == 1)
+        pz.evaluate("document.querySelector('[data-serpiente]').click()"); pz.wait_for_timeout(1500)
+        check("cracks ocultos: se abre la pantalla", pz.locator(".sp-raiz").count() == 1)
+        pz.click("[data-menu] [data-sp=jugar]"); pz.wait_for_timeout(300)
+        res = pz.evaluate("""(()=>{const j=TIKI.serpiente.juego(),S=j.S;
+          const total=S.puz.nombres.reduce((a,n)=>a+n.cells.length,0), uni=new Set(S.puz.nombres.flatMap(n=>n.cells)).size;
+          let gen=0; for(let i=0;i<60;i++){ if(j.generar(null)) gen++; }
+          const n0=S.puz.nombres.length; j.resolverUno(); const uno=S.puz.nombres.filter(n=>n.ok).length;
+          for(let i=0;i<10;i++) j.resolverUno();
+          return {total,uni,gen,n0,uno,fase:S.fase,cuad:S.cuad}})()""")
+        check("cracks ocultos: la cuadrícula reparte las 30 letras entre los nombres", res["total"] == 30 and res["uni"] == 30, str(res))
+        check("cracks ocultos: el generador no falla", res["gen"] == 60, str(res))
+        check("cracks ocultos: acertar un nombre y completar la cuadrícula", res["uno"] == 1 and res["cuad"] == 1, str(res))
+        pz.click("[data-sp=salir]"); pz.wait_for_timeout(300)
+        check("cracks ocultos: salir cierra la pantalla", pz.locator(".sp-raiz").count() == 0)
+        check("cracks ocultos: sin errores de JavaScript", not errs_z, "; ".join(errs_z)[:150])
+        cz.close()
+    except Exception as e:
+        check("cracks ocultos", False, str(e)[:150])
+
     br.close()
 
 # 3u) Enlaces internos de todas las páginas HTML (sin navegador) y artículos de explicación

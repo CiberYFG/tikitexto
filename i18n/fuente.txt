@@ -1768,3 +1768,33 @@ Eliminado en ||| Knocked out in ||| Eliminado em ||| Éliminé en ||| Eliminato 
 Gana el torneo: marca los goles de cada ronda antes de que se acabe el tiempo. ||| Win the tournament: score the goals each round asks for before time runs out. ||| Vença o torneio: faça os gols de cada fase antes que o tempo acabe. ||| Gagne le tournoi : marque les buts de chaque tour avant la fin du temps. ||| Vinci il torneo: segna i gol di ogni turno prima che finisca il tempo. ||| Gewinne das Turnier: erziele in jeder Runde die geforderten Tore, bevor die Zeit abläuft.
 Mantén pulsado para cargar y suelta para chutar ||| Hold to charge and release to kick ||| Mantenha pressionado para carregar e solte para chutar ||| Maintiens pour charger et relâche pour tirer ||| Tieni premuto per caricare e rilascia per tirare ||| Halten zum Aufladen, loslassen zum Schießen
 Mantén pulsado (o Espacio) para cargar y suelta para chutar ||| Hold (or Space) to charge and release to kick ||| Mantenha pressionado (ou Espaço) para carregar e solte para chutar ||| Maintiens (ou Espace) pour charger et relâche pour tirer ||| Tieni premuto (o Spazio) per caricare e rilascia per tirare ||| Halten (oder Leertaste) zum Aufladen, loslassen zum Schießen
+NUEVO · LETRAS ||| NEW · LETTERS ||| NOVO · LETRAS ||| NOUVEAU · LETTRES ||| NUOVO · LETTERE ||| NEU · BUCHSTABEN
+CRACKS OCULTOS ||| HIDDEN STARS ||| CRAQUES ESCONDIDOS ||| STARS CACHÉES ||| FUORICLASSE NASCOSTI ||| VERSTECKTE STARS
+Cada letra esconde a un futbolista del tema. Desliza el dedo para descubrirlos todos antes de que se acabe el tiempo. ||| Every letter hides a footballer from the theme. Swipe to uncover them all before time runs out. ||| Cada letra esconde um jogador do tema. Deslize o dedo para descobrir todos antes que o tempo acabe. ||| Chaque lettre cache un footballeur du thème. Glisse le doigt pour tous les trouver avant la fin du temps. ||| Ogni lettera nasconde un calciatore del tema. Scorri il dito per scoprirli tutti prima che scada il tempo. ||| Jeder Buchstabe versteckt einen Fußballer des Themas. Wische, um alle zu entdecken, bevor die Zeit abläuft.
+Juego de letras ||| Letter game ||| Jogo de letras ||| Jeu de lettres ||| Gioco di lettere ||| Buchstabenspiel
+Cada letra de la cuadrícula forma parte de un futbolista del tema. ||| Every letter in the grid belongs to a footballer from the theme. ||| Cada letra da grade faz parte de um jogador do tema. ||| Chaque lettre de la grille fait partie d'un footballeur du thème. ||| Ogni lettera della griglia fa parte di un calciatore del tema. ||| Jeder Buchstabe im Raster gehört zu einem Fußballer des Themas.
+Desliza el dedo por letras vecinas (también en diagonal) para descubrir los nombres. ||| Swipe through neighbouring letters (diagonals too) to uncover the names. ||| Deslize o dedo por letras vizinhas (também na diagonal) para descobrir os nomes. ||| Glisse le doigt sur des lettres voisines (aussi en diagonale) pour trouver les noms. ||| Scorri il dito su lettere vicine (anche in diagonale) per scoprire i nomi. ||| Wische über benachbarte Buchstaben (auch diagonal), um die Namen zu entdecken.
+Cada cuadrícula completa suma tiempo. ¡Aguanta todo lo que puedas! ||| Every completed grid adds time. Last as long as you can! ||| Cada grade completa soma tempo. Aguente o máximo que puder! ||| Chaque grille terminée ajoute du temps. Tiens le plus longtemps possible ! ||| Ogni griglia completata aggiunge tempo. Resisti più che puoi! ||| Jedes gelöste Raster bringt Zeit. Halte so lange durch, wie du kannst!
+Tema ||| Theme ||| Tema ||| Thème ||| Tema ||| Thema
+💡 Pista ||| 💡 Hint ||| 💡 Dica ||| 💡 Indice ||| 💡 Suggerimento ||| 💡 Tipp
+Se acabó el tiempo ||| Time's up ||| Acabou o tempo ||| Le temps est écoulé ||| Tempo scaduto ||| Die Zeit ist um
+Cuadrículas ||| Grids ||| Grades ||| Grilles ||| Griglie ||| Raster
+Nombres ||| Names ||| Nomes ||| Noms ||| Nomi ||| Namen
+Ese nombre está, pero por otro camino ||| That name is there, but along another path ||| Esse nome está aí, mas por outro caminho ||| Ce nom est là, mais par un autre chemin ||| Quel nome c'è, ma per un altro percorso ||| Dieser Name ist da, aber auf einem anderen Weg
+Cuadrícula completa ||| Grid complete ||| Grade completa ||| Grille terminée ||| Griglia completata ||| Raster gelöst
+Ganadores del Balón de Oro ||| Ballon d'Or winners ||| Vencedores da Bola de Ouro ||| Vainqueurs du Ballon d'Or ||| Vincitori del Pallone d'Oro ||| Ballon-d'Or-Gewinner
+España campeona del mundo 2010 ||| Spain, 2010 world champions ||| Espanha campeã do mundo 2010 ||| Espagne championne du monde 2010 ||| Spagna campione del mondo 2010 ||| Spanien, Weltmeister 2010
+Leyendas del Barcelona ||| Barcelona legends ||| Lendas do Barcelona ||| Légendes du Barça ||| Leggende del Barcellona ||| Barcelona-Legenden
+Leyendas del Real Madrid ||| Real Madrid legends ||| Lendas do Real Madrid ||| Légendes du Real Madrid ||| Leggende del Real Madrid ||| Real-Madrid-Legenden
+Leyendas de Brasil ||| Brazil legends ||| Lendas do Brasil ||| Légendes du Brésil ||| Leggende del Brasile ||| Brasilien-Legenden
+Leyendas de Argentina ||| Argentina legends ||| Lendas da Argentina ||| Légendes d'Argentine ||| Leggende dell'Argentina ||| Argentinien-Legenden
+Leyendas de Francia ||| France legends ||| Lendas da França ||| Légendes de France ||| Leggende della Francia ||| Frankreich-Legenden
+Leyendas de Italia ||| Italy legends ||| Lendas da Itália ||| Légendes d'Italie ||| Leggende dell'Italia ||| Italien-Legenden
+Delanteros de leyenda ||| Legendary strikers ||| Atacantes lendários ||| Attaquants de légende ||| Attaccanti leggendari ||| Legendäre Stürmer
+Porteros históricos ||| Great goalkeepers ||| Goleiros históricos ||| Gardiens historiques ||| Portieri storici ||| Große Torhüter
+Leyendas de la Premier League ||| Premier League legends ||| Lendas da Premier League ||| Légendes de la Premier League ||| Leggende della Premier League ||| Premier-League-Legenden
+Leyendas de Alemania ||| Germany legends ||| Lendas da Alemanha ||| Légendes d'Allemagne ||| Leggende della Germania ||| Deutschland-Legenden
+Leyendas de los Países Bajos ||| Netherlands legends ||| Lendas dos Países Baixos ||| Légendes des Pays-Bas ||| Leggende dei Paesi Bassi ||| Niederlande-Legenden
+Leyendas de Portugal ||| Portugal legends ||| Lendas de Portugal ||| Légendes du Portugal ||| Leggende del Portogallo ||| Portugal-Legenden
+Estadios míticos ||| Legendary stadiums ||| Estádios míticos ||| Stades mythiques ||| Stadi mitici ||| Legendäre Stadien
+Entrenadores famosos ||| Famous managers ||| Treinadores famosos ||| Entraîneurs célèbres ||| Allenatori famosi ||| Berühmte Trainer
