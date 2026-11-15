@@ -13,7 +13,7 @@ const J = (id, eq, x, y, n, at) => { const p = m(x, y); return { k: "jug", id, e
 
 /* ============ 1 · FUERA DE JUEGO ============ */
 const fuera = {
-  id: "fuera-de-juego", emoji: "🚩", titulo: "El fuera de juego", desc: "La regla más famosa y más discutida, explicada con una línea.", dur: "≈ 2 min",
+  id: "fuera-de-juego", emoji: "🚩", titulo: "El fuera de juego", desc: "La regla más famosa y más discutida, explicada con una línea.", dur: "≈ 2 min", thumb: 3,
   escenas: [
     { say: "Hoy vamos con la regla más famosa y más discutida del fútbol: el fuera de juego. Verás que es más fácil de lo que parece.", min: 5,
       items: [{ k: "campo", x0: ZX, y0: ZY, esc: 7.5 }, { k: "texto", x: 300, y: 36, id: "tt", t: "FUERA DE JUEGO", c: AM, sz: 30, al: "c", at: .3 }] },
@@ -54,13 +54,8 @@ const fuera = {
         { k: "caja", x: 60, y: 70, w: 480, h: 50, t: "1 · Estar en posición de fuera de juego", c: AZ, at: .12 },
         { k: "caja", x: 60, y: 132, w: 480, h: 50, t: "2 · Intervenir en la jugada", c: AZ, at: .35 },
         { k: "caja", x: 60, y: 194, w: 480, h: 50, t: "= Tiro libre indirecto para el rival", c: "#ef4444", at: .6 }, { k: "sonido", s: "silbato", at: .6 }] },
-    { say: "Hoy, además, el VAR y las líneas virtuales ayudan a medir los casos más ajustados. Ya sabes lo básico. ¡Ahora ponte a prueba!", min: 7, limpia: true,
-      items: [{ k: "texto", x: 300, y: 130, t: "¡Ya lo sabes!", c: AM, sz: 40, al: "c", at: .1 }, { k: "texto", x: 300, y: 190, t: "Ahora, el minitest", c: BL, sz: 20, al: "c", at: .5 }] },
-  ],
-  quiz: [
-    { p: "¿Cuándo se valora si un jugador está en fuera de juego?", o: ["En el momento en que su compañero toca o juega el balón", "Cuando él recibe el balón", "Al terminar la jugada"], c: 0 },
-    { p: "Un delantero a la misma altura que el penúltimo defensor, ¿está en fuera de juego?", o: ["No, estar a la par es legal", "Sí, siempre", "Solo si el portero está adelantado"], c: 0 },
-    { p: "¿En qué situación no puede haber fuera de juego?", o: ["En un saque de banda", "En un pase largo", "En un contraataque"], c: 0 },
+    { say: "Hoy, además, el VAR y las líneas virtuales ayudan a medir los casos más ajustados. Ya sabes lo básico. La próxima vez que lo veas en un partido, ¡lo entenderás al instante!", min: 7, limpia: true,
+      items: [{ k: "texto", x: 300, y: 130, t: "¡Ya lo sabes!", c: AM, sz: 40, al: "c", at: .1 }, { k: "texto", x: 300, y: 190, t: "Míralo en el próximo partido", c: BL, sz: 20, al: "c", at: .5 }] },
   ],
 };
 
@@ -70,7 +65,7 @@ const fila = (y, c, n, pj, g, e, p, pts, at) => [
   { k: "texto", x: 290, y, t: g, c: BL, sz: 17, al: "c", at }, { k: "texto", x: 340, y, t: e, c: BL, sz: 17, al: "c", at },
   { k: "texto", x: 390, y, t: p, c: BL, sz: 17, al: "c", at }, { k: "texto", x: 470, y, t: pts, c: AM, sz: 19, al: "c", at }];
 const torneo = {
-  id: "como-se-gana-un-torneo", emoji: "🏆", titulo: "Cómo se gana un torneo", desc: "De la fase de grupos a la final, fase a fase.", dur: "≈ 2 min",
+  id: "como-se-gana-un-torneo", emoji: "🏆", titulo: "Cómo se gana un torneo", desc: "De la fase de grupos a la final, fase a fase.", dur: "≈ 2 min", thumb: 3,
   escenas: [
     { say: "¿Cómo se gana un torneo? Siguiendo un camino con varias fases, desde la fase de grupos hasta la gran final. Vamos paso a paso.", min: 5,
       items: [{ k: "texto", x: 300, y: 110, t: "¿CÓMO SE GANA\nUN TORNEO?", c: AM, sz: 34, al: "c", at: .1 }, { k: "texto", x: 300, y: 230, t: "fase a fase  🏆", c: BL, sz: 24, al: "c", at: .6 }] },
@@ -109,20 +104,15 @@ const torneo = {
         { k: "caja", x: 20, y: 130, w: 560, h: 46, t: "Puestos 1 a 8 → directos a octavos", c: VE, at: .35 },
         { k: "caja", x: 20, y: 190, w: 560, h: 46, t: "Puestos 9 a 24 → ronda previa (ida y vuelta)", c: "#a855f7", at: .55 },
         { k: "caja", x: 20, y: 250, w: 560, h: 42, t: "Puestos 25 a 36 → eliminados", c: "#ef4444", at: .75 }] },
-    { say: "Ya conoces el camino: grupos, eliminatorias, prórroga, penaltis y final. ¡Ahora el minitest!", min: 6, limpia: true,
+    { say: "Ya conoces el camino: grupos, eliminatorias, prórroga, penaltis y final. ¡Ya puedes seguir cualquier torneo como un experto!", min: 6, limpia: true,
       items: [{ k: "texto", x: 300, y: 140, t: "¡A por la copa!  🏆", c: AM, sz: 38, al: "c", at: .1 }] },
-  ],
-  quiz: [
-    { p: "En una fase de grupos, ¿cuántos puntos vale un empate?", o: ["1 punto", "2 puntos", "3 puntos"], c: 0 },
-    { p: "Si una eliminatoria a partido único acaba empatada tras los 90 minutos, ¿qué ocurre?", o: ["Prórroga y, si sigue el empate, penaltis", "Se repite el partido", "Pasa el que tenga más córners"], c: 0 },
-    { p: "¿Cuántas selecciones tuvo el Mundial de 2026?", o: ["48", "32", "64"], c: 0 },
   ],
 };
 
 /* ============ 3 · TARJETAS ============ */
 const lista = (arr, x, y0, paso, c, at0, dat) => arr.map((t, i) => ({ k: "texto", x, y: y0 + i * paso, t, c, sz: 18, al: "l", at: at0 + i * dat }));
 const tarjetas = {
-  id: "tarjetas-amarillas-y-rojas", emoji: "🟨", titulo: "Tarjetas amarillas y rojas", desc: "Los principales motivos para cada tarjeta.", dur: "≈ 2 min",
+  id: "tarjetas-amarillas-y-rojas", emoji: "🟨", titulo: "Tarjetas amarillas y rojas", desc: "Los principales motivos para cada tarjeta.", dur: "≈ 2 min", thumb: 2,
   escenas: [
     { say: "Las tarjetas son la forma que tiene el árbitro de sancionar la mala conducta. Hoy veremos qué se castiga con amarilla y qué con roja.", min: 6,
       items: [{ k: "texto", x: 300, y: 50, t: "LAS TARJETAS", c: AM, sz: 32, al: "c", at: .1 },
@@ -146,13 +136,8 @@ const tarjetas = {
       items: [{ k: "texto", x: 300, y: 36, t: "AMARILLAS ACUMULADAS", c: AM, sz: 24, al: "c", at: 0 },
         { k: "tarjeta", x: 120, y: 130, c: "am", at: .2 }, { k: "tarjeta", x: 220, y: 130, c: "am", at: .35 }, { k: "tarjeta", x: 320, y: 130, c: "am", at: .5 },
         { k: "texto", x: 300, y: 250, t: "…y llega el partido de sanción", c: "#ff8a8a", sz: 20, al: "c", at: .7 }] },
-    { say: "Ya sabes cuándo se enseña cada tarjeta. ¡Vamos con el minitest!", min: 5, limpia: true,
+    { say: "Ya sabes cuándo se enseña cada tarjeta. ¡Y a ver si el árbitro acierta en el próximo partido!", min: 5, limpia: true,
       items: [{ k: "tarjeta", x: 260, y: 150, c: "am", at: .2 }, { k: "tarjeta", x: 340, y: 150, c: "ro", at: .4 }] },
-  ],
-  quiz: [
-    { p: "Dos tarjetas amarillas en el mismo partido equivalen a…", o: ["Una tarjeta roja", "Un aviso", "Un tiro libre"], c: 0 },
-    { p: "¿Cuál de estos es motivo de tarjeta roja directa?", o: ["Escupir a un rival", "Protestar una decisión", "Perder tiempo"], c: 0 },
-    { p: "Si un jugador es expulsado, su equipo…", o: ["Se queda con uno menos y no puede sustituirlo", "Puede meter a otro enseguida", "Pierde el partido"], c: 0 },
   ],
 };
 

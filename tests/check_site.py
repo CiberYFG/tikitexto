@@ -913,38 +913,47 @@ with sync_playwright() as p:
     except Exception as e:
         check("cracks ocultos", False, str(e)[:150])
 
-    print("3aa) Clases animadas")
+    print("3aa) Vídeos (clases animadas)")
     try:
         ca = br.new_context(viewport={"width": 1000, "height": 760}, service_workers="block")
         pa = ca.new_page(); errs_a = []
         pa.on("pageerror", lambda e: errs_a.append(str(e)))
         pa.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');")
         pa.goto(BASE + "?modo=clases", wait_until="networkidle", timeout=60000); pa.wait_for_timeout(1200)
-        check("clases: se abre con enlace directo y muestra 3 lecciones", pa.locator(".cl-raiz [data-leccion]").count() == 3)
+        check("vídeos: se abre con enlace directo y muestra 3 miniaturas", pa.locator(".cl-raiz [data-leccion]").count() == 3 and pa.locator("canvas[data-mini]").count() == 3)
+        check("vídeos: botón «Personalizar profesor» siempre visible", pa.locator("[data-cl=profe]").is_visible())
+        comp = pa.evaluate("""(async()=>{ const D=await import('/clases_datos.js'), I=await import('/clases_idiomas.js'); const falta=[];
+          for(const l of D.LECCIONES){ const cl=[l.titulo,l.desc]; l.escenas.forEach(e=>{cl.push(e.say); e.items.forEach(it=>{ if((it.k==='texto'||it.k==='caja')&&it.t&&/[A-Za-zÁ-ú]{2}/.test(it.t)) cl.push(it.t); }); });
+            for(const g of ['en','pt','fr','it','de']) for(const t of cl) if(!I.TEXTOS[g][t]) falta.push(g+':'+t.slice(0,30));
+            l.escenas.forEach((e,i)=>{ if(e.say.length>330) falta.push('largo:'+l.id+i); }); }
+          for(const k in I.UI) if(I.UI[k].length!==6) falta.push('ui:'+k);
+          return falta; })()""")
+        check("vídeos: todos los textos están traducidos a los 6 idiomas", not comp, str(comp[:5]))
+        pa.click("[data-cl-idioma=de]"); pa.wait_for_timeout(300)
+        check("vídeos: el hub cambia de idioma", "Videos" in pa.inner_text(".cl-hero .cl-h"), pa.inner_text(".cl-hero .cl-h"))
         pa.click("[data-leccion='0']"); pa.wait_for_timeout(400)
         r = pa.evaluate("""(()=>{const j=TIKI.clases.juego(); const out=[];
-          j.LECCIONES.forEach((l,li)=>{ j.cargaLeccion(l); l.escenas.forEach((e,i)=>{ j.empezarEscena(i); const w=j.mundo(); if(!w.ents.length && !e.limpia && i>0) out.push(l.id+':'+i+' vacia');
-            if(!e.say||e.say.length>330) out.push(l.id+':'+i+' texto'); }); });
-          return {errores:out, lec:j.LECCIONES.length}})()""")
-        check("clases: todas las escenas se resuelven y los textos caben en el subtítulo", not r["errores"], str(r))
+          j.LECCIONES.forEach((l)=>{ j.cargaLeccion(l); l.escenas.forEach((e,i)=>{ j.empezarEscena(i); const w=j.mundo(); if(!w.ents.length && !e.limpia && i>0) out.push(l.id+':'+i+' vacia'); }); });
+          return out})()""")
+        check("vídeos: todas las escenas se resuelven", not r, str(r))
         pa.evaluate("TIKI.clases.juego().cargaLeccion(TIKI.clases.juego().LECCIONES[0])"); pa.wait_for_timeout(1500)
-        check("clases: la lección avanza sola", pa.evaluate("TIKI.clases.juego().S().T") > 0.5)
+        check("vídeos: la lección avanza sola", pa.evaluate("TIKI.clases.juego().S().T") > 0.5)
+        pa.select_option("[data-idi]", "en"); pa.wait_for_timeout(300)
+        check("vídeos: se puede cambiar de idioma dentro del vídeo", pa.evaluate("TIKI.clases.juego().cfg.idioma") == "en" and "Offside" in pa.inner_text("[data-tit]"), pa.inner_text("[data-tit]"))
         pa.click("[data-cl=vista]"); pa.wait_for_timeout(200)
-        check("clases: se puede cambiar a vista pizarra", pa.evaluate("TIKI.clases.juego().cfg.vista") == "pizarra")
+        check("vídeos: se puede cambiar a vista pizarra", pa.evaluate("TIKI.clases.juego().cfg.vista") == "pizarra")
         pa.click("[data-cl=vista]")
-        pa.evaluate("(()=>{const j=TIKI.clases.juego(); for(let i=0;i<12;i++) j.avanza();})()"); pa.wait_for_timeout(400)
-        check("clases: al final aparece el minitest", pa.locator("[data-quiz]:not([hidden])").count() == 1)
-        for q in range(3):
-            cor = pa.evaluate("TIKI.clases.juego().LECCIONES[0].quiz[%d].c" % q)
-            pa.click("[data-op='%d']" % cor); pa.wait_for_timeout(1100)
-        check("clases: acertar el minitest da el aprobado", "3 de 3" in pa.inner_text("[data-qr]"), pa.inner_text("[data-qr]"))
+        check("vídeos: solo música o sin música (sin estadio)", pa.evaluate("(()=>{const j=TIKI.clases.juego(); const a=[]; for(let i=0;i<3;i++){document.querySelector('[data-cl=amb]').click(); a.push(j.cfg.amb);} return a.join()})()") in ("off,musica,off", "musica,off,musica"))
+        pa.evaluate("(()=>{const j=TIKI.clases.juego(); for(let i=0;i<12;i++) j.avanza();})()"); pa.wait_for_timeout(300)
+        check("vídeos: al final no hay minitest, solo repetir o más vídeos", pa.locator("[data-fin]:not([hidden])").count() == 1 and pa.locator("[data-op]").count() == 0)
         pa.click("[data-cl=otra]"); pa.wait_for_timeout(200)
+        check("vídeos: «Más vídeos» vuelve al hub", pa.locator("[data-menu]:not([hidden])").count() == 1)
         pa.click("[data-cl=salir]"); pa.wait_for_timeout(300)
-        check("clases: salir cierra la pantalla", pa.locator(".cl-raiz").count() == 0)
-        check("clases: sin errores de JavaScript", not errs_a, "; ".join(errs_a)[:150])
+        check("vídeos: salir cierra la pantalla", pa.locator(".cl-raiz").count() == 0)
+        check("vídeos: sin errores de JavaScript", not errs_a, "; ".join(errs_a)[:150])
         ca.close()
     except Exception as e:
-        check("clases", False, str(e)[:150])
+        check("vídeos", False, str(e)[:150])
 
     br.close()
 
