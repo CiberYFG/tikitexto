@@ -1,6 +1,6 @@
 /* SLALOM 3D · TIKITEXTO (15-nov-2026)
    Corredor de regates en 3D (módulo propio, carga diferida). Reutiliza los cuerpos y el sonido de penaltis.js (three.js en lib/, MIT).
-   Tres carriles: desliza a los lados para cambiar de carril, hacia arriba para saltar y hacia abajo para deslizarte bajo los carteles.
+   Tres carriles: desliza a los lados para cambiar de carril, hacia arriba para saltar y hacia abajo para deslizarte bajo las pancartas. Cada gesto cambia un solo carril.
    Todo se dibuja con código: sin escudos, fotos, logos ni marcas. */
 import * as THREE from "./lib/three.module.min.js";
 import { POSES, crearAudio, precargar as precargarCuerpos } from "./penaltis.js";
@@ -13,7 +13,7 @@ const lerp = (a, b, t) => a + (b - a) * t;
 const rnd = (a, b) => a + Math.random() * (b - a);
 const irnd = (n) => Math.floor(Math.random() * n);
 
-const LX = [-2.4, 0, 2.4], Z_SPAWN = -112, Z_FIN = 9, G = 26, SALTO = 8.1, DUR_DESL = 0.75, VIDAS = 2, META_TIKI = 500;
+const LX = [-2.4, 0, 2.4], Z_SPAWN = -112, Z_FIN = 9, G = 22.5, SALTO = 8.1, DUR_DESL = 0.75, VIDAS = 2, META_TIKI = 500;
 const KITS = [[0xd62839, 0xffffff], [0xff8a00, 0x1a1a1a], [0x7b2cbf, 0xf2f4f8], [0x111111, 0xffd23a], [0x0a7d4f, 0xffffff]];
 const TEMAS = [
   { cielo: 0x8fcbff, niebla: 0xbfe1ff, hemi: 1.05, sol: 2.7, solC: 0xfff1d6, exp: 1.05 },
@@ -35,7 +35,7 @@ const PLANTILLA = `
   <div class="sl-caja">
     <p class="sl-kicker">Videojuego 3D</p>
     <h2>SLALOM</h2>
-    <p class="sl-sub">Regatea por el campo: esquiva defensas, salta las vallas y deslízate bajo los carteles. Cuanto más corres, más rápido va.</p>
+    <p class="sl-sub">Regatea por el campo: esquiva defensas, salta balones y porterías de entrenamiento y deslízate bajo las pancartas. Cuanto más corres, más rápido va.</p>
     <ul class="sl-ctl">
       <li><b>⬅️➡️</b><span>Cambia de carril</span></li>
       <li><b>⬆️</b><span>Salta</span></li>
@@ -99,11 +99,28 @@ function texValla(aniso) {
   }
   return tex(c, 14, 1, aniso);
 }
+function texBalon() {
+  const c = lienzo(256, 128), x = c.getContext("2d");
+  x.fillStyle = "#f6f7f9"; x.fillRect(0, 0, 256, 128);
+  const pent = (cx, cy, r) => { x.beginPath(); for (let i = 0; i < 5; i++) { const a = -Math.PI / 2 + i * 2 * Math.PI / 5; x.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r); } x.closePath(); x.fill(); };
+  x.fillStyle = "#16191f"; [[32, 40], [96, 84], [160, 40], [224, 84], [128, 14], [0, 84], [256, 84]].forEach((p) => pent(p[0], p[1], 15));
+  x.fillStyle = "#16191f"; pent(64, 116, 12); pent(192, 116, 12);
+  x.strokeStyle = "rgba(30,34,42,.55)"; x.lineWidth = 2; [[32, 40, 96, 84], [96, 84, 160, 40], [160, 40, 224, 84], [32, 40, 128, 14], [128, 14, 160, 40]].forEach((l) => { x.beginPath(); x.moveTo(l[0], l[1]); x.lineTo(l[2], l[3]); x.stroke(); });
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
+}
+function texRed() {
+  const c = lienzo(128, 128), x = c.getContext("2d"); x.clearRect(0, 0, 128, 128);
+  x.strokeStyle = "rgba(245,248,250,.92)"; x.lineWidth = 3;
+  for (let i = 0; i <= 128; i += 16) { x.beginPath(); x.moveTo(i, 0); x.lineTo(i, 128); x.stroke(); x.beginPath(); x.moveTo(0, i); x.lineTo(128, i); x.stroke(); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(3, 2); t.anisotropy = 4; return t;
+}
 function texCartel() {
   const c = lienzo(512, 128), x = c.getContext("2d");
-  const g = x.createLinearGradient(0, 0, 512, 0); g.addColorStop(0, "#ff3d6e"); g.addColorStop(0.5, "#ffb400"); g.addColorStop(1, "#19e6ff"); x.fillStyle = g; x.fillRect(0, 0, 512, 128);
-  x.fillStyle = "rgba(0,0,0,.25)"; for (let i = -2; i < 12; i++) { x.beginPath(); x.moveTo(i * 48, 128); x.lineTo(i * 48 + 24, 0); x.lineTo(i * 48 + 48, 0); x.lineTo(i * 48 + 24, 128); x.fill(); }
-  x.fillStyle = "#fff"; x.font = "900 74px Arial, Helvetica, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle"; x.lineWidth = 8; x.strokeStyle = "rgba(0,0,0,.45)"; x.strokeText("⬇ ⬇ ⬇", 256, 68); x.fillText("⬇ ⬇ ⬇", 256, 68);
+  const g = x.createLinearGradient(0, 0, 0, 128); g.addColorStop(0, "#1c8f4e"); g.addColorStop(1, "#0f6b37"); x.fillStyle = g; x.fillRect(0, 0, 512, 128);
+  x.fillStyle = "rgba(255,255,255,.10)"; for (let i = 0; i < 8; i++) if (i % 2 === 0) x.fillRect(i * 64, 0, 64, 128);
+  x.fillStyle = "#fff"; x.fillRect(0, 0, 512, 7); x.fillRect(0, 121, 512, 7);
+  x.fillStyle = "#fff"; x.font = "900 66px Arial, Helvetica, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle"; x.lineWidth = 8; x.strokeStyle = "rgba(0,0,0,.45)";
+  x.strokeText("⬇ ¡GOOOL! ⬇", 256, 66); x.fillText("⬇ ¡GOOOL! ⬇", 256, 66);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
 }
 function texBrillo(col) {
@@ -226,7 +243,7 @@ export function abrir(api, raiz) {
     /* mallas de obstáculos y objetos (se crean bajo demanda) */
     mundo.matMon = new THREE.MeshStandardMaterial({ color: 0xffc824, emissive: 0x8a5d00, emissiveIntensity: 0.8, metalness: 0.15, roughness: 0.35 });
     mundo.geoMon = new THREE.CylinderGeometry(0.3, 0.3, 0.07, 28); mundo.geoMon.rotateX(Math.PI / 2);
-    mundo.texRayo = texRayo(); mundo.texCartel = texCartel();
+    mundo.texRayo = texRayo(); mundo.texCartel = texCartel(); mundo.texBalon = texBalon(); mundo.texRed = texRed();
     chispas = crearParticulas(scene, 120, 0xffd23a, 0.22, true); polvo = crearParticulas(scene, 70, 0xdfe9d4, 0.32, false);
     for (let i = 0; i < 22; i++) {
       const m = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.015, 3), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45, fog: false }));
@@ -241,25 +258,35 @@ export function abrir(api, raiz) {
     const i = nDef++, k = KITS[i % KITS.length], f = crearFigura({ cuerpo: "jugador", camisa2: k[1], camisa: k[0], pantalon: k[1], media: k[0], piel: [0xf0c8a0, 0xd9a273, 0xa8764d, 0x7a5233][i % 4], pelo: 0x1c140f, dorsal: 2 + (i * 3) % 30, nombre: "", numColor: "#ffffff", manga: true });
     f.raiz.visible = false; scene.add(f.raiz); libres.def.push(f); return f;
   }
+  /* mini-portería de entrenamiento (se salta por encima del larguero) */
   function mallaValla() {
-    const g = new THREE.Group(), blanco = new THREE.MeshStandardMaterial({ color: 0xf4f6f8, roughness: 0.5 }), rojo = new THREE.MeshStandardMaterial({ color: 0xe63946, roughness: 0.5 });
-    [-0.95, 0.95].forEach((x) => { const p = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.75, 0.1), blanco); p.position.set(x, 0.375, 0); p.castShadow = true; g.add(p); });
-    [[0.62, rojo], [0.34, blanco]].forEach((q) => { const b = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.17, 0.09), q[1]); b.position.y = q[0]; b.castShadow = true; g.add(b); });
-    return g;
-  }
-  function mallaCono() {
-    const g = new THREE.Group(), n = new THREE.MeshStandardMaterial({ color: 0xff7a1a, roughness: 0.55 }), b = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
-    [[-0.7, 0], [0, 0.3], [0.7, 0]].forEach((p) => {
-      const c = new THREE.Mesh(new THREE.ConeGeometry(0.26, 0.58, 20), n); c.position.set(p[0], 0.31, p[1]); c.castShadow = true; g.add(c);
-      const r = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 0.08, 20), b); r.position.set(p[0], 0.3, p[1]); g.add(r);
-      const base = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.04, 0.56), n); base.position.set(p[0], 0.02, p[1]); g.add(base);
+    const g = new THREE.Group(), blanco = new THREE.MeshStandardMaterial({ color: 0xf7f8fa, roughness: 0.35, metalness: 0.1 });
+    const red = new THREE.MeshBasicMaterial({ map: mundo.texRed, transparent: true, side: THREE.DoubleSide, depthWrite: false, fog: true });
+    [-0.95, 0.95].forEach((x) => {
+      const p = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.7, 12), blanco); p.position.set(x, 0.35, 0); p.castShadow = true; g.add(p);
+      const t = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.55, 10), blanco); t.rotation.x = Math.PI / 2; t.position.set(x, 0.7, -0.27); g.add(t);
+      const lado = new THREE.Mesh(new THREE.PlaneGeometry(0.55, 0.7), red); lado.rotation.y = Math.PI / 2; lado.position.set(x, 0.35, -0.27); g.add(lado);
     });
+    const l = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 1.95, 12), blanco); l.rotation.z = Math.PI / 2; l.position.y = 0.7; l.castShadow = true; g.add(l);
+    const fondo = new THREE.Mesh(new THREE.PlaneGeometry(1.9, 0.7), red); fondo.position.set(0, 0.35, -0.55); g.add(fondo);
+    const techo = new THREE.Mesh(new THREE.PlaneGeometry(1.9, 0.55), red); techo.rotation.x = Math.PI / 2; techo.position.set(0, 0.7, -0.27); g.add(techo);
     return g;
   }
+  /* fila de balones (se saltan) */
+  function mallaCono() {
+    const g = new THREE.Group(), mat = new THREE.MeshStandardMaterial({ map: mundo.texBalon, roughness: 0.4 });
+    [-0.7, 0, 0.7].forEach((x, i) => { const b = new THREE.Mesh(new THREE.SphereGeometry(0.3, 24, 16), mat); b.position.set(x, 0.3, (i === 1 ? 0.25 : 0)); b.rotation.set(rnd(0, 3), rnd(0, 3), 0); b.castShadow = true; g.add(b); });
+    return g;
+  }
+  /* pancarta de la grada entre dos banderines de córner (se pasa deslizándose) */
   function mallaCartel() {
-    const g = new THREE.Group(), gris = new THREE.MeshStandardMaterial({ color: 0x8e99a6, metalness: 0.5, roughness: 0.45 });
-    [-3.7, 3.7].forEach((x) => { const p = new THREE.Mesh(new THREE.BoxGeometry(0.16, 2.3, 0.16), gris); p.position.set(x, 1.15, 0); p.castShadow = true; g.add(p); });
-    const tab = new THREE.Mesh(new THREE.BoxGeometry(7.5, 1.05, 0.14), new THREE.MeshStandardMaterial({ map: mundo.texCartel, roughness: 0.6, emissive: 0x222222 })); tab.position.y = 1.72; tab.castShadow = true; g.add(tab);
+    const g = new THREE.Group(), blanco = new THREE.MeshStandardMaterial({ color: 0xf7f8fa, roughness: 0.4 }), banderin = new THREE.MeshStandardMaterial({ color: 0xffc400, roughness: 0.6, side: THREE.DoubleSide });
+    [-3.7, 3.7].forEach((x) => {
+      const p = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 2.4, 12), blanco); p.position.set(x, 1.2, 0); p.castShadow = true; g.add(p);
+      const sh = new THREE.Shape(); sh.moveTo(0, 0); sh.lineTo(0.62, 0.2); sh.lineTo(0, 0.4); sh.closePath();
+      const f = new THREE.Mesh(new THREE.ShapeGeometry(sh), banderin); f.position.set(x - (x > 0 ? 0.0 : 0.0), 2.38, 0); g.add(f);
+    });
+    const tab = new THREE.Mesh(new THREE.BoxGeometry(7.5, 1.05, 0.14), new THREE.MeshStandardMaterial({ map: mundo.texCartel, roughness: 0.6, emissive: 0x1a1a1a })); tab.position.y = 1.72; tab.castShadow = true; g.add(tab);
     return g;
   }
   function mallaBota() {
@@ -490,16 +517,16 @@ export function abrir(api, raiz) {
   }
 
   /* ── entrada ── */
-  let tocando = false, sx = 0, sy = 0;
+  let tocando = false, usado = false, sx = 0, sy = 0;
   raiz.addEventListener("pointerdown", function (e) {
     audioIni(); au.iniciar();
     if (e.target.closest && e.target.closest("[data-sl], [data-menu], [data-fin], .sl-cab")) return;
-    tocando = true; sx = e.clientX; sy = e.clientY;
+    tocando = true; usado = false; sx = e.clientX; sy = e.clientY;
   });
   raiz.addEventListener("pointermove", function (e) {
-    if (!tocando) return; const dx = e.clientX - sx, dy = e.clientY - sy; if (Math.hypot(dx, dy) < 26) return;
+    if (!tocando || usado) return; const dx = e.clientX - sx, dy = e.clientY - sy; if (Math.hypot(dx, dy) < 30) return;
     if (Math.abs(dx) > Math.abs(dy)) mover(dx > 0 ? 1 : -1); else if (dy < 0) saltar(); else deslizar();
-    sx = e.clientX; sy = e.clientY;
+    usado = true; /* un gesto = una acción: hay que levantar el dedo para otra */
   });
   ["pointerup", "pointercancel", "pointerleave"].forEach((n) => raiz.addEventListener(n, function () { tocando = false; }));
   raiz.addEventListener("click", function (e) {
