@@ -141,4 +141,104 @@ const tarjetas = {
   ],
 };
 
-export const LECCIONES = [fuera, torneo, tarjetas];
+
+/* Campo completo (3,9 px por metro): f(x, y) pasa de metros a pizarra. El equipo azul ataca hacia la derecha. */
+const FX = 95, FY = 17.5, FE = 3.9;
+const f = (x, y) => [FX + FE * x, FY + FE * y];
+const F = (id, eq, x, y, n, at) => { const p = f(x, y); return { k: "jug", id, eq, x: p[0], y: p[1], n, at: at || 0 }; };
+const CAMPO = { k: "campo", x0: FX, y0: FY, esc: FE };
+
+/* ============ 4 · EL VAR ============ */
+const var_ = {
+  id: "como-funciona-el-var", emoji: "📺", titulo: "Cómo funciona el VAR", desc: "Quién lo maneja, cuándo puede intervenir y cómo se decide.", dur: "≈ 2 min", thumb: 2,
+  escenas: [
+    { say: "El VAR es el sistema de videoarbitraje. Hoy vemos qué es, quién lo maneja y en qué jugadas puede intervenir.", min: 5,
+      items: [{ k: "texto", x: 300, y: 100, t: "EL VAR", c: AM, sz: 54, al: "c", at: .1 }, { k: "texto", x: 300, y: 170, t: "Video Assistant Referee", c: BL, sz: 22, al: "c", at: .5 }, { k: "texto", x: 300, y: 215, t: "📺", c: BL, sz: 38, al: "c", at: .7 }] },
+    { say: "El árbitro principal sigue mandando en el campo. En una sala de vídeo, el VAR y sus ayudantes revisan las jugadas con muchas cámaras y le avisan por radio.", min: 9, limpia: true,
+      items: [{ k: "texto", x: 300, y: 32, t: "¿QUIÉN ES QUIÉN?", c: AM, sz: 22, al: "c", at: 0 },
+        { k: "caja", x: 30, y: 80, w: 230, h: 90, t: "Árbitro\nen el campo", c: AZ, at: .15 }, { k: "caja", x: 340, y: 80, w: 230, h: 90, t: "VAR y ayudantes\nen la sala de vídeo", c: "#a855f7", at: .35 },
+        { k: "flecha", x1: 335, y1: 125, x2: 265, y2: 125, c: BL, at: .55, d: .15 }, { k: "texto", x: 300, y: 200, t: "radio", c: BL, sz: 16, al: "c", at: .65 },
+        { k: "texto", x: 300, y: 255, t: "El que decide siempre es el árbitro", c: VE, sz: 18, al: "c", at: .8 }] },
+    { say: "El VAR solo puede intervenir en cuatro tipos de jugadas: goles, penaltis, tarjetas rojas directas y confusiones de identidad al sancionar a un jugador.", min: 11, limpia: true,
+      items: [{ k: "texto", x: 300, y: 32, t: "SOLO 4 SITUACIONES", c: AM, sz: 22, al: "c", at: 0 },
+        { k: "caja", x: 40, y: 68, w: 240, h: 56, t: "1 · Goles", c: AZ, at: .12 }, { k: "caja", x: 320, y: 68, w: 240, h: 56, t: "2 · Penaltis", c: AZ, at: .3 },
+        { k: "caja", x: 40, y: 150, w: 240, h: 70, t: "3 · Tarjetas rojas\ndirectas", c: "#ef4444", at: .5 }, { k: "caja", x: 320, y: 150, w: 240, h: 70, t: "4 · Confusión\nde jugador", c: "#a855f7", at: .7 }] },
+    { say: "Para cambiar una decisión tiene que haber un error claro y evidente. Si la duda es pequeña, se mantiene lo que decidió el árbitro en el campo.", min: 9, limpia: true,
+      items: [{ k: "texto", x: 300, y: 90, t: "ERROR CLARO\nY EVIDENTE", c: "#ff6b6b", sz: 40, al: "c", at: .1 }, { k: "marca", x: 300, y: 190, ok: false, at: .5 },
+        { k: "texto", x: 300, y: 245, t: "Si hay duda, vale la decisión del árbitro", c: BL, sz: 18, al: "c", at: .7 }] },
+    { say: "Mientras el juego sigue, el VAR comprueba cada jugada en silencio. Si ve un posible error, avisa al árbitro, que puede aceptar la información o ir a ver las imágenes en un monitor junto al campo.", min: 13, limpia: true,
+      items: [{ k: "texto", x: 300, y: 32, t: "ASÍ SE REVISA", c: AM, sz: 22, al: "c", at: 0 },
+        { k: "caja", x: 10, y: 100, w: 130, h: 80, t: "Jugada", c: AZ, at: .1 }, { k: "flecha", x1: 142, y1: 140, x2: 160, y2: 140, c: BL, at: .25, d: .06 },
+        { k: "caja", x: 162, y: 100, w: 130, h: 80, t: "Revisión\nen silencio", c: "#a855f7", at: .3 }, { k: "flecha", x1: 294, y1: 140, x2: 312, y2: 140, c: BL, at: .45, d: .06 },
+        { k: "caja", x: 314, y: 100, w: 130, h: 80, t: "¿Error claro?", c: "#f59e0b", at: .5 }, { k: "flecha", x1: 446, y1: 140, x2: 464, y2: 140, c: BL, at: .65, d: .06 },
+        { k: "caja", x: 466, y: 100, w: 124, h: 80, t: "Decide el\nárbitro", c: VE, at: .7 }, { k: "texto", x: 300, y: 235, t: "A veces, tras ver el monitor", c: BL, sz: 16, al: "c", at: .85 }] },
+    { say: "Cuando el árbitro va al monitor, dibuja un rectángulo en el aire con las dos manos, como una pantalla. Después, señala si hay gol, penalti o si todo sigue igual.", min: 11, limpia: true,
+      items: [{ k: "caja", x: 170, y: 60, w: 260, h: 150, t: "", c: "#fff", fill: 0, at: .1, d: .3 }, { k: "texto", x: 300, y: 135, t: "TV", c: AM, sz: 54, al: "c", at: .5 },
+        { k: "texto", x: 300, y: 250, t: "La señal de la revisión", c: BL, sz: 20, al: "c", at: .7 }, { k: "sonido", s: "silbato", at: .1 }] },
+    { say: "En el fuera de juego hay además líneas virtuales y, en algunas competiciones, cámaras con un sistema semiautomático que ayuda a decidir mucho más rápido.", min: 10, limpia: true,
+      items: [{ k: "texto", x: 300, y: 32, t: "FUERA DE JUEGO Y TECNOLOGÍA", c: AM, sz: 20, al: "c", at: 0 },
+        { k: "caja", x: 30, y: 80, w: 250, h: 70, t: "Líneas virtuales", c: AZ, at: .15 }, { k: "caja", x: 320, y: 80, w: 250, h: 70, t: "Cámaras y sistema\nsemiautomático", c: "#a855f7", at: .4 },
+        { k: "texto", x: 300, y: 215, t: "Decisiones más rápidas", c: VE, sz: 22, al: "c", at: .7 }] },
+    { say: "Ahora ya sabes qué hace el VAR: ayuda al árbitro, pero no lo sustituye. La próxima vez que veas el rectángulo en el aire, sabrás lo que está pasando.", min: 8, limpia: true,
+      items: [{ k: "texto", x: 300, y: 130, t: "El VAR ayuda,\nno sustituye", c: AM, sz: 38, al: "c", at: .1 }, { k: "texto", x: 300, y: 235, t: "📺", c: BL, sz: 36, al: "c", at: .6 }] },
+  ],
+};
+
+/* ============ 5 · POSICIONES Y FORMACIONES ============ */
+const posiciones = {
+  id: "posiciones-y-formaciones", emoji: "🧩", titulo: "Posiciones y formaciones", desc: "Qué hace cada jugador y qué significan el 4-4-2 o el 4-3-3.", dur: "≈ 2 min", thumb: 5,
+  escenas: [
+    { say: "En un equipo de fútbol cada jugador tiene una misión. Vamos a ver las posiciones y qué significan los números de las formaciones, como el cuatro-tres-tres.", min: 8,
+      items: [CAMPO, { k: "texto", id: "tp", x: 300, y: 150, t: "POSICIONES Y\nFORMACIONES", c: AM, sz: 30, al: "c", at: .3 }] },
+    { say: "El portero es el único jugador que puede usar las manos, y solo dentro de su área. Es la última línea de defensa y también empieza muchas jugadas.", min: 9, señala: "gk",
+      items: [{ k: "borra", id: "tp", at: 0 }, F("gk", "p", 6, 34, "1", .1), { k: "foco", id: "fg", x: f(6, 34)[0], y: f(6, 34)[1], r: 20, c: AM, at: .3 }, { k: "texto", id: "tl1", x: f(6, 34)[0] + 60, y: f(6, 34)[1] - 40, t: "Portero", c: AM, sz: 20, al: "l", at: .5 }] },
+    { say: "Los defensas protegen la portería. Los centrales juegan por el centro, y los laterales por las bandas, y también ayudan a atacar.", min: 9, señala: "d2",
+      items: [{ k: "borra", id: "tl1", at: 0 }, { k: "borra", id: "fg", at: 0 }, F("d1", "a", 22, 9, "3", .1), F("d2", "a", 19, 26, "4", .25), F("d3", "a", 19, 42, "5", .4), F("d4", "a", 22, 59, "2", .55),
+        { k: "texto", id: "tl2", x: f(30, 34)[0], y: f(30, 34)[1] - 6, t: "Defensas", c: AM, sz: 20, al: "l", at: .7 }] },
+    { say: "Los centrocampistas conectan la defensa con el ataque. Recuperan el balón, reparten juego y llegan también al área rival.", min: 8, señala: "m2",
+      items: [{ k: "borra", id: "tl2", at: 0 }, F("m1", "a", 42, 18, "8", .1), F("m2", "a", 38, 34, "6", .25), F("m3", "a", 42, 50, "10", .4), { k: "texto", id: "tl3", x: f(47, 34)[0], y: f(47, 34)[1] + 4, t: "Centrocampistas", c: AM, sz: 20, al: "l", at: .6 }] },
+    { say: "Los delanteros, con extremos por fuera y un delantero centro, tienen la misión de marcar goles.", min: 7, señala: "f2",
+      items: [{ k: "borra", id: "tl3", at: 0 }, F("f1", "a", 70, 12, "11", .1), F("f2", "a", 74, 34, "9", .25), F("f3", "a", 70, 56, "7", .4), { k: "texto", id: "tl4", x: f(88, 34)[0], y: f(88, 34)[1], t: "Delanteros", c: AM, sz: 20, al: "r", at: .6 }] },
+    { say: "Los números de una formación cuentan los jugadores de campo, de atrás hacia delante, sin el portero. El cuatro-tres-tres son cuatro defensas, tres centrocampistas y tres delanteros.", min: 11,
+      items: [{ k: "borra", id: "tl4", at: 0 }, { k: "texto", x: 300, y: 20, t: "4 – 3 – 3", c: AM, sz: 30, al: "c", at: .1 }, { k: "foco", x: f(19, 34)[0], y: f(19, 34)[1], r: 80, c: VE, at: .35 }, { k: "texto", x: 300, y: 292, t: "4 defensas · 3 medios · 3 delanteros", c: BL, sz: 15, al: "c", at: .7 }] },
+    { say: "Otras formaciones famosas son el cuatro-cuatro-dos, equilibrada y con dos delanteros, y el tres-cinco-dos, con tres centrales y carrileros que suben y bajan por las bandas.", min: 12, limpia: true,
+      items: [{ k: "texto", x: 300, y: 34, t: "OTRAS FORMACIONES", c: AM, sz: 22, al: "c", at: 0 },
+        { k: "caja", x: 40, y: 70, w: 520, h: 56, t: "4-4-2 · Equilibrada, con dos delanteros", c: AZ, at: .15 }, { k: "caja", x: 40, y: 140, w: 520, h: 56, t: "4-3-3 · Ataque con extremos", c: AZ, at: .4 },
+        { k: "caja", x: 40, y: 210, w: 520, h: 56, t: "3-5-2 · Tres centrales y carrileros", c: AZ, at: .65 }] },
+    { say: "Cada entrenador elige la formación según sus jugadores y el rival. Y ahora, cuando oigas hablar de un cuatro-cuatro-dos, ya sabrás exactamente de qué hablan.", min: 8, limpia: true,
+      items: [{ k: "texto", x: 300, y: 130, t: "Cada entrenador\nelige su dibujo", c: AM, sz: 34, al: "c", at: .1 }, { k: "texto", x: 300, y: 235, t: "🧩", c: BL, sz: 36, al: "c", at: .6 }] },
+  ],
+};
+
+/* ============ 6 · REGLAS BÁSICAS ============ */
+const reglas = {
+  id: "reglas-basicas-del-futbol", emoji: "📏", titulo: "Las reglas básicas del fútbol", desc: "Campo, jugadores, tiempo, gol y saques en dos minutos.", dur: "≈ 2 min", thumb: 4,
+  escenas: [
+    { say: "Si nunca has visto un partido, este vídeo es para ti: las reglas básicas del fútbol explicadas en dos minutos.", min: 6,
+      items: [CAMPO, { k: "texto", id: "tr", x: 300, y: 150, t: "REGLAS BÁSICAS\nDEL FÚTBOL", c: AM, sz: 32, al: "c", at: .3 }] },
+    { say: "El campo es un rectángulo de entre noventa y ciento veinte metros de largo y entre cuarenta y cinco y noventa de ancho. En partidos internacionales las medidas son algo más ajustadas.", min: 11,
+      items: [{ k: "borra", id: "tr", at: 0 }, { k: "texto", x: 300, y: 10, t: "largo: 90 – 120 m", c: AM, sz: 16, al: "c", at: .2 }, { k: "texto", x: 62, y: 150, t: "ancho:\n45 – 90 m", c: AM, sz: 14, al: "c", at: .5 }] },
+    { say: "Cada equipo juega con once jugadores, uno de ellos portero. Si un equipo se queda con menos de siete, el partido no puede continuar.", min: 9, limpia: true,
+      items: [{ k: "texto", x: 300, y: 36, t: "11 CONTRA 11", c: AM, sz: 30, al: "c", at: 0 }, { k: "caja", x: 60, y: 80, w: 480, h: 56, t: "11 jugadores por equipo, 1 de ellos portero", c: AZ, at: .2 },
+        { k: "caja", x: 60, y: 156, w: 480, h: 56, t: "Con menos de 7, el partido se suspende", c: "#ef4444", at: .55 }] },
+    { say: "Un partido dura noventa minutos, en dos tiempos de cuarenta y cinco, con un descanso de hasta quince minutos. El árbitro añade al final de cada tiempo el tiempo perdido.", min: 12, limpia: true,
+      items: [{ k: "texto", x: 300, y: 32, t: "EL TIEMPO", c: AM, sz: 24, al: "c", at: 0 },
+        { k: "caja", x: 20, y: 90, w: 150, h: 90, t: "1.ª parte\n45 min", c: AZ, at: .15 }, { k: "caja", x: 190, y: 90, w: 130, h: 90, t: "Descanso\n≤ 15 min", c: "#a855f7", at: .35 },
+        { k: "caja", x: 340, y: 90, w: 150, h: 90, t: "2.ª parte\n45 min", c: AZ, at: .55 }, { k: "caja", x: 505, y: 90, w: 85, h: 90, t: "+ añadido", c: "#f59e0b", at: .8 }] },
+    { say: "Es gol cuando el balón cruza entera la línea de meta, entre los postes y por debajo del larguero. La portería mide siete metros treinta y dos de ancho por dos metros cuarenta y cuatro de alto.", min: 13, limpia: true,
+      items: [{ k: "caja", x: 120, y: 70, w: 360, h: 130, t: "", c: "#fff", fill: 0, at: .1, d: .3 }, { k: "texto", x: 300, y: 225, t: "7,32 m", c: AM, sz: 22, al: "c", at: .5 },
+        { k: "texto", x: 82, y: 135, t: "2,44 m", c: AM, sz: 18, al: "c", at: .6 }, { k: "balon", id: "bg", x: 300, y: 150, at: .75 }, { k: "texto", x: 300, y: 36, t: "¡GOL!", c: VE, sz: 28, al: "c", at: .85 }] },
+    { say: "Cuando el balón sale, hay un saque. Si sale por el lateral, saque de banda. Si sale por la línea de meta, saque de esquina si lo tocó último un defensor, o saque de puerta si lo tocó último un atacante.", min: 14, limpia: true,
+      items: [{ k: "texto", x: 300, y: 32, t: "CUANDO EL BALÓN SALE", c: AM, sz: 22, al: "c", at: 0 },
+        { k: "caja", x: 30, y: 70, w: 540, h: 56, t: "Por el lateral → saque de banda", c: AZ, at: .15 }, { k: "caja", x: 30, y: 140, w: 540, h: 56, t: "Por el fondo, último toque defensor → córner", c: "#a855f7", at: .4 },
+        { k: "caja", x: 30, y: 210, w: 540, h: 56, t: "Por el fondo, último toque atacante → saque de puerta", c: "#f59e0b", at: .65 }] },
+    { say: "Las faltas se castigan con tiro libre y, si ocurren dentro del área del equipo que defiende, con penalti. Un tiro libre directo puede ser gol directamente; en uno indirecto, otro jugador debe tocar antes el balón.", min: 14, limpia: true,
+      items: [{ k: "texto", x: 300, y: 32, t: "LAS FALTAS", c: AM, sz: 24, al: "c", at: 0 },
+        { k: "caja", x: 30, y: 70, w: 540, h: 56, t: "Falta fuera del área → tiro libre", c: AZ, at: .15 }, { k: "caja", x: 30, y: 140, w: 540, h: 56, t: "Falta dentro del área → penalti", c: "#ef4444", at: .4 },
+        { k: "texto", x: 300, y: 240, t: "Directo: puede ser gol · Indirecto: otro toca antes", c: BL, sz: 16, al: "c", at: .7 }, { k: "sonido", s: "silbato", at: .4 }] },
+    { say: "Y eso es lo esencial. Con estas reglas ya puedes seguir cualquier partido. ¡A disfrutar del fútbol!", min: 6, limpia: true,
+      items: [{ k: "texto", x: 300, y: 135, t: "¡Ya puedes\nver un partido!", c: AM, sz: 38, al: "c", at: .1 }, { k: "texto", x: 300, y: 240, t: "⚽", c: BL, sz: 36, al: "c", at: .6 }] },
+  ],
+};
+
+export const LECCIONES = [fuera, torneo, tarjetas, var_, posiciones, reglas];
