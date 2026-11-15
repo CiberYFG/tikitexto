@@ -72,6 +72,13 @@ def pagina(L, a):
         else:
             h += f'<a class="tarjeta tc" href="/{ruta_de(r)}" style="--c:{m["c"][0]}"><span class="emo" aria-hidden="true">⚽</span><b>{e(r.replace("-", " ").capitalize())}</b></a>\n'
     h += '</div>\n'
+    from articulos_meta import CATS
+    for _, em, tit, _d, col, sls in CATS:
+        if a["slug"] in sls:
+            otros = [s for s in sls if s != a["slug"] and s in por and s not in a["relac"]]
+            if otros:
+                h += f'<h2>Más sobre: {e(tit)}</h2>\n<ul style="margin:0 0 18px;padding-left:20px;line-height:1.7">\n' + "".join(f'<li><a href="/articulos/{s}/">{e(por[s]["titulo"])}</a></li>\n' for s in otros) + '</ul>\n'
+            break
     return ruta, h + pie(L, "", False)
 
 def hub(L):
