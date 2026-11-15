@@ -20,8 +20,9 @@ const ROLLOS = [
   { x: 120, y: 132, l: "T" }, { x: 170, y: 132, l: "I" }, { x: 230, y: 132, l: "K" }, { x: 280, y: 132, l: "I" },
 ];
 const POSTES = [{ x: 163, y: 66, r: 5 }, { x: 237, y: 66, r: 5 }];
-const PUNTOS_TIKI = [40000, 120000];       // +1 tikitexto al llegar a cada marca (máximo 2 por partida)
-const PUNTOS_EXTRA = 80000;               // balón extra
+/* Torneo: cada ronda pide unos goles antes de que se acabe el reloj. Ganar Cuartos y la Final da +1 tikitexto cada una. */
+const RONDAS = [{ n: "Octavos", g: 2, t: 60 }, { n: "Cuartos", g: 3, t: 60 }, { n: "Semifinal", g: 4, t: 65 }, { n: "Final", g: 5, t: 70 }];
+const MAX_BOLAS = 3;                      // bolas simultáneas en la mesa (multibalón incluido)
 const DEPOSITO = [372, 688];              // dónde espera la bola antes del saque
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
@@ -122,7 +123,7 @@ const PLANTILLA = `
 </div>
 <div class="pb-cab">
   <button type="button" class="pb-btn" data-pb="salir" aria-label="Salir">✕</button>
-  <div class="pb-marcador"><small>Puntos</small><b data-pts data-no-t>0</b></div>
+  <div class="pb-marcador"><small data-ronda data-no-t>Puntos</small><b data-pts data-no-t>0</b></div>
   <button type="button" class="pb-btn" data-pb="pausa" aria-label="Pausa">❚❚</button>
 </div>
 <div class="pb-sub">
@@ -143,6 +144,7 @@ const PLANTILLA = `
       <li><b>1</b><span>Mantén pulsado para cargar el chut y suelta para sacar.</span></li>
       <li><b>2</b><span>Toca el lado izquierdo o derecho (o usa ← → / Z M) para mover las botas.</span></li>
       <li><b>3</b><span>Mete la bola en la portería para marcar. Completa T-I-K-I para multiplicar.</span></li>
+      <li><b>4</b><span>Gana el torneo: marca los goles de cada ronda antes de que se acabe el tiempo.</span></li>
     </ul>
   </div>
 </div>
@@ -152,7 +154,7 @@ const PLANTILLA = `
     <button type="button" class="pb-sec" data-pb="salir">Salir</button></div>
 </div>
 <div class="pb-fin" data-fin hidden>
-  <div class="pb-caja pb-caja--s"><p class="pb-kicker">Final del partido</p>
+  <div class="pb-caja pb-caja--s"><p class="pb-kicker" data-fink data-no-t>Final del partido</p>
     <h3 data-no-t data-finpts>0</h3>
     <p class="pb-nuevo" data-nuevo hidden>🏆 Nuevo récord</p>
     <p class="pb-datos"><span>Goles</span> <b data-fingol data-no-t>0</b> · <span>Mejor puntuación</span> <b data-finmejor data-no-t>0</b></p>
@@ -181,7 +183,7 @@ export function abrir(api, raiz) {
   /* ── Estado del juego ── */
   const S = {
     fase: "menu", t: 0, pts: 0, vidas: 3, mult: 1, tiki: [0, 0, 0, 0], tikis: 0, goles: 0, golesTot: 0, bolas: [], esperando: null,
-    carga: 0, cargando: false, salvar: 0, slow: 1, flash: 0, shake: 0, pausa: false, racha: 0, rachaT: 0, extra: false,
+    carga: 0, cargando: false, salvar: 0, slow: 1, flash: 0, shake: 0, pausa: false, racha: 0, rachaT: 0, extra: false, ronda: 0, golR: 0, reloj: 60, vars: 1, cargaT: 0, campeon: false, motivo: "",
     premios: 0, diana: [0, 0], keeper: { x: 200, vx: 0, f: 1 }, goalT: 0, multiAct: false, nuevoRecord: false, hits: 0,
   };
   const F = FLIP.map((f) => ({ piv: f.piv, rest: f.rest, act: f.act, a: f.rest, w: 0, on: false }));
@@ -204,7 +206,14 @@ export function abrir(api, raiz) {
     const ii = raiz.querySelectorAll("[data-tiki] i");
     ii.forEach((el, i) => el.classList.toggle("on", !!S.tiki[i]));
   }
-  function pista(txt) { const p = $("[data-pista]"); p.textContent = txt ? t(txt) : ""; p.classList.toggle("on", !!txt); }
+  let ultimaRonda = "";
+  function pintarRonda() {
+    const rr = RONDAS[Math.min(S.ronda, RONDAS.length - 1)], seg = Math.max(0, Math.ceil(S.reloj));
+    const tx = t(rr.n).toUpperCase() + " · " + S.golR + "/" + rr.g + " · " + Math.floor(seg / 60) + ":" + String(seg % 60).padStart(2, "0");
+    if (tx !== ultimaRonda) { ultimaRonda = tx; const e = $("[data-ronda]"); e.textContent = tx; e.parentNode.classList.toggle("pb-apuro", S.fase === "juego" && seg <= 10); }
+  }
+  let pistaAct = "";
+  function pista(txt) { if (txt === pistaAct) return; pistaAct = txt; const p = $("[data-pista]"); p.textContent = txt ? t(txt) : ""; p.classList.toggle("on", !!txt); }
   function popup(txt, x, y, c, sz, vida) {
     if (popups.length > 14) popups.shift();
     popups.push({ txt: txt, x: x, y: y, c: c || "#fff", sz: sz || 18, t: 0, max: vida || 1.1, vy: -38 });
@@ -228,42 +237,48 @@ export function abrir(api, raiz) {
     if (S.racha > 0 && S.racha % 12 === 0) { S.pts += 1000 * S.mult; popup(t("¡RACHA!") + " +" + 1000 * S.mult, W / 2, 360, "#ffe94a", 26, 1.4); au.extra(); }
     revisarPremios();
   }
-  function revisarPremios() {
-    if (!S.extra && S.pts >= PUNTOS_EXTRA) { S.extra = true; S.vidas++; aviso("¡BALÓN EXTRA!", "#41ff8a", 38); au.extra(); pintarHud(); }
-    while (S.premios < PUNTOS_TIKI.length && S.pts >= PUNTOS_TIKI[S.premios]) {
-      S.premios++;
-      try { api.tiki(); } catch (e) { /* opcional */ }
-      popup("🎁 +1 tikitexto", W / 2, 400, "#ffe94a", 24, 2.2); popups[popups.length - 1].fijo = true; popups[popups.length - 1].vy = -6;
-      S.tikis++;
-    }
+  function revisarPremios() { /* los premios dependen ahora de las rondas del torneo */ }
+  function darTiki() {
+    try { api.tiki(); } catch (e) { /* opcional */ }
+    S.tikis++; au.tiki(); popup("🎁 +1 tikitexto", W / 2, 400, "#ffe94a", 24, 2.2); popups[popups.length - 1].fijo = true; popups[popups.length - 1].vy = -6;
   }
 
   /* ── Bolas ── */
   function nuevaBola(x, y, vx, vy) { return { x: x, y: y, vx: vx || 0, vy: vy || 0, rot: 0, tr: [], vivo: true, dentro: 0 }; }
   function servir() {
-    S.fase = "saque"; S.carga = 0; S.cargando = false; S.bolas = []; S.salvar = 0;
+    S.fase = "saque"; S.carga = 0; S.cargaT = 0; S.cargando = false; S.bolas = []; S.salvar = 0;
     S.esperando = nuevaBola(DEPOSITO[0], DEPOSITO[1]);
     S.bolas.push(S.esperando);
     pista(movil ? "Mantén pulsado para cargar y suelta para chutar" : "Mantén pulsado (o Espacio) para cargar y suelta para chutar");
     $("[data-pot]").hidden = false;
   }
+  function bolaCarril() {
+    if (S.fase !== "juego") return null;
+    for (let i = 0; i < S.bolas.length; i++) { const b = S.bolas[i]; if (b.vivo && !b.dentro && b.x > 360 && b.y > 580 && Math.abs(b.vy) < 200) return b; }
+    return null;
+  }
   function lanzar() {
-    const b = S.esperando; if (!b) return;
-    const p = clamp(S.carga, 0, 1), v = 820 + p * 880;
-    b.vy = -v; b.vx = rnd(-8, 8); S.esperando = null; S.fase = "juego"; S.salvar = 11; S.cargando = false;
-    S.racha = 0; au.lanza(p); chispas(b.x, b.y, 14, "#ffe94a", 260);
+    const b = S.esperando || bolaCarril(); if (!b) { S.cargando = false; return; }
+    const p = clamp(S.carga, 0, 1), v = 820 + p * 880, primera = S.fase === "saque";
+    b.vy = -v; b.vx = rnd(-8, 8); b.x = DEPOSITO[0]; S.esperando = null; S.cargando = false; S.carga = 0; S.cargaT = 0;
+    if (primera) { S.fase = "juego"; S.salvar = 11; S.racha = 0; }
+    au.lanza(p); chispas(b.x, b.y, 14, "#ffe94a", 260);
     pista(""); $("[data-pot]").hidden = true;
   }
   function perderBola() {
-    S.vidas--; S.mult = 1; S.tiki = [0, 0, 0, 0]; S.multiAct = false; pintarHud(); au.cae();
-    if (S.vidas <= 0) { finPartida(); return; }
+    S.vidas--; S.mult = 1; S.cargando = false; S.tiki = [0, 0, 0, 0]; S.multiAct = false; pintarHud(); au.cae();
+    if (S.vidas <= 0) { finPartida("bolas"); return; }
     aviso("Bola perdida", "#ff6b7c", 32, 1.1);
     S.fase = "pierde"; S.tFase = 0;
   }
-  function finPartida() {
+  function finPartida(motivo) {
+    S.motivo = motivo || ""; S.cargando = false;
     S.fase = "fin"; $("[data-pot]").hidden = true; pista("");
     const d = datos(); d.part++; d.gol += S.golesTot;
+    if (S.campeon) { d.camp = (d.camp || 0) + 1; }
+    d.ronda = Math.max(d.ronda || 0, S.ronda);
     S.nuevoRecord = S.pts > d.mejor && S.pts > 0;
+    $("[data-fink]").textContent = S.campeon ? t("¡Campeón del torneo!") : S.motivo === "tiempo" ? t("Eliminado: se acabó el tiempo") : t("Eliminado en") + " " + t(RONDAS[Math.min(S.ronda, 3)].n);
     if (S.nuevoRecord) d.mejor = Math.floor(S.pts);
     try { api.guardar(); } catch (e) { /* opcional */ }
     $("[data-finpts]").textContent = Math.floor(S.pts).toLocaleString(api.locale || undefined);
@@ -272,14 +287,14 @@ export function abrir(api, raiz) {
     $("[data-finmejor]").textContent = d.mejor.toLocaleString(api.locale || undefined);
     $("[data-fintiki]").hidden = S.tikis === 0;
     au.fin();
-    setTimeout(function () { if (vivo && S.fase === "fin") { $("[data-fin]").hidden = false; if (S.nuevoRecord) { try { api.victoria(); } catch (e) { /* opcional */ } } } }, 900);
+    setTimeout(function () { if (vivo && S.fase === "fin") { $("[data-fin]").hidden = false; if (S.nuevoRecord || S.campeon) { try { api.victoria(); } catch (e) { /* opcional */ } } } }, 900);
   }
   function empezar() {
     $("[data-menu]").hidden = true; $("[data-fin]").hidden = true; $("[data-pausa]").hidden = true;
-    S.pts = 0; S.vidas = 3; S.mult = 1; S.tiki = [0, 0, 0, 0]; S.tikis = 0; S.goles = 0; S.golesTot = 0; S.premios = 0; S.extra = false;
+    S.pts = 0; S.vidas = 3; S.mult = 1; S.tiki = [0, 0, 0, 0]; S.tikis = 0; S.goles = 0; S.golesTot = 0; S.premios = 0; S.extra = false; S.ronda = 0; S.golR = 0; S.reloj = RONDAS[0].t; S.vars = 1; S.campeon = false; S.motivo = ""; S.cargaT = 0; ultimaRonda = ""; pistaAct = "";
     S.diana = [0, 0]; S.pausa = false; S.slow = 1; S.shake = 0; S.flash = 0; S.nuevoRecord = false; S.multiAct = false; S.hits = 0; S.goalT = 0;
     S.keeper = { x: 200, vx: 0, f: 1 }; parts.length = 0; popups.length = 0;
-    au.activar(); pintarPts(); pintarHud(); servir();
+    au.activar(); pintarPts(); pintarHud(); pintarRonda(); servir();
   }
 
   /* ── Física ── */
@@ -341,10 +356,10 @@ export function abrir(api, raiz) {
       f.w = (f.a - antes) / h;
     }
     // portero (cinemático)
-    const kp = S.keeper, vk = 1.5 + Math.min(S.goles, 6) * 0.22;
+    const kp = S.keeper, vk = 1.5 + Math.min(S.ronda, 3) * 0.35;
     const nx = 200 + 46 * Math.sin(S.t * vk + 1);
     kp.vx = (nx - kp.x) / h; kp.x = nx;
-    const kseg = { x1: kp.x - 14, y1: 82, x2: kp.x + 14, y2: 82, e: 0.55, k: 0, th: 5 };
+    const kw = 14 + Math.min(S.ronda, 3) * 5, kseg = { x1: kp.x - kw, y1: 82, x2: kp.x + kw, y2: 82, e: 0.55, k: 0, th: 5 };
     for (let bi = 0; bi < S.bolas.length; bi++) {
       const b = S.bolas[bi]; if (!b.vivo || b.dentro > 0) continue;
       if (b === S.esperando) continue;
@@ -394,6 +409,21 @@ export function abrir(api, raiz) {
     sumar(3000, W / 2, 290, t("¡GOOOL!") + " +" + 3000 * S.mult, "#41ff8a"); popups[popups.length - 1].sz = 36; popups[popups.length - 1].max = 2;
     au.gol(); confeti(W / 2, 40, 60); chispas(W / 2, 40, 30, "#fff", 480);
     const d = datos(); if (S.goles % 2 === 0) { d.multi++; S.multi_pend = 1; }
+    S.golR++;
+    const rr = RONDAS[S.ronda];
+    if (S.golR >= rr.g) rondaGanada();
+    pintarRonda();
+  }
+  function rondaGanada() {
+    S.pts += 5000 * (S.ronda + 1); S.ronda++; S.golR = 0; pintarPts();
+    if (S.ronda >= RONDAS.length) {
+      S.campeon = true; aviso("¡CAMPEÓN!", "#ffe94a", 52, 2.4); au.extra(); confeti(W / 2, 200, 90); darTiki();
+      setTimeout(function () { if (vivo && S.fase !== "fin" && S.fase !== "menu") finPartida("campeon"); }, 1800);
+      S.fase = "gana"; return;
+    }
+    S.reloj = RONDAS[S.ronda].t; S.vidas = Math.min(5, S.vidas + 1); pintarHud();
+    aviso("¡Ronda superada!", "#41ff8a", 34, 1.8); au.extra(); confeti(W / 2, 200, 40);
+    if (S.ronda === 2) darTiki();
   }
   function actualizar(dt) {
     S.t += dt;
@@ -405,11 +435,14 @@ export function abrir(api, raiz) {
     for (let i = 0; i < 2; i++) { flashS[i] = Math.max(0, flashS[i] - dt * 4); flashD[i] = Math.max(0, flashD[i] - dt * 2.2); flashP[i] = Math.max(0, flashP[i] - dt * 2.5); }
     if (S.rachaT > 0) { S.rachaT -= dt; if (S.rachaT <= 0) S.racha = 0; }
     F[0].on = entrada.izq; F[1].on = entrada.der;
-    if (S.fase === "saque") {
-      if (S.cargando) { S.carga = Math.min(1, S.carga + dt / 1.05); }
+    const bc = S.fase === "saque" ? S.esperando : bolaCarril();
+    if (bc) {
+      if (S.cargando) { S.cargaT += dt; const q = (S.cargaT / 1.05) % 2; S.carga = q < 1 ? q : 2 - q; } else S.carga = 0;
+      $("[data-pot]").hidden = false;
       const barra = $("[data-potbar]"); if (barra) barra.style.transform = "scaleY(" + S.carga.toFixed(3) + ")";
-      const b = S.esperando; if (b) { b.y = DEPOSITO[1] + S.carga * 14; b.x = DEPOSITO[0]; }
-    }
+      if (S.fase === "saque") { bc.y = DEPOSITO[1] + S.carga * 14; bc.x = DEPOSITO[0]; }
+      pista(movil ? "Mantén pulsado para cargar y suelta para chutar" : "Mantén pulsado (o Espacio) para cargar y suelta para chutar");
+    } else if (S.fase !== "saque") { S.cargando = false; $("[data-pot]").hidden = true; if (pistaAct) pista(""); }
     if (S.fase === "juego" || S.fase === "saque" || S.fase === "pierde") {
       const h = sdt / SUB;
       for (let i = 0; i < SUB; i++) paso(h);
@@ -417,6 +450,8 @@ export function abrir(api, raiz) {
     if (S.fase === "juego") {
       sensores();
       if (S.salvar > 0) S.salvar -= dt;
+      S.reloj -= dt; pintarRonda();
+      if (S.reloj <= 0) { S.reloj = 0; pintarRonda(); aviso("¡Tiempo!", "#ff6b7c", 40, 1.2); finPartida("tiempo"); return; }
       // bolas dentro de la portería: salen otra vez por delante del portero
       for (let i = 0; i < S.bolas.length; i++) {
         const b = S.bolas[i];
@@ -436,7 +471,7 @@ export function abrir(api, raiz) {
       }
       S.bolas = S.bolas.filter((b) => b.vivo);
       if (vivas === 0) {
-        if (S.salvar > 0) { aviso("¡VAR! Repetimos la jugada", "#19e6ff", 28, 1.3); au.guardada(); servir(); }
+        if (S.salvar > 0 && S.vars > 0) { S.vars--; aviso("¡VAR! Repetimos la jugada", "#19e6ff", 28, 1.3); au.guardada(); servir(); }
         else perderBola();
       } else if (S.multiAct && vivas === 1) { S.multiAct = false; }
     }
@@ -456,8 +491,10 @@ export function abrir(api, raiz) {
     if (Math.floor(S.pts) !== pts_mostrado) { pts_mostrado = Math.floor(S.pts); pintarPts(); }
   }
   function multibalon() {
-    S.multiAct = true; aviso("¡MULTIBALÓN!", "#ff3dcb", 44, 1.8); au.multi(); confeti(W / 2, 100, 30); S.salvar = Math.max(S.salvar, 10);
-    for (let i = 0; i < 2; i++) { const b = nuevaBola(200 + (i ? 30 : -30), 112, (i ? 1 : -1) * rnd(120, 220), 160); S.bolas.push(b); }
+    const vivas = S.bolas.filter((b) => b.vivo).length, k = Math.min(2, MAX_BOLAS - vivas);
+    if (k <= 0) { sumar(1000, W / 2, 330, "+" + 1000 * S.mult, "#ff3dcb"); return; }
+    S.multiAct = true; aviso("¡MULTIBALÓN!", "#ff3dcb", 44, 1.8); au.multi(); confeti(W / 2, 100, 30);
+    for (let i = 0; i < k; i++) { const b = nuevaBola(200 + (i ? 30 : -30), 112, (i ? 1 : -1) * rnd(120, 220), 160); b.toc = 1; S.bolas.push(b); }
   }
 
   /* ── Dibujo ── */
@@ -564,9 +601,9 @@ export function abrir(api, raiz) {
     // portero
     const kp = S.keeper;
     c.save(); c.shadowColor = "#ff9a1f"; c.shadowBlur = 10; c.fillStyle = "#ff9a1f"; c.strokeStyle = "#fff"; c.lineWidth = 2;
-    c.beginPath(); c.roundRect ? c.roundRect(kp.x - 17, 77, 34, 10, 5) : c.rect(kp.x - 17, 77, 34, 10); c.fill(); c.stroke();
+    const kw = 14 + Math.min(S.ronda, 3) * 5; c.beginPath(); c.roundRect ? c.roundRect(kp.x - kw - 3, 77, kw * 2 + 6, 10, 5) : c.rect(kp.x - kw - 3, 77, kw * 2 + 6, 10); c.fill(); c.stroke();
     c.fillStyle = "#ffd9a8"; c.beginPath(); c.arc(kp.x, 72, 6, 0, PI * 2); c.fill();   // cabeza
-    c.fillStyle = "#ff9a1f"; c.beginPath(); c.arc(kp.x - 17, 82, 4.5, 0, PI * 2); c.arc(kp.x + 17, 82, 4.5, 0, PI * 2); c.fill(); c.restore(); // guantes
+    c.fillStyle = "#ff9a1f"; c.beginPath(); c.arc(kp.x - kw - 3, 82, 4.5, 0, PI * 2); c.arc(kp.x + kw + 3, 82, 4.5, 0, PI * 2); c.fill(); c.restore(); // guantes
     // flíperes (botas)
     F.forEach((f) => {
       const tx = f.piv[0] + FL.L * Math.cos(f.a), ty = f.piv[1] + FL.L * Math.sin(f.a);
@@ -579,7 +616,7 @@ export function abrir(api, raiz) {
       c.restore();
     });
     // émbolo del carril
-    const dy = S.fase === "saque" ? S.carga * 14 : 0;
+    const dy = S.cargando ? S.carga * 14 : 0;
     c.fillStyle = "#c9d3e6"; c.fillRect(366, DEPOSITO[1] + R + dy + 2, 12, 5); c.fillStyle = "#6b7a93"; c.fillRect(371, DEPOSITO[1] + R + dy + 7, 2, 22 - dy);
     // bolas
     S.bolas.forEach((b) => { if (b.vivo) dibujarBola(c, b); });
@@ -602,9 +639,9 @@ export function abrir(api, raiz) {
       c.strokeText(p.txt, 0, 0); c.fillStyle = p.c; c.fillText(p.txt, 0, 0); c.restore();
     });
     c.restore();
-    if (S.salvar > 0 && S.fase === "juego") {
-      c.save(); c.globalAlpha = 0.9; c.font = "800 10px " + fam; c.textAlign = "left"; c.fillStyle = "#19e6ff";
-      c.fillText("VAR " + Math.ceil(S.salvar), 20, 20); c.restore();
+    if (S.vars > 0 && S.fase !== "menu") {
+      c.save(); c.globalAlpha = S.salvar > 0 && S.fase === "juego" ? 0.95 : 0.4; c.font = "800 10px " + fam; c.textAlign = "left"; c.fillStyle = "#19e6ff";
+      c.fillText("VAR ×" + S.vars, 20, 20); c.restore();
     }
   }
 
@@ -625,12 +662,13 @@ export function abrir(api, raiz) {
   function bajar(e) {
     if (S.pausa || S.fase === "menu" || S.fase === "fin") return;
     if (e.target.closest && e.target.closest(".pb-btn, .pb-caja")) return;
-    if (S.fase === "saque") { S.cargando = true; au.activar(); punteros[e.pointerId] = "saque"; return; }
+    const bc = bolaCarril();
+    if (S.fase === "saque" || (bc && S.bolas.every((b) => !b.vivo || b.dentro || b === bc))) { if (!S.cargando) { S.cargando = true; S.cargaT = 0; } au.activar(); punteros[e.pointerId] = "saque"; return; }
     const l = ladoDe(e); punteros[e.pointerId] = l; entrada[l] = true; if (!reducido) au.flip();
   }
   function subir(e) {
     const l = punteros[e.pointerId]; if (!l) return; delete punteros[e.pointerId];
-    if (l === "saque") { if (S.fase === "saque" && S.cargando) lanzar(); S.cargando = false; return; }
+    if (l === "saque") { if (S.cargando) lanzar(); S.cargando = false; return; }
     if (!Object.keys(punteros).some((k) => punteros[k] === l)) entrada[l] = false;
   }
   function tecla(e, abajo) {
@@ -642,7 +680,7 @@ export function abrir(api, raiz) {
     else if (k === "ArrowRight" || k === "KeyM" || k === "KeyD" || k === "KeyL") { e.preventDefault(); if (abajo && !entrada.der) au.flip(); entrada.der = abajo; }
     else if (k === "Space" || k === "ArrowDown") {
       e.preventDefault();
-      if (S.fase === "saque") { if (abajo) { S.cargando = true; au.activar(); } else if (S.cargando) lanzar(); }
+      if (S.fase === "saque" || bolaCarril() || S.cargando) { if (abajo) { if (!S.cargando) { S.cargando = true; S.cargaT = 0; } au.activar(); } else if (S.cargando) lanzar(); }
       else { if (abajo && !(entrada.izq && entrada.der)) au.flip(); entrada.izq = entrada.der = abajo; }
     }
   }
@@ -683,5 +721,5 @@ export function abrir(api, raiz) {
   S.bolas = [nuevaBola(200, 300, 90, -60)];
   raf = requestAnimationFrame(bucle);
   /* En el menú la bola de adorno rebota sola */
-  return { cerrar: cerrar, S: S, F: F, entrada: entrada, empezar: empezar, actualizar: actualizar, lanzar: lanzar, ajustar: ajustar, constantes: { W: W, H: H, R: R } };
+  return { cerrar: cerrar, rondaGanada: rondaGanada, golAnotado: golAnotado, bolaCarril: bolaCarril, S: S, F: F, entrada: entrada, empezar: empezar, actualizar: actualizar, lanzar: lanzar, ajustar: ajustar, constantes: { W: W, H: H, R: R } };
 }

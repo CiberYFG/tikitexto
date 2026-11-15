@@ -1755,3 +1755,16 @@ Bola perdida ||| Ball lost ||| Bola perdida ||| Balle perdue ||| Palla persa |||
 DOBLE AMARILLA ||| DOUBLE YELLOW ||| DUPLO AMARELO ||| DOUBLE JAUNE ||| DOPPIO GIALLO ||| GELB-ROT
 ¡Antes toca otra! ||| Touch something first! ||| Toque em outra antes! ||| Touche autre chose d'abord ! ||| Prima tocca altro! ||| Erst etwas anderes berühren!
 ¡GOOOL! ||| GOOOAL! ||| GOOOL! ||| BUUUT ! ||| GOOOL! ||| TOOOR!
+Octavos ||| Round of 16 ||| Oitavas ||| Huitièmes ||| Ottavi ||| Achtelfinale
+Cuartos ||| Quarter-finals ||| Quartas ||| Quarts ||| Quarti ||| Viertelfinale
+Semifinal ||| Semi-final ||| Semifinal ||| Demi-finale ||| Semifinale ||| Halbfinale
+Final ||| Final ||| Final ||| Finale ||| Finale ||| Finale
+¡Campeón del torneo! ||| Tournament champion! ||| Campeão do torneio! ||| Champion du tournoi ! ||| Campione del torneo! ||| Turniersieger!
+Eliminado: se acabó el tiempo ||| Knocked out: time's up ||| Eliminado: acabou o tempo ||| Éliminé : le temps est écoulé ||| Eliminato: tempo scaduto ||| Ausgeschieden: Zeit abgelaufen
+Eliminado en ||| Knocked out in ||| Eliminado em ||| Éliminé en ||| Eliminato in ||| Ausgeschieden in
+¡Ronda superada! ||| Round cleared! ||| Fase superada! ||| Tour passé ! ||| Turno superato! ||| Runde geschafft!
+¡CAMPEÓN! ||| CHAMPION! ||| CAMPEÃO! ||| CHAMPION ! ||| CAMPIONE! ||| SIEGER!
+¡Tiempo! ||| Time! ||| Tempo! ||| Temps ! ||| Tempo! ||| Zeit!
+Gana el torneo: marca los goles de cada ronda antes de que se acabe el tiempo. ||| Win the tournament: score the goals each round asks for before time runs out. ||| Vença o torneio: faça os gols de cada fase antes que o tempo acabe. ||| Gagne le tournoi : marque les buts de chaque tour avant la fin du temps. ||| Vinci il torneo: segna i gol di ogni turno prima che finisca il tempo. ||| Gewinne das Turnier: erziele in jeder Runde die geforderten Tore, bevor die Zeit abläuft.
+Mantén pulsado para cargar y suelta para chutar ||| Hold to charge and release to kick ||| Mantenha pressionado para carregar e solte para chutar ||| Maintiens pour charger et relâche pour tirer ||| Tieni premuto per caricare e rilascia per tirare ||| Halten zum Aufladen, loslassen zum Schießen
+Mantén pulsado (o Espacio) para cargar y suelta para chutar ||| Hold (or Space) to charge and release to kick ||| Mantenha pressionado (ou Espaço) para carregar e solte para chutar ||| Maintiens (ou Espace) pour charger et relâche pour tirer ||| Tieni premuto (o Spazio) per caricare e rilascia per tirare ||| Halten (oder Leertaste) zum Aufladen, loslassen zum Schießen

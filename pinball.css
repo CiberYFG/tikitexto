@@ -64,3 +64,8 @@
 
 @media (max-height: 560px) { .pb-escena { padding-top: 84px; padding-bottom: 6px; } .pb-sub { top: 54px; } .pb-pista { display: none; } .pb-menu { align-items: start; } }
 @media (prefers-reduced-motion: reduce) { .pb-foco, .pb-balon, .pb-mult--alto, .pb-nuevo, .pb-pista.on { animation: none; } }
+
+.pb-marcador small { white-space: nowrap; max-width: 62vw; }
+.pb-apuro small { color: #ff6b7c; opacity: 1; animation: pbParp .5s steps(2) infinite; }
+@keyframes pbParp { 50% { opacity: .3; } }
+@media (prefers-reduced-motion: reduce) { .pb-apuro small { animation: none; } }

@@ -858,6 +858,17 @@ with sync_playwright() as p:
             py.keyboard.down("ArrowLeft" if k % 2 else "ArrowRight"); py.wait_for_timeout(80); py.keyboard.up("ArrowLeft" if k % 2 else "ArrowRight")
         st = py.evaluate("(()=>{const j=TIKI.pinball.juego();return j?{f:j.S.fase,n:j.S.bolas.length,ok:j.S.bolas.every(b=>isFinite(b.x)&&isFinite(b.y))}:null})()")
         check("pinball: la partida avanza sin valores inválidos", bool(st) and st["ok"] and st["f"] in ("juego", "saque", "pierde"), str(st))
+        res = py.evaluate("""(()=>{const j=TIKI.pinball.juego();
+          // bola atrapada en el carril: el muelle debe poder sacarla
+          j.S.fase='juego'; j.S.bolas=[{x:372,y:696,vx:0,vy:0,rot:0,tr:[],vivo:true,dentro:0}]; j.S.cargando=true; j.S.cargaT=0;
+          for(let i=0;i<240;i++) j.actualizar(1/60);
+          const carga=j.S.carga; j.lanzar(); for(let i=0;i<20;i++) j.actualizar(1/60);
+          const sube=j.S.bolas[0]&&j.S.bolas[0].y<600;
+          // torneo: ganar las 4 rondas
+          j.S.fase='juego'; for(let i=0;i<4;i++) j.rondaGanada();
+          return {carga,sube,camp:j.S.campeon}})()""")
+        check("pinball: el muelle saca una bola atrapada y la fuerza oscila", res["sube"] and 0 <= res["carga"] <= 1, str(res))
+        check("pinball: ganar las 4 rondas da el campeonato", res["camp"], str(res))
         py.click("[data-pb=salir]"); py.wait_for_timeout(300)
         check("pinball: salir cierra la pantalla", py.locator(".pb-raiz").count() == 0)
         check("pinball: sin errores de JavaScript", not errs_y, "; ".join(errs_y)[:150])
