@@ -764,10 +764,10 @@ with sync_playwright() as p:
         check("curiosidades: temas cerrados al entrar", pv.locator("details.tema[open]").count() == 0 and pv.locator("details.tema").count() >= 6)
         check("curiosidades: buscador presente", pv.locator(".bus__in").count() == 1)
         pv.click("details.tema >> nth=0 >> summary"); pv.wait_for_timeout(200)
-        check("curiosidades: al pulsar el tema se ven sus categorías", pv.locator("details.tema[open] details.tema").count() == 6)
+        check("curiosidades: al pulsar el tema se ven sus categorías", pv.locator("details.tema[open] details.tema").count() == 7)
         pv.goto(BASE + "articulos/", wait_until="networkidle", timeout=60000)
         n_art = pv.evaluate("document.querySelectorAll('details.tema a.tarjeta').length")
-        check("articulos: 57 artículos agrupados en 6 temas", n_art == 57 and pv.locator("details.tema").count() == 6, str(n_art))
+        check("articulos: 63 artículos agrupados en 7 temas (el primero, BALÓN DE ORO)", n_art == 63 and pv.locator("details.tema").count() == 7 and pv.locator("details.tema.oro").count() == 1, str(n_art))
         check("temas/buscador: sin errores de JavaScript", not errs_v, "; ".join(errs_v)[:150])
         cv.close()
     except Exception as e:

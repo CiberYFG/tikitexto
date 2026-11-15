@@ -136,6 +136,27 @@ html.huecos body { padding-bottom: 64px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
 .chips a { border: 1px solid color-mix(in srgb, var(--c) 45%, transparent); background: color-mix(in srgb, var(--c) 10%, var(--caja)); color: var(--texto); border-radius: 999px; padding: 5px 14px; font-size: .88rem; font-weight: 700; text-decoration: none; }
 .chips a:hover { background: var(--c); color: #fff; }
+@keyframes oroBrillo { to { background-position: -260% 0; } }
+@keyframes oroBarrido { from { background-position: 150% 0; } to { background-position: -150% 0; } }
+@keyframes oroLatido { 0%,100% { transform: scale(1); } 50% { transform: scale(1.09); } }
+@keyframes oroChispa { 0%,100% { opacity: .15; } 50% { opacity: 1; } }
+.tema.oro, .tema-c .tema.oro { --c: #b8860b; border: 2px solid #e8b923; background: linear-gradient(105deg,#fff6cf 0%,#ffe27a 22%,#fffbe6 40%,#f7c948 62%,#fff1ad 82%,#fff6cf 100%); background-size: 260% 100%; animation: oroBrillo 6s linear infinite; box-shadow: 0 0 0 1px rgba(255,255,255,.75) inset, 0 10px 30px rgba(232,185,35,.45); }
+.tema.oro > summary { position: relative; }
+.tema.oro > summary:hover, .tema.oro[open] > summary { background: rgba(255,255,255,.28); }
+.tema.oro > summary::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 10% 30%,#fff 0 2px,transparent 3px), radial-gradient(circle at 34% 72%,#fff 0 1.5px,transparent 2.5px), radial-gradient(circle at 61% 24%,#fff 0 2px,transparent 3px), radial-gradient(circle at 86% 66%,#fff 0 1.5px,transparent 2.5px), radial-gradient(circle at 74% 82%,#fff 0 1px,transparent 2px); animation: oroChispa 2.6s ease-in-out infinite; }
+.tema.oro .t-emo { background: radial-gradient(circle at 30% 25%,#fff8d6,#f5c542 55%,#b8860b); box-shadow: 0 0 18px rgba(245,197,66,.9); animation: oroLatido 2.4s ease-in-out infinite; }
+.tema.oro .t-t b { color: #5a3d00; text-transform: uppercase; letter-spacing: .08em; font-weight: 900; text-shadow: 0 1px 0 rgba(255,255,255,.7); }
+.tema.oro .t-t span { color: #6b4b00; }
+.tema.oro .t-n { background: #5a3d00; color: #ffe27a; }
+.tema.oro .t-f::before { color: #5a3d00; }
+:root[data-tema="oscuro"] .tema.oro, :root[data-tema="oscuro"] .tema-c .tema.oro { border-color: #f5c542; background: linear-gradient(105deg,#2b1f00 0%,#6a4d00 22%,#3a2a00 40%,#9a7200 62%,#4a3500 82%,#2b1f00 100%); background-size: 260% 100%; box-shadow: 0 0 0 1px rgba(255,226,122,.35) inset, 0 10px 30px rgba(245,197,66,.28); }
+:root[data-tema="oscuro"] .tema.oro .t-t b { color: #ffe27a; text-shadow: 0 0 12px rgba(255,214,90,.55); }
+:root[data-tema="oscuro"] .tema.oro .t-t span { color: #ffeaa6; }
+:root[data-tema="oscuro"] .tema.oro .t-n { background: #ffe27a; color: #3a2a00; }
+:root[data-tema="oscuro"] .tema.oro .t-f::before { color: #ffe27a; }
+.oro-cab { display: inline-flex; align-items: center; gap: 8px; margin: 14px 0 0; padding: 7px 16px; border-radius: 999px; font-weight: 900; font-size: .84rem; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; color: #4a3200; background: linear-gradient(105deg,#ffe27a,#fff6cf,#f7c948,#fff1ad,#ffe27a); background-size: 260% 100%; animation: oroBrillo 5s linear infinite; border: 1px solid #e8b923; box-shadow: 0 4px 14px rgba(232,185,35,.5); }
+.oro-cab:hover { filter: brightness(1.06); }
+@media (prefers-reduced-motion: reduce) { .tema.oro, .tema.oro > summary::before, .tema.oro .t-emo, .oro-cab { animation: none; } }
 :root { --c: #ea580c; } :root[data-tema="oscuro"] { --c: #fb923c; } .hero, :root[data-tema="oscuro"] .hero { background: radial-gradient(120% 100% at 50% 0%, color-mix(in srgb, var(--c) 78%, #fff) 0%, color-mix(in srgb, var(--c) 78%, #000) 55%, color-mix(in srgb, var(--c) 35%, #000) 100%); } .articulo { counter-reset: sec; } .articulo h2 { counter-increment: sec; display: flex; align-items: center; gap: 12px; border-left: 0; padding-left: 0; } .articulo h2::before { content: counter(sec); flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--c); color: #fff; font-size: .95rem; } .indice a { border-color: color-mix(in srgb, var(--c) 40%, transparent); } .indice a:hover { border-color: var(--c); background: color-mix(in srgb, var(--c) 12%, var(--caja)); } .caja { border-left: 8px solid var(--c); }
 
 .hist-emo { display: grid; place-items: center; font-size: 1.9rem; line-height: 1; }

@@ -1742,6 +1742,9 @@ button.ir-juegos { border: 0; cursor: pointer; }
 .portal__chips { position: relative; z-index: 2; list-style: none; margin: 4px 0 8px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .portal__chips a { display: inline-block; padding: 5px 10px; border-radius: 999px; font: 700 .76rem/1.2 var(--fuente); color: #fff; text-decoration: none; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.35); }
 .portal__chips a:hover, .portal__chips a:focus-visible { background: rgba(255,255,255,.3); outline: none; }
+.portal__chips a.chip-oro, .portal__chips a.chip-oro:hover { color: #4a3200; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; border-color: #fff3b8; background: linear-gradient(105deg,#ffe27a,#fff6cf,#f7c948,#fff1ad,#ffe27a); background-size: 260% 100%; animation: chipOro 5s linear infinite; box-shadow: 0 0 14px rgba(255,214,90,.75); }
+@keyframes chipOro { to { background-position: -260% 0; } }
+@media (prefers-reduced-motion: reduce) { .portal__chips a.chip-oro { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .portal__card--juegos, .portal__card--saber::before { animation: none; } }
 /* ===== Tarjeta Juegos: noche de estadio con neón RGB ===== */
 .portal__card--juegos { background: #04140c; animation: none; box-shadow: 0 0 0 3px transparent, 0 18px 44px rgba(0, 0, 0, .45); }
@@ -2210,6 +2213,7 @@ html:has(.modal:not([hidden]), .idioma) :is(.curio,.info,.novedad,.ah-card,.modo
 .info p, .info li { font-size: .88rem; line-height: 1.55; color: var(--texto-suave); }
 .info p { margin: 0 0 8px; }
 .info__modos { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0 0 10px; padding: 0; list-style: none; }
+.info__modos a.chip-oro-info { color: #4a3200; background: linear-gradient(105deg,#ffe27a,#fff6cf,#f7c948,#fff1ad,#ffe27a); background-size: 260% 100%; animation: chipOro 5s linear infinite; }
 .info__modos a { display: inline-block; padding: 6px 12px; font-size: .84rem; font-weight: 800; color: var(--acento); text-decoration: none; background: var(--acento-suave); border-radius: 999px; }
 .info details { border-top: 1px solid var(--borde, rgba(127, 127, 127, .25)); padding: 9px 0; }
 .info summary { font-size: .9rem; font-weight: 800; cursor: pointer; color: var(--texto); }
@@ -2281,6 +2285,7 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
         <h2 class="portal__titulo" id="saberTitulo"><a class="portal__enlace" data-curio="" href="curiosidades/">Saber</a></h2>
         <p class="portal__texto">Historia, datos y curiosidades del fútbol</p>
         <ul class="portal__chips">
+        <li data-solo-es><a class="chip-oro" href="articulos/balon-de-oro/">🏆 Balón de Oro</a></li>
         <li data-solo-es><a  href="articulos/">Artículos</a></li>
         <li data-solo-es><a  href="historias/">Historias</a></li>
         <li data-solo-es><a  href="peques/">Chistes y adivinanzas</a></li>
@@ -2458,7 +2463,8 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
         <li><a href="articulos/que-son-los-goles-esperados-xg/">Qué son los goles esperados (xG)</a></li>
         <li><a href="articulos/como-se-decide-quien-gana-la-liga-desempates/">Desempates de la liga</a></li>
         <li><a href="articulos/champions-europa-league-conference-league-diferencias/">Champions, Europa y Conference</a></li>
-        <li><a href="articulos/">Ver los 57 artículos →</a></li>
+        <li><a class="chip-oro-info" href="articulos/balon-de-oro/">🏆 Categoría BALÓN DE ORO</a></li>
+        <li><a href="articulos/">Ver los 63 artículos →</a></li>
       </ul>
       <h2>Preguntas frecuentes</h2>
       <details><summary>¿Cómo se juega a TIKITEXTO?</summary><p>Escribe un nombre con el mismo número de letras que las casillas y pulsa Intro. Verde: letra bien colocada; amarillo: está en otra posición; gris: no está en el nombre. Tienes 6 intentos.</p></details>

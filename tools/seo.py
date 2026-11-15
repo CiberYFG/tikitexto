@@ -267,6 +267,7 @@ for _pg in _ct.T.TEMAS + [dict(es=_ct.HUB[0], en=_ct.HUB[1])]:
     for _x in _u: sm.append("  <url><loc>%s</loc>%s</url>" % (_x, _alts))
 import curiosidades_articulos as _ca
 sm.append("  <url><loc>%sarticulos/</loc></url>" % DOM)
+sm.append("  <url><loc>%sarticulos/balon-de-oro/</loc></url>" % DOM)
 for _a in _ca.ARTICULOS: sm.append("  <url><loc>%sarticulos/%s/</loc></url>" % (DOM, _a["slug"]))
 import curiosidades_extra as _cx
 sm.append("  <url><loc>%shistorias/</loc></url>" % DOM)

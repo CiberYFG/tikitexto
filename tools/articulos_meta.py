@@ -59,11 +59,26 @@ META = {
     "como-trabaja-un-ojeador-de-futbol-scouting-y-seguimiento-de-jugadores": dict(c=("#0f766e", "#5eead4"), e="🔭"),
     "historia-del-futbol-en-espana-de-los-primeros-clubes-a-laliga": dict(c=("#b91c1c", "#fca5a5"), e="🇪🇸"),
 }
+ORO = ['como-se-elige-el-balon-de-oro', 'paises-con-mas-balones-de-oro', 'messi-o-cristiano-comparacion-en-numeros', 'balon-de-oro-femenino-historia-ganadoras', 'trofeos-de-la-gala-del-balon-de-oro-kopa-yashin-gerd-muller', 'balon-de-oro-y-mundial-quien-gana-en-ano-de-mundial', 'de-que-clubes-y-ligas-salen-los-balones-de-oro', 'edad-de-los-ganadores-del-balon-de-oro-jovenes-y-veteranos', 'balon-de-oro-decada-a-decada-1956-2026']
+
 def meta(slug):
+    if slug in ORO:
+        return dict(c=("#b8860b", "#f5c542"), e="🏆")
     return META.get(slug, dict(c=("#1747d6", "#6b9bff"), e="📖"))
 
 
 CATS = [
+    ('balon-de-oro', '🏆', 'BALÓN DE ORO', 'Todo sobre el Balón de Oro: cómo se elige, ganadores, país a país, femenino, Mundial, clubes, edades y décadas. Estadística propia.', '#b8860b', [
+        'como-se-elige-el-balon-de-oro',
+        'paises-con-mas-balones-de-oro',
+        'messi-o-cristiano-comparacion-en-numeros',
+        'balon-de-oro-femenino-historia-ganadoras',
+        'trofeos-de-la-gala-del-balon-de-oro-kopa-yashin-gerd-muller',
+        'balon-de-oro-y-mundial-quien-gana-en-ano-de-mundial',
+        'de-que-clubes-y-ligas-salen-los-balones-de-oro',
+        'edad-de-los-ganadores-del-balon-de-oro-jovenes-y-veteranos',
+        'balon-de-oro-decada-a-decada-1956-2026',
+    ]),
     ('reglas', '📘', 'Reglas y cómo se juega', 'Las reglas, el fuera de juego, el VAR, los penaltis y cómo se decide cada liga o torneo.', '#0f766e', [
         'reglas-basicas-del-futbol-para-principiantes',
         'quien-es-quien-en-un-partido-arbitros-y-senales',
@@ -90,12 +105,9 @@ CATS = [
         'preparacion-fisica-del-futbolista-entrenamiento-alimentacion-y-descanso',
     ]),
     ('premios', '🏆', 'Premios y trofeos', 'Balón de Oro, Bota de Oro, trofeos, países con más premios y Messi frente a Cristiano.', '#c98a00', [
-        'como-se-elige-el-balon-de-oro',
         'como-funciona-la-bota-de-oro',
         'premios-individuales-futbol-diferencias',
         'trofeos-mas-importantes-del-futbol',
-        'paises-con-mas-balones-de-oro',
-        'messi-o-cristiano-comparacion-en-numeros',
     ]),
     ('historia', '📜', 'Historia y competiciones', 'Orígenes del fútbol, el balón, los dorsales, las camisetas, las ligas, la Champions, los derbis y el fútbol femenino.', '#dc2626', [
         'origenes-del-futbol-moderno-de-1863-a-hoy',
@@ -137,5 +149,5 @@ CATS = [
 
 def todos():
     """Todos los artículos (dicts) en orden de publicación."""
-    import articulos_a, articulos_b, articulos_c, articulos_d, articulos_e, articulos_f, articulos_g, articulos_h, articulos_i, articulos_j, articulos_k
-    return (articulos_a.ARTICULOS_A + articulos_b.ARTICULOS_B + articulos_c.ARTICULOS_C + articulos_d.ARTICULOS_D + articulos_e.ARTICULOS_E + articulos_f.ARTICULOS_F + articulos_g.ARTICULOS_G + articulos_h.ARTICULOS_H + articulos_i.ARTICULOS_I + articulos_j.ARTICULOS_J + articulos_k.ARTICULOS_K)
+    import articulos_a, articulos_b, articulos_c, articulos_d, articulos_e, articulos_f, articulos_g, articulos_h, articulos_i, articulos_j, articulos_k, articulos_l
+    return (articulos_a.ARTICULOS_A + articulos_b.ARTICULOS_B + articulos_c.ARTICULOS_C + articulos_d.ARTICULOS_D + articulos_e.ARTICULOS_E + articulos_f.ARTICULOS_F + articulos_g.ARTICULOS_G + articulos_h.ARTICULOS_H + articulos_i.ARTICULOS_I + articulos_j.ARTICULOS_J + articulos_k.ARTICULOS_K + articulos_l.ARTICULOS_L)

@@ -141,6 +141,27 @@ html.huecos body { padding-bottom: 64px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
 .chips a { border: 1px solid color-mix(in srgb, var(--c) 45%, transparent); background: color-mix(in srgb, var(--c) 10%, var(--caja)); color: var(--texto); border-radius: 999px; padding: 5px 14px; font-size: .88rem; font-weight: 700; text-decoration: none; }
 .chips a:hover { background: var(--c); color: #fff; }
+@keyframes oroBrillo { to { background-position: -260% 0; } }
+@keyframes oroBarrido { from { background-position: 150% 0; } to { background-position: -150% 0; } }
+@keyframes oroLatido { 0%,100% { transform: scale(1); } 50% { transform: scale(1.09); } }
+@keyframes oroChispa { 0%,100% { opacity: .15; } 50% { opacity: 1; } }
+.tema.oro, .tema-c .tema.oro { --c: #b8860b; border: 2px solid #e8b923; background: linear-gradient(105deg,#fff6cf 0%,#ffe27a 22%,#fffbe6 40%,#f7c948 62%,#fff1ad 82%,#fff6cf 100%); background-size: 260% 100%; animation: oroBrillo 6s linear infinite; box-shadow: 0 0 0 1px rgba(255,255,255,.75) inset, 0 10px 30px rgba(232,185,35,.45); }
+.tema.oro > summary { position: relative; }
+.tema.oro > summary:hover, .tema.oro[open] > summary { background: rgba(255,255,255,.28); }
+.tema.oro > summary::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 10% 30%,#fff 0 2px,transparent 3px), radial-gradient(circle at 34% 72%,#fff 0 1.5px,transparent 2.5px), radial-gradient(circle at 61% 24%,#fff 0 2px,transparent 3px), radial-gradient(circle at 86% 66%,#fff 0 1.5px,transparent 2.5px), radial-gradient(circle at 74% 82%,#fff 0 1px,transparent 2px); animation: oroChispa 2.6s ease-in-out infinite; }
+.tema.oro .t-emo { background: radial-gradient(circle at 30% 25%,#fff8d6,#f5c542 55%,#b8860b); box-shadow: 0 0 18px rgba(245,197,66,.9); animation: oroLatido 2.4s ease-in-out infinite; }
+.tema.oro .t-t b { color: #5a3d00; text-transform: uppercase; letter-spacing: .08em; font-weight: 900; text-shadow: 0 1px 0 rgba(255,255,255,.7); }
+.tema.oro .t-t span { color: #6b4b00; }
+.tema.oro .t-n { background: #5a3d00; color: #ffe27a; }
+.tema.oro .t-f::before { color: #5a3d00; }
+:root[data-tema="oscuro"] .tema.oro, :root[data-tema="oscuro"] .tema-c .tema.oro { border-color: #f5c542; background: linear-gradient(105deg,#2b1f00 0%,#6a4d00 22%,#3a2a00 40%,#9a7200 62%,#4a3500 82%,#2b1f00 100%); background-size: 260% 100%; box-shadow: 0 0 0 1px rgba(255,226,122,.35) inset, 0 10px 30px rgba(245,197,66,.28); }
+:root[data-tema="oscuro"] .tema.oro .t-t b { color: #ffe27a; text-shadow: 0 0 12px rgba(255,214,90,.55); }
+:root[data-tema="oscuro"] .tema.oro .t-t span { color: #ffeaa6; }
+:root[data-tema="oscuro"] .tema.oro .t-n { background: #ffe27a; color: #3a2a00; }
+:root[data-tema="oscuro"] .tema.oro .t-f::before { color: #ffe27a; }
+.oro-cab { display: inline-flex; align-items: center; gap: 8px; margin: 14px 0 0; padding: 7px 16px; border-radius: 999px; font-weight: 900; font-size: .84rem; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; color: #4a3200; background: linear-gradient(105deg,#ffe27a,#fff6cf,#f7c948,#fff1ad,#ffe27a); background-size: 260% 100%; animation: oroBrillo 5s linear infinite; border: 1px solid #e8b923; box-shadow: 0 4px 14px rgba(232,185,35,.5); }
+.oro-cab:hover { filter: brightness(1.06); }
+@media (prefers-reduced-motion: reduce) { .tema.oro, .tema.oro > summary::before, .tema.oro .t-emo, .oro-cab { animation: none; } }
 
 </style>
 </head>
@@ -155,7 +176,20 @@ html.huecos body { padding-bottom: 64px; }
 <div class="caja">Datos, historia y números del fútbol mundial. Si te gusta, pon a prueba lo que sabes en <a href="/">TIKITEXTO</a>.</div>
 <div class="bus" data-buscador></div><script src="/buscador.js" defer></script>
 <h2 class="tema-h">Elige un tema</h2>
-<details class="tema" style="--c:#7c3aed" name="cur"><summary><span class="t-emo" aria-hidden="true">✍️</span><span class="t-t"><b>Artículos de análisis</b><span>57 textos largos y originales: reglas, tácticas, premios, historia y cómo funciona el fútbol por dentro.</span></span><span class="t-n">57 artículos</span><span class="t-f" aria-hidden="true"></span></summary><div class="tema-c"><details class="tema" style="--c:#0f766e" name="art"><summary><span class="t-emo" aria-hidden="true">📘</span><span class="t-t"><b>Reglas y cómo se juega</b><span>Las reglas, el fuera de juego, el VAR, los penaltis y cómo se decide cada liga o torneo.</span></span><span class="t-n">9 artículos</span><span class="t-f" aria-hidden="true"></span></summary><div class="tema-c"><div class="tarjetas">
+<details class="tema" style="--c:#7c3aed" name="cur"><summary><span class="t-emo" aria-hidden="true">✍️</span><span class="t-t"><b>Artículos de análisis</b><span>63 textos largos y originales: reglas, tácticas, premios, historia y cómo funciona el fútbol por dentro.</span></span><span class="t-n">57 artículos</span><span class="t-f" aria-hidden="true"></span></summary><div class="tema-c"><details class="tema oro" style="--c:#b8860b" name="art"><summary><span class="t-emo" aria-hidden="true">🏆</span><span class="t-t"><b>BALÓN DE ORO</b><span>Todo sobre el Balón de Oro: cómo se elige, ganadores, país a país, femenino, Mundial, clubes, edades y décadas. Estadística propia.</span></span><span class="t-n">9 artículos</span><span class="t-f" aria-hidden="true"></span></summary><div class="tema-c"><p style="margin:10px 0 0"><a class="oro-cab" href="/articulos/balon-de-oro/">🏆 Ver la página de BALÓN DE ORO →</a></p>
+<div class="tarjetas">
+<a class="tarjeta tc" href="/articulos/como-se-elige-el-balon-de-oro/" style="--c:#b8860b"><span class="emo" aria-hidden="true">🏆</span><b>Cómo se elige el Balón de Oro: votación, criterios y cambios a lo largo de la historia</b><span class="min">5 min de lectura</span></a>
+<a class="tarjeta tc" href="/articulos/paises-con-mas-balones-de-oro/" style="--c:#b8860b"><span class="emo" aria-hidden="true">🏆</span><b>Países con más Balones de Oro: ranking y jugadores de cada uno</b><span class="min">4 min de lectura</span></a>
+<a class="tarjeta tc" href="/articulos/messi-o-cristiano-comparacion-en-numeros/" style="--c:#b8860b"><span class="emo" aria-hidden="true">🏆</span><b>Messi o Cristiano Ronaldo: comparación en números</b><span class="min">4 min de lectura</span></a>
+<a class="tarjeta tc" href="/articulos/balon-de-oro-femenino-historia-ganadoras/" style="--c:#b8860b"><span class="emo" aria-hidden="true">🏆</span><b>Balón de Oro femenino: historia, ganadoras y cómo ha cambiado el fútbol de mujeres</b><span class="min">5 min de lectura</span></a>
+<a class="tarjeta tc" href="/articulos/trofeos-de-la-gala-del-balon-de-oro-kopa-yashin-gerd-muller/" style="--c:#b8860b"><span class="emo" aria-hidden="true">🏆</span><b>Los otros trofeos de la gala del Balón de Oro: Kopa, Yashin, Gerd Müller y más</b><span class="min">4 min de lectura</span></a>
+<a class="tarjeta tc" href="/articulos/balon-de-oro-y-mundial-quien-gana-en-ano-de-mundial/" style="--c:#b8860b"><span class="emo" aria-hidden="true">🏆</span><b>Balón de Oro y Mundial: ¿gana siempre el mejor del torneo? Lo que dicen 18 ediciones</b><span class="min">5 min de lectura</span></a>
+<a class="tarjeta tc" href="/articulos/de-que-clubes-y-ligas-salen-los-balones-de-oro/" style="--c:#b8860b"><span class="emo" aria-hidden="true">🏆</span><b>De qué clubes y ligas salen los Balones de Oro: Real Madrid, Barcelona y el mapa del poder</b><span class="min">4 min de lectura</span></a>
+<a class="tarjeta tc" href="/articulos/edad-de-los-ganadores-del-balon-de-oro-jovenes-y-veteranos/" style="--c:#b8860b"><span class="emo" aria-hidden="true">🏆</span><b>La edad de los ganadores del Balón de Oro: del más joven al más veterano</b><span class="min">4 min de lectura</span></a>
+<a class="tarjeta tc" href="/articulos/balon-de-oro-decada-a-decada-1956-2026/" style="--c:#b8860b"><span class="emo" aria-hidden="true">🏆</span><b>El Balón de Oro década a década (1956-2026): cómo cambió el tipo de ganador</b><span class="min">4 min de lectura</span></a>
+</div>
+</div></details>
+<details class="tema" style="--c:#0f766e" name="art"><summary><span class="t-emo" aria-hidden="true">📘</span><span class="t-t"><b>Reglas y cómo se juega</b><span>Las reglas, el fuera de juego, el VAR, los penaltis y cómo se decide cada liga o torneo.</span></span><span class="t-n">9 artículos</span><span class="t-f" aria-hidden="true"></span></summary><div class="tema-c"><div class="tarjetas">
 <a class="tarjeta tc" href="/articulos/reglas-basicas-del-futbol-para-principiantes/" style="--c:#0f766e"><span class="emo" aria-hidden="true">📘</span><b>Reglas básicas del fútbol explicadas para principiantes</b><span class="min">5 min de lectura</span></a>
 <a class="tarjeta tc" href="/articulos/quien-es-quien-en-un-partido-arbitros-y-senales/" style="--c:#b91c1c"><span class="emo" aria-hidden="true">🟨</span><b>Quién es quién en un partido: árbitros, asistentes, VAR y señales básicas</b><span class="min">4 min de lectura</span></a>
 <a class="tarjeta tc" href="/articulos/fuera-de-juego-regla-historia-var/" style="--c:#4338ca"><span class="emo" aria-hidden="true">🚩</span><b>El fuera de juego explicado: la regla, su historia y el VAR semiautomático</b><span class="min">5 min de lectura</span></a>
@@ -182,13 +216,10 @@ html.huecos body { padding-bottom: 64px; }
 <a class="tarjeta tc" href="/articulos/preparacion-fisica-del-futbolista-entrenamiento-alimentacion-y-descanso/" style="--c:#c2410c"><span class="emo" aria-hidden="true">💪</span><b>Preparación física del futbolista: entrenamiento, alimentación y descanso</b><span class="min">4 min de lectura</span></a>
 </div>
 </div></details>
-<details class="tema" style="--c:#c98a00" name="art"><summary><span class="t-emo" aria-hidden="true">🏆</span><span class="t-t"><b>Premios y trofeos</b><span>Balón de Oro, Bota de Oro, trofeos, países con más premios y Messi frente a Cristiano.</span></span><span class="t-n">6 artículos</span><span class="t-f" aria-hidden="true"></span></summary><div class="tema-c"><div class="tarjetas">
-<a class="tarjeta tc" href="/articulos/como-se-elige-el-balon-de-oro/" style="--c:#c98a00"><span class="emo" aria-hidden="true">🏆</span><b>Cómo se elige el Balón de Oro: votación, criterios y cambios a lo largo de la historia</b><span class="min">5 min de lectura</span></a>
+<details class="tema" style="--c:#c98a00" name="art"><summary><span class="t-emo" aria-hidden="true">🏆</span><span class="t-t"><b>Premios y trofeos</b><span>Balón de Oro, Bota de Oro, trofeos, países con más premios y Messi frente a Cristiano.</span></span><span class="t-n">3 artículos</span><span class="t-f" aria-hidden="true"></span></summary><div class="tema-c"><div class="tarjetas">
 <a class="tarjeta tc" href="/articulos/como-funciona-la-bota-de-oro/" style="--c:#ea580c"><span class="emo" aria-hidden="true">👟</span><b>Cómo funciona la Bota de Oro europea: puntos por gol según la liga</b><span class="min">4 min de lectura</span></a>
 <a class="tarjeta tc" href="/articulos/premios-individuales-futbol-diferencias/" style="--c:#db2777"><span class="emo" aria-hidden="true">🥇</span><b>Premios individuales del fútbol: diferencias entre Balón de Oro, The Best, Pichichi, Zamora y más</b><span class="min">4 min de lectura</span></a>
 <a class="tarjeta tc" href="/articulos/trofeos-mas-importantes-del-futbol/" style="--c:#b45309"><span class="emo" aria-hidden="true">🏆</span><b>Los trofeos más importantes del fútbol: cuáles son y qué valen</b><span class="min">4 min de lectura</span></a>
-<a class="tarjeta tc" href="/articulos/paises-con-mas-balones-de-oro/" style="--c:#be123c"><span class="emo" aria-hidden="true">🌍</span><b>Países con más Balones de Oro: ranking y jugadores de cada uno</b><span class="min">4 min de lectura</span></a>
-<a class="tarjeta tc" href="/articulos/messi-o-cristiano-comparacion-en-numeros/" style="--c:#1747d6"><span class="emo" aria-hidden="true">⚖️</span><b>Messi o Cristiano Ronaldo: comparación en números</b><span class="min">4 min de lectura</span></a>
 </div>
 </div></details>
 <details class="tema" style="--c:#dc2626" name="art"><summary><span class="t-emo" aria-hidden="true">📜</span><span class="t-t"><b>Historia y competiciones</b><span>Orígenes del fútbol, el balón, los dorsales, las camisetas, las ligas, la Champions, los derbis y el fútbol femenino.</span></span><span class="t-n">14 artículos</span><span class="t-f" aria-hidden="true"></span></summary><div class="tema-c"><div class="tarjetas">
