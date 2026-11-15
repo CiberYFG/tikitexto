@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-+14OZHBYiYh9MwQjGovyb9vAcutGumI4+W1fSm2UN+k=' 'sha256-3Bvq6lWy7djrWHk/zXJY4f+8enzv1S7NIP4Lt4flqAk=' 'sha256-BYYFXnIdHsmNRI2crJZxsMDUbf9uzg5afkhjgVLJh/E=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-i/uezubRZzZHSJf/pQ5SYUOkxpVDuy7MafHbdaR+erU=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-+14OZHBYiYh9MwQjGovyb9vAcutGumI4+W1fSm2UN+k=' 'sha256-BYYFXnIdHsmNRI2crJZxsMDUbf9uzg5afkhjgVLJh/E=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-Sc/U/2u/L6kJGHrVUmGCBMKBUIE7nq0FE2ewtiPeiH0=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-i/uezubRZzZHSJf/pQ5SYUOkxpVDuy7MafHbdaR+erU=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>
 <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WN89TQCM"></script>
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -1742,6 +1742,7 @@ button.ir-juegos { border: 0; cursor: pointer; }
 .portal__chips { position: relative; z-index: 2; list-style: none; margin: 4px 0 8px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .portal__chips a { display: inline-block; padding: 5px 10px; border-radius: 999px; font: 700 .76rem/1.2 var(--fuente); color: #fff; text-decoration: none; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.35); }
 .portal__chips a:hover, .portal__chips a:focus-visible { background: rgba(255,255,255,.3); outline: none; }
+.portal__chips a.chip-clases, .portal__chips a.chip-clases:hover { color: #3a0f00; font-weight: 900; border-color: #ffd9a8; background: linear-gradient(105deg,#ffb347,#ffe0a3,#ff9a1f); box-shadow: 0 0 12px rgba(255,170,60,.6); }
 .portal__chips a.chip-oro, .portal__chips a.chip-oro:hover { color: #4a3200; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; border-color: #fff3b8; background: linear-gradient(105deg,#ffe27a,#fff6cf,#f7c948,#fff1ad,#ffe27a); background-size: 260% 100%; animation: chipOro 5s linear infinite; box-shadow: 0 0 14px rgba(255,214,90,.75); }
 @keyframes chipOro { to { background-position: -260% 0; } }
 @media (prefers-reduced-motion: reduce) { .portal__chips a.chip-oro { animation: none; } }
@@ -2286,6 +2287,7 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
         <p class="portal__texto">Historia, datos y curiosidades del fútbol</p>
         <ul class="portal__chips">
         <li data-solo-es><a class="chip-oro" href="articulos/balon-de-oro/">🏆 Balón de Oro</a></li>
+        <li data-solo-es><a class="chip-clases" href="?modo=clases" data-clases>🎬 Clases animadas</a></li>
         <li data-solo-es><a  href="articulos/">Artículos</a></li>
         <li data-solo-es><a  href="historias/">Historias</a></li>
         <li data-solo-es><a  href="peques/">Chistes y adivinanzas</a></li>
@@ -8773,6 +8775,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (o.closest("[data-penaltis]")) { abrirPenaltis(); return; }
     if (o.closest("[data-pinball]")) { abrirPinball(); return; }
     if (o.closest("[data-serpiente]")) { abrirSerpiente(); return; }
+    if (o.closest("[data-clases]")) { e.preventDefault(); abrirClases(); return; }
     if (o.closest("#chLogo, #chInicio")) { if (ch.activo && !ch.fin && !pantallaCh.hidden) modalSalirNv.hidden = false; else salirNovedad(); return; }
     if (o.closest("#chVerTutorial")) { abrirTutNv("chapas", false); return; }
   });
@@ -8791,6 +8794,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   TIKI.penaltis = { juego: function () { return pnActivo; } };
   TIKI.pinball = { juego: function () { return pbActivo; } };
   TIKI.serpiente = { juego: function () { return spActivo; } };
+  TIKI.clases = { juego: function () { return clActivo; } };
   TIKI.chapas = { ch: ch, gol: chGol, datos: chDatos, pensar: chPensar, simular: chSimular, estilos: CH_EST, nuevo: chNuevoEstado, VSAQUE: CH_VSAQUE }; /* solo para las pruebas automáticas */
 
   /* Juegos de letras / dinámicos */
@@ -8947,6 +8951,31 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     }).catch(function () { raiz.remove(); spCargando = false; });
   }
 
+  /* ===================== CLASES ANIMADAS · lanzador (vive en clases.js + clases_datos.js) ===================== */
+  let clCargando = false, clActivo = null;
+  function abrirClases() {
+    if (clActivo || clCargando) return;
+    clCargando = true;
+    const raiz = document.createElement("div"); raiz.className = "cl-raiz"; raiz.id = "clRaiz";
+    document.body.appendChild(raiz);
+    const css = new Promise(function (ok) {
+      if (document.getElementById("clCss")) { ok(); return; }
+      const l = document.createElement("link"); l.rel = "stylesheet"; l.id = "clCss"; l.href = "clases.css"; l.onload = ok; l.onerror = ok; document.head.appendChild(l);
+    });
+    Promise.all([import("./clases.js"), css]).then(function (r) {
+      const api = {
+        t: function (s) { return TIKI.t ? TIKI.t(s) : s; },
+        locale: TIKI.locale,
+        sonido: function () { return TIKI.ajustes.sonido(); },
+        datos: function () { const n = nvDatos(); if (!n.cl) n.cl = {}; return n.cl; },
+        guardar: guardarJ, tiki: nvSumarTikitexto, victoria: sonidoVictoria,
+        salir: function () { raiz.remove(); clActivo = null; document.title = "TIKITEXTO · Adivina el nombre del día"; },
+      };
+      clActivo = r[0].abrir(api, raiz); clCargando = false;
+      document.title = "TIKITEXTO · Clases de fútbol";
+    }).catch(function () { raiz.remove(); clCargando = false; });
+  }
+
   /* Enlace directo a un modo (?modo=jugadores), usado por las páginas de búsqueda */
   (function () {
     let m = null;
@@ -8955,6 +8984,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     try { history.replaceState(null, "", location.pathname + location.hash); } catch (error) { /* opcional */ }
     if (m === "ahorcado" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirAhorcado(); return; }
     if (m === "chapas" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirChapas(); return; }
+    if (m === "clases") { abrirClases(); return; }
     if (m === "serpiente" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirSerpiente(); return; }
     if (m === "pinball" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirPinball(); return; }
     if (m === "penaltis" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirPenaltis(); return; }

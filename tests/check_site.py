@@ -913,6 +913,39 @@ with sync_playwright() as p:
     except Exception as e:
         check("cracks ocultos", False, str(e)[:150])
 
+    print("3aa) Clases animadas")
+    try:
+        ca = br.new_context(viewport={"width": 1000, "height": 760}, service_workers="block")
+        pa = ca.new_page(); errs_a = []
+        pa.on("pageerror", lambda e: errs_a.append(str(e)))
+        pa.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');")
+        pa.goto(BASE + "?modo=clases", wait_until="networkidle", timeout=60000); pa.wait_for_timeout(1200)
+        check("clases: se abre con enlace directo y muestra 3 lecciones", pa.locator(".cl-raiz [data-leccion]").count() == 3)
+        pa.click("[data-leccion='0']"); pa.wait_for_timeout(400)
+        r = pa.evaluate("""(()=>{const j=TIKI.clases.juego(); const out=[];
+          j.LECCIONES.forEach((l,li)=>{ j.cargaLeccion(l); l.escenas.forEach((e,i)=>{ j.empezarEscena(i); const w=j.mundo(); if(!w.ents.length && !e.limpia && i>0) out.push(l.id+':'+i+' vacia');
+            if(!e.say||e.say.length>330) out.push(l.id+':'+i+' texto'); }); });
+          return {errores:out, lec:j.LECCIONES.length}})()""")
+        check("clases: todas las escenas se resuelven y los textos caben en el subtítulo", not r["errores"], str(r))
+        pa.evaluate("TIKI.clases.juego().cargaLeccion(TIKI.clases.juego().LECCIONES[0])"); pa.wait_for_timeout(1500)
+        check("clases: la lección avanza sola", pa.evaluate("TIKI.clases.juego().S().T") > 0.5)
+        pa.click("[data-cl=vista]"); pa.wait_for_timeout(200)
+        check("clases: se puede cambiar a vista pizarra", pa.evaluate("TIKI.clases.juego().cfg.vista") == "pizarra")
+        pa.click("[data-cl=vista]")
+        pa.evaluate("(()=>{const j=TIKI.clases.juego(); for(let i=0;i<12;i++) j.avanza();})()"); pa.wait_for_timeout(400)
+        check("clases: al final aparece el minitest", pa.locator("[data-quiz]:not([hidden])").count() == 1)
+        for q in range(3):
+            cor = pa.evaluate("TIKI.clases.juego().LECCIONES[0].quiz[%d].c" % q)
+            pa.click("[data-op='%d']" % cor); pa.wait_for_timeout(1100)
+        check("clases: acertar el minitest da el aprobado", "3 de 3" in pa.inner_text("[data-qr]"), pa.inner_text("[data-qr]"))
+        pa.click("[data-cl=otra]"); pa.wait_for_timeout(200)
+        pa.click("[data-cl=salir]"); pa.wait_for_timeout(300)
+        check("clases: salir cierra la pantalla", pa.locator(".cl-raiz").count() == 0)
+        check("clases: sin errores de JavaScript", not errs_a, "; ".join(errs_a)[:150])
+        ca.close()
+    except Exception as e:
+        check("clases", False, str(e)[:150])
+
     br.close()
 
 # 3u) Enlaces internos de todas las páginas HTML (sin navegador) y artículos de explicación
