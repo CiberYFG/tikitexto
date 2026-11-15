@@ -1730,3 +1730,28 @@ TÚ ||| YOU ||| VOCÊ ||| TOI ||| TU ||| DU
 Cargando… ||| Loading… ||| Carregando… ||| Chargement… ||| Caricamento… ||| Lädt…
 Salir ||| Exit ||| Sair ||| Quitter ||| Esci ||| Beenden
 Más juegos dinámicos en camino. ¡Vuelve pronto! ||| More dynamic games are on the way. Come back soon! ||| Mais jogos dinâmicos a caminho. Volte logo! ||| D'autres jeux dynamiques arrivent. Reviens vite ! ||| Altri giochi dinamici in arrivo. Torna presto! ||| Weitere dynamische Spiele sind unterwegs. Komm bald wieder!
+NUEVO · PINBALL ||| NEW · PINBALL ||| NOVO · PINBALL ||| NOUVEAU · FLIPPER ||| NUOVO · FLIPPER ||| NEU · FLIPPER
+PINBALL GOLAZO ||| PINBALL GOLAZO ||| PINBALL GOLAZO ||| PINBALL GOLAZO ||| PINBALL GOLAZO ||| PINBALL GOLAZO
+El flíper del fútbol: golpea la bola con las botas, rebota en los defensas y mete gol al portero. Completa T-I-K-I para multiplicar. ||| Football pinball: smack the ball with the boots, bounce it off the defenders and beat the keeper. Complete T-I-K-I to multiply. ||| O pinball do futebol: bata na bola com as chuteiras, rebata nos zagueiros e marque no goleiro. Complete T-I-K-I para multiplicar. ||| Le flipper du football : frappe la balle avec les crampons, fais-la rebondir sur les défenseurs et bats le gardien. Complète T-I-K-I pour multiplier. ||| Il flipper del calcio: colpisci la palla con gli scarpini, falla rimbalzare sui difensori e batti il portiere. Completa T-I-K-I per moltiplicare. ||| Fußball-Flipper: schlag den Ball mit den Schuhen, lass ihn von den Verteidigern abprallen und überwinde den Torwart. Vervollständige T-I-K-I zum Multiplizieren.
+El flíper del fútbol ||| The football pinball ||| O pinball do futebol ||| Le flipper du football ||| Il flipper del calcio ||| Der Fußball-Flipper
+Mejor puntuación ||| Best score ||| Melhor pontuação ||| Meilleur score ||| Miglior punteggio ||| Bestpunktzahl
+Mantén pulsado para cargar el chut y suelta para sacar. ||| Hold to charge the kick and release to launch. ||| Mantenha pressionado para carregar o chute e solte para sacar. ||| Maintiens pour charger la frappe et relâche pour lancer. ||| Tieni premuto per caricare il tiro e rilascia per lanciare. ||| Halten zum Aufladen des Schusses, loslassen zum Abstoßen.
+Toca el lado izquierdo o derecho (o usa ← → / Z M) para mover las botas. ||| Tap the left or right side (or use ← → / Z M) to move the boots. ||| Toque o lado esquerdo ou direito (ou use ← → / Z M) para mover as chuteiras. ||| Touche le côté gauche ou droit (ou utilise ← → / Z M) pour bouger les crampons. ||| Tocca il lato sinistro o destro (o usa ← → / Z M) per muovere gli scarpini. ||| Tippe links oder rechts (oder ← → / Z M), um die Schuhe zu bewegen.
+Mete la bola en la portería para marcar. Completa T-I-K-I para multiplicar. ||| Put the ball in the goal to score. Complete T-I-K-I to multiply. ||| Coloque a bola no gol para marcar. Complete T-I-K-I para multiplicar. ||| Mets la balle au but pour marquer. Complète T-I-K-I pour multiplier. ||| Metti la palla in porta per segnare. Completa T-I-K-I per moltiplicare. ||| Bring den Ball ins Tor. Vervollständige T-I-K-I zum Multiplizieren.
+Pausa ||| Pause ||| Pausa ||| Pause ||| Pausa ||| Pause
+Continuar ||| Continue ||| Continuar ||| Continuer ||| Continua ||| Weiter
+Final del partido ||| Full time ||| Fim de jogo ||| Fin du match ||| Fine partita ||| Spielende
+🏆 Nuevo récord ||| 🏆 New record ||| 🏆 Novo recorde ||| 🏆 Nouveau record ||| 🏆 Nuovo record ||| 🏆 Neuer Rekord
+Puntos ||| Points ||| Pontos ||| Points ||| Punti ||| Punkte
+🎁 +1 tikitexto ||| 🎁 +1 tikitexto ||| 🎁 +1 tikitexto ||| 🎁 +1 tikitexto ||| 🎁 +1 tikitexto ||| 🎁 +1 tikitexto
+Volver a jugar ||| Play again ||| Jogar de novo ||| Rejouer ||| Gioca ancora ||| Nochmal spielen
+¡RACHA! ||| STREAK! ||| SEQUÊNCIA! ||| SÉRIE ! ||| SERIE! ||| SERIE!
+¡BALÓN EXTRA! ||| EXTRA BALL! ||| BOLA EXTRA! ||| BALLE BONUS ! ||| PALLA EXTRA! ||| EXTRABALL!
+Bola perdida ||| Ball lost ||| Bola perdida ||| Balle perdue ||| Palla persa ||| Ball verloren
+¡VAR! Repetimos la jugada ||| VAR! Replaying the play ||| VAR! Repetimos a jogada ||| VAR ! On rejoue l'action ||| VAR! Si ripete l'azione ||| VAR! Wir wiederholen die Szene
+¡AL PALO! ||| OFF THE POST! ||| NA TRAVE! ||| SUR LE POTEAU ! ||| PALO! ||| PFOSTEN!
+¡PARADÓN! ||| GREAT SAVE! ||| DEFESAÇA! ||| QUEL ARRÊT ! ||| PARATONA! ||| GROSSE PARADE!
+¡MULTIBALÓN! ||| MULTIBALL! ||| MULTIBOLA! ||| MULTIBALLE ! ||| MULTIPALLA! ||| MULTIBALL!
+DOBLE AMARILLA ||| DOUBLE YELLOW ||| DUPLO AMARELO ||| DOUBLE JAUNE ||| DOPPIO GIALLO ||| GELB-ROT
+¡Antes toca otra! ||| Touch something first! ||| Toque em outra antes! ||| Touche autre chose d'abord ! ||| Prima tocca altro! ||| Erst etwas anderes berühren!
+¡GOOOL! ||| GOOOAL! ||| GOOOL! ||| BUUUT ! ||| GOOOL! ||| TOOOR!

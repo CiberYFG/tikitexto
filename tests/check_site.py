@@ -842,6 +842,29 @@ with sync_playwright() as p:
     except Exception as e:
         check("penaltis 3D", False, str(e)[:150])
 
+    print("3y) Pinball Golazo")
+    try:
+        cy = br.new_context(viewport={"width": 420, "height": 860}, service_workers="block")
+        py = cy.new_page(); errs_y = []
+        py.on("pageerror", lambda e: errs_y.append(str(e)))
+        py.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');sessionStorage.setItem('tikitexto:grupo','dinamicos');")
+        py.goto(BASE, wait_until="networkidle", timeout=60000); py.wait_for_timeout(300)
+        check("pinball: tarjeta en Dinámicos", py.locator("[data-pinball]").count() == 1)
+        py.evaluate("document.querySelector('[data-pinball]').click()"); py.wait_for_timeout(1500)
+        check("pinball: se abre la pantalla", py.locator(".pb-raiz").count() == 1)
+        py.click("[data-menu] [data-pb=jugar]"); py.wait_for_timeout(300)
+        py.keyboard.down("Space"); py.wait_for_timeout(600); py.keyboard.up("Space"); py.wait_for_timeout(300)
+        for k in range(30):
+            py.keyboard.down("ArrowLeft" if k % 2 else "ArrowRight"); py.wait_for_timeout(80); py.keyboard.up("ArrowLeft" if k % 2 else "ArrowRight")
+        st = py.evaluate("(()=>{const j=TIKI.pinball.juego();return j?{f:j.S.fase,n:j.S.bolas.length,ok:j.S.bolas.every(b=>isFinite(b.x)&&isFinite(b.y))}:null})()")
+        check("pinball: la partida avanza sin valores inválidos", bool(st) and st["ok"] and st["f"] in ("juego", "saque", "pierde"), str(st))
+        py.click("[data-pb=salir]"); py.wait_for_timeout(300)
+        check("pinball: salir cierra la pantalla", py.locator(".pb-raiz").count() == 0)
+        check("pinball: sin errores de JavaScript", not errs_y, "; ".join(errs_y)[:150])
+        cy.close()
+    except Exception as e:
+        check("pinball", False, str(e)[:150])
+
     br.close()
 
 # 3u) Enlaces internos de todas las páginas HTML (sin navegador) y artículos de explicación
