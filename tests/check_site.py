@@ -957,6 +957,80 @@ with sync_playwright() as p:
     except Exception as e:
         check("tiros libres", False, str(e)[:150])
 
+    print("3ad) Slalom 3D")
+    try:
+        csl = br.new_context(viewport={"width": 844, "height": 390}, service_workers="block")
+        psl = csl.new_page(); errs_sl = []
+        psl.on("pageerror", lambda e: errs_sl.append(str(e)))
+        psl.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','j');sessionStorage.setItem('tikitexto:grupo','dinamicos')")
+        psl.goto(BASE, wait_until="networkidle", timeout=60000); psl.wait_for_timeout(300)
+        check("slalom: tarjeta en Dinámicos", psl.locator("[data-slalom]").count() == 1)
+        psl.evaluate("document.querySelector('[data-slalom]').click()"); psl.wait_for_timeout(3500)
+        check("slalom: se abre la pantalla (o aviso sin WebGL)", psl.locator(".sl-raiz").count() == 1)
+        if psl.locator("[data-sin]:not([hidden])").count() == 0:
+            r = psl.evaluate("""(()=>{ const j=TIKI.slalom.juego(); j.empezar(); const S=j.S; let libre=0, filas=0, vacias=0;
+              S.dist=1500;
+              for(let k=0;k<300;k++){ j.limpia(); j.fila(); const g={}; S.obs.forEach(o=>{ const z=Math.round(o.z); (g[z]=g[z]||[]).push(o); });
+                Object.values(g).forEach(a=>{ const bl=new Set(); a.forEach(o=>{ if(['def','entrada','cono'].includes(o.tipo)) bl.add(o.lane); }); if(a.some(o=>['def','entrada','cono','valla','cartel'].includes(o.tipo))){ filas++; if(bl.size<3) libre++; } }); }
+              j.limpia(); return {filas,libre}; })()""")
+            check("slalom: ninguna fila cierra los tres carriles con defensas o conos", r["filas"] > 300 and r["filas"] == r["libre"], str(r))
+            r = psl.evaluate("""(()=>{ const j=TIKI.slalom.juego(), S=j.S; j.empezar(); S.obs.forEach(()=>{}); const out={};
+              const paso=(n)=>{ for(let i=0;i<n;i++) j.logica(0.02); };
+              const rs=()=>{ j.limpia(); S.fase='corre'; S.vidas=2; S.inv=0; S.y=0; S.vy=0; S.desl=0; S.x=0; S.lane=1; S.v=9; S.sig=9999; S.turbo=0; };
+              rs(); j.pon('valla',1,-3); j.saltar(); paso(60); out.valla=S.vidas===2;
+              rs(); j.pon('cartel',-1,-6); j.deslizar(); paso(70); out.cartel=S.vidas===2;
+              rs(); j.pon('cartel',-1,-6); paso(70); out.cartelGolpea=S.vidas===1;
+              rs(); j.pon('def',1,-6); paso(70); out.def=S.vidas===1;
+              rs(); j.pon('valla',1,-6); paso(70); out.vallaGolpea=S.vidas===1;
+              return out; })()""")
+            check("slalom: saltar la valla y deslizarse bajo el cartel evitan el choque", r["valla"] and r["cartel"], str(r))
+            check("slalom: el cartel y los defensas sí golpean si no los esquivas", r["cartelGolpea"] and r["def"] and r["vallaGolpea"], str(r))
+            r = psl.evaluate("""(()=>{ const j=TIKI.slalom.juego(), S=j.S; j.empezar(); S.sig=9999; S.obs.length=0; S.inv=0; S.vidas=1; j.pon('def',1,-5);
+              for(let i=0;i<400;i++) j.logica(0.02); return {fase:S.fase, vidas:S.vidas}; })()""")
+            psl.wait_for_timeout(300)
+            check("slalom: la segunda tarjeta termina la carrera y sale la pantalla final", r["fase"] in ("fin", "choque") and psl.locator("[data-fin]:not([hidden])").count() == 1, str(r))
+            psl.evaluate("document.querySelector('[data-sl=salir]').click()"); psl.wait_for_timeout(400)
+            check("slalom: salir cierra la pantalla", psl.locator(".sl-raiz").count() == 0)
+        check("slalom: sin errores de JavaScript", not errs_sl, "; ".join(errs_sl)[:150])
+        csl.close()
+    except Exception as e:
+        check("slalom 3D", False, str(e)[:150])
+
+    print("3ae) ¿A qué pertenece?")
+    try:
+        cpe = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
+        ppe = cpe.new_page(); errs_pe = []
+        ppe.on("pageerror", lambda e: errs_pe.append(str(e)))
+        ppe.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','j');sessionStorage.setItem('tikitexto:grupo','letras')")
+        ppe.goto(BASE, wait_until="networkidle", timeout=60000); ppe.wait_for_timeout(300)
+        check("pertenece: tarjeta en Letras", ppe.locator("[data-pertenece]").count() == 1)
+        ppe.evaluate("document.querySelector('[data-pertenece]').click()"); ppe.wait_for_timeout(1500)
+        check("pertenece: se abre la pantalla", ppe.locator(".pe-raiz").count() == 1)
+        g = ppe.evaluate("""(()=>{ const j=TIKI.pertenece.juego(); let mal=0, n=0; const tipos={};
+          for(let r=1;r<=30;r++) for(let i=0;i<150;i++){ const q=j.generar(r,null); n++; tipos[q.tipo]=1; if(q.ops.length!==4||q.ops.filter(o=>o.ok).length!==1||new Set(q.ops.map(o=>o.txt)).size!==4) mal++; }
+          return {mal,n,tipos:Object.keys(tipos).length,d1:j.dificultad(1),d16:j.dificultad(16),t1:j.tiempo(1),t20:j.tiempo(20)}; })()""")
+        check("pertenece: todas las preguntas tienen 4 opciones distintas y una sola correcta", g["mal"] == 0 and g["tipos"] >= 9, str(g))
+        check("pertenece: cada ronda es más difícil y con menos tiempo", g["d1"] == 0 and g["d16"] == 5 and g["t1"] > g["t20"] and g["t20"] >= 6, str(g))
+        ppe.click("[data-menu] [data-pe=jugar]"); ppe.wait_for_timeout(300)
+        check("pertenece: aparece la pregunta con 4 botones y 3 vidas", ppe.locator(".pe-op").count() == 4 and ppe.locator("[data-vidas] i.on").count() == 3)
+        ppe.evaluate("(()=>{const j=TIKI.pertenece.juego(); j.responder(j.S.q.ops.findIndex(o=>o.ok));})()"); ppe.wait_for_timeout(200)
+        pts = ppe.evaluate("TIKI.pertenece.juego().S.pts")
+        check("pertenece: acertar suma puntos", pts >= 100, str(pts))
+        ppe.wait_for_timeout(1200)
+        check("pertenece: tras acertar pasa a la siguiente ronda", ppe.evaluate("TIKI.pertenece.juego().S.r") == 2)
+        ppe.evaluate("(()=>{const j=TIKI.pertenece.juego(); j.S.ac=11; j.responder(j.S.q.ops.findIndex(o=>o.ok));})()"); ppe.wait_for_timeout(200)
+        check("pertenece: el 12.º acierto da +1 tikitexto", ppe.evaluate("TIKI.pertenece.juego().S.tikis") == 1)
+        ppe.wait_for_timeout(1200)
+        for _ in range(3):
+            ppe.evaluate("(()=>{const j=TIKI.pertenece.juego(); if(j.S.fase==='pregunta') j.responder(j.S.q.ops.findIndex(o=>!o.ok));})()"); ppe.wait_for_timeout(1800)
+        check("pertenece: 3 fallos terminan el partido", ppe.locator("[data-fin]:not([hidden])").count() == 1, str(ppe.evaluate("TIKI.pertenece.juego().S.vidas")))
+        ppe.evaluate("document.querySelector('[data-pe=salir]').click()"); ppe.wait_for_timeout(300)
+        check("pertenece: salir cierra la pantalla", ppe.locator(".pe-raiz").count() == 0)
+        check("pertenece: sin errores de JavaScript", not errs_pe, "; ".join(errs_pe)[:150])
+        cpe.close()
+    except Exception as e:
+        check("pertenece", False, str(e)[:150])
+
     print("3ab) Cuartetos TIKITEXTO")
     try:
         cb2 = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
