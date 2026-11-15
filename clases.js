@@ -480,5 +480,5 @@ export function abrir(api, raiz) {
     raf = requestAnimationFrame(bucle);
   }
   raf = requestAnimationFrame(bucle);
-  return { cerrar: cerrar, cargaLeccion: cargaLeccion, LECCIONES: LECCIONES, S: function () { return { I: I, T: T, D: D, play: play, usaVoz: usaVoz, lec: lec && lec.id, fin: finAbierto }; }, avanza: avanza, empezarEscena: empezarEscena, cambiaIdioma: cambiaIdioma, mundo: function () { return mundo(I, T); }, cfg: cfg };
+  return { cerrar: cerrar, cargaLeccion: cargaLeccion, LECCIONES: LECCIONES, S: function () { return { I: I, T: T, D: D, play: play, usaVoz: usaVoz, lec: lec && lec.id, fin: finAbierto }; }, avanza: avanza, empezarEscena: empezarEscena, verFinal: function (i) { empezarEscena(i, false); T = D; setPlay(false); }, cambiaIdioma: cambiaIdioma, mundo: function () { return mundo(I, T); }, cfg: cfg };
 }
