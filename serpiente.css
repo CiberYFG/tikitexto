@@ -20,7 +20,8 @@
 .sp-tema b { font: 900 1.15rem/1.15 var(--fuente-titulo, system-ui); font-style: italic; text-shadow: 0 0 16px rgba(255,61,203,.6); }
 .sp-chips { position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding: 8px 12px 0; max-width: 460px; }
 .sp-chip { padding: 4px 10px; border-radius: 999px; font: 900 .78rem/1.2 ui-monospace, "Courier New", monospace; letter-spacing: .06em; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2); color: #aab8dd; white-space: nowrap; }
-.sp-chip.sp-con-pista { color: #ffe94a; border-color: rgba(255,233,74,.6); }
+.sp-chip.sp-con-pista { color: var(--c, #ffe94a); border-color: var(--c, #ffe94a); }
+.sp-chip.rev { background: color-mix(in srgb, var(--c) 55%, transparent); border-style: dashed; color: #fff; }
 .sp-chip.ok { background: var(--c); border-color: var(--c); color: #06121c; box-shadow: 0 0 14px var(--c); animation: spPop .35s cubic-bezier(.2,1.6,.4,1); }
 @keyframes spPop { from { transform: scale(.5); } }
 .sp-cur { position: relative; min-height: 30px; margin-top: 6px; font: 900 1.4rem/30px ui-monospace, "Courier New", monospace; letter-spacing: .14em; text-align: center; text-shadow: 0 0 12px rgba(255,255,255,.4); }
@@ -29,7 +30,9 @@
 .sp-cur.otro { color: #ffe94a; font-size: .85rem; letter-spacing: .02em; }
 .sp-zona { position: relative; flex: 1; min-height: 0; width: 100%; display: grid; place-items: center; }
 .sp-cv { display: block; border-radius: 22px; background: rgba(6,10,30,.5); box-shadow: 0 0 0 2px rgba(25,230,255,.55), 0 0 40px rgba(25,230,255,.3), 0 0 90px rgba(255,61,203,.2); touch-action: none; cursor: pointer; }
-.sp-pie { position: relative; padding: 8px 0 calc(12px + env(safe-area-inset-bottom)); }
+.sp-pie { position: relative; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; padding: 8px 12px calc(12px + env(safe-area-inset-bottom)); }
+.sp-ver { border-color: rgba(25,230,255,.55); background: rgba(25,230,255,.1); color: #19e6ff; }
+.sp-ver:hover { background: rgba(25,230,255,.2); }
 .sp-pista { display: inline-flex; align-items: center; gap: 10px; border: 1px solid rgba(255,233,74,.55); background: rgba(255,233,74,.1); color: #ffe94a; border-radius: 999px; padding: 10px 20px; font: 900 .9rem/1 var(--fuente, system-ui); cursor: pointer; }
 .sp-pista small { opacity: .75; font-weight: 700; }
 .sp-pista:hover { background: rgba(255,233,74,.2); }

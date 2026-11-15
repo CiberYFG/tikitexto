@@ -896,6 +896,16 @@ with sync_playwright() as p:
         check("cracks ocultos: la cuadrícula reparte las 30 letras entre los nombres", res["total"] == 30 and res["uni"] == 30, str(res))
         check("cracks ocultos: el generador no falla", res["gen"] == 60, str(res))
         check("cracks ocultos: acertar un nombre y completar la cuadrícula", res["uno"] == 1 and res["cuad"] == 1, str(res))
+        pz.evaluate("(()=>{const j=TIKI.serpiente.juego(); j.empezar();})()"); pz.wait_for_timeout(300)
+        h = pz.evaluate("""(()=>{const S=TIKI.serpiente.juego().S, t0=S.t; const b=document.querySelector('[data-sp=pista]');
+          b.click(); const t1=S.t; b.click(); const t2=S.t; b.click(); const t3=S.t;
+          const tot=S.puz.nombres.reduce((a,n)=>a+n.pista,0);
+          return {d1:t0-t1,d2:t1-t2,d3:t2-t3,tot,max:S.t}})()""")
+        check("cracks ocultos: pista −10 s y las siguientes seguidas −5 s", 9 <= h["d1"] <= 11 and 4 <= h["d2"] <= 6 and 4 <= h["d3"] <= 6 and h["tot"] == 3, str(h))
+        pz.click("[data-sp=ver]"); pz.wait_for_timeout(200)
+        check("cracks ocultos: «Ver respuestas» revela y ofrece Siguiente", pz.evaluate("TIKI.serpiente.juego().S.fase") == "revela" and "Siguiente" in pz.inner_text("[data-sp=ver]"))
+        pz.click("[data-sp=ver]"); pz.wait_for_timeout(200)
+        check("cracks ocultos: Siguiente abre otra cuadrícula", pz.evaluate("TIKI.serpiente.juego().S.fase") == "juego")
         pz.click("[data-sp=salir]"); pz.wait_for_timeout(300)
         check("cracks ocultos: salir cierra la pantalla", pz.locator(".sp-raiz").count() == 0)
         check("cracks ocultos: sin errores de JavaScript", not errs_z, "; ".join(errs_z)[:150])

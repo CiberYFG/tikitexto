@@ -4,27 +4,47 @@
    Módulo ES; todo es propio (canvas + sonidos sintetizados). Sin escudos, fotos ni logos. */
 
 const C = 5, R = 6, N = C * R;
-const TIEMPO = 150, TIEMPO_MAX = 180, BONUS_T = 35, COSTE_PISTA = 10;
+const TIEMPO = 120, TIEMPO_MAX = 150, BONUS_T = 30, COSTE_PISTA = 10, COSTE_PISTA_SEG = 5, COSTE_VER = 15;
 const COLS = ["#19e6ff", "#ff3dcb", "#ffe94a", "#41ff8a", "#ff9a1f", "#c77dff", "#ff6b7c", "#7dd3fc"];
 
-/* Nombres sin tildes ni espacios (A-Z), de 4 a 8 letras. Cada tema tiene 10+ para poder combinar. */
+/* Nombres sin tildes ni espacios (A-Z), de 3 a 9 letras. Equipos, estadios y leyendas MUY conocidos. Cada tema tiene 10+ para poder combinar. */
 const TEMAS = [
-  { t: "Ganadores del Balón de Oro", n: "MESSI MODRIC KAKA ZIDANE CRUYFF PLATINI BAGGIO NEDVED RIVALDO OWEN BENZEMA RODRI EUSEBIO YASHIN WEAH BLOKHIN CHARLTON MATTHEWS KOPA KANE DEMBELE" },
-  { t: "España campeona del mundo 2010", n: "INIESTA XAVI CASILLAS PUYOL RAMOS VILLA PIQUE BUSQUETS ALONSO PEDRO TORRES CAPDEVILA NAVAS SILVA FABREGAS MATA ALBIOL REINA VALDES MARCHENA" },
-  { t: "Leyendas del Barcelona", n: "MESSI XAVI INIESTA PUYOL KOEMAN ROMARIO RIVALDO PIQUE BUSQUETS VALDES ETOO HENRY SUAREZ NEYMAR CRUYFF LAUDRUP ALVES ABIDAL LARSSON" },
+  /* Equipos */
+  { t: "Equipos de LaLiga", n: "MADRID BARCA ATLETI SEVILLA VALENCIA BETIS ATHLETIC GETAFE OSASUNA CELTA ESPANYOL MALLORCA GIRONA RAYO ALAVES" },
+  { t: "Equipos de la Premier League", n: "LIVERPOOL ARSENAL CHELSEA TOTTENHAM EVERTON WESTHAM UNITED CITY NEWCASTLE LEICESTER FULHAM BRIGHTON WOLVES LEEDS" },
+  { t: "Equipos de la Serie A", n: "JUVENTUS MILAN INTER NAPOLI ROMA LAZIO ATALANTA TORINO GENOA BOLOGNA UDINESE SAMPDORIA PARMA CAGLIARI VERONA" },
+  { t: "Equipos de la Bundesliga", n: "BAYERN DORTMUND LEIPZIG SCHALKE HAMBURGO STUTTGART BREMEN WOLFSBURG FRANKFURT COLONIA MAINZ HERTHA FREIBURG" },
+  { t: "Grandes de Europa", n: "PSG BENFICA PORTO SPORTING AJAX CELTIC RANGERS MONACO LYON MARSELLA SHAKHTAR ZENIT FEYENOORD PSV" },
+  { t: "Equipos de Sudamérica", n: "BOCA RIVER FLAMENGO SANTOS PALMEIRAS NACIONAL RACING VASCO GREMIO CRUZEIRO BOTAFOGO VELEZ" },
+  /* Estadios */
+  { t: "Estadios famosos de España", n: "BERNABEU CAMPNOU CALDERON MESTALLA SANMAMES RIAZOR ROMAREDA ANOETA SADAR CARRANZA SARRIA" },
+  { t: "Estadios famosos de Europa", n: "ALLIANZ SANSIRO ANFIELD WEMBLEY EMIRATES ETIHAD OLIMPICO WESTFALEN HAMPDEN DRAGAO LUZ BERNABEU CAMPNOU" },
+  { t: "Estadios míticos del mundo", n: "MARACANA AZTECA BOMBONERA MORUMBI WEMBLEY BERNABEU CAMPNOU SANSIRO ANFIELD MINEIRAO" },
+  /* Leyendas de clubes */
   { t: "Leyendas del Real Madrid", n: "RAUL CASILLAS RAMOS MODRIC KROOS BENZEMA ZIDANE FIGO PUSKAS GENTO HIERRO MARCELO CARVAJAL VINICIUS GUTI MORIENTES BALE ISCO RONALDO" },
+  { t: "Leyendas del Barcelona", n: "MESSI XAVI INIESTA PUYOL KOEMAN ROMARIO RIVALDO PIQUE BUSQUETS VALDES ETOO HENRY SUAREZ NEYMAR CRUYFF LAUDRUP ALVES ABIDAL LARSSON" },
+  { t: "Leyendas del Atlético de Madrid", n: "GRIEZMANN TORRES GABI GODIN FORLAN SIMEONE ARAGONES AGUERO FALCAO KOKE OBLAK COSTA GARATE VIERI FUTRE KIKO CAMINERO PANTIC" },
+  { t: "Leyendas del Athletic Club", n: "ZARRA IRIBAR ADURIZ LLORENTE SUSAETA IRAOLA MUNIAIN URZAIZ GUERRERO PICHICHI GAINZA WILLIAMS GOROSTIZA VALVERDE" },
+  { t: "Leyendas del Milan", n: "MALDINI BARESI BAGGIO KAKA GULLIT RIJKAARD VANBASTEN PIRLO SEEDORF NESTA TASSOTTI DONADONI GATTUSO INZAGHI RIVERA WEAH BOBAN PAPIN ALTAFINI SAVICEVIC" },
+  { t: "Leyendas del Inter", n: "ZANETTI MILITO SNEIJDER SAMUEL CAMBIASSO STANKOVIC MATERAZZI FACCHETTI MAZZOLA SUAREZ RONALDO VIERI ETOO MAICON CESAR BERGOMI MATTHAUS BREHME ZAMORANO RECOBA ICARDI LUKAKU" },
+  { t: "Leyendas de la Juventus", n: "BUFFON DELPIERO PLATINI ZIDANE NEDVED TREZEGUET VIALLI BONIPERTI CHIELLINI BARZAGLI PIRLO VIDAL TEVEZ DYBALA SCIREA CABRINI ZOFF BETTEGA DESCHAMPS CONTE TARDELLI THURAM BONUCCI RONALDO" },
+  { t: "Leyendas del Bayern", n: "MULLER MAIER KAHN LAHM MATTHAUS ROBBEN RIBERY KIMMICH NEUER ELBER EFFENBERG BASLER HOENESS BREITNER LIZARAZU KLOSE TONI PIZARRO SCHOLL KROOS KANE OLIC ALABA GOMEZ" },
+  { t: "Leyendas del Liverpool", n: "GERRARD DALGLISH RUSH HYYPIA CARRAGHER OWEN FOWLER SALAH SUAREZ TORRES ALONSO KEEGAN HANSEN SOUNESS BARNES SHANKLY PAISLEY FIRMINO MANE VANDIJK ALISSON HENDERSON" },
+  { t: "Leyendas del Manchester United", n: "GIGGS SCHOLES KEANE CANTONA BECKHAM ROONEY RONALDO FERDINAND VIDIC STAM NEVILLE BEST CHARLTON LAW SOLSKJAER YORKE COLE IRWIN BRUCE ROBSON HUGHES TEVEZ CARRICK EVRA" },
+  { t: "Leyendas del Arsenal", n: "HENRY BERGKAMP VIEIRA ADAMS KEOWN SEAMAN PIRES LJUNGBERG CAMPBELL COLE FABREGAS WILSHERE WRIGHT DIXON PARLOUR OVERMARS ANELKA VANPERSIE SAKA ODEGAARD RICE ARTETA LEHMANN" },
+  /* Leyendas de selecciones */
+  { t: "Leyendas de España", n: "INIESTA XAVI CASILLAS PUYOL RAMOS VILLA TORRES RAUL BUSQUETS HIERRO FABREGAS ALONSO PIQUE SILVA NAVAS CAPDEVILA MORIENTES" },
   { t: "Leyendas de Brasil", n: "PELE ROMARIO RONALDO RIVALDO KAKA NEYMAR ZICO SOCRATES GARRINCHA CAFU TAFFAREL BEBETO VINICIUS RAPHINHA ALISSON DUNGA TOSTAO DIDA JAIRZINHO FALCAO ADRIANO" },
   { t: "Leyendas de Argentina", n: "MESSI MARADONA KEMPES DIMARIA RIQUELME AGUERO TEVEZ ZANETTI CRESPO OTAMENDI ARDILES CANIGGIA SIMEONE ORTEGA DYBALA MARTINEZ ALVAREZ FILLOL VALDANO" },
-  { t: "Leyendas de Francia", n: "ZIDANE HENRY PLATINI MBAPPE KANTE POGBA VIEIRA THURAM BLANC PIRES MAKELELE BENZEMA FONTAINE KOPA LLORIS BARTHEZ LIZARAZU DESAILLY CANTONA RIBERY VARANE GIROUD" },
-  { t: "Leyendas de Italia", n: "BUFFON MALDINI BARESI BAGGIO TOTTI PIRLO ROSSI NESTA ZOFF VIERI INZAGHI GATTUSO BERGOMI BONUCCI RIVERA RIVA SCIREA ZOLA DONADONI TARDELLI CONTE MAZZOLA" },
-  { t: "Delanteros de leyenda", n: "HENRY SUAREZ ETOO DROGBA RAUL VILLA TORRES KLOSE SHEARER ROMARIO RONALDO KANE HAALAND EUSEBIO MULLER CRESPO FORLAN OWEN LINEKER BERGKAMP" },
-  { t: "Porteros históricos", n: "CASILLAS BUFFON KAHN YASHIN NEUER COURTOIS ZOFF BANKS OBLAK ALISSON CECH SEAMAN BARTHEZ LLORIS TAFFAREL SHILTON MAIER EDERSON HIGUITA KEYLOR DEGEA" },
-  { t: "Leyendas de la Premier League", n: "SHEARER GERRARD LAMPARD SCHOLES GIGGS KEANE CANTONA VIEIRA SALAH HAALAND ROONEY TERRY HENRY BERGKAMP DROGBA ZOLA ADAMS OWEN FOWLER BECKHAM STAM KANE" },
+  { t: "Leyendas de Francia", n: "ZIDANE HENRY PLATINI MBAPPE KANTE POGBA VIEIRA THURAM BLANC PIRES MAKELELE BENZEMA FONTAINE KOPA LLORIS BARTHEZ LIZARAZU DESAILLY CANTONA RIBERY VARANE GIROUD GRIEZMANN" },
+  { t: "Leyendas de Italia", n: "BUFFON MALDINI BARESI BAGGIO TOTTI PIRLO ROSSI NESTA ZOFF VIERI INZAGHI GATTUSO BERGOMI BONUCCI RIVERA RIVA SCIREA ZOLA DONADONI TARDELLI CONTE MAZZOLA CANNAVARO CHIELLINI" },
   { t: "Leyendas de Alemania", n: "MULLER KLOSE KAHN MATTHAUS NEUER KROOS OZIL LAHM PODOLSKI BALLACK VOLLER BREITNER MAIER HAMANN GOTZE REUS MUSIALA WIRTZ HAVERTZ KIMMICH SANE" },
-  { t: "Leyendas de los Países Bajos", n: "CRUYFF GULLIT RIJKAARD KOEMAN BERGKAMP SNEIJDER ROBBEN SEEDORF DAVIDS STAM NEESKENS KROL DEJONG DEPAY BLIND OVERMARS KUYT" },
+  { t: "Leyendas de los Países Bajos", n: "CRUYFF GULLIT RIJKAARD KOEMAN BERGKAMP SNEIJDER ROBBEN SEEDORF DAVIDS STAM NEESKENS KROL DEJONG DEPAY BLIND OVERMARS KUYT VANBASTEN" },
   { t: "Leyendas de Portugal", n: "EUSEBIO FIGO RONALDO PEPE DECO NANI COENTRAO CARVALHO QUARESMA BERNARDO SILVA MOUTINHO COSTINHA MANICHE PAULETA CANCELO DIAS LEAO RAMOS" },
-  { t: "Estadios míticos", n: "WEMBLEY MARACANA BERNABEU SANSIRO ANFIELD MESTALLA CALDERON AZTECA HAMPDEN ETIHAD EMIRATES SANMAMES RIAZOR" },
-  { t: "Entrenadores famosos", n: "KLOPP FERGUSON CRUYFF SACCHI CAPELLO LIPPI HEYNCKES SIMEONE ZIDANE XAVI ARTETA WENGER MICHELS FLICK TUCHEL CONTE ALLEGRI MAZZARRI BENITEZ EMERY VALVERDE BIELSA SCOLARI MENOTTI BILARDO ZAGALLO LOEW" },
+  /* Por premios y puestos */
+  { t: "Ganadores del Balón de Oro", n: "MESSI MODRIC KAKA ZIDANE CRUYFF PLATINI BAGGIO NEDVED RIVALDO OWEN BENZEMA RODRI EUSEBIO YASHIN WEAH BLOKHIN CHARLTON MATTHEWS KOPA KANE DEMBELE" },
+  { t: "Porteros históricos", n: "CASILLAS BUFFON KAHN YASHIN NEUER COURTOIS ZOFF BANKS OBLAK ALISSON CECH SEAMAN BARTHEZ LLORIS TAFFAREL SHILTON MAIER EDERSON HIGUITA KEYLOR DEGEA" },
+  { t: "Delanteros de leyenda", n: "HENRY SUAREZ ETOO DROGBA RAUL VILLA TORRES KLOSE SHEARER ROMARIO RONALDO KANE HAALAND EUSEBIO MULLER CRESPO FORLAN OWEN LINEKER BERGKAMP" },
 ].map((x) => ({ t: x.t, n: x.n.split(" ") }));
 
 const rnd = (a, b) => a + Math.random() * (b - a);
@@ -70,9 +90,9 @@ function generar(evitar) {
     const tema = mezcla(TEMAS.filter((x) => x !== evitar))[0], pool = mezcla(tema.n);
     let suma = 0; const eleg = [];
     for (let i = 0; i < pool.length && suma < N; i++) { if (suma + pool[i].length <= N) { eleg.push(pool[i]); suma += pool[i].length; } }
-    if (suma !== N || eleg.length < 4 || eleg.length > 7) continue;
+    if (suma !== N || eleg.length < 4 || eleg.length > 8) continue;
     const cam = rellenar(eleg); if (!cam) continue;
-    const grid = new Array(N), nombres = eleg.map((s, i) => { cam[i].forEach((c, k) => { grid[c] = s[k]; }); return { s: s, cells: cam[i], col: COLS[i % COLS.length], ok: false, pista: false }; });
+    const grid = new Array(N), nombres = eleg.map((s, i) => { cam[i].forEach((c, k) => { grid[c] = s[k]; }); return { s: s, cells: cam[i], col: COLS[i % COLS.length], ok: false, pista: 0, rev: false }; });
     return { tema: tema, nombres: nombres, grid: grid };
   }
   return null;
@@ -116,14 +136,14 @@ const PLANTILLA = `
 <canvas class="sp-fondo" data-fondo></canvas>
 <div class="sp-cab">
   <button type="button" class="sp-btn" data-sp="salir" aria-label="Salir">✕</button>
-  <div class="sp-marc"><div class="sp-reloj" data-reloj data-no-t>2:30</div><div class="sp-pts"><b data-pts data-no-t>0</b></div></div>
+  <div class="sp-marc"><div class="sp-reloj" data-reloj data-no-t>2:00</div><div class="sp-pts"><b data-pts data-no-t>0</b></div></div>
   <button type="button" class="sp-btn" data-sp="pausa" aria-label="Pausa">❚❚</button>
 </div>
 <div class="sp-tema"><small>Tema</small><b data-tema data-no-t></b></div>
 <div class="sp-chips" data-chips></div>
 <div class="sp-cur" data-cur data-no-t>&nbsp;</div>
 <div class="sp-zona" data-zona><canvas class="sp-cv" data-cv></canvas></div>
-<div class="sp-pie"><button type="button" class="sp-pista" data-sp="pista"><span>💡 Pista</span><small data-coste data-no-t>−10 s</small></button></div>
+<div class="sp-pie"><button type="button" class="sp-pista" data-sp="pista"><span>💡 Pista</span><small data-coste data-no-t>−10 s</small></button><button type="button" class="sp-pista sp-ver" data-sp="ver"><span data-vertxt>👁 Ver respuestas</span></button></div>
 <div class="sp-menu" data-menu>
   <div class="sp-caja">
     <p class="sp-kicker">Juego de letras</p>
@@ -167,7 +187,7 @@ export function abrir(api, raiz) {
 
   const S = {
     fase: "menu", t: TIEMPO, pts: 0, cuad: 0, nom: 0, combo: 0, puz: null, camino: [], toque: false, tikis: 0, ultimoTema: null,
-    sacudida: 0, destello: 0, flashMal: 0, nuevoRecord: false, trans: 0, mal: 0, tic: 0,
+    pistasSeguidas: 0, sacudida: 0, destello: 0, flashMal: 0, nuevoRecord: false, trans: 0, mal: 0, tic: 0,
   };
   let cs = 40, ox = 0, oy = 0, dpr = 1, raf = 0, ultimo = 0, vivo = true, tAnim = 0, sel = -1;
   const parts = [], popups = [];
@@ -185,8 +205,8 @@ export function abrir(api, raiz) {
     S.puz.nombres.forEach((n) => {
       const d = document.createElement("span"); d.className = "sp-chip" + (n.ok ? " ok" : "");
       d.setAttribute("data-no-t", "");
-      if (n.ok) { d.textContent = n.s; d.style.setProperty("--c", n.col); }
-      else { d.textContent = (n.pista ? n.s[0] : "·") + " " + new Array(n.s.length - 1).fill("·").join(" "); if (n.pista) d.classList.add("sp-con-pista"); }
+      if (n.ok || n.rev) { d.textContent = n.s; d.style.setProperty("--c", n.col); if (n.rev && !n.ok) d.classList.add("rev"); }
+      else { d.textContent = n.s.split("").map((ch, k) => (k < n.pista ? ch : "·")).join(" "); if (n.pista) { d.classList.add("sp-con-pista"); d.style.setProperty("--c", n.col); } }
       box.appendChild(d);
     });
   }
@@ -202,16 +222,17 @@ export function abrir(api, raiz) {
   function nuevaCuadricula() {
     const p = generar(S.ultimoTema);
     if (!p) { S.puz = generar(null); } else S.puz = p;
-    S.ultimoTema = S.puz.tema; S.camino = []; S.toque = false; S.trans = 0;
+    S.ultimoTema = S.puz.tema; S.camino = []; S.toque = false; S.trans = 0; S.pistasSeguidas = 0; pintarCoste();
     $("[data-tema]").textContent = t(S.puz.tema.t);
     pintarChips(); pintarCur("");
-    $("[data-coste]").textContent = "−" + COSTE_PISTA + " s";
   }
+  function pintarCoste() { const e = $("[data-coste]"); if (e) e.textContent = "−" + (S.pistasSeguidas > 0 ? COSTE_PISTA_SEG : COSTE_PISTA) + " s"; }
+  function pintarVer() { const e = $("[data-vertxt]"); if (e) e.textContent = S.fase === "revela" ? t("Siguiente →") : t("👁 Ver respuestas"); }
   function empezar() {
     $("[data-menu]").hidden = true; $("[data-fin]").hidden = true; $("[data-pausa]").hidden = true;
     S.t = TIEMPO; S.pts = 0; S.cuad = 0; S.nom = 0; S.combo = 0; S.tikis = 0; S.nuevoRecord = false; S.ultimoTema = null;
     parts.length = 0; popups.length = 0; S.fase = "juego"; au.activar();
-    nuevaCuadricula(); pintarPts(); pintarReloj(); ajustar();
+    nuevaCuadricula(); pintarVer(); pintarPts(); pintarReloj(); ajustar();
   }
   function darTiki() {
     try { api.tiki(); } catch (e) { /* opcional */ }
@@ -241,7 +262,7 @@ export function abrir(api, raiz) {
     S.camino = [];
   }
   function acierto(n) {
-    n.ok = true; S.combo++; S.nom++;
+    n.ok = true; S.combo++; S.nom++; S.pistasSeguidas = 0; pintarCoste();
     const v = Math.round(100 * n.s.length * (1 + Math.min(S.combo - 1, 6) * 0.25) * (n.pista ? 0.6 : 1));
     S.pts += v; au.ok(S.combo); S.destello = 0.6;
     const c = centro(n.cells[Math.floor(n.cells.length / 2)]); popup("+" + v, c[0], c[1], n.col, 24);
@@ -261,9 +282,20 @@ export function abrir(api, raiz) {
   }
   function pista() {
     if (S.fase !== "juego") return;
-    const cand = S.puz.nombres.filter((n) => !n.ok && !n.pista); if (!cand.length) return;
-    const n = cand[Math.floor(Math.random() * cand.length)]; n.pista = true; S.t = Math.max(1, S.t - COSTE_PISTA); au.pista();
-    pintarChips(); pintarReloj(); const p = centro(n.cells[0]); chispas(p[0], p[1], 10, "#ffe94a", 160);
+    const cand = S.puz.nombres.filter((n) => !n.ok && n.pista < n.cells.length); if (!cand.length) return;
+    const mx = Math.max.apply(null, cand.map((n) => n.pista)), top = cand.filter((n) => n.pista === mx), n = top[Math.floor(Math.random() * top.length)];
+    const coste = S.pistasSeguidas > 0 ? COSTE_PISTA_SEG : COSTE_PISTA; S.pistasSeguidas++;
+    const q = centro(n.cells[n.pista]); n.pista++;
+    S.t = Math.max(1, S.t - coste); au.pista(); pintarChips(); pintarReloj(); pintarCoste();
+    chispas(q[0], q[1], 10, n.col, 160); popup("−" + coste + " s", ox + cs * C / 2, oy - 8, "#ff6b7c", 18);
+  }
+  function verRespuestas() {
+    if (S.fase === "revela") { S.fase = "juego"; nuevaCuadricula(); pintarVer(); return; }
+    if (S.fase !== "juego") return;
+    S.t = Math.max(1, S.t - COSTE_VER); S.combo = 0; S.camino = []; S.toque = false; arrastre = false;
+    S.puz.nombres.forEach((n) => { if (!n.ok) n.rev = true; });
+    S.fase = "revela"; au.pista(); pintarChips(); pintarCur(""); pintarReloj(); pintarVer();
+    popup("−" + COSTE_VER + " s", ox + cs * C / 2, oy - 8, "#ff6b7c", 18);
   }
 
   /* ── Entrada ── */
@@ -332,7 +364,7 @@ export function abrir(api, raiz) {
   raiz.addEventListener("click", function (e) {
     const b = e.target.closest && e.target.closest("[data-sp]"); if (!b) return;
     const a = b.dataset.sp;
-    if (a === "salir") cerrar(); else if (a === "jugar") empezar(); else if (a === "pausa") pausar(S.fase === "juego"); else if (a === "seguir") pausar(false); else if (a === "pista") pista();
+    if (a === "salir") cerrar(); else if (a === "jugar") empezar(); else if (a === "pausa") pausar(S.fase === "juego"); else if (a === "seguir") pausar(false); else if (a === "pista") pista(); else if (a === "ver") verRespuestas();
   });
   raiz.addEventListener("contextmenu", (e) => e.preventDefault());
   document.addEventListener("keydown", onKey); document.addEventListener("visibilitychange", onVis); window.addEventListener("resize", ajustar);
@@ -364,14 +396,14 @@ export function abrir(api, raiz) {
     const p = S.puz, r = cs * 0.4;
     // líneas de nombres encontrados
     p.nombres.forEach((n) => {
-      if (!n.ok) return; c.save(); c.strokeStyle = n.col; c.globalAlpha = 0.55; c.lineWidth = cs * 0.22; c.lineCap = c.lineJoin = "round"; c.shadowColor = n.col; c.shadowBlur = 14;
+      if (!n.ok && !n.rev) return; c.save(); c.strokeStyle = n.col; c.globalAlpha = n.ok ? 0.55 : 0.35; c.lineWidth = cs * 0.22; c.lineCap = c.lineJoin = "round"; c.shadowColor = n.col; c.shadowBlur = 14;
       c.beginPath(); n.cells.forEach((i, k) => { const q = centro(i); k ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); }); c.stroke(); c.restore();
     });
     // fichas
     for (let i = 0; i < N; i++) {
-      const q = centro(i), dueño = p.nombres.find((n) => n.ok && n.cells.indexOf(i) >= 0), enCam = S.camino.indexOf(i);
+      const q = centro(i), dueño = p.nombres.find((n) => (n.ok || n.rev) && n.cells.indexOf(i) >= 0), enCam = S.camino.indexOf(i);
       c.save(); c.translate(q[0], q[1]);
-      if (dueño) { c.shadowColor = dueño.col; c.shadowBlur = 14; c.fillStyle = dueño.col; c.beginPath(); c.arc(0, 0, r, 0, 6.283); c.fill(); c.shadowBlur = 0; c.fillStyle = "#06121c"; }
+      if (dueño) { if (!dueño.ok) c.globalAlpha = 0.75; c.shadowColor = dueño.col; c.shadowBlur = 14; c.fillStyle = dueño.col; c.beginPath(); c.arc(0, 0, r, 0, 6.283); c.fill(); c.shadowBlur = 0; c.fillStyle = "#06121c"; }
       else {
         const g = c.createRadialGradient(-r * 0.3, -r * 0.35, 2, 0, 0, r); g.addColorStop(0, "rgba(40,70,130,.95)"); g.addColorStop(1, "rgba(8,16,40,.95)");
         c.fillStyle = g; c.beginPath(); c.arc(0, 0, r, 0, 6.283); c.fill();
@@ -381,8 +413,8 @@ export function abrir(api, raiz) {
       c.font = "900 " + Math.round(cs * 0.42) + "px " + fam; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(p.grid[i], 0, cs * 0.02);
       c.restore();
     }
-    // pistas: aro en la primera letra
-    p.nombres.forEach((n) => { if (n.pista && !n.ok) { const q = centro(n.cells[0]), k = (Math.sin(tAnim * 6) + 1) / 2; c.save(); c.strokeStyle = n.col; c.lineWidth = 3; c.globalAlpha = 0.5 + k * 0.5; c.shadowColor = n.col; c.shadowBlur = 12; c.beginPath(); c.arc(q[0], q[1], r + 3 + k * 4, 0, 6.283); c.stroke(); c.restore(); } });
+    // pistas: cada letra revelada se redondea y se va llenando con el color de su nombre
+    p.nombres.forEach((n) => { if (n.ok || n.rev) return; for (let k = 0; k < n.pista; k++) { const q = centro(n.cells[k]), v = (Math.sin(tAnim * 5 + k) + 1) / 2; c.save(); c.globalAlpha = 0.28 + v * 0.12; c.fillStyle = n.col; c.beginPath(); c.arc(q[0], q[1], r, 0, 6.283); c.fill(); c.globalAlpha = 0.9; c.strokeStyle = n.col; c.lineWidth = 4; c.shadowColor = n.col; c.shadowBlur = 12; c.beginPath(); c.arc(q[0], q[1], r + 2, 0, 6.283); c.stroke(); c.restore(); } });
     // camino actual
     if (S.camino.length > 1) {
       c.save(); c.strokeStyle = "#fff"; c.globalAlpha = 0.85; c.lineWidth = cs * 0.16; c.lineCap = c.lineJoin = "round"; c.shadowColor = "#ffe94a"; c.shadowBlur = 16;
@@ -425,5 +457,5 @@ export function abrir(api, raiz) {
   ajustar(); raf = requestAnimationFrame(bucle);
   /* Solo para las pruebas automáticas */
   function resolverUno() { const n = S.puz.nombres.find((x) => !x.ok); if (!n) return false; S.camino = n.cells.slice(); evaluar(); return true; }
-  return { cerrar: cerrar, S: S, empezar: empezar, actualizar: actualizar, resolverUno: resolverUno, generar: generar, TEMAS: TEMAS, constantes: { C: C, R: R } };
+  return { cerrar: cerrar, pista: pista, verRespuestas: verRespuestas, S: S, empezar: empezar, actualizar: actualizar, resolverUno: resolverUno, generar: generar, TEMAS: TEMAS, constantes: { C: C, R: R } };
 }
