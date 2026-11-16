@@ -1915,3 +1915,60 @@ P ||| ^¡Correcto! \+(\d+)$ ||| Correct! +$1 ||| Correto! +$1 ||| Correct ! +$1 
 P ||| ^Respuesta: (.+)$ ||| Answer: $1 ||| Resposta: $1 ||| Réponse : $1 ||| Risposta: $1 ||| Antwort: $1
 P ||| ^¡Se acabó el tiempo! · Respuesta: (.+)$ ||| Time's up! · Answer: $1 ||| O tempo acabou! · Resposta: $1 ||| Temps écoulé ! · Réponse : $1 ||| Tempo scaduto! · Risposta: $1 ||| Die Zeit ist um! · Antwort: $1
 P ||| ^(\d+) aciertos · (\d+) puntos$ ||| $1 correct · $2 points ||| $1 acertos · $2 pontos ||| $1 bonnes réponses · $2 points ||| $1 risposte esatte · $2 punti ||| $1 richtig · $2 Punkte
+PASAPALABRA ||| PASAPALABRA ||| PASAPALABRA ||| PASAPALABRA ||| PASAPALABRA ||| PASAPALABRA
+El rosco del fútbol: 26 letras, una pista por letra sobre jugadores, clubes y estadios y 3 minutos para completarlo. ||| The football word wheel: 26 letters, one clue per letter about players, clubs and stadiums, and 3 minutes to finish it. ||| O rosco do futebol: 26 letras, uma dica por letra sobre jogadores, clubes e estádios e 3 minutos para completá-lo. ||| Le rosco du football : 26 lettres, un indice par lettre sur des joueurs, des clubs et des stades, et 3 minutes pour le finir. ||| Il rosco del calcio: 26 lettere, un indizio per lettera su giocatori, club e stadi e 3 minuti per completarlo. ||| Das Fußball-Buchstabenrad: 26 Buchstaben, ein Hinweis pro Buchstabe zu Spielern, Vereinen und Stadien und 3 Minuten Zeit.
+Completa el rosco: una pista por letra sobre jugadores, clubes y estadios. Tienes 3 minutos para todo el rosco. ||| Complete the word wheel: one clue per letter about players, clubs and stadiums. You have 3 minutes for the whole wheel. ||| Complete o rosco: uma dica por letra sobre jogadores, clubes e estádios. Você tem 3 minutos para o rosco todo. ||| Complète le rosco : un indice par lettre sur des joueurs, des clubs et des stades. Tu as 3 minutes pour tout le rosco. ||| Completa il rosco: un indizio per lettera su giocatori, club e stadi. Hai 3 minuti per tutto il rosco. ||| Vervollständige das Rad: ein Hinweis pro Buchstabe zu Spielern, Vereinen und Stadien. Du hast 3 Minuten für das ganze Rad.
+Cada letra tiene una pista: la respuesta empieza por esa letra o la contiene. ||| Each letter has a clue: the answer starts with that letter or contains it. ||| Cada letra tem uma dica: a resposta começa com essa letra ou a contém. ||| Chaque lettre a un indice : la réponse commence par cette lettre ou la contient. ||| Ogni lettera ha un indizio: la risposta inizia con quella lettera o la contiene. ||| Jeder Buchstabe hat einen Hinweis: Die Antwort beginnt mit diesem Buchstaben oder enthält ihn.
+Escribe el nombre y pulsa Responder. Si no lo sabes, di Pasapalabra y vuelves a ella al final. ||| Type the name and press Answer. If you don't know it, say Pasapalabra and you'll come back to it at the end. ||| Digite o nome e toque em Responder. Se não souber, diga Pasapalabra e você volta a ela no final. ||| Écris le nom et appuie sur Répondre. Si tu ne sais pas, dis Pasapalabra et tu y reviendras à la fin. ||| Scrivi il nome e premi Rispondi. Se non lo sai, di' Pasapalabra e ci tornerai alla fine. ||| Tippe den Namen und drücke Antworten. Wenn du ihn nicht weißt, sag Pasapalabra und du kommst am Ende darauf zurück.
+Un fallo no resta tiempo, pero esa letra ya no se puede recuperar. ||| A mistake doesn't cost time, but that letter can't be recovered. ||| Um erro não tira tempo, mas essa letra não pode mais ser recuperada. ||| Une erreur ne fait pas perdre de temps, mais cette lettre est perdue. ||| Un errore non toglie tempo, ma quella lettera non si può più recuperare. ||| Ein Fehler kostet keine Zeit, aber dieser Buchstabe ist verloren.
+Escribe la respuesta ||| Type the answer ||| Digite a resposta ||| Écris la réponse ||| Scrivi la risposta ||| Tippe die Antwort
+Responder ||| Answer ||| Responder ||| Répondre ||| Rispondi ||| Antworten
+Pasapalabra ||| Pasapalabra ||| Pasapalabra ||| Pasapalabra ||| Pasapalabra ||| Pasapalabra
+Pista · −10 s ||| Hint · −10 s ||| Dica · −10 s ||| Indice · −10 s ||| Indizio · −10 s ||| Hinweis · −10 s
+No quedan más pistas ||| No more hints ||| Não há mais dicas ||| Plus d'indices ||| Niente più indizi ||| Keine Hinweise mehr
+Campeón del mundo ||| World champion ||| Campeão do mundo ||| Champion du monde ||| Campione del mondo ||| Weltmeister
+Fin del rosco ||| End of the wheel ||| Fim do rosco ||| Fin du rosco ||| Fine del rosco ||| Ende des Rades
+Rosco completado ||| Wheel completed ||| Rosco completo ||| Rosco terminé ||| Rosco completato ||| Rad vollständig
+¡Rosco perfecto! ||| Perfect wheel! ||| Rosco perfeito! ||| Rosco parfait ! ||| Rosco perfetto! ||| Perfektes Rad!
+P ||| ^Empieza por (.)$ ||| Starts with $1 ||| Começa com $1 ||| Commence par $1 ||| Inizia con $1 ||| Beginnt mit $1
+P ||| ^Contiene la (.)$ ||| Contains the letter $1 ||| Contém a letra $1 ||| Contient la lettre $1 ||| Contiene la lettera $1 ||| Enthält den Buchstaben $1
+P ||| ^Club de (.+)$ ||| Club from $1 ||| Clube de $1 ||| Club de $1 ||| Club di $1 ||| Verein aus $1
+P ||| ^Estadio de (.+)$ ||| Stadium in $1 ||| Estádio em $1 ||| Stade en $1 ||| Stadio in $1 ||| Stadion in $1
+P ||| ^Jugó en: (.+)$ ||| Played for: $1 ||| Jogou em: $1 ||| A joué à : $1 ||| Ha giocato in: $1 ||| Spielte bei: $1
+P ||| ^Falló: era (.+)$ ||| Wrong: it was $1 ||| Errou: era $1 ||| Raté : c'était $1 ||| Sbagliato: era $1 ||| Falsch: es war $1
+P ||| ^(\d+) aciertos · (\d+) fallos · (\d+) puntos$ ||| $1 correct · $2 wrong · $3 points ||| $1 acertos · $2 erros · $3 pontos ||| $1 bonnes réponses · $2 erreurs · $3 points ||| $1 risposte esatte · $2 errori · $3 punti ||| $1 richtig · $2 falsch · $3 Punkte
+TOQUES ||| TOQUES ||| TOQUES ||| TOQUES ||| TOQUES ||| TOQUES
+Videojuego ||| Video game ||| Videogame ||| Jeu vidéo ||| Videogioco ||| Videospiel
+toques ||| touches ||| toques ||| touches ||| tocchi ||| Berührungen
+Mueve solo el pie y mantén el balón en el aire. Cada toque suma puntos y, con ellos, desbloqueas equipaciones, balones y fondos. ||| Move only the foot and keep the ball in the air. Every touch scores points, and with them you unlock kits, balls and backgrounds. ||| Mexa só o pé e mantenha a bola no ar. Cada toque soma pontos e, com eles, você desbloqueia uniformes, bolas e fundos. ||| Bouge uniquement le pied et garde le ballon en l'air. Chaque touche rapporte des points et te permet de débloquer des maillots, des ballons et des décors. ||| Muovi solo il piede e tieni il pallone in aria. Ogni tocco dà punti e con quelli sblocchi maglie, palloni e sfondi. ||| Bewege nur den Fuß und halte den Ball in der Luft. Jede Berührung gibt Punkte, mit denen du Trikots, Bälle und Hintergründe freischaltest.
+Arrastra el dedo (o el ratón): el pie va hacia ti. ||| Drag your finger (or the mouse): the foot follows it. ||| Arraste o dedo (ou o mouse): o pé vai até ele. ||| Fais glisser ton doigt (ou la souris) : le pied le suit. ||| Trascina il dito (o il mouse): il piede lo segue. ||| Ziehe den Finger (oder die Maus): Der Fuß folgt.
+Colócalo bajo el balón para darle un toque. Más toques seguidos, más multiplicador. ||| Place it under the ball to touch it. The more touches in a row, the bigger the multiplier. ||| Coloque-o sob a bola para dar um toque. Quanto mais toques seguidos, maior o multiplicador. ||| Place-le sous le ballon pour le toucher. Plus tu enchaînes de touches, plus le multiplicateur grimpe. ||| Mettilo sotto il pallone per dargli un tocco. Più tocchi di fila, più alto il moltiplicatore. ||| Halte ihn unter den Ball, um ihn zu berühren. Je mehr Berührungen am Stück, desto höher der Multiplikator.
+Si el balón toca el suelo, se acaba. ||| If the ball touches the ground, it's over. ||| Se a bola tocar o chão, acabou. ||| Si le ballon touche le sol, c'est fini. ||| Se il pallone tocca terra, è finita. ||| Berührt der Ball den Boden, ist Schluss.
+Vestuario ||| Locker room ||| Vestiário ||| Vestiaire ||| Spogliatoio ||| Umkleide
+Balón al suelo ||| Ball on the ground ||| Bola no chão ||| Ballon au sol ||| Pallone a terra ||| Ball am Boden
+Equipación ||| Kit ||| Uniforme ||| Maillot ||| Maglia ||| Trikot
+Fondo ||| Background ||| Fundo ||| Décor ||| Sfondo ||| Hintergrund
+Listo ||| Done ||| Pronto ||| Terminé ||| Fatto ||| Fertig
+Equipado ||| Equipped ||| Equipado ||| Équipé ||| Equipaggiato ||| Ausgewählt
+Elegir ||| Choose ||| Escolher ||| Choisir ||| Scegli ||| Wählen
+Mueve solo el pie y no dejes caer el balón. Cada toque suma puntos y desbloqueas equipaciones, balones y fondos: del callejón a las pirámides. ||| Move only the foot and don't let the ball drop. Every touch scores points and unlocks kits, balls and backgrounds: from the alley to the pyramids. ||| Mexa só o pé e não deixe a bola cair. Cada toque soma pontos e desbloqueia uniformes, bolas e fundos: do beco às pirâmides. ||| Bouge uniquement le pied et ne laisse pas tomber le ballon. Chaque touche rapporte des points et débloque maillots, ballons et décors : de la ruelle aux pyramides. ||| Muovi solo il piede e non far cadere il pallone. Ogni tocco dà punti e sblocca maglie, palloni e sfondi: dal vicolo alle piramidi. ||| Bewege nur den Fuß und lass den Ball nicht fallen. Jede Berührung gibt Punkte und schaltet Trikots, Bälle und Hintergründe frei: von der Gasse bis zu den Pyramiden.
+NUEVO · VIDEOJUEGO ||| NEW · VIDEO GAME ||| NOVO · VIDEOGAME ||| NOUVEAU · JEU VIDÉO ||| NUOVO · VIDEOGIOCO ||| NEU · VIDEOSPIEL
+Azul clásica ||| Classic blue ||| Azul clássico ||| Bleu classique ||| Blu classico ||| Klassisch blau
+Rojo fuego ||| Fire red ||| Vermelho fogo ||| Rouge feu ||| Rosso fuoco ||| Feuerrot
+Blanco puro ||| Pure white ||| Branco puro ||| Blanc pur ||| Bianco puro ||| Reinweiß
+Verde campo ||| Pitch green ||| Verde campo ||| Vert pelouse ||| Verde prato ||| Rasengrün
+Rayas azules ||| Blue stripes ||| Listras azuis ||| Rayures bleues ||| Righe azzurre ||| Blaue Streifen
+Amarillo sol ||| Sun yellow ||| Amarelo sol ||| Jaune soleil ||| Giallo sole ||| Sonnengelb
+Negro noche ||| Night black ||| Preto noite ||| Noir nuit ||| Nero notte ||| Nachtschwarz
+Rojo y negro ||| Red and black ||| Vermelho e preto ||| Rouge et noir ||| Rosso e nero ||| Rot und Schwarz
+Plata ||| Silver ||| Prata ||| Argent ||| Argento ||| Silber
+Callejón ||| Alley ||| Beco ||| Ruelle ||| Vicolo ||| Gasse
+Playa ||| Beach ||| Praia ||| Plage ||| Spiaggia ||| Strand
+Palacio ||| Palace ||| Palácio ||| Palais ||| Palazzo ||| Palast
+Pirámides ||| Pyramids ||| Pirâmides ||| Pyramides ||| Piramidi ||| Pyramiden
+Coliseo ||| Colosseum ||| Coliseu ||| Colisée ||| Colosseo ||| Kolosseum
+Gran Muralla ||| Great Wall ||| Grande Muralha ||| Grande Muraille ||| Grande Muraglia ||| Chinesische Mauer
+Torre Eiffel ||| Eiffel Tower ||| Torre Eiffel ||| Tour Eiffel ||| Torre Eiffel ||| Eiffelturm
+Nueva York ||| New York ||| Nova York ||| New York ||| New York ||| New York
+P ||| ^(\d+) puntos$ ||| $1 points ||| $1 pontos ||| $1 points ||| $1 punti ||| $1 Punkte
+P ||| ^¡Desbloqueado: (.+)!$ ||| Unlocked: $1! ||| Desbloqueado: $1! ||| Débloqué : $1 ! ||| Sbloccato: $1! ||| Freigeschaltet: $1!
