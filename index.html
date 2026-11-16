@@ -1810,8 +1810,22 @@ html.vs-abierto { overflow: hidden; }
 .vd-pizarra { position: absolute; right: 40px; top: 26px; width: 46%; max-width: 230px; transform: rotate(6deg); filter: drop-shadow(0 8px 14px rgba(0,0,0,.55)); opacity: .96; }
 .vd-play { position: absolute; right: 56px; bottom: 54px; width: 84px; filter: drop-shadow(0 0 18px rgba(255,31,75,.9)); animation: vdLate 1.8s ease-in-out infinite; }
 @keyframes vdLate { 50% { transform: scale(1.1); } }
-@media (min-width: 1000px) { .portal { grid-template-columns: 1fr 1fr 1fr; max-width: 1180px; } }
-@media (min-width: 760px) and (max-width: 999px) { .portal__card--videos { grid-column: 1 / -1; min-height: 210px; } }
+.portal__card--cmp { text-decoration: none; background: radial-gradient(120% 100% at 15% 0%, #19e6ff 0%, #3b2bd6 30%, #2a0f6b 62%, #05030f 100%); box-shadow: 0 18px 40px rgba(60, 90, 255, .4), inset 0 0 0 1px rgba(255,255,255,.22); }
+.portal__card--cmp .portal__ir { background: #fff; color: #2a0f9b; }
+.portal__card--cmp > :not(.cm-fondo) { position: relative; z-index: 3; }
+.cm-fondo { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; border-radius: inherit; }
+.cm-anillo { position: absolute; right: 12%; top: 14%; width: 118px; aspect-ratio: 1; border-radius: 50%; border: 3px solid transparent; border-top-color: #19e6ff; border-bottom-color: #ff2fd6; filter: drop-shadow(0 0 8px #19e6ff); animation: cmGira 2.4s linear infinite; }
+.cm-anillo--2 { width: 86px; right: calc(12% + 16px); top: calc(14% + 16px); border-top-color: transparent; border-bottom-color: transparent; border-left-color: #ffd23a; border-right-color: #8a4dff; animation-direction: reverse; animation-duration: 3.4s; }
+@keyframes cmGira { to { transform: rotate(360deg); } }
+.cm-vs { position: absolute; right: calc(12% + 31px); top: calc(14% + 40px); font: italic 900 1.9rem/1 var(--fuente); color: #fff; text-shadow: -2px 0 #19e6ff, 2px 0 #ff2fd6, 0 0 18px #fff; animation: cmLate 1.6s ease-in-out infinite; }
+@keyframes cmLate { 50% { transform: scale(1.12); } }
+.cm-barra { position: absolute; right: 10%; height: 9px; border-radius: 9px; opacity: .9; animation: cmBarra 3s ease-in-out infinite; }
+.cm-barra--a { bottom: 72px; width: 46%; background: linear-gradient(90deg, transparent, #19e6ff); box-shadow: 0 0 14px #19e6ff; }
+.cm-barra--b { bottom: 54px; width: 32%; background: linear-gradient(90deg, transparent, #ff2fd6); box-shadow: 0 0 14px #ff2fd6; animation-delay: .5s; }
+@keyframes cmBarra { 50% { transform: scaleX(.7); transform-origin: right; } }
+@media (min-width: 1000px) { .portal { grid-template-columns: repeat(4, 1fr); max-width: 1280px; } }
+@media (min-width: 1000px) { .portal__titulo { font-size: clamp(1.45rem, 2.1vw, 1.9rem); } .cm-anillo { top: auto; bottom: 96px; right: 10%; width: 84px; } .cm-anillo--2 { width: 60px; bottom: 108px; right: calc(10% + 12px); top: auto; } .cm-vs { top: auto; bottom: 122px; right: calc(10% + 22px); font-size: 1.3rem; } }
+@media (prefers-reduced-motion: reduce) { .cm-anillo, .cm-vs, .cm-barra { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .vd-tira::before, .vd-haz, .vd-play { animation: none; } }
 .portal__card--juegos { background: #04140c; animation: none; box-shadow: 0 0 0 3px transparent, 0 18px 44px rgba(0, 0, 0, .45); }
 .portal__card--juegos::before { content: ""; position: absolute; z-index: -1; inset: -60%; background: conic-gradient(from 0deg, #ff2d6f, #ff9f1a, #ffe600, #2ee66b, #19b8ff, #8a4dff, #ff2d6f); animation: jgGira 6s linear infinite; }
@@ -2352,7 +2366,6 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
         <p class="portal__texto">Historia, datos y curiosidades del fútbol</p>
         <ul class="portal__chips">
         <li data-solo-es><a class="chip-oro" href="articulos/balon-de-oro/">🏆 Balón de Oro</a></li>
-        <li data-solo-es-en><a class="chip-cmp" data-cmp href="comparador/">⚡ Comparador</a></li>
         <li data-solo-es><a  href="articulos/">Artículos</a></li>
         <li data-solo-es><a  href="historias/">Historias</a></li>
         <li data-solo-es><a  href="peques/">Chistes y adivinanzas</a></li>
@@ -2377,6 +2390,13 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
         <span class="portal__texto">Clases animadas con profe, pizarra y voz</span>
         <span class="portal__ir">Ver <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </button>
+      <a class="portal__card portal__card--cmp" id="portalComparador" data-cmp data-solo-es-en href="comparador/">
+        <span class="cm-fondo" aria-hidden="true"><span class="cm-anillo cm-anillo--1"></span><span class="cm-anillo cm-anillo--2"></span><span class="cm-vs">VS</span><span class="cm-barra cm-barra--a"></span><span class="cm-barra cm-barra--b"></span></span>
+        <span class="portal__icono" aria-hidden="true">⚡</span>
+        <span class="portal__titulo">Comparador</span>
+        <span class="portal__texto">Cara a cara: jugadores, equipos, selecciones y entrenadores</span>
+        <span class="portal__ir">Comparar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
     </div>
 
     <div class="vj" id="vistaJuegos">
