@@ -1972,3 +1972,7 @@ Torre Eiffel ||| Eiffel Tower ||| Torre Eiffel ||| Tour Eiffel ||| Torre Eiffel 
 Nueva York ||| New York ||| Nova York ||| New York ||| New York ||| New York
 P ||| ^(\d+) puntos$ ||| $1 points ||| $1 pontos ||| $1 points ||| $1 punti ||| $1 Punkte
 P ||| ^¡Desbloqueado: (.+)!$ ||| Unlocked: $1! ||| Desbloqueado: $1! ||| Débloqué : $1 ! ||| Sbloccato: $1! ||| Freigeschaltet: $1!
+Correcta ||| Correct ||| Correta ||| Correcte ||| Corretta ||| Richtig
+Fallada ||| Wrong ||| Errada ||| Ratée ||| Sbagliata ||| Falsch
+Pendiente ||| Pending ||| Pendente ||| En attente ||| In sospeso ||| Offen
+P ||| ^Tu respuesta: (.+)$ ||| Your answer: $1 ||| Sua resposta: $1 ||| Ta réponse : $1 ||| La tua risposta: $1 ||| Deine Antwort: $1

@@ -14,7 +14,7 @@
 
 /* rosco */
 .pp-rosco { --s: min(92vw, 41vh, 410px); position: relative; flex: none; width: var(--s); height: var(--s); margin: 4px 0 2px; }
-.pp-l { position: absolute; width: 11.4%; height: 11.4%; transform: translate(-50%, -50%); border-radius: 50%; display: grid; place-items: center; font: 900 calc(var(--s) * .05)/1 var(--fuente-titulo, system-ui); font-style: normal; color: #fff;
+.pp-l { cursor: pointer; position: absolute; width: 11.4%; height: 11.4%; transform: translate(-50%, -50%); border-radius: 50%; display: grid; place-items: center; font: 900 calc(var(--s) * .05)/1 var(--fuente-titulo, system-ui); font-style: normal; color: #fff;
   background: radial-gradient(circle at 35% 30%, #4d78ff, #1b3fcf 70%); border: 2px solid rgba(255,255,255,.55); box-shadow: 0 3px 8px rgba(0,0,0,.4); transition: transform .2s, background .2s, box-shadow .2s; }
 .pp-l.ok { background: radial-gradient(circle at 35% 30%, #5dffa5, #12a85c 70%); border-color: #c6ffe0; }
 .pp-l.ko { background: radial-gradient(circle at 35% 30%, #ff7d8b, #c81f36 70%); border-color: #ffd0d6; }
@@ -60,3 +60,8 @@
 .pp-lista { margin: 0; max-height: 120px; overflow-y: auto; font: 600 .74rem/1.45 var(--fuente, system-ui); color: #b9c9f5; }
 @media (max-height: 640px) { .pp-rosco { --s: min(92vw, 36vh, 380px); } .pp-pista div:not(:first-child) { font-size: .82rem; } }
 @media (prefers-reduced-motion: reduce) { .pp-reloj.rojo { animation: none; } .pp-l { transition: none; } }
+
+.pp-rev { width: min(520px, calc(100% - 24px)); margin-top: 6px; padding: 9px 12px; border-radius: 14px; text-align: center; display: grid; gap: 2px; border: 2px solid rgba(255,255,255,.4); background: rgba(8,14,44,.92); }
+.pp-rev.ok { border-color: #52ff9c; background: rgba(8,70,40,.92); } .pp-rev.ko { border-color: #ff6b7a; background: rgba(90,14,26,.92); }
+.pp-rev__t { font: 900 .95rem/1.2 var(--fuente-titulo, system-ui); letter-spacing: .06em; text-transform: uppercase; }
+.pp-rev__r { font: 800 1.05rem/1.25 var(--fuente, system-ui); } .pp-rev__u { font: 600 .8rem/1.2 var(--fuente, system-ui); opacity: .85; }

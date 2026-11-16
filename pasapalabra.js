@@ -93,6 +93,7 @@ const PLANTILLA = `
   <div class="pp-pista" data-pista></div>
   <p class="pp-mask" data-mask data-no-t></p>
 </div>
+<div class="pp-rev" data-rev hidden></div>
 <p class="pp-info" data-info></p>
 <form class="pp-entra" data-form autocomplete="off">
   <input type="text" data-input class="pp-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send" placeholder="Escribe la respuesta" aria-label="Respuesta">
@@ -155,7 +156,7 @@ export function abrir(api, raiz) {
   /* rosco circular */
   const rosco = $("[data-rosco]"), bolas = [];
   LETRAS.forEach((L, i) => {
-    const a = -Math.PI / 2 + i * 2 * Math.PI / 26, b = document.createElement("i"); b.className = "pp-l"; b.textContent = L; b.setAttribute("data-no-t", "");
+    const a = -Math.PI / 2 + i * 2 * Math.PI / 26, b = document.createElement("i"); b.className = "pp-l"; b.textContent = L; b.setAttribute("data-no-t", ""); b.dataset.i = String(i);
     b.style.left = (50 + 44.5 * Math.cos(a)).toFixed(3) + "%"; b.style.top = (50 + 44.5 * Math.sin(a)).toFixed(3) + "%"; rosco.appendChild(b); bolas.push(b);
   });
   function pintaBolas() {
@@ -167,6 +168,17 @@ export function abrir(api, raiz) {
   const restante = () => Math.max(0, TIEMPO - S.extra - (performance.now() - S.t0) / 1000);
   const fmt = (s) => { s = Math.ceil(s); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
 
+  /* Tocar cualquier letra del rosco: dice si está acertada o fallada y su respuesta */
+  let hRev = 0;
+  function revisa(i) {
+    const it = S.rosco[i], e = $("[data-rev]"); if (!it) return; const fin = S.fase === "fin";
+    let est = it.est === 1 ? "ok" : it.est === 2 ? "ko" : "pend", txt = it.est === 1 ? "Correcta" : it.est === 2 ? "Fallada" : it.est === 3 ? "Pasapalabra" : "Pendiente";
+    e.className = "pp-rev " + est; e.innerHTML = ""; const add = (s, cls, notr) => { const d = document.createElement("div"); if (cls) d.className = cls; d.textContent = s; if (notr) d.setAttribute("data-no-t", ""); e.appendChild(d); };
+    add(it.L + " · " + t(txt), "pp-rev__t", true);
+    if (it.est === 1 || it.est === 2 || fin) add(t("Respuesta: " + it.n), "pp-rev__r", true);
+    if (it.est === 2 && it.resp) add(t("Tu respuesta: " + it.resp), "pp-rev__u", true);
+    e.hidden = false; clearTimeout(hRev); hRev = setTimeout(() => { e.hidden = true; }, 4500);
+  }
   function pintaCarta() {
     const it = S.rosco[S.i]; if (!it) return;
     $("[data-tit]").textContent = t((it.modo === "e" ? "Empieza por " : "Contiene la ") + it.L);
@@ -194,7 +206,7 @@ export function abrir(api, raiz) {
       UMBRALES_TIKI.forEach((u) => { if (S.ok === u) { S.tikis++; try { api.tiki(); } catch (e) { /* opcional */ } try { api.victoria(); } catch (e) { /* opcional */ } info("⚡ +1 tikitexto", "bien"); } });
       pintaBolas(); avanzar();
     } else {
-      it.est = 2; S.ko++; S.bloq = true; sonMal(); info("Falló: era " + it.n, "mal"); pintaBolas();
+      it.est = 2; it.resp = q; S.ko++; S.bloq = true; sonMal(); info("Falló: era " + it.n, "mal"); pintaBolas();
       clearTimeout(hSig); hSig = setTimeout(() => { if (vivo && S.fase === "juego") avanzar(); }, PAUSA_FALLO);
     }
   }
@@ -234,7 +246,7 @@ export function abrir(api, raiz) {
 
   $("[data-form]").addEventListener("submit", (e) => { e.preventDefault(); audio(); responder(); });
   raiz.addEventListener("click", (e) => {
-    audio(); const b = e.target.closest ? e.target.closest("[data-pp]") : null; if (!b) return;
+    audio(); const bl = e.target.closest ? e.target.closest(".pp-l") : null; if (bl) { revisa(+bl.dataset.i); return; } const b = e.target.closest ? e.target.closest("[data-pp]") : null; if (!b) return;
     const k = b.dataset.pp; if (k === "salir") cerrar(); else if (k === "jugar") empezar(); else if (k === "pasa") { pasa(); try { input.focus({ preventScroll: true }); } catch (x) { /* opcional */ } } else if (k === "pista") { pista(); try { input.focus({ preventScroll: true }); } catch (x) { /* opcional */ } }
   });
   const onKey = (e) => {
@@ -244,11 +256,11 @@ export function abrir(api, raiz) {
   };
   window.addEventListener("keydown", onKey);
   function cerrar() {
-    if (!vivo) return; vivo = false; cancelAnimationFrame(raf); clearTimeout(hSig); window.removeEventListener("keydown", onKey);
+    if (!vivo) return; vivo = false; cancelAnimationFrame(raf); clearTimeout(hSig); clearTimeout(hRev); window.removeEventListener("keydown", onKey);
     try { if (ctx) ctx.close(); } catch (e) { /* opcional */ }
     raiz.innerHTML = ""; if (api.salir) api.salir();
   }
   pintaBolas(); pintaStats();
   /* Solo para las pruebas automáticas */
-  return { cerrar: cerrar, S: S, empezar: empezar, responder: responder, pasa: pasa, pista: pista, generar: generar, acepta: acepta, mascara: mascara, termina: termina, POOL: POOL };
+  return { revisa: revisa, cerrar: cerrar, S: S, empezar: empezar, responder: responder, pasa: pasa, pista: pista, generar: generar, acepta: acepta, mascara: mascara, termina: termina, POOL: POOL };
 }
