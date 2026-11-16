@@ -45,6 +45,9 @@
   function consentir(v) { // modo de consentimiento de Google: el código de Tag Manager ya está en <head> con todo denegado
     if (!GTM_ID || typeof window.gtag !== "function") return;
     window.gtag("consent", "update", { analytics_storage: v ? "granted" : "denied" });
+    // Evento propio para Tag Manager: las etiquetas con activador de inicialización se evalúan ANTES del permiso y no se repiten;
+    // en GTM hay un activador «Evento personalizado» con este nombre que lanza GA4 cuando ya hay consentimiento.
+    if (v) { window.dataLayer = window.dataLayer || []; window.dataLayer.push({ event: "tikitexto_analitica_si" }); }
   }
   function borrarCookiesGoogle() {
     var partes = location.hostname.split("."), doms = ["", location.hostname, "." + location.hostname];
