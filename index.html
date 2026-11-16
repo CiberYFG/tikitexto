@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-6haigsWMCgqiSacR95d/JyHeO9IsRKs8aWLtV8kSLWk=' 'sha256-B1FZN5/Evo9AuSHms1Xjgwie0UnCmXgc8SwQYaIhtfw=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' 'sha256-q1Q7u3jLjDIuxne8pth9Y9JUtzAcGnzQ2HLdosTHydc=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-6haigsWMCgqiSacR95d/JyHeO9IsRKs8aWLtV8kSLWk=' 'sha256-B1FZN5/Evo9AuSHms1Xjgwie0UnCmXgc8SwQYaIhtfw=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>
 <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WN89TQCM"></script>
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -1792,6 +1792,8 @@ html.vs-abierto { overflow: hidden; }
 .portal__chips a:hover, .portal__chips a:focus-visible { background: rgba(255,255,255,.3); outline: none; }
 .portal__chips a.chip-oro, .portal__chips a.chip-oro:hover { color: #4a3200; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; border-color: #fff3b8; background: linear-gradient(105deg,#ffe27a,#fff6cf,#f7c948,#fff1ad,#ffe27a); background-size: 260% 100%; animation: chipOro 5s linear infinite; box-shadow: 0 0 14px rgba(255,214,90,.75); }
 @keyframes chipOro { to { background-position: -260% 0; } }
+.portal__chips a.chip-cmp, .portal__chips a.chip-cmp:hover { color: #fff; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; border-color: #19e6ff; background: linear-gradient(105deg,#0a1a4a,#6a2cff,#ff2fd6,#19e6ff,#0a1a4a); background-size: 260% 100%; animation: chipOro 4s linear infinite; box-shadow: 0 0 14px rgba(25,230,255,.8); }
+@media (prefers-reduced-motion: reduce) { .portal__chips a.chip-cmp { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .portal__chips a.chip-oro { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .portal__card--juegos, .portal__card--saber::before { animation: none; } }
 /* ===== Tarjeta Juegos: noche de estadio con neón RGB ===== */
@@ -2350,6 +2352,7 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
         <p class="portal__texto">Historia, datos y curiosidades del fútbol</p>
         <ul class="portal__chips">
         <li data-solo-es><a class="chip-oro" href="articulos/balon-de-oro/">🏆 Balón de Oro</a></li>
+        <li data-solo-es-en><a class="chip-cmp" data-cmp href="comparador/">⚡ Comparador</a></li>
         <li data-solo-es><a  href="articulos/">Artículos</a></li>
         <li data-solo-es><a  href="historias/">Historias</a></li>
         <li data-solo-es><a  href="peques/">Chistes y adivinanzas</a></li>
@@ -9323,6 +9326,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   try {
     var l = localStorage.getItem("tikitexto:idioma"), as = document.querySelectorAll("a[data-curio]");
     if (l && l !== "es" && /^(en|pt|fr|it|de)$/.test(l)) as.forEach(function (a) { a.setAttribute("href", l + "/curiosidades/" + ((l === "en" && a.getAttribute("data-curio-en")) || a.getAttribute("data-curio"))); });
+    if (l === "en") document.querySelectorAll("[data-cmp]").forEach(function (a) { a.setAttribute("href", "en/football-comparator/"); });
     if (l === "en") document.querySelectorAll("[data-clases-guia]").forEach(function (a) { a.setAttribute("href", "en/classes/"); });
     if (l === "en") document.querySelectorAll("[data-juegos-guia]").forEach(function (a) { a.setAttribute("href", "en/games/"); });
     if (l && !/^(es|en)$/.test(l)) document.querySelectorAll("[data-solo-es-en]").forEach(function (x) { x.hidden = true; });

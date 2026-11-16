@@ -1305,6 +1305,30 @@ _hh = open(_os.path.join(_raiz, "curiosidades/estadisticas-finales-champions/ind
 check("estadísticas Champions: Real Madrid 6 de 20 y 4 finales en penaltis (cálculo propio)", "ganó 6 de las 20" in _hh and "4 finales</b> se decidieron en los penaltis" in _hh)
 check("tabla_filtro.js existe y no carga recursos externos", "http" not in open(_os.path.join(_raiz, "tabla_filtro.js"), encoding="utf-8").read())
 
+# 3ak) comparador (es/en): carga, 4 modos, marcador coherente, URL compartible, sin errores JS
+for _r in ("comparador/", "en/football-comparator/"):
+    _fp = _os.path.join(_raiz, _r, "index.html"); _hh = open(_fp, encoding="utf-8").read() if _os.path.exists(_fp) else ""
+    check("comparador %s: FAQ, hreflang, datos y sitemap" % _r, "FAQPage" in _hh and 'hreflang="en"' in _hh and "/comparador_datos.js" in _hh and "/" + _r in open(_os.path.join(_raiz, "sitemap.xml"), encoding="utf-8").read())
+try:
+  from playwright.sync_api import sync_playwright as _spw
+  with _spw() as _pw:
+    _br = _pw.chromium.launch(); _pc = _br.new_page(viewport={"width": 1100, "height": 800}); _errs = []
+    _pc.on("pageerror", lambda e: _errs.append(str(e)))
+    _pc.goto(BASE + "comparador/?m=selecciones&a=brasil&b=alemania", wait_until="networkidle", timeout=60000); _pc.wait_for_timeout(1500)
+    _r = _pc.evaluate("TIKI_CP.res")
+    check("comparador: duelo por URL pinta marcador y veredicto", _r and _r["pa"] + _r["pb"] > 0 and "GANA" in _r["ver"].upper() or "EMPATE" in _r["ver"], str(_r))
+    _ok = True
+    for _m in ("jugadores", "equipos", "selecciones", "entrenadores"):
+        _pc.evaluate("TIKI_CP.modo('%s')" % _m); _pc.wait_for_timeout(300)
+        _ok = _ok and _pc.evaluate("document.querySelectorAll('.cp-fila').length") >= 4 and _pc.evaluate("!!document.querySelector('.cp-radar canvas')")
+    check("comparador: los 4 modos muestran filas y radar", _ok)
+    _pc.evaluate("document.querySelector('.cp-holo').click()"); _pc.wait_for_timeout(200)
+    check("comparador: el selector se abre y filtra", _pc.evaluate("!document.querySelector('.cp-picker').hidden && document.querySelectorAll('.cp-op').length > 3"))
+    check("comparador: sin errores de JavaScript", not _errs, str(_errs[:2]))
+    _pc.close(); _br.close()
+except Exception as _ex:
+    check("comparador: prueba de navegador", False, str(_ex)[:200])
+
 print(f"\n{len(ok)} correctas, {len(fallos)} con fallo")
 if fallos:
     print("FALLOS:\n - " + "\n - ".join(fallos))
