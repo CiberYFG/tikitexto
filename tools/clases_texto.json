@@ -1,0 +1,610 @@
+[
+ {
+  "id": "fuera-de-juego",
+  "emoji": "🚩",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "El fuera de juego",
+   "desc": "La regla más famosa y más discutida, explicada con una línea.",
+   "say": [
+    "Hoy vamos con la regla más famosa y más discutida del fútbol: el fuera de juego. Verás que es más fácil de lo que parece.",
+    "Tenemos un equipo atacante, en azul, y uno defensor, en rojo. Al fondo está el portero, que casi siempre es el último adversario.",
+    "El penúltimo adversario suele ser el último defensor de campo. Imagina una línea que pasa por él, paralela a la línea de meta: esa es la línea del fuera de juego.",
+    "Un delantero está en posición de fuera de juego si, cuando le pasan el balón, está más cerca de la meta rival que el balón y que el penúltimo adversario. Este delantero se ha pasado de la línea: fuera de juego.",
+    "Si el delantero está a la misma altura que el defensa, alineado con la línea, está en juego. Estar a la par es legal.",
+    "Y si te quedas por detrás de la línea, claro, estás en juego. Este delantero puede recibir el balón sin ningún problema.",
+    "Ojo: lo que importa es dónde estás en el momento del pase, no dónde acabas. Si estabas en línea cuando te pasaron y luego corres hacia la meta, no hay fuera de juego.",
+    "Tampoco hay fuera de juego si recibes el balón directamente de un saque de banda, de un córner o de un saque de puerta. Y nunca puede haberlo en tu propio campo.",
+    "Además, estar en posición de fuera de juego no es falta por sí solo: el árbitro la castiga solo si ese jugador interviene en la jugada, tocando el balón o molestando a un rival. La sanción es un tiro libre indirecto para el otro equipo.",
+    "Hoy, además, el VAR y las líneas virtuales ayudan a medir los casos más ajustados. Ya sabes lo básico. La próxima vez que lo veas en un partido, ¡lo entenderás al instante!"
+   ]
+  },
+  "en": {
+   "titulo": "Offside",
+   "desc": "The most famous and most debated rule, explained with a single line.",
+   "say": [
+    "Today we're looking at the most famous and most debated rule in football: offside. You'll see it's easier than it looks.",
+    "We have an attacking team in blue and a defending team in red. At the back is the goalkeeper, who is almost always the last opponent.",
+    "The second-last opponent is usually the last outfield defender. Imagine a line through him, parallel to the goal line: that is the offside line.",
+    "A forward is in an offside position if, when the ball is played to him, he is closer to the opponent's goal than both the ball and the second-last opponent. This forward has gone past the line: offside.",
+    "If the forward is level with the defender, right on the line, he is onside. Being level is legal.",
+    "And if you stay behind the line, of course, you're onside. This forward can receive the ball with no problem.",
+    "Careful: what matters is where you are at the moment of the pass, not where you end up. If you were level when the ball was played and then run towards goal, it's not offside.",
+    "There is also no offside if you receive the ball directly from a throw-in, a corner kick or a goal kick. And it can never happen in your own half.",
+    "Also, being in an offside position is not an offence by itself: the referee only punishes it if that player gets involved in play, by touching the ball or interfering with an opponent. The penalty is an indirect free kick for the other team.",
+    "Today the VAR and virtual lines also help measure the tightest calls. Now you know the basics. Next time you see it in a match, you'll understand it right away!"
+   ]
+  }
+ },
+ {
+  "id": "como-se-gana-un-torneo",
+  "emoji": "🏆",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "Cómo se gana un torneo",
+   "desc": "De la fase de grupos a la final, fase a fase.",
+   "say": [
+    "¿Cómo se gana un torneo? Siguiendo un camino con varias fases, desde la fase de grupos hasta la gran final. Vamos paso a paso.",
+    "Casi todos los torneos empiezan con una fase de grupos: los equipos se reparten en grupos y juegan todos contra todos. Una victoria vale tres puntos, un empate uno y una derrota cero.",
+    "Al acabar, se ordena la tabla por puntos. Si hay empate, se miran desempates, como la diferencia de goles; cada torneo fija los suyos. Los primeros de cada grupo pasan de ronda.",
+    "Después llegan las eliminatorias. Aquí el que pierde se va a casa: octavos, cuartos, semifinales y la gran final. Cada ronda reduce a la mitad los equipos que quedan.",
+    "Si en una eliminatoria a partido único se empata tras los noventa minutos, se juega una prórroga de dos tiempos de quince minutos. Si sigue el empate, se decide desde el punto de penalti: tandas de cinco lanzamientos y, si hace falta, muerte súbita.",
+    "En otras competiciones, como la Champions, las eliminatorias son a doble partido, ida y vuelta, y se suman los goles de los dos encuentros. Desde dos mil veintiuno, el gol fuera de casa ya no vale doble.",
+    "Los formatos cambian. El Mundial de dos mil veintiséis fue el primero con cuarenta y ocho selecciones, repartidas en doce grupos de cuatro. Pasaron los dos primeros de cada grupo y los ocho mejores terceros, y después todo fueron eliminatorias hasta la final.",
+    "Y la Champions League actual tiene una liga de treinta y seis equipos, con ocho partidos para cada uno. Los ocho primeros pasan directos a octavos, y del noveno al vigésimo cuarto juegan una ronda previa para acompañarlos.",
+    "Ya conoces el camino: grupos, eliminatorias, prórroga, penaltis y final. ¡Ya puedes seguir cualquier torneo como un experto!"
+   ]
+  },
+  "en": {
+   "titulo": "How a tournament is won",
+   "desc": "From the group stage to the final, stage by stage.",
+   "say": [
+    "How do you win a tournament? By following a path with several stages, from the group stage all the way to the big final. Let's go step by step.",
+    "Almost every tournament starts with a group stage: the teams are split into groups and everyone plays everyone else. A win is worth three points, a draw one and a loss zero.",
+    "At the end, the table is ordered by points. If teams are level, tie-breakers such as goal difference are used; each tournament sets its own. The group winners go through.",
+    "Then come the knockouts. Here the loser goes home: round of 16, quarter-finals, semi-finals and the big final. Each round halves the number of teams left.",
+    "If a single-match knockout tie is level after ninety minutes, extra time of two halves of fifteen minutes is played. If it's still level, it's decided from the penalty spot: rounds of five kicks and, if needed, sudden death.",
+    "In other competitions, like the Champions League, knockout ties are played over two legs, home and away, and the goals from both matches are added up. Since 2021, away goals no longer count double.",
+    "Formats change. The 2026 World Cup was the first with forty-eight teams, split into twelve groups of four. The top two in each group and the eight best third-placed teams went through, and after that it was all knockouts up to the final.",
+    "And today's Champions League has a league phase of thirty-six teams, each playing eight matches. The top eight go straight to the round of 16, and teams ranked ninth to twenty-fourth play a play-off round to join them.",
+    "You now know the path: groups, knockouts, extra time, penalties and the final. You can follow any tournament like an expert!"
+   ]
+  }
+ },
+ {
+  "id": "tarjetas-amarillas-y-rojas",
+  "emoji": "🟨",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "Tarjetas amarillas y rojas",
+   "desc": "Los principales motivos para cada tarjeta.",
+   "say": [
+    "Las tarjetas son la forma que tiene el árbitro de sancionar la mala conducta. Hoy veremos qué se castiga con amarilla y qué con roja.",
+    "La amarilla es una amonestación. Se enseña por una falta imprudente, por conducta antideportiva, por protestar al árbitro, por retrasar la reanudación del juego, por no respetar la distancia en una barrera o un córner, o por entrar o salir del campo sin permiso.",
+    "Ojo: dos amarillas en el mismo partido equivalen a una roja. El jugador se va del campo y su equipo se queda con uno menos, sin poder sustituirlo.",
+    "La roja directa se enseña por juego brusco grave, por conducta violenta, por escupir o morder a alguien, por lanzar insultos o gestos ofensivos, o por impedir un gol o una ocasión manifiesta de gol con una falta o con la mano.",
+    "En las entradas, la clave es la intensidad. Si es imprudente o temeraria, amarilla. Si se usa fuerza excesiva y se pone en peligro al rival, roja.",
+    "Y recuerda: en muchas competiciones, acumular amarillas en distintos partidos lleva a una sanción. El número exacto depende de cada torneo.",
+    "Ya sabes cuándo se enseña cada tarjeta. ¡Y a ver si el árbitro acierta en el próximo partido!"
+   ]
+  },
+  "en": {
+   "titulo": "Yellow and red cards",
+   "desc": "The main reasons for each card.",
+   "say": [
+    "Cards are how the referee punishes misconduct. Today we'll see what earns a yellow and what earns a red.",
+    "A yellow card is a caution. It is shown for a careless foul, unsporting behaviour, dissent towards the referee, delaying the restart of play, not respecting the distance at a wall or a corner, or entering or leaving the pitch without permission.",
+    "Careful: two yellow cards in the same match equal a red card. The player leaves the pitch and his team is down to ten, with no replacement allowed.",
+    "A straight red is shown for serious foul play, violent conduct, spitting at or biting someone, offensive or insulting words or gestures, or denying a goal or an obvious goalscoring opportunity with a foul or a handball.",
+    "On tackles, the key is intensity. If it's careless or reckless, yellow. If excessive force is used and the opponent is put in danger, red.",
+    "And remember: in many competitions, collecting yellow cards across different matches leads to a suspension. The exact number depends on each tournament.",
+    "Now you know when each card is shown. Let's see if the referee gets it right in the next match!"
+   ]
+  }
+ },
+ {
+  "id": "como-funciona-el-var",
+  "emoji": "📺",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "Cómo funciona el VAR",
+   "desc": "Quién lo maneja, cuándo puede intervenir y cómo se decide.",
+   "say": [
+    "El VAR es el sistema de videoarbitraje. Hoy vemos qué es, quién lo maneja y en qué jugadas puede intervenir.",
+    "El árbitro principal sigue mandando en el campo. En una sala de vídeo, el VAR y sus ayudantes revisan las jugadas con muchas cámaras y le avisan por radio.",
+    "El VAR solo puede intervenir en cuatro tipos de jugadas: goles, penaltis, tarjetas rojas directas y confusiones de identidad al sancionar a un jugador.",
+    "Para cambiar una decisión tiene que haber un error claro y evidente. Si la duda es pequeña, se mantiene lo que decidió el árbitro en el campo.",
+    "Mientras el juego sigue, el VAR comprueba cada jugada en silencio. Si ve un posible error, avisa al árbitro, que puede aceptar la información o ir a ver las imágenes en un monitor junto al campo.",
+    "Cuando el árbitro va al monitor, dibuja un rectángulo en el aire con las dos manos, como una pantalla. Después, señala si hay gol, penalti o si todo sigue igual.",
+    "En el fuera de juego hay además líneas virtuales y, en algunas competiciones, cámaras con un sistema semiautomático que ayuda a decidir mucho más rápido.",
+    "Ahora ya sabes qué hace el VAR: ayuda al árbitro, pero no lo sustituye. La próxima vez que veas el rectángulo en el aire, sabrás lo que está pasando."
+   ]
+  },
+  "en": {
+   "titulo": "How the VAR works",
+   "desc": "Who runs it, when it can step in and how decisions are made.",
+   "say": [
+    "The VAR is the video refereeing system. Today we see what it is, who runs it and in which plays it can step in.",
+    "The main referee still rules on the pitch. In a video room, the VAR and assistants check plays with many cameras and tell him by radio.",
+    "The VAR can only step in on four kinds of plays: goals, penalties, direct red cards and mistaken identity when punishing a player.",
+    "To change a decision there must be a clear and obvious error. If the doubt is small, the referee's call on the pitch stands.",
+    "While play goes on, the VAR quietly checks every play. If it sees a possible error, it tells the referee, who can accept the information or go and watch the images on a monitor by the pitch.",
+    "When the referee goes to the monitor, he draws a rectangle in the air with both hands, like a screen. Then he signals goal, penalty, or that nothing changes.",
+    "In offside there are also virtual lines and, in some competitions, cameras with a semi-automatic system that helps decide much faster.",
+    "Now you know what the VAR does: it helps the referee but does not replace him. Next time you see the rectangle in the air, you'll know what is happening."
+   ]
+  }
+ },
+ {
+  "id": "posiciones-y-formaciones",
+  "emoji": "🧩",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "Posiciones y formaciones",
+   "desc": "Qué hace cada jugador y qué significan el 4-4-2 o el 4-3-3.",
+   "say": [
+    "En un equipo de fútbol cada jugador tiene una misión. Vamos a ver las posiciones y qué significan los números de las formaciones, como el cuatro-tres-tres.",
+    "El portero es el único jugador que puede usar las manos, y solo dentro de su área. Es la última línea de defensa y también empieza muchas jugadas.",
+    "Los defensas protegen la portería. Los centrales juegan por el centro, y los laterales por las bandas, y también ayudan a atacar.",
+    "Los centrocampistas conectan la defensa con el ataque. Recuperan el balón, reparten juego y llegan también al área rival.",
+    "Los delanteros, con extremos por fuera y un delantero centro, tienen la misión de marcar goles.",
+    "Los números de una formación cuentan los jugadores de campo, de atrás hacia delante, sin el portero. El cuatro-tres-tres son cuatro defensas, tres centrocampistas y tres delanteros.",
+    "Otras formaciones famosas son el cuatro-cuatro-dos, equilibrada y con dos delanteros, y el tres-cinco-dos, con tres centrales y carrileros que suben y bajan por las bandas.",
+    "Cada entrenador elige la formación según sus jugadores y el rival. Y ahora, cuando oigas hablar de un cuatro-cuatro-dos, ya sabrás exactamente de qué hablan."
+   ]
+  },
+  "en": {
+   "titulo": "Positions and formations",
+   "desc": "What each player does and what 4-4-2 or 4-3-3 mean.",
+   "say": [
+    "In a football team every player has a job. We'll see the positions and what the numbers in formations mean, like four-three-three.",
+    "The goalkeeper is the only player who can use his hands, and only inside his box. He is the last line of defence and also starts many plays.",
+    "Defenders protect the goal. Centre-backs play in the middle, full-backs on the flanks, and they also help attack.",
+    "Midfielders link defence and attack. They win the ball, distribute play and also reach the opposition box.",
+    "Forwards, with wingers outside and a centre-forward, have the job of scoring goals.",
+    "The numbers in a formation count the outfield players, from back to front, without the goalkeeper. Four-three-three is four defenders, three midfielders and three forwards.",
+    "Other famous formations are four-four-two, balanced with two forwards, and three-five-two, with three centre-backs and wing-backs who run up and down the flanks.",
+    "Each coach chooses the formation according to his players and the opponent. Now, when you hear about a four-four-two, you'll know exactly what they mean."
+   ]
+  }
+ },
+ {
+  "id": "reglas-basicas-del-futbol",
+  "emoji": "📏",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "Las reglas básicas del fútbol",
+   "desc": "Campo, jugadores, tiempo, gol y saques en dos minutos.",
+   "say": [
+    "Si nunca has visto un partido, este vídeo es para ti: las reglas básicas del fútbol explicadas en dos minutos.",
+    "El campo es un rectángulo de entre noventa y ciento veinte metros de largo y entre cuarenta y cinco y noventa de ancho. En partidos internacionales las medidas son algo más ajustadas.",
+    "Cada equipo juega con once jugadores, uno de ellos portero. Si un equipo se queda con menos de siete, el partido no puede continuar.",
+    "Un partido dura noventa minutos, en dos tiempos de cuarenta y cinco, con un descanso de hasta quince minutos. El árbitro añade al final de cada tiempo el tiempo perdido.",
+    "Es gol cuando el balón cruza entera la línea de meta, entre los postes y por debajo del larguero. La portería mide siete metros treinta y dos de ancho por dos metros cuarenta y cuatro de alto.",
+    "Cuando el balón sale, hay un saque. Si sale por el lateral, saque de banda. Si sale por la línea de meta, saque de esquina si lo tocó último un defensor, o saque de puerta si lo tocó último un atacante.",
+    "Las faltas se castigan con tiro libre y, si ocurren dentro del área del equipo que defiende, con penalti. Un tiro libre directo puede ser gol directamente; en uno indirecto, otro jugador debe tocar antes el balón.",
+    "Y eso es lo esencial. Con estas reglas ya puedes seguir cualquier partido. ¡A disfrutar del fútbol!"
+   ]
+  },
+  "en": {
+   "titulo": "The basic rules of football",
+   "desc": "Pitch, players, time, goals and restarts in two minutes.",
+   "say": [
+    "If you've never watched a match, this video is for you: the basic rules of football explained in two minutes.",
+    "The pitch is a rectangle between ninety and one hundred twenty metres long and between forty-five and ninety wide. In international matches the sizes are a bit tighter.",
+    "Each team plays with eleven players, one of them the goalkeeper. If a team has fewer than seven, the match cannot go on.",
+    "A match lasts ninety minutes, in two halves of forty-five, with a break of up to fifteen minutes. The referee adds the time lost at the end of each half.",
+    "It's a goal when the whole ball crosses the goal line, between the posts and under the crossbar. The goal is seven point thirty-two metres wide by two point forty-four high.",
+    "When the ball goes out, there is a restart. If it leaves at the side, a throw-in. If it crosses the goal line, a corner if a defender touched it last, or a goal kick if an attacker did.",
+    "Fouls are punished with a free kick and, if they happen inside the defending team's box, with a penalty. A direct free kick can score directly; with an indirect one, another player must touch the ball first.",
+    "And that's the essentials. With these rules you can follow any match. Enjoy football!"
+   ]
+  }
+ },
+ {
+  "id": "penalti-y-tanda-de-penaltis",
+  "emoji": "🥅",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "El penalti y la tanda de penaltis",
+   "desc": "Cuándo se pita, cómo se lanza y cómo se decide una tanda.",
+   "say": [
+    "El penalti es la ocasión más clara del fútbol: un jugador contra el portero, a once metros de la meta. Veamos cuándo se pita, cómo se lanza y cómo funciona una tanda.",
+    "Se pita penalti cuando un defensor comete, dentro de su propia área, una falta que normalmente se castigaría con tiro libre directo: una patada, una zancadilla, un empujón o tocar el balón con la mano.",
+    "El balón se coloca en el punto de penalti, a once metros de la línea de gol. El resto de jugadores, de los dos equipos, deben esperar fuera del área, por detrás del balón y a más de nueve metros con quince centímetros.",
+    "El portero debe esperar sobre la línea de meta, con al menos parte de un pie tocándola, hasta que el balón sea golpeado. No puede adelantarse antes de tiempo.",
+    "El lanzador debe golpear el balón hacia delante. Puede hacer una pequeña finta durante la carrerilla, pero detenerse al final para engañar al portero está prohibido y se castiga con tarjeta amarilla.",
+    "Si el balón rebota en el poste o en el portero, el juego continúa. Eso sí: el lanzador no puede tocarlo otra vez hasta que lo toque otro jugador. Si lo hace, es tiro libre indirecto para el rival.",
+    "Cuando una eliminatoria sigue empatada tras la prórroga, se decide en una tanda de penaltis. Cada equipo lanza cinco, de forma alternada. Gana el que más marque, y la tanda termina antes si uno ya no puede ser alcanzado.",
+    "Si siguen empatados, se pasa a la muerte súbita: se lanza de uno en uno, y si un equipo marca y el otro falla, termina. Antes de que un jugador repita, todos los que acabaron el partido en el campo deben haber lanzado, portero incluido.",
+    "Y eso es todo. Ya sabes cuándo se pita un penalti, qué deben hacer lanzador y portero, y cómo se decide una tanda. La próxima vez que tiemble el estadio, sabrás exactamente qué está pasando."
+   ]
+  },
+  "en": {
+   "titulo": "The penalty kick and the shootout",
+   "desc": "When it is awarded, how it is taken and how a shootout is decided.",
+   "say": [
+    "The penalty is football's clearest chance: one player against the goalkeeper, eleven metres from goal. Let's see when it is given, how it is taken and how a shootout works.",
+    "A penalty is awarded when a defender commits, inside his own area, a foul that would normally be a direct free kick: a kick, a trip, a push or handling the ball.",
+    "The ball is placed on the penalty spot, eleven metres from the goal line. All other players, from both teams, must wait outside the area, behind the ball and more than nine metres fifteen away.",
+    "The goalkeeper must wait on the goal line, with at least part of one foot touching it, until the ball is kicked. He cannot move forward early.",
+    "The taker must kick the ball forward. He may feint during the run-up, but stopping at the end to fool the goalkeeper is forbidden and earns a yellow card.",
+    "If the ball bounces off the post or the goalkeeper, play goes on. But the taker cannot touch it again until another player does. If he does, it is an indirect free kick for the opponent.",
+    "When a knockout tie is still level after extra time, it is decided by a penalty shootout. Each team takes five, alternately. The one who scores more wins, and it ends early if one side can no longer be caught.",
+    "If they are still level, it goes to sudden death: kicks are taken one by one, and if one team scores and the other misses, it is over. Before any player repeats, everyone who finished the match on the pitch must have taken one, goalkeeper included.",
+    "And that's all. Now you know when a penalty is given, what the taker and the goalkeeper must do, and how a shootout is decided. Next time the stadium holds its breath, you'll know exactly what is happening."
+   ]
+  }
+ },
+ {
+  "id": "fichajes-traspasos-y-clausulas",
+  "emoji": "✍️",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "Fichajes: traspasos, cesiones y cláusulas",
+   "desc": "Qué significan traspaso, cesión, cláusula de rescisión y agente libre.",
+   "say": [
+    "Cada verano se habla de fichajes, cláusulas y cesiones. Hoy vemos qué significa cada cosa, para que entiendas las noticias del mercado.",
+    "Un futbolista profesional firma un contrato con su club por varias temporadas. Mientras ese contrato esté vigente, el club es quien decide si el jugador se queda o se marcha.",
+    "Un traspaso ocurre cuando un club paga a otro para quedarse con un jugador que todavía tiene contrato. Los dos clubes pactan un precio, y el jugador acuerda sus condiciones con el nuevo equipo.",
+    "En España, además, los contratos incluyen una cláusula de rescisión: una cantidad fijada de antemano. Si alguien paga exactamente esa cantidad, el club no puede impedir que el jugador se marche.",
+    "En una cesión, el jugador se va a otro club un tiempo, normalmente una temporada, pero su contrato sigue siendo de su club de origen. A veces incluye una opción de compra, para quedarse con él definitivamente.",
+    "Cuando termina el contrato, el jugador queda libre y puede firmar con quien quiera sin que se pague traspaso. Es lo que se llama agente libre. En los últimos seis meses de contrato, ya puede acordar su futuro con otro club.",
+    "Los fichajes solo se pueden registrar en las ventanas de mercado: normalmente dos al año, una en verano y otra en invierno. Fuera de ellas, no se puede inscribir a nuevos jugadores.",
+    "Resumiendo: en un traspaso se paga a otro club; la cláusula es un precio fijado en el contrato; la cesión es un préstamo; y el agente libre no cuesta traspaso. Ahora ya entiendes las noticias del mercado."
+   ]
+  },
+  "en": {
+   "titulo": "Transfers: moves, loans and release clauses",
+   "desc": "What transfer, loan, release clause and free agent mean.",
+   "say": [
+    "Every summer there is talk of transfers, clauses and loans. Today we see what each one means, so you can understand the market news.",
+    "A professional footballer signs a contract with his club for several seasons. While that contract is in force, the club decides whether the player stays or leaves.",
+    "A transfer happens when one club pays another to get a player who still has a contract. The two clubs agree a price, and the player agrees his terms with the new team.",
+    "In Spain, contracts also include a release clause: an amount set in advance. If someone pays exactly that amount, the club cannot stop the player from leaving.",
+    "In a loan, the player goes to another club for a while, usually one season, but his contract still belongs to his parent club. Sometimes it includes an option to buy, to keep him permanently.",
+    "When the contract ends, the player is free and can sign with anyone without a transfer fee. That is called a free agent. In the last six months of a contract, he can already agree his future with another club.",
+    "Signings can only be registered in transfer windows: usually two a year, one in summer and one in winter. Outside them, new players cannot be registered.",
+    "In short: in a transfer, another club is paid; the clause is a price set in the contract; a loan is a temporary move; and a free agent costs no fee. Now you understand the market news."
+   ]
+  }
+ },
+ {
+  "id": "como-funciona-una-liga",
+  "emoji": "📊",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "Cómo funciona una liga",
+   "desc": "Puntos, clasificación, desempates, Europa, ascensos y descensos.",
+   "say": [
+    "Una liga es la competición más justa del fútbol: se juega todo el año y gana el que más constante ha sido. Vamos a ver cómo funciona de principio a fin.",
+    "En una liga todos los equipos se enfrentan entre sí dos veces: una en su campo y otra en el del rival. Con veinte equipos, cada uno juega treinta y ocho partidos, repartidos en treinta y ocho jornadas.",
+    "En cada partido, el que gana suma tres puntos, un empate da un punto a cada equipo y el que pierde no suma nada. La clasificación se ordena por puntos.",
+    "Si dos equipos acaban con los mismos puntos, hace falta un desempate, y cambia según la liga. En España, primero cuenta el enfrentamiento directo entre ellos. En Inglaterra, cuenta antes la diferencia de goles.",
+    "Los equipos de arriba se ganan un billete a las competiciones europeas: los mejores, a la Champions League, y los siguientes, a la Europa League o a la Conference League. Cuántas plazas hay depende de cada país.",
+    "Y los equipos de abajo descienden a la categoría inferior, y son sustituidos por los mejores de esa categoría, que ascienden. En muchas ligas, como la española o la inglesa, bajan los tres últimos.",
+    "Por eso en una liga siempre hay algo en juego: unos pelean por el título, otros por Europa y otros por no descender. Ahora, cada vez que veas una clasificación, sabrás qué se juega cada equipo."
+   ]
+  },
+  "en": {
+   "titulo": "How a league works",
+   "desc": "Points, table, tie-breakers, Europe, promotion and relegation.",
+   "say": [
+    "A league is football's fairest competition: it is played all year and the most consistent team wins. Let's see how it works from start to finish.",
+    "In a league every team plays every other team twice: once at home and once away. With twenty teams, each plays thirty-eight matches, spread over thirty-eight matchdays.",
+    "In each match, the winner gets three points, a draw gives each team one point and the loser gets nothing. The table is ordered by points.",
+    "If two teams finish level on points, a tie-breaker is needed, and it changes by league. In Spain, the head-to-head record between them counts first. In England, goal difference counts first.",
+    "The teams at the top earn a place in European competitions: the best go to the Champions League, and the next ones to the Europa League or the Conference League. How many places depends on each country.",
+    "And the teams at the bottom are relegated to the lower division, replaced by the best teams of that division, who are promoted. In many leagues, such as the Spanish or English ones, the bottom three go down.",
+    "That is why in a league there is always something at stake: some fight for the title, others for Europe and others to avoid relegation. Now, whenever you see a table, you'll know what each team is playing for."
+   ]
+  }
+ },
+ {
+  "id": "la-mano-cuando-es-falta",
+  "emoji": "✋",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "La mano: cuándo es falta",
+   "desc": "Cuándo se castiga tocar el balón con la mano y cuándo no.",
+   "say": [
+    "La mano es, junto al fuera de juego, la jugada que más discusiones provoca. Hoy aprendemos a distinguir cuándo es falta y cuándo no.",
+    "En el fútbol no se juega con las manos. Solo el portero puede usarlas, y únicamente dentro de su área. Para el resto, cuenta como mano toda la mano y el brazo, hasta la altura de la axila.",
+    "Primer caso: la mano deliberada. Si un jugador toca el balón con la mano o el brazo a propósito, es falta. Es el caso más claro de todos.",
+    "Segundo caso: aunque no haya intención, también es falta si el brazo está en una posición que hace el cuerpo más grande de lo normal. Un brazo muy separado del cuerpo, y sobre todo por encima del hombro, suele sancionarse.",
+    "En cambio, no suele ser mano si el brazo está pegado al cuerpo, si el balón llega desde muy cerca y no hay tiempo para reaccionar, o si te caes y apoyas la mano en el suelo para sostenerte.",
+    "Si es mano, el castigo depende de dónde ocurra. Dentro del área del equipo que defiende, penalti. Fuera de ella, tiro libre directo. Si la mano evita un gol o una ocasión clara, el jugador puede ser expulsado.",
+    "Una regla importante: un gol marcado directamente con la mano o el brazo no vale, aunque haya sido sin querer. Pero si un compañero toca el balón con la mano sin querer antes de que marques, el gol es válido.",
+    "El portero también tiene límites: no puede coger con las manos un pase con el pie de un compañero, ni un saque de banda que le haga un compañero. En esos casos, tiene que jugarla con los pies.",
+    "Y recuerda: casi todo depende de que el brazo esté en una posición natural. Con esto, ya puedes entender por qué un árbitro pita una mano y otra no."
+   ]
+  },
+  "en": {
+   "titulo": "Handball: when is it a foul?",
+   "desc": "When touching the ball with your hand is punished, and when it isn't.",
+   "say": [
+    "Handball is, along with offside, the play that causes the most arguments. Today we learn to tell when it is a foul and when it isn't.",
+    "In football you don't play with your hands. Only the goalkeeper may use them, and only inside his own area. For everyone else, the whole hand and arm up to the armpit counts as hand.",
+    "First case: deliberate handball. If a player touches the ball with his hand or arm on purpose, it is a foul. It is the clearest case of all.",
+    "Second case: even without intent, it is also a foul if the arm is in a position that makes the body bigger than normal. An arm held far from the body, especially above the shoulder, is usually punished.",
+    "On the other hand, it is usually not handball if the arm is close to the body, if the ball comes from very close and there is no time to react, or if you fall and put your hand on the ground to support yourself.",
+    "If it is handball, the punishment depends on where it happens. Inside the defending team's area, a penalty. Outside it, a direct free kick. If the hand stops a goal or a clear chance, the player can be sent off.",
+    "An important rule: a goal scored directly with the hand or arm does not count, even if it was unintentional. But if a team-mate accidentally handles the ball before you score, the goal is valid.",
+    "The goalkeeper has limits too: he cannot pick up with his hands a pass with the foot from a team-mate, nor a throw-in from a team-mate. In those cases, he has to play it with his feet.",
+    "And remember: almost everything depends on the arm being in a natural position. With this, you can understand why a referee whistles one handball and not another."
+   ]
+  }
+ },
+ {
+  "id": "tacticas-basicas-del-futbol",
+  "emoji": "🧠",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "Tácticas básicas: presión, contraataque y posesión",
+   "desc": "Los estilos de juego que más oirás en una retransmisión.",
+   "say": [
+    "Dos equipos con jugadores parecidos pueden jugar de forma muy distinta. A esa forma de organizarse se le llama táctica. Hoy veremos los estilos que más se oyen en una retransmisión.",
+    "El primer estilo es el juego de posesión, o juego de posición. El equipo intenta mantener el balón con pases cortos, mover al rival de un lado a otro y encontrar huecos. A este estilo se le asocia el famoso tiki-taka.",
+    "El segundo es la presión alta. En vez de esperar, el equipo aprieta al rival cerca de su propia portería, para robarle el balón en una zona peligrosa. Los delanteros y los centrocampistas corren juntos hacia el que tiene el balón.",
+    "El tercero es el bloque bajo. El equipo se defiende cerca de su área, muy junto, con poco espacio entre sus líneas, para que al rival le cueste encontrar huecos. Es un estilo muy usado por equipos que juegan contra un rival más fuerte.",
+    "El cuarto es el contraataque. Tras robar el balón, el equipo sale rápido, con pocos pases, aprovechando que el rival se ha quedado adelantado y deja espacios a su espalda. Es rápido y directo.",
+    "También cuenta dónde se coloca la defensa. Una línea defensiva alta deja poco espacio entre los equipos, pero deja campo a la espalda. Una línea baja protege esa espalda, pero cede terreno al rival.",
+    "Ningún estilo es mejor que otro. Depende de los jugadores que tengas y del rival. Y los entrenadores cambian de táctica durante un mismo partido, según como se esté jugando.",
+    "La próxima vez que veas un partido, fíjate en tres cosas: dónde presiona cada equipo, dónde se coloca su defensa y qué hace nada más recuperar el balón. Así empezarás a leer el juego como un entrenador."
+   ]
+  },
+  "en": {
+   "titulo": "Basic tactics: pressing, counter-attack and possession",
+   "desc": "The playing styles you'll hear most on a broadcast.",
+   "say": [
+    "Two teams with similar players can play very differently. That way of organising is called tactics. Today we see the styles you hear most on a broadcast.",
+    "The first style is possession play, or positional play. The team tries to keep the ball with short passes, move the opponent from side to side and find gaps. This style is linked to the famous tiki-taka.",
+    "The second is high pressing. Instead of waiting, the team presses the opponent near his own goal, to win the ball in a dangerous area. Forwards and midfielders run together at whoever has the ball.",
+    "The third is the low block. The team defends near its own area, very compact, with little space between its lines, so the opponent struggles to find gaps. It is widely used by teams facing a stronger opponent.",
+    "The fourth is the counter-attack. After winning the ball, the team breaks quickly, with few passes, taking advantage of the opponent being pushed up and leaving space behind. It is fast and direct.",
+    "It also matters where the defence stands. A high defensive line leaves little space between the teams, but leaves room behind. A low line protects that space, but gives up ground to the opponent.",
+    "No style is better than another. It depends on the players you have and on the opponent. And coaches change tactics during the same match, depending on how it is going.",
+    "Next time you watch a match, look at three things: where each team presses, where its defence stands and what it does as soon as it wins the ball. That's how you start reading the game like a coach."
+   ]
+  }
+ },
+ {
+  "id": "que-es-el-xg-goles-esperados",
+  "emoji": "📈",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "Qué es el xG y las estadísticas",
+   "desc": "Entiende los goles esperados y otras estadísticas de un partido.",
+   "say": [
+    "Seguro que has oído hablar de xG en una retransmisión o en las redes. Parece un código secreto, pero es muy fácil de entender. Vamos a verlo paso a paso.",
+    "xG significa goles esperados, del inglés expected goals. Es la probabilidad de que un tiro termine en gol, medida con un número entre cero y uno. Cuanto más alto, mejor ocasión.",
+    "Ese número depende de varias cosas: la distancia a la portería, el ángulo del disparo, con qué parte del cuerpo se remata y cómo ha sido la jugada. Un penalti ronda el cero coma setenta y seis. Un disparo desde muy lejos, apenas cero coma cero tres.",
+    "Si sumas el xG de todos los tiros de un equipo en un partido, obtienes cuántos goles habría marcado de media con esas ocasiones. Es una forma de medir la calidad de las ocasiones, no solo el resultado.",
+    "Por eso un equipo puede perder y haber jugado mejor. Aquí, el equipo azul generó más ocasiones de peligro que el rojo, pero perdió. Un partido puede decidirse por un detalle, pero a la larga las ocasiones suelen imponerse.",
+    "Hay más estadísticas útiles: la posesión, los tiros a puerta, los pases que acaban en un tiro, o el xA, las asistencias esperadas. Ninguna cuenta toda la historia, pero juntas dan una buena imagen del partido.",
+    "Eso sí, el xG tiene límites. No mide la calidad del delantero ni del portero, empresas distintas usan modelos distintos, y en un solo partido hay mucha suerte. Sirve más cuando se mira durante muchos partidos.",
+    "Ahora, cuando oigas que alguien ganó por la mínima pero perdió en xG, sabrás de qué hablan. Una pista para ver más allá del marcador, y para entender mejor el juego."
+   ]
+  },
+  "en": {
+   "titulo": "What xG is and match statistics",
+   "desc": "Understand expected goals and other match statistics.",
+   "say": [
+    "You've surely heard xG on a broadcast or on social media. It looks like a secret code, but it is very easy to understand. Let's see it step by step.",
+    "xG means expected goals. It is the probability that a shot ends in a goal, measured as a number between zero and one. The higher it is, the better the chance.",
+    "That number depends on several things: distance to goal, the angle of the shot, which part of the body it is struck with and how the play developed. A penalty is around zero point seven six. A shot from very far, barely zero point zero three.",
+    "If you add up the xG of all of a team's shots in a match, you get how many goals it would have scored on average from those chances. It is a way of measuring the quality of chances, not just the result.",
+    "That is why a team can lose and have played better. Here, the blue team created more dangerous chances than the red one, but lost. A match can be decided by a detail, but in the long run chances tend to win out.",
+    "There are more useful statistics: possession, shots on target, passes that lead to a shot, or xA, expected assists. None tells the whole story, but together they give a good picture of the match.",
+    "That said, xG has limits. It does not measure the quality of the striker or the goalkeeper, different companies use different models, and in a single match there is a lot of luck. It is more useful when looked at over many matches.",
+    "Now, when you hear that someone won by the narrowest margin but lost on xG, you'll know what they mean. It's a clue to see beyond the score and to understand the game better."
+   ]
+  }
+ },
+ {
+  "id": "saques-banda-meta-esquina",
+  "emoji": "🚩",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "Los saques: banda, meta y esquina",
+   "desc": "Cuándo se concede cada saque, cómo se hace y qué puedes lograr con él.",
+   "say": [
+    "Cada vez que el balón sale del campo, el juego se reanuda con un saque. Hoy aprendemos los tres más habituales: el de banda, el de meta y el de esquina.",
+    "El saque de banda se concede cuando el balón cruza por completo la línea de banda. Lo saca el equipo contrario al último que lo tocó.",
+    "Para sacar, hay que mirar al campo, con una parte de cada pie sobre la línea o fuera de ella, y lanzar con las dos manos desde detrás y por encima de la cabeza.",
+    "En el saque de banda no hay fuera de juego, y no se puede marcar directamente. Si el balón entra en la portería rival sin tocar a nadie, es saque de meta; si entra en la propia, es córner.",
+    "El saque de meta se concede cuando el balón cruza la línea de meta y lo tocó por última vez un atacante. Se saca con el balón quieto en el área pequeña, y los rivales esperan fuera del área grande.",
+    "El balón entra en juego en cuanto se patea y se mueve. Puede ser gol directo contra el rival y tampoco hay fuera de juego. Con las reglas 2026-27, si se tarda de más, hay cuenta atrás de cinco segundos y, si se agota, córner para el rival.",
+    "El saque de esquina se concede cuando el balón cruza la línea de meta y lo tocó por última vez un defensor. Se saca desde el cuarto de círculo de esa esquina, y los rivales se quedan a nueve metros con quince.",
+    "En el córner puede haber gol directo y tampoco hay fuera de juego. Eso sí, quien lo saca no puede tocar el balón otra vez hasta que lo toque otro jugador.",
+    "Resumen. En la banda, se saca con las manos y no vale como gol directo. En meta y esquina, se saca con el pie y sí puede ser gol. Y en ninguno de los tres hay fuera de juego."
+   ]
+  },
+  "en": {
+   "titulo": "Restarts: throw-in, goal kick and corner",
+   "desc": "When each restart is awarded, how it is taken and what you can achieve with it.",
+   "say": [
+    "Every time the ball leaves the pitch, play restarts with a set piece. Today we learn the three most common ones: the throw-in, the goal kick and the corner.",
+    "A throw-in is awarded when the whole ball crosses the touchline. It is taken by the opponents of the player who touched it last.",
+    "To take it you must face the pitch, with part of each foot on the line or outside it, and throw with both hands from behind and over your head.",
+    "There is no offside from a throw-in, and you cannot score directly. If the ball goes into the opponents' goal untouched, it is a goal kick; into your own goal, a corner.",
+    "A goal kick is awarded when the ball crosses the goal line after an attacker touched it last. It is taken with the ball still in the goal area, and the opponents wait outside the penalty area.",
+    "The ball is in play once it is kicked and moves. It can be a direct goal against the opponents and there is no offside. Under the 2026-27 Laws, if it takes too long there is a five-second countdown and, if it runs out, a corner to the opponents.",
+    "A corner kick is awarded when the ball crosses the goal line after a defender touched it last. It is taken from the corner arc on that side, and the opponents stay 9.15 metres away.",
+    "A corner can be a direct goal and there is no offside. However, the player who takes it cannot touch the ball again until another player has.",
+    "In short. The throw-in is taken with the hands and cannot be a direct goal. The goal kick and corner are taken with the foot and can be goals. And none of the three has offside."
+   ]
+  }
+ },
+ {
+  "id": "faltas-tiros-libres-y-ventaja",
+  "emoji": "🟨",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "Faltas, tiros libres y ventaja",
+   "desc": "Directo o indirecto, la barrera de 9,15 m y cuándo el árbitro deja seguir.",
+   "say": [
+    "Una falta es una acción contraria a las reglas. Según su gravedad y el lugar donde ocurra, el castigo cambia. Hoy veremos los tiros libres, la barrera y la ley de la ventaja.",
+    "Es falta directa patear, zancadillear, empujar, cargar o golpear a un rival de forma imprudente, sujetarle, o tocar el balón con la mano a propósito.",
+    "El árbitro valora la intensidad. Si la acción es descuidada, solo hay falta. Si es temeraria, porque no mide el peligro para el rival, es tarjeta amarilla. Y si usa una fuerza excesiva, es roja.",
+    "Hay dos tipos de tiro libre. En el directo se puede chutar a gol. En el indirecto el balón debe tocar a otro jugador antes de entrar; el árbitro lo indica levantando un brazo hasta que eso ocurra. Se concede por faltas como el juego peligroso.",
+    "El lugar importa. Si un defensor comete una falta directa dentro de su área, es penalti. Si la comete fuera, es tiro libre desde el sitio de la falta.",
+    "En un tiro libre cercano, los defensores forman una barrera a nueve metros con quince del balón como mínimo. Los atacantes no pueden acercarse a menos de un metro de ella. El balón está en juego cuando se patea y se mueve.",
+    "A veces parar el juego perjudica al equipo que sufrió la falta. Por eso existe la ventaja: el árbitro deja seguir si ese equipo conserva una ocasión clara. Suele indicarlo con un brazo extendido.",
+    "Si en unos segundos la ventaja no se concreta, el árbitro vuelve atrás y pita la falta. Y si la falta merecía tarjeta, puede mostrarla en la siguiente interrupción del juego.",
+    "Para recordar: directo o indirecto, la barrera a nueve metros con quince, la tarjeta según la intensidad, y la ventaja cuando conviene que el juego siga."
+   ]
+  },
+  "en": {
+   "titulo": "Fouls, free kicks and advantage",
+   "desc": "Direct or indirect, the 9.15 m wall and when the referee lets play go on.",
+   "say": [
+    "A foul is an action against the Laws. Depending on how serious it is and where it happens, the punishment changes. Today: free kicks, the wall and the advantage rule.",
+    "It is a direct free kick offence to kick, trip, push, charge or strike an opponent carelessly or recklessly, to hold him, or to handle the ball deliberately.",
+    "The referee judges the intensity. If the action is careless, it is just a foul. If it is reckless, because it ignores the danger to the opponent, it is a yellow card. And if it uses excessive force, it is a red.",
+    "There are two kinds of free kick. From a direct one you can shoot at goal. From an indirect one, the ball must touch another player before going in; the referee raises an arm until that happens. It is given for offences such as dangerous play.",
+    "Where it happens matters. If a defender commits a direct free kick foul inside his own penalty area, it is a penalty. If he does it outside, it is a free kick from where the foul happened.",
+    "On a free kick near goal, defenders form a wall at least 9.15 metres from the ball. Attackers cannot stand less than one metre from it. The ball is in play when it is kicked and moves.",
+    "Sometimes stopping play hurts the team that was fouled. That is why there is advantage: the referee lets play go on if that team keeps a clear chance. He usually signals it with an outstretched arm.",
+    "If the advantage does not materialise within a few seconds, the referee goes back and gives the foul. And if the foul deserved a card, he can show it at the next stoppage.",
+    "To remember: direct or indirect, the wall at 9.15 metres, the card according to the intensity, and advantage when it is better to let play go on."
+   ]
+  }
+ },
+ {
+  "id": "el-portero-reglas-y-funciones",
+  "emoji": "🧤",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "El portero: reglas y funciones",
+   "desc": "Qué puede hacer con las manos, qué no, y la regla de los ocho segundos.",
+   "say": [
+    "El portero es el único jugador que puede usar las manos, pero con límites muy claros. Hoy vemos qué puede hacer, qué no, y la regla de los ocho segundos.",
+    "Solo puede coger el balón con las manos dentro de su propia área. Esa área mide 16,5 metros desde cada poste y hacia el campo, así que tiene unos cuarenta metros de ancho.",
+    "Tampoco puede cogerla con las manos si un compañero se la pasa con el pie a propósito, ni si recibe un saque de banda de un compañero. Y si la suelta, no puede volver a cogerla hasta que otro jugador la toque.",
+    "Desde la temporada 2025-26, el portero puede tener el balón controlado con las manos un máximo de ocho segundos. Si se pasa, el árbitro concede un córner al rival. El árbitro avisa con una cuenta atrás de cinco segundos con la mano.",
+    "Si toca el balón con la mano fuera de su área, es falta como para cualquier jugador: tiro libre directo y, si frena una ocasión clara de gol, tarjeta roja.",
+    "Hoy el portero también juega con los pies. Puede iniciar el juego con un pase, y en el saque de meta un compañero puede recibir el balón dentro del área. Un buen portero con los pies ayuda a salir jugando.",
+    "Y recuerda su equipación: el portero debe vestir de un color que lo distinga de los demás jugadores y de los árbitros, para que todos sepan quién puede usar las manos.",
+    "En resumen: manos solo dentro de su área, nunca con un pase de pie de un compañero, máximo ocho segundos con el balón, y también juega con los pies."
+   ]
+  },
+  "en": {
+   "titulo": "The goalkeeper: rules and role",
+   "desc": "What he can do with his hands, what he can't, and the eight-second rule.",
+   "say": [
+    "The goalkeeper is the only player who can use his hands, but with very clear limits. Today: what he can do, what he can't, and the eight-second rule.",
+    "He can only pick the ball up inside his own penalty area. That area extends 16.5 metres from each post into the pitch, so it is about forty metres wide.",
+    "He also cannot pick it up if a teammate deliberately kicks it to him, or if he receives a throw-in from a teammate. And if he releases it, he cannot pick it up again until another player touches it.",
+    "Since the 2025-26 season, the goalkeeper can control the ball in his hands for a maximum of eight seconds. If he goes over, the referee awards a corner to the opponents. The referee warns him with a five-second countdown by hand.",
+    "If he handles the ball outside his area, it is a foul like for any player: a direct free kick and, if he stops a clear goal-scoring chance, a red card.",
+    "Today the goalkeeper also plays with his feet. He can start play with a pass, and on a goal kick a teammate can receive the ball inside the area. A goalkeeper good with his feet helps the team build from the back.",
+    "And remember his kit: the goalkeeper must wear a colour that tells him apart from the other players and the referees, so everyone knows who can use his hands.",
+    "In short: hands only inside his area, never on a deliberate kick from a teammate, a maximum of eight seconds with the ball, and he plays with his feet too."
+   ]
+  }
+ },
+ {
+  "id": "champions-league-formato-actual",
+  "emoji": "⭐",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "La Champions League: el formato actual",
+   "desc": "Una sola tabla de 36 equipos, ocho partidos y eliminatorias.",
+   "say": [
+    "Desde la temporada 2024-25, la Liga de Campeones cambió de formato. Se acabaron los grupos de cuatro equipos: ahora hay una única clasificación.",
+    "Cada equipo juega ocho partidos contra ocho rivales distintos: cuatro en casa y cuatro fuera. Los equipos se reparten en cuatro bombos y cada uno se enfrenta a dos rivales de cada bombo, uno en casa y otro fuera.",
+    "Se puntúa como siempre: tres puntos por victoria, uno por empate y ninguno por derrota. Como no todos juegan contra los mismos rivales, lo que cuenta es la clasificación general, y el primer desempate es la diferencia de goles.",
+    "Tras las ocho jornadas, la posición lo decide todo. Los ocho primeros pasan directos a octavos. Del noveno al vigésimo cuarto juegan un play-off. Y del vigésimo quinto al trigésimo sexto quedan eliminados.",
+    "En el play-off, los equipos del noveno al decimosexto son cabezas de serie y se miden a uno del decimoséptimo al vigésimo cuarto, a ida y vuelta, jugando la vuelta en casa. Los ocho ganadores pasan a octavos.",
+    "Los ocho ganadores del play-off se unen a los ocho primeros y se juegan los octavos. Después vienen cuartos y semifinales, siempre a ida y vuelta, y la final, a partido único en un estadio neutral.",
+    "En total, la fase de liga tiene ciento cuarenta y cuatro partidos: treinta y seis equipos por ocho partidos, divididos entre dos. Los eliminados al final de esta fase no pasan a la Europa League.",
+    "Por eso cada gol y cada punto cuentan: quedar entre los ocho primeros te ahorra una eliminatoria, y por debajo del vigésimo cuarto te deja fuera."
+   ]
+  },
+  "en": {
+   "titulo": "The Champions League: today's format",
+   "desc": "One table of 36 teams, eight matches and knockouts.",
+   "say": [
+    "Since the 2024-25 season, the Champions League has a new format. The groups of four are gone: now there is a single table.",
+    "Each team plays eight matches against eight different opponents: four at home and four away. Teams are split into four pots, and each plays two opponents from every pot, one at home and one away.",
+    "Points work as usual: three for a win, one for a draw and none for a loss. Since teams do not all play the same opponents, the overall table is what counts, and the first tiebreaker is goal difference.",
+    "After the eight matchdays, the position decides everything. The top eight go straight to the round of 16. Ninth to twenty-fourth play a play-off. And twenty-fifth to thirty-sixth are eliminated.",
+    "In the play-off, teams from ninth to sixteenth are seeded and face a team from seventeenth to twenty-fourth over two legs, playing the second leg at home. The eight winners go through to the round of 16.",
+    "The eight play-off winners join the top eight in the round of 16. Then come the quarter-finals and semi-finals, always over two legs, and the final, a single match at a neutral stadium.",
+    "In total, the league phase has one hundred and forty-four matches: thirty-six teams times eight matches, divided by two. Teams eliminated at the end of this phase do not drop into the Europa League.",
+    "That is why every goal and every point counts: finishing in the top eight saves you a round, and finishing below twenty-fourth puts you out."
+   ]
+  }
+ },
+ {
+  "id": "el-tiempo-del-partido-descuento-y-prorroga",
+  "emoji": "⏱️",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "El tiempo del partido: descuento y prórroga",
+   "desc": "Cuánto dura un partido de verdad y por qué se añaden minutos.",
+   "say": [
+    "Un partido de fútbol dura noventa minutos, pero casi nunca acaba justo en el noventa. Hoy vemos por qué se añaden minutos, cómo funciona la prórroga y qué cambia con las nuevas reglas.",
+    "Un partido tiene dos partes de cuarenta y cinco minutos, con un descanso de hasta quince. Pero quien controla el tiempo es el árbitro, no el reloj del estadio.",
+    "Durante el partido se pierde tiempo en las interrupciones: sustituciones, lesiones, celebraciones de goles, revisiones del VAR y jugadores que hacen tiempo. El árbitro lo anota y lo recupera al final de cada parte.",
+    "El cuarto árbitro muestra en un panel el mínimo de minutos que se van a añadir. Es un mínimo: si hay más interrupciones durante el descuento, el árbitro puede alargarlo.",
+    "Hay una excepción: si se concede un penalti justo al terminar la parte, el tiempo se alarga hasta que se lance. Así, una falta en el último segundo no se queda sin castigo.",
+    "En una eliminatoria, si acaba en empate y debe haber un ganador, se juega una prórroga de dos partes de quince minutos. Si todavía sigue el empate, se decide en la tanda de penaltis.",
+    "En muchas competiciones se permiten cinco cambios por equipo, en tres momentos distintos sin contar el descanso, y uno más en la prórroga. Depende del reglamento de cada torneo.",
+    "Las Reglas de Juego 2026-27 aprietan contra la pérdida de tiempo. El jugador sustituido tiene diez segundos para salir. En saques de banda y de meta hay una cuenta atrás de cinco. Y quien recibe atención médica en el campo sale un minuto.",
+    "Con esto, ya sabes por qué un partido dura más de noventa minutos: el árbitro recupera el tiempo perdido, y las nuevas reglas quieren que se pierda menos."
+   ]
+  },
+  "en": {
+   "titulo": "Match time: added time and extra time",
+   "desc": "How long a match really lasts and why minutes are added.",
+   "say": [
+    "A football match lasts ninety minutes, but it almost never ends exactly at ninety. Today: why minutes are added, how extra time works and what the new Laws change.",
+    "A match has two halves of forty-five minutes, with a break of up to fifteen. But the person who controls the time is the referee, not the stadium clock.",
+    "Time is lost during the match in stoppages: substitutions, injuries, goal celebrations, VAR reviews and players wasting time. The referee notes it down and makes it up at the end of each half.",
+    "The fourth official shows on a board the minimum number of minutes to be added. It is a minimum: if there are more stoppages during that time, the referee can extend it.",
+    "There is one exception: if a penalty is awarded right at the end of a half, the time is extended until it is taken. That way a foul in the last second does not go unpunished.",
+    "In a knockout tie, if it ends level and there must be a winner, extra time of two halves of fifteen minutes is played. If it is still level, it is decided by a penalty shoot-out.",
+    "In many competitions, five substitutions per team are allowed, at three different moments not counting half-time, plus one more in extra time. It depends on each tournament's rules.",
+    "The 2026-27 Laws of the Game tighten up on time wasting. A substituted player has ten seconds to leave. On throw-ins and goal kicks there is a five-second countdown. And a player treated on the pitch leaves for one minute.",
+    "So now you know why a match lasts more than ninety minutes: the referee makes up the lost time, and the new Laws want less of it to be lost."
+   ]
+  }
+ },
+ {
+  "id": "estadisticas-del-futbol-que-significan",
+  "emoji": "📊",
+  "dur": "≈ 2 min",
+  "es": {
+   "titulo": "Estadísticas del fútbol: qué significan",
+   "desc": "Posesión, tiros, pases y más: cómo leerlas sin que te engañen.",
+   "say": [
+    "Al terminar un partido aparece una tabla llena de números. ¿Valen todos lo mismo? Hoy aprendemos a leer las estadísticas sin dejarnos engañar.",
+    "La posesión es el porcentaje de tiempo que cada equipo tiene el balón. Tener más posesión no siempre significa jugar mejor: algunos equipos ceden el balón a propósito y atacan rápido.",
+    "Un tiro a puerta es el que va hacia la portería y obliga al portero a pararlo, o acaba en gol. Los demás son tiros fuera o bloqueados. Los tiros a puerta dicen más que los tiros totales.",
+    "El porcentaje de pases completados mide cuántos llegan a un compañero. Un equipo puede acertar el noventa por ciento y no hacer daño: importan más los pases que rompen líneas o acaban en ocasión.",
+    "Los goles esperados, o xG, valoran la calidad de cada tiro: lo probable que era que acabara en gol. Un penalti vale casi 0,8, un remate en el área entre 0,1 y 0,3, y un tiro lejano menos de 0,05. Son valores orientativos.",
+    "Un pase clave es el que acaba en un tiro de un compañero. La asistencia es el último pase antes de un gol. Toda asistencia es un pase clave, pero no todo pase clave acaba en gol.",
+    "Hay más números que cuentan otras partes de la historia: los duelos ganados, las faltas, los córners y las paradas del portero. Ninguno lo explica todo por sí solo.",
+    "Cuidado: un equipo puede perder con más posesión, más tiros y más córners, porque el fútbol se decide por goles. Lee varios números juntos y fíjate en la calidad, no solo en la cantidad.",
+    "Para leer un partido, mira qué hizo cada equipo con la posesión, cuántos tiros fueron a puerta, cómo de buenas eran las ocasiones y si el portero estuvo acertado."
+   ]
+  },
+  "en": {
+   "titulo": "Football statistics: what they mean",
+   "desc": "Possession, shots, passes and more: how to read them without being fooled.",
+   "say": [
+    "When a match ends, a table full of numbers appears. Are they all worth the same? Today we learn to read statistics without being fooled.",
+    "Possession is the percentage of time each team has the ball. More possession does not always mean playing better: some teams give up the ball on purpose and attack fast.",
+    "A shot on target heads towards the goal and forces the goalkeeper to save it, or ends in a goal. The rest are shots off target or blocked. Shots on target say more than total shots.",
+    "Pass completion measures how many passes reach a teammate. A team can hit ninety per cent and still do no harm: what matters more are the passes that break lines or end in a chance.",
+    "Expected goals, or xG, rate the quality of each shot: how likely it was to end in a goal. A penalty is worth almost 0.8, a shot in the box between 0.1 and 0.3, and a long shot less than 0.05. These are approximate values.",
+    "A key pass is one that ends in a shot by a teammate. An assist is the last pass before a goal. Every assist is a key pass, but not every key pass ends in a goal.",
+    "Other numbers tell other parts of the story: duels won, fouls, corners and goalkeeper saves. None of them explains everything on its own.",
+    "Careful: a team can lose with more possession, more shots and more corners, because football is decided by goals. Read several numbers together and look at quality, not just quantity.",
+    "To read a match, look at what each team did with possession, how many shots were on target, how good the chances were and whether the goalkeeper played well."
+   ]
+  }
+ }
+]

@@ -1977,3 +1977,4 @@ Fallada ||| Wrong ||| Errada ||| Ratée ||| Sbagliata ||| Falsch
 Pendiente ||| Pending ||| Pendente ||| En attente ||| In sospeso ||| Offen
 P ||| ^Tu respuesta: (.+)$ ||| Your answer: $1 ||| Sua resposta: $1 ||| Ta réponse : $1 ||| La tua risposta: $1 ||| Deine Antwort: $1
 Guías de los juegos ||| Game guides ||| Guias dos jogos ||| Guides des jeux ||| Guide ai giochi ||| Spielanleitungen
+Clases de fútbol ||| Football lessons ||| Aulas de futebol ||| Leçons de football ||| Lezioni di calcio ||| Fußball-Lektionen

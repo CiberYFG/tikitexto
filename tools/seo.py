@@ -155,7 +155,7 @@ def pagina(lang, ruta, titulo, desc, h1, lead, modo_cta, bloques, faq, hreflang_
 %(faq)s
 </main>
 <footer>
-<p><a href="%(curhref)s">%(curlabel)s</a><a href="%(guiahref)s">%(guialabel)s</a><a href="%(base)saviso-legal.html">%(legal)s</a><a href="%(base)sprivacidad.html">%(priv)s</a><a href="%(base)scookies.html">%(cook)s</a><a href="%(base)saccesibilidad.html">%(acc)s</a></p>
+<p><a href="%(curhref)s">%(curlabel)s</a><a href="%(guiahref)s">%(guialabel)s</a><a href="%(clhref)s">%(cllabel)s</a><a href="%(base)saviso-legal.html">%(legal)s</a><a href="%(base)sprivacidad.html">%(priv)s</a><a href="%(base)scookies.html">%(cook)s</a><a href="%(base)saccesibilidad.html">%(acc)s</a></p>
 <p>%(nota)s</p>
 </footer>
 </body>
@@ -163,7 +163,7 @@ def pagina(lang, ruta, titulo, desc, h1, lead, modo_cta, bloques, faq, hreflang_
 """ % dict(lang=HREFLANG[lang] if lang != "es" else "es", titulo=esc(titulo), desc=esc(desc), canon=canon, alts=hreflang_html, loc=HREFLANG[lang].replace("-", "_") if lang != "es" else "es_ES",
            base=base, ld=ldj, css=CSS, sel=selector, h1=esc(h1), lead=esc(lead), cta=cta, jugar=esc(u["jugar"]), como=esc(u["como"]),
            pasos="".join("<li>%s</li>" % esc(p) for p in u["pasos"]), bloques=bloques, faqt=esc(u["faq"]), faq=faq_html,
-           guiahref=base + ("juegos/" if lang == "es" else "en/games/"), guialabel=("Guías de los juegos" if lang == "es" else "Game guides"), curhref=base + ("" if lang == "es" else lang + "/") + "curiosidades/", curlabel=esc(CUR_LABEL[lang]), legal=esc(u["legal"]), priv=esc(u["priv"]), cook=esc(u["cook"]), acc=esc(u["acc"]), nota=esc(u["nota"]))
+           clhref=base + ("clases/" if lang == "es" else "en/classes/"), cllabel=("Clases de fútbol" if lang == "es" else "Football lessons"), guiahref=base + ("juegos/" if lang == "es" else "en/games/"), guialabel=("Guías de los juegos" if lang == "es" else "Game guides"), curhref=base + ("" if lang == "es" else lang + "/") + "curiosidades/", curlabel=esc(CUR_LABEL[lang]), legal=esc(u["legal"]), priv=esc(u["priv"]), cook=esc(u["cook"]), acc=esc(u["acc"]), nota=esc(u["nota"]))
 
 def escribir(ruta, contenido):
     destino = os.path.join(RAIZ, ruta, "index.html")
@@ -252,6 +252,49 @@ for _l in ("es", "en"):
     _hub_ruta = _JSL[_l][0]
     escribir(_hub_ruta, pagina(_l, _hub_ruta, _t[6], _t[7], _t[5], _t[8], None, _hub_bl, _hub_faq, _hub_alts, 1 if _l == "es" else 2, [("TIKITEXTO", DOM + ("" if _l == "es" else "en/")), (_t[5], DOM + _hub_ruta)], pasos=[(("Elige el juego que te interese en la lista." if _l == "es" else "Pick the game you like from the list.")), (("Lee las reglas, la puntuación y los consejos." if _l == "es" else "Read the rules, scoring and tips.")), (("Pulsa «Jugar» para empezar la partida." if _l == "es" else "Press “Play” to start the game."))], como=("Cómo usar las guías" if _l == "es" else "How to use the guides")))
 
+
+# ---- clases animadas: página de texto por lección (es/en) + hub ----
+_CL = json.load(open(os.path.join(RAIZ, "tools", "clases_texto.json"), encoding="utf-8"))
+_CL_EN = {"fuera-de-juego": "offside-rule-explained", "como-se-gana-un-torneo": "how-a-football-tournament-is-won", "tarjetas-amarillas-y-rojas": "yellow-and-red-cards-explained",
+  "como-funciona-el-var": "how-the-var-works", "posiciones-y-formaciones": "football-positions-and-formations", "reglas-basicas-del-futbol": "basic-rules-of-football",
+  "penalti-y-tanda-de-penaltis": "penalty-kick-and-shootout-rules", "fichajes-traspasos-y-clausulas": "football-transfers-loans-release-clauses", "como-funciona-una-liga": "how-a-football-league-works",
+  "la-mano-cuando-es-falta": "handball-rule-explained", "tacticas-basicas-del-futbol": "basic-football-tactics", "que-es-el-xg-goles-esperados": "what-is-xg-expected-goals",
+  "saques-banda-meta-esquina": "throw-in-goal-kick-corner-rules", "faltas-tiros-libres-y-ventaja": "fouls-free-kicks-and-advantage", "el-portero-reglas-y-funciones": "goalkeeper-rules-and-role",
+  "champions-league-formato-actual": "champions-league-format-explained", "el-tiempo-del-partido-descuento-y-prorroga": "added-time-and-extra-time-explained", "estadisticas-del-futbol-que-significan": "football-statistics-explained"}
+_CLT = {"es": dict(base="clases/", hub="Clases de fútbol explicadas", hub_t="Clases de fútbol explicadas: reglas, tácticas y estadísticas | TIKITEXTO",
+                   hub_d="18 clases de fútbol explicadas paso a paso: fuera de juego, VAR, tarjetas, penaltis, tácticas, xG, formato de la Champions y más. Texto de cada clase animada de TIKITEXTO.",
+                   hub_l="TIKITEXTO tiene 18 clases animadas con profe y pizarra. Aquí tienes el texto de cada una para leerlo con calma, con las reglas explicadas de forma sencilla. Elige la que quieras y, si prefieres verla animada, ábrela en el reproductor.",
+                   sec="Lo que se explica en la clase", otras="Más clases", todas="Todas las clases", verla="Ver la clase animada", dur="Duración de la clase animada",
+                   pasos=["Lee la explicación de esta página con calma.", "Pulsa el botón para abrir la clase animada en el reproductor.", "Elige idioma, vista de pizarra o de profe y repite las escenas que quieras."],
+                   como="Cómo usar esta clase", faqt=("¿Qué se explica en esta clase?", "¿Se puede ver en otros idiomas?", "¿De dónde salen las reglas?"),
+                   faqr=("Esta página reúne todo lo que dice el profe en la clase «%s», en el mismo orden, para que puedas leerlo sin necesidad de reproducir nada.", "Sí. La clase animada se puede ver en español, inglés, portugués, francés, italiano y alemán desde el propio reproductor.", "De las Reglas de Juego del IFAB y de la normativa de FIFA y UEFA. Se revisan cuando cambian las reglas, normalmente cada verano."),
+                   nota="Texto redactado por el equipo editorial de TIKITEXTO a partir de las Reglas de Juego del IFAB y la normativa de FIFA y UEFA."),
+        "en": dict(base="en/classes/", hub="Football lessons explained", hub_t="Football lessons explained: rules, tactics and statistics | TIKITEXTO",
+                   hub_d="18 football lessons explained step by step: offside, VAR, cards, penalties, tactics, xG, the Champions League format and more. The text of every animated TIKITEXTO lesson.",
+                   hub_l="TIKITEXTO has 18 animated lessons with a teacher and a whiteboard. Here is the text of each one to read at your own pace, with the rules explained in a simple way. Pick any lesson and, if you prefer to watch it animated, open it in the player.",
+                   sec="What the lesson explains", otras="More lessons", todas="All lessons", verla="Watch the animated lesson", dur="Animated lesson length",
+                   pasos=["Read the explanation on this page at your own pace.", "Press the button to open the animated lesson in the player.", "Choose language, whiteboard or teacher view and replay any scene you like."],
+                   como="How to use this lesson", faqt=("What does this lesson explain?", "Can I watch it in other languages?", "Where do the rules come from?"),
+                   faqr=("This page gathers everything the teacher says in the lesson “%s”, in the same order, so you can read it without playing anything.", "Yes. The animated lesson can be watched in Spanish, English, Portuguese, French, Italian and German from the player itself.", "From the IFAB Laws of the Game and FIFA and UEFA regulations. They are reviewed when the rules change, usually every summer."),
+                   nota="Text written by the TIKITEXTO editorial team from the IFAB Laws of the Game and FIFA and UEFA regulations.")}
+def _cl_ruta(l, g): return _CLT[l]["base"] + (g["id"] if l == "es" else _CL_EN[g["id"]]) + "/"
+def _cl_alts(g): return '<link rel="alternate" hreflang="es" href="%s%s">\n<link rel="alternate" hreflang="en" href="%s%s">\n<link rel="alternate" hreflang="x-default" href="%s%s">' % (DOM, _cl_ruta("es", g), DOM, _cl_ruta("en", g), DOM, _cl_ruta("es", g))
+for _l in ("es", "en"):
+    _c = _CLT[_l]
+    for g in _CL:
+        _d = g[_l]
+        _txt = "<h2>%s</h2>" % esc(_c["sec"]) + "".join("<p>%s</p>" % esc(x) for x in _d["say"]) + '<p><strong>%s:</strong> %s</p>' % (esc(_c["dur"]), esc(g["dur"]))
+        _otras = "".join('<li><a href="../%s/">%s</a></li>' % ((o["id"] if _l == "es" else _CL_EN[o["id"]]), esc(o[_l]["titulo"])) for o in _CL if o is not g)
+        _bl = _txt + '<p><a class="cta" href="%s?lang=%s&modo=clases">%s →</a></p><h2>%s</h2><ul class="g">%s<li><a href="../">%s</a></li></ul><p>%s</p>' % ("../" * (2 if _l == "es" else 3), _l, esc(_c["verla"]), esc(_c["otras"]), _otras, esc(_c["todas"]), esc(_c["nota"]))
+        _faq = [(_c["faqt"][0], _c["faqr"][0] % _d["titulo"]), (_c["faqt"][1], _c["faqr"][1]), (_c["faqt"][2], _c["faqr"][2])]
+        _ruta = _cl_ruta(_l, g)
+        _tt = ("%s: clase de fútbol explicada | TIKITEXTO" if _l == "es" else "%s: football lesson explained | TIKITEXTO") % _d["titulo"]
+        _migas = [("TIKITEXTO", DOM + ("" if _l == "es" else "en/")), (_c["hub"], DOM + _c["base"]), (_d["titulo"], DOM + _ruta)]
+        escribir(_ruta, pagina(_l, _ruta, _tt, _d["desc"], _d["titulo"], _d["desc"], "clases", _bl, _faq, _cl_alts(g), 2 if _l == "es" else 3, _migas, pasos=_c["pasos"], como=_c["como"]))
+    _items = "".join('<li><a href="%s/">%s</a></li>' % ((g["id"] if _l == "es" else _CL_EN[g["id"]]), esc(g[_l]["titulo"])) for g in _CL)
+    _hub_alts = '<link rel="alternate" hreflang="es" href="%sclases/">\n<link rel="alternate" hreflang="en" href="%sen/classes/">\n<link rel="alternate" hreflang="x-default" href="%sclases/">' % (DOM, DOM, DOM)
+    escribir(_c["base"], pagina(_l, _c["base"], _c["hub_t"], _c["hub_d"], _c["hub"], _c["hub_l"], "clases", '<h2>%s</h2><ul class="g">%s</ul>' % (esc(_c["hub"]), _items), _hub_faq_cl if False else [(_c["faqt"][1], _c["faqr"][1]), (_c["faqt"][2], _c["faqr"][2])], _hub_alts, 1 if _l == "es" else 2, [("TIKITEXTO", DOM + ("" if _l == "es" else "en/")), (_c["hub"], DOM + _c["base"])], pasos=_c["pasos"], como=_c["como"]))
+
 for lang, lista in (("en", MODOS_EN), ("de", MODOS_DE)):
     for m in lista:
         otros_t, todos_t = LABELS_ED[lang]
@@ -312,6 +355,11 @@ for _x in (DOM + "juegos/", DOM + "en/games/"): sm.append("  <url><loc>%s</loc>%
 for _g in _jd.J:
     _a = '<xhtml:link rel="alternate" hreflang="es" href="%sjuegos/%s/"/><xhtml:link rel="alternate" hreflang="en" href="%sen/games/%s/"/><xhtml:link rel="alternate" hreflang="x-default" href="%sjuegos/%s/"/>' % (DOM, _g["es"], DOM, _g["en"], DOM, _g["es"])
     for _x in (DOM + "juegos/" + _g["es"] + "/", DOM + "en/games/" + _g["en"] + "/"): sm.append("  <url><loc>%s</loc>%s</url>" % (_x, _a))
+
+for _x in (DOM + "clases/", DOM + "en/classes/"): sm.append("  <url><loc>%s</loc>%s</url>" % (_x, '<xhtml:link rel="alternate" hreflang="es" href="%sclases/"/><xhtml:link rel="alternate" hreflang="en" href="%sen/classes/"/><xhtml:link rel="alternate" hreflang="x-default" href="%sclases/"/>' % (DOM, DOM, DOM)))
+for _g in _CL:
+    _a = '<xhtml:link rel="alternate" hreflang="es" href="%s%s"/><xhtml:link rel="alternate" hreflang="en" href="%s%s"/><xhtml:link rel="alternate" hreflang="x-default" href="%s%s"/>' % (DOM, _cl_ruta("es", _g), DOM, _cl_ruta("en", _g), DOM, _cl_ruta("es", _g))
+    for _x in (DOM + _cl_ruta("es", _g), DOM + _cl_ruta("en", _g)): sm.append("  <url><loc>%s</loc>%s</url>" % (_x, _a))
 for p in ("privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html", "contacto.html", "sobre-tikitexto.html"):
     sm.append("  <url><loc>%s%s</loc></url>" % (DOM, p))
 sm.append("</urlset>")

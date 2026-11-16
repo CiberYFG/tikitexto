@@ -1249,6 +1249,19 @@ for _r in ("juegos/", "en/games/"):
 _hh = open(_os.path.join(_raiz, "articulos", "reglas-basicas-del-futbol-para-principiantes", "index.html"), encoding="utf-8").read()
 check("artículos: llevan autoría editorial y enlace a «cómo elaboramos el contenido»", "equipo editorial de TIKITEXTO" in _hh and "sobre-tikitexto.html#editorial" in _hh and '"author"' in _hh)
 
+# 3ai) páginas de texto de las clases animadas (es/en)
+import json as _js
+_cl = _js.load(open(_os.path.join(_raiz, "tools", "clases_texto.json"), encoding="utf-8"))
+_smx = open(_os.path.join(_raiz, "sitemap.xml"), encoding="utf-8").read()
+_mal = []
+for _g in _cl:
+    for _r in ("clases/%s/" % _g["id"],):
+        _hh = open(_os.path.join(_raiz, _r, "index.html"), encoding="utf-8").read() if _os.path.exists(_os.path.join(_raiz, _r, "index.html")) else ""
+        _pal = len(re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[\s\S]*?</\1>", "", _hh)).split())
+        if not (_pal > 450 and "FAQPage" in _hh and 'hreflang="en"' in _hh and "/" + _r in _smx): _mal.append(_r + " " + str(_pal))
+check("clases: 18 páginas es con +450 palabras, FAQ, hreflang y sitemap", len(_cl) == 18 and not _mal, "; ".join(_mal[:4]))
+check("clases: 18 páginas en inglés y hubs en el sitemap", len(_os.listdir(_os.path.join(_raiz, "en", "classes"))) == 19 and "https://tikitexto.com/en/classes/</loc>" in _smx and "https://tikitexto.com/clases/</loc>" in _smx)
+
 print(f"\n{len(ok)} correctas, {len(fallos)} con fallo")
 if fallos:
     print("FALLOS:\n - " + "\n - ".join(fallos))
