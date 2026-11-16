@@ -28,7 +28,16 @@ const ESC = [
 /* velocidad según la distancia: crece siempre pero cada vez más despacio (máx. ≈33 m/s) */
 const vBase = (d) => Math.min(33, 11 + 11 * (1 - Math.exp(-d / 800)) + 11 * (1 - Math.exp(-d / 4500)));
 /* obstáculos que se mueven: se van desbloqueando por distancia */
-const NUEVOS = [[450, "¡Balón gigante! Sáltalo"], [1050, "¡Balones botando! Cuidado con el bote"], [1750, "¡Extremo en zigzag! Esquívalo"], [2500, "¡Dron de TV! Deslízate debajo"]];
+const NUEVOS = [[450, "¡Balón gigante! Sáltalo", "rodante"], [900, "¡Carrito de balones! Sáltalo", "carro"], [1050, "¡Balones botando! Cuidado con el bote", "botando"], [1450, "¡Mascota saltarina! Esquívala", "mascota"], [1750, "¡Extremo en zigzag! Esquívalo", "extremo"], [2100, "¡Pelotazo! Salta o esquiva", "pelotazo"], [2500, "¡Dron de TV! Deslízate debajo", "dron"]];
+/* equipaciones del corredor: se compran con las monedas */
+const KIT_J = [
+  { id: "azul", n: "Azul clásico", c: 0x1d5fd6, c2: 0xffffff, p: 0xf2f4f8, m: 0x1d5fd6, precio: 0 },
+  { id: "rojo", n: "Rojo pasión", c: 0xd7263d, c2: 0xffffff, p: 0xffffff, m: 0xd7263d, precio: 40 },
+  { id: "verde", n: "Verde esmeralda", c: 0x0e9f55, c2: 0xffffff, p: 0xf2f4f8, m: 0x0e9f55, precio: 80 },
+  { id: "dorado", n: "Dorado de campeón", c: 0xf2b300, c2: 0x1a1a1a, p: 0x1a1a1a, m: 0xf2b300, precio: 150 },
+  { id: "negro", n: "Negro neón", c: 0x14141c, c2: 0x19e6ff, p: 0x14141c, m: 0x14141c, precio: 250 },
+  { id: "rosa", n: "Rosa eléctrico", c: 0xff3dcb, c2: 0xffe94a, p: 0x7b2cbf, m: 0xff3dcb, precio: 400 }
+];
 
 
 const PLANTILLA = `
@@ -43,8 +52,8 @@ const PLANTILLA = `
 <p class="sl-pista" data-pista></p>
 <div class="sl-menu" data-menu>
   <div class="sl-caja">
-    <p class="sl-kicker">Videojuego 3D</p>
-    <h2>SLALOM</h2>
+    <p class="sl-kicker">Corredor de Tikitexto</p>
+    <h2>TIKI RUSH</h2>
     <p class="sl-sub">Regatea por el campo: esquiva defensas, salta balones y porterías de entrenamiento y deslízate bajo las pancartas. Cuanto más corres, más rápido va.</p>
     <ul class="sl-ctl">
       <li><b>⬅️➡️</b><span>Cambia de carril</span></li>
@@ -53,6 +62,7 @@ const PLANTILLA = `
       <li><b>⚡</b><span>Las botas doradas te dan turbo</span></li>
     </ul>
     <p class="sl-rec" data-rec data-no-t></p>
+    <div class="sl-saldo"><span>🪙 <b data-saldo data-no-t>0</b></span><button type="button" class="sl-sec" data-sl="vest">👕 Vestuario</button></div>
     <button type="button" class="sl-jugar" data-sl="jugar">¡Correr!</button>
   </div>
 </div>
@@ -61,8 +71,17 @@ const PLANTILLA = `
     <h2 data-fin-t>¡TARJETA ROJA!</h2>
     <p class="sl-fin-m" data-fin-m data-no-t></p>
     <p class="sl-fin-m" data-fin-r data-no-t></p>
-    <p class="sl-fin-tiki" data-fin-tiki hidden>⚡ +1 tikitexto</p>
-    <div class="sl-fin-b"><button type="button" class="sl-jugar" data-sl="jugar">Correr otra vez</button><button type="button" class="sl-sec" data-sl="salir">Salir</button></div>
+    <p class="sl-fin-tiki" data-fin-tiki hidden data-no-t>⚡ +1 tikitexto</p>
+    <div class="sl-fin-b"><button type="button" class="sl-jugar" data-sl="jugar">Correr otra vez</button><button type="button" class="sl-sec" data-sl="vest">👕 Vestuario</button><button type="button" class="sl-sec" data-sl="salir">Salir</button></div>
+  </div>
+</div>
+<div class="sl-vest" data-vest hidden>
+  <div class="sl-caja">
+    <h3>Vestuario</h3>
+    <p class="sl-sub">Gasta tus monedas en equipaciones nuevas. Las monedas se guardan entre partidas.</p>
+    <p class="sl-rec">🪙 <b data-saldo data-no-t>0</b></p>
+    <div class="sl-kits" data-kits></div>
+    <button type="button" class="sl-sec" data-sl="vestcerrar">Volver</button>
   </div>
 </div>
 <div class="sl-sin" data-sin hidden><div><b>No se puede mostrar el 3D</b><small>Tu dispositivo o navegador no admite gráficos 3D (WebGL).</small><button type="button" class="sl-sec" data-sl="salir">Salir</button></div></div>
@@ -192,7 +211,7 @@ export function abrir(api, raiz) {
   raiz.innerHTML = PLANTILLA;
   const $ = (s) => raiz.querySelector(s);
   const cv = $(".sl-cv");
-  const datos = () => { const d = api.datos(); ["mejor", "mejorm", "part", "bal", "tiki"].forEach((k) => { if (typeof d[k] !== "number") d[k] = 0; }); return d; };
+  const datos = () => { const d = api.datos(); ["mejor", "mejorm", "part", "bal", "tiki", "gast", "cajas"].forEach((k) => { if (typeof d[k] !== "number") d[k] = 0; }); if (!Array.isArray(d.tiene)) d.tiene = ["azul"]; if (typeof d.kit !== "string") d.kit = "azul"; return d; };
   const au = crearAudio(api);
 
   /* ── mini sintetizador propio para los efectos cortos ── */
@@ -219,9 +238,9 @@ export function abrir(api, raiz) {
   } catch (e) { E = null; }
   if (!E) { $("[data-sin]").hidden = false; $("[data-menu]").hidden = true; }
 
-  const S = { fase: "menu", t: 0, dist: 0, v: 0, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, obs: [], sig: 0, filas: 0, tiki: false, bonus: 0, shake: 0, activo: true, choque: 0, hito: 0, tema: 0, ciclo: 0, cola: [], vidaHito: 0, nuevo: 0 };
+  const S = { fase: "menu", t: 0, dist: 0, v: 0, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, obs: [], sig: 0, filas: 0, tiki: false, regalo: 0, cajaD: 0, cajaN: 0, cajaOk: false, bonus: 0, shake: 0, activo: true, choque: 0, hito: 0, tema: 0, ciclo: 0, cola: [], vidaHito: 0, nuevo: 0 };
   let raf = 0, ultimo = 0, vivo = true, escala = 1, fpsAcum = 0, fpsN = 0, hAviso = 0, hFlash = 0;
-  let camara, scene, sol, hemi, luces = [], mundo = {}, jug = null, piscina = [], libres = { def: [], valla: [], cono: [], cartel: [], moneda: [], bota: [], rodante: [], botando: [], dron: [] }, clima = null, chispas, polvo, lineas = [];
+  let camara, scene, sol, hemi, luces = [], mundo = {}, jug = null, piscina = [], libres = { def: [], valla: [], cono: [], cartel: [], moneda: [], bota: [], rodante: [], botando: [], dron: [], carro: [], mascota: [], pelotazo: [], caja: [] }, clima = null, chispas, polvo, lineas = [];
 
   function construye() {
     const R = E.renderer, aniso = Math.min(R.capabilities.getMaxAnisotropy(), 8);
@@ -268,15 +287,14 @@ export function abrir(api, raiz) {
     }
 
     /* jugador */
-    jug = crearFigura({ cuerpo: "jugador", camisa2: 0xffffff, camisa: 0x1d5fd6, pantalon: 0xf2f4f8, media: 0x1d5fd6, piel: 0xf0c8a0, pelo: 0x2b1b12, dorsal: 7, nombre: (api.nombre ? api.nombre() : "") || "TIKI", numColor: "#ffffff", manga: true });
-    jug.raiz.rotation.y = Math.PI; scene.add(jug.raiz);
+    creaJug();
     /* defensas: reserva reutilizable */
     for (let i = 0; i < 12; i++) nuevaDef();
     /* mallas de obstáculos y objetos (se crean bajo demanda) */
     const caraMon = new THREE.MeshBasicMaterial({ map: texMoneda() });
     mundo.matMon = [new THREE.MeshStandardMaterial({ color: 0xffc824, emissive: 0x8a5d00, emissiveIntensity: 0.8, metalness: 0.15, roughness: 0.35 }), caraMon, caraMon];
     mundo.geoMon = new THREE.CylinderGeometry(0.5, 0.5, 0.08, 40); mundo.geoMon.rotateX(Math.PI / 2);
-    mundo.texRayo = texRayo(); mundo.texCartel = texCartel(); mundo.texBalon = texBalon(); mundo.texRed = texRed();
+    mundo.texFuego = texBrillo("rgba(255,140,40,.9)"); mundo.texRayo = texRayo(); mundo.texCartel = texCartel(); mundo.texBalon = texBalon(); mundo.texRed = texRed();
     chispas = crearParticulas(scene, 120, 0xffd23a, 0.22, true); polvo = crearParticulas(scene, 70, 0xdfe9d4, 0.32, false);
     for (let i = 0; i < 22; i++) {
       const m = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.015, 3), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45, fog: false }));
@@ -294,6 +312,13 @@ export function abrir(api, raiz) {
     tamano(); aplicaEsc(0, 0);
   }
 
+  /* jugador con la equipación elegida (se vuelve a crear al cambiar de vestuario) */
+  function creaJug() {
+    const k = KIT_J.find((x) => x.id === datos().kit) || KIT_J[0];
+    if (jug) { scene.remove(jug.raiz); }
+    jug = crearFigura({ cuerpo: "jugador", camisa2: k.c2, camisa: k.c, pantalon: k.p, media: k.m, piel: 0xf0c8a0, pelo: 0x2b1b12, dorsal: 7, nombre: (api.nombre ? api.nombre() : "") || "TIKI", numColor: "#ffffff", manga: true });
+    jug.raiz.rotation.y = Math.PI; scene.add(jug.raiz);
+  }
   /* ── objetos del juego ── */
   let nDef = 0;
   function nuevaDef() {
@@ -352,6 +377,42 @@ export function abrir(api, raiz) {
     const so = new THREE.Mesh(new THREE.CircleGeometry(0.7, 20), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3, depthWrite: false })); so.rotation.x = -Math.PI / 2; so.position.y = -1.27; g.add(so); g.userData.so = so;
     return g;
   }
+  /* carrito de balones que cruza el campo de lado a lado (se salta) */
+  function mallaCarro() {
+    const g = new THREE.Group(), gris = new THREE.MeshStandardMaterial({ color: 0x8d99ae, roughness: 0.5, metalness: 0.4 }), bal = new THREE.MeshStandardMaterial({ map: mundo.texBalon, roughness: 0.4 });
+    const base = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.12, 0.9), gris); base.position.y = 0.3; base.castShadow = true; g.add(base);
+    [[-0.74, 0], [0.74, 0]].forEach((q) => { const w = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.4, 0.9), gris); w.position.set(q[0], 0.5, q[1]); g.add(w); });
+    const f = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.4, 0.06), gris); f.position.set(0, 0.5, 0.45); g.add(f);
+    [[-0.45, 0.2], [0.1, 0.1], [0.5, 0.2], [-0.2, -0.2], [0.3, -0.2]].forEach((q, i) => { const b = new THREE.Mesh(new THREE.SphereGeometry(0.24, 16, 12), bal); b.position.set(q[0], 0.62 + (i % 2) * 0.08, q[1]); b.castShadow = true; g.add(b); });
+    const ru = new THREE.MeshStandardMaterial({ color: 0x222831 }); [[-0.55, 0.38], [0.55, 0.38], [-0.55, -0.38], [0.55, -0.38]].forEach((q) => { const r = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.08, 12), ru); r.rotation.z = Math.PI / 2; r.position.set(q[0], 0.11, q[1]); g.add(r); });
+    return g;
+  }
+  /* mascota de peluche que salta de carril en carril (esquívala) */
+  function mallaMascota() {
+    const g = new THREE.Group(), pel = new THREE.MeshStandardMaterial({ color: 0x35c98a, roughness: 0.9 }), blanco = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 }), negro = new THREE.MeshBasicMaterial({ color: 0x111111 });
+    const cuerpo = new THREE.Mesh(new THREE.SphereGeometry(0.62, 22, 16), pel); cuerpo.position.y = 0.85; cuerpo.scale.set(1, 1.15, 0.9); cuerpo.castShadow = true; g.add(cuerpo);
+    const bar = new THREE.Mesh(new THREE.SphereGeometry(0.4, 18, 12), blanco); bar.position.set(0, 0.75, 0.38); bar.scale.set(1, 1.1, 0.5); g.add(bar);
+    [-0.2, 0.2].forEach((x) => { const o = new THREE.Mesh(new THREE.SphereGeometry(0.15, 14, 10), blanco); o.position.set(x, 1.3, 0.45); g.add(o); const p = new THREE.Mesh(new THREE.SphereGeometry(0.07, 10, 8), negro); p.position.set(x, 1.3, 0.58); g.add(p); });
+    [-0.38, 0.38].forEach((x) => { const o = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 10), pel); o.position.set(x, 1.8, 0); g.add(o); const b = new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 10), pel); b.position.set(x * 1.9, 0.95, 0.1); g.add(b); const pie = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 10), pel); pie.position.set(x * 0.7, 0.14, 0.1); pie.scale.set(1, 0.6, 1.3); g.add(pie); });
+    g.userData.cuerpo = cuerpo; return g;
+  }
+  /* pelotazo: balón en llamas que viene más rápido que el campo */
+  function mallaPelotazo() {
+    const g = new THREE.Group(), b = new THREE.Mesh(new THREE.SphereGeometry(0.4, 22, 16), new THREE.MeshStandardMaterial({ map: mundo.texBalon, roughness: 0.4, emissive: 0x662200, emissiveIntensity: 0.6 }));
+    b.position.y = 0.42; b.castShadow = true; g.add(b); g.userData.bola = b;
+    const f = new THREE.Sprite(new THREE.SpriteMaterial({ map: mundo.texFuego, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false })); f.scale.set(2.4, 2.4, 1); f.position.set(0, 0.5, 0.9); g.add(f); g.userData.fu = f;
+    return g;
+  }
+  /* caja sorpresa (regalo) */
+  function mallaCaja() {
+    const g = new THREE.Group(), roja = new THREE.MeshStandardMaterial({ color: 0xe0245e, roughness: 0.4, emissive: 0x4a0018, emissiveIntensity: 0.5 }), oro = new THREE.MeshStandardMaterial({ color: 0xffd23a, roughness: 0.3, metalness: 0.3, emissive: 0x6a4a00, emissiveIntensity: 0.6 });
+    const c = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.7, 0.85), roja); c.castShadow = true; g.add(c);
+    const t = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.2, 0.95), roja); t.position.y = 0.42; g.add(t);
+    const c1 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.92, 0.9), oro); c1.position.y = 0.05; g.add(c1);
+    const c2 = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.92, 0.16), oro); c2.position.y = 0.05; g.add(c2);
+    [-1, 1].forEach((s2) => { const l = new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.05, 8, 16), oro); l.position.set(s2 * 0.17, 0.62, 0); l.rotation.y = s2 * 0.6; g.add(l); });
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: mundo.texRayo, depthWrite: false, transparent: true, fog: false })); sp.scale.set(2.6, 2.6, 1); g.add(sp); g.userData.sp = sp; return g;
+  }
   function mallaBota() {
     const g = new THREE.Group(), s = new THREE.Sprite(new THREE.SpriteMaterial({ map: mundo.texRayo, depthWrite: false, transparent: true, fog: false })); s.scale.set(1.5, 1.5, 1); g.add(s); g.userData.sp = s; return g;
   }
@@ -359,7 +420,7 @@ export function abrir(api, raiz) {
     let o = libres[tipo].pop();
     if (!o) {
       if (tipo === "moneda") o = new THREE.Mesh(mundo.geoMon, mundo.matMon);
-      else if (tipo === "valla") o = mallaValla(); else if (tipo === "cono") o = mallaCono(); else if (tipo === "cartel") o = mallaCartel(); else if (tipo === "bota") o = mallaBota(); else if (tipo === "rodante") o = mallaRodante(); else if (tipo === "botando") o = mallaBotando(); else if (tipo === "dron") o = mallaDron();
+      else if (tipo === "valla") o = mallaValla(); else if (tipo === "cono") o = mallaCono(); else if (tipo === "cartel") o = mallaCartel(); else if (tipo === "bota") o = mallaBota(); else if (tipo === "rodante") o = mallaRodante(); else if (tipo === "botando") o = mallaBotando(); else if (tipo === "dron") o = mallaDron(); else if (tipo === "carro") o = mallaCarro(); else if (tipo === "mascota") o = mallaMascota(); else if (tipo === "pelotazo") o = mallaPelotazo(); else if (tipo === "caja") o = mallaCaja();
       else if (tipo === "def" || tipo === "extremo") return null;
       if (tipo === "moneda") o.castShadow = false;
       scene.add(o);
@@ -390,7 +451,7 @@ export function abrir(api, raiz) {
     const d = Math.min(1, S.dist / 1800), Z = Z_SPAWN, lanes = [0, 1, 2], libre = irnd(3), otros = lanes.filter((l) => l !== libre), n = S.filas++;
     const pats = [];
     const D = S.dist;
-    pats.push([D > NUEVOS[0][0] ? 3 : 0, "rodante"], [D > NUEVOS[1][0] ? 3 : 0, "botando"], [D > NUEVOS[2][0] ? 3 : 0, "extremo"], [D > NUEVOS[3][0] ? 3 : 0, "dron"]);
+    NUEVOS.forEach((nv) => pats.push([D > nv[0] ? 3 : 0, nv[2]]));
     pats.push([5, "muro"], [3, "conos"], [d > 0.05 ? 4 : 0, "valla"], [d > 0.12 ? 3 : 0, "cartel"], [d > 0.2 ? 3 : 0, "entrada"], [d > 0.3 ? 3 : 0, "mix"], [d > 0.5 ? 3 : 0, "doble"]);
     if (n < 3) { pats.length = 0; pats.push([1, n === 0 ? "conos" : "muro"]); }
     let tot = 0; pats.forEach((p) => { tot += p[0]; }); let r = Math.random() * tot, tipo = "muro"; for (const p of pats) { if ((r -= p[0]) <= 0) { tipo = p[1]; break; } }
@@ -405,6 +466,11 @@ export function abrir(api, raiz) {
     else if (tipo === "botando") { otros.forEach((l) => pon("botando", l, Z)); monedas(libre, Z + 20, 6); }
     else if (tipo === "extremo") { const a = irnd(2); pon("extremo", a, Z); monedas(a === 0 ? 2 : 0, Z + 18, 5); }
     else if (tipo === "dron") { pon("dron", -1, Z, 1.3); monedas(irnd(3), Z + 16, 5, 0.9); }
+    else if (tipo === "carro") { pon("carro", -1, Z); monedas(1, Z + 16, 4, 1.7); }
+    else if (tipo === "mascota") { pon("mascota", -1, Z); monedas(irnd(3), Z + 18, 5); }
+    else if (tipo === "pelotazo") { pon("pelotazo", libre === 1 ? (Math.random() < 0.5 ? 0 : 2) : 1, Z - 20); monedas(libre, Z + 14, 5); }
+    /* caja sorpresa: una por partida, entre los 3.000 y los 6.000 m (si se te escapa, vuelve a salir) */
+    if (!S.cajaOk && S.cajaD > 0 && S.dist >= S.cajaD && S.cajaN < 3) { S.cajaN++; S.cajaD = S.dist + 500; pon("caja", libre, Z + 26, 1.0); aviso("🎁 ¡Caja sorpresa delante!", "oro", 1800); }
     if (S.turbo <= 0 && S.dist > 250 && Math.random() < 0.09) pon("bota", libre, Z + 30, 1.0);
     S.sig = clamp(S.v * 1.4, 21, 46);
   }
@@ -417,6 +483,25 @@ export function abrir(api, raiz) {
   function pista(txt) { $("[data-pista]").textContent = txt ? t(txt) : ""; }
   function pintaVidas() { let h = ""; for (let i = 0; i < VIDAS; i++) { const rest = S.vidas - i; h += '<s class="' + (rest > 0 ? "" : (i === VIDAS - 1 && S.vidas <= 0 ? "ro" : "am")) + '"></s>'; } $("[data-vidas]").innerHTML = h; }
   function pintaHud() { $("[data-sl-pts]").textContent = String(S.pts); $("[data-sl-m]").textContent = Math.floor(S.dist) + " m"; $("[data-sl-mon]").textContent = String(S.monedas); }
+  function pintaSaldo() { const d = datos(), v = Math.max(0, d.bal - d.gast); raiz.querySelectorAll("[data-saldo]").forEach((e) => { e.textContent = String(v); }); }
+  function pintaKits() {
+    const d = datos(), saldo = d.bal - d.gast, c = (n) => "#" + n.toString(16).padStart(6, "0");
+    $("[data-kits]").innerHTML = KIT_J.map((k) => {
+      const tiene = d.tiene.indexOf(k.id) >= 0, puesta = d.kit === k.id;
+      const et = puesta ? t("Equipada") : tiene ? t("Usar") : "🪙 " + k.precio;
+      return '<button type="button" class="sl-kit' + (puesta ? " on" : "") + (!tiene && saldo < k.precio ? " no" : "") + '" data-kit="' + k.id + '"><i style="background:linear-gradient(135deg,' + c(k.c) + ' 0 50%,' + c(k.p) + ' 50% 100%);border-color:' + c(k.c2) + '"></i><span>' + t(k.n) + '</span><b data-no-t>' + et + "</b></button>";
+    }).join("");
+    pintaSaldo();
+  }
+  function elegirKit(id) {
+    const d = datos(), k = KIT_J.find((x) => x.id === id); if (!k) return;
+    if (d.tiene.indexOf(id) < 0) {
+      const saldo = d.bal - d.gast; if (saldo < k.precio) { aviso("Te faltan " + (k.precio - saldo) + " monedas", "mal", 1400); return; }
+      d.gast += k.precio; d.tiene.push(id); sonMoneda(); aviso("¡Equipación comprada!", "bien", 1400);
+    }
+    d.kit = id; try { api.guardar(); } catch (e) { /* opcional */ }
+    if (E && scene) creaJug(); pintaKits();
+  }
   function pintaRecord() { const d = datos(); $("[data-rec]").textContent = d.mejor ? "🏆 " + d.mejor + " · " + d.mejorm + " m · " + d.part + " ⚽" : ""; }
   function flash() { const f = $("[data-flash]"); f.classList.add("on"); clearTimeout(hFlash); hFlash = setTimeout(() => f.classList.remove("on"), 90); }
 
@@ -467,7 +552,7 @@ export function abrir(api, raiz) {
   function empezar() {
     audioIni(); au.iniciar(); au.ambiente(0.3);
     limpiaObs();
-    Object.assign(S, { fase: "corre", dist: 0, v: 9, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, bonus: 0, sig: 10, filas: 0, tiki: false, choque: 0, hito: 0, tema: 0, vidaHito: 0, nuevo: 0 });
+    Object.assign(S, { fase: "corre", dist: 0, v: 9, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, bonus: 0, sig: 10, filas: 0, tiki: false, regalo: 0, cajaD: rnd(3000, 6000), cajaN: 0, cajaOk: false, choque: 0, hito: 0, tema: 0, vidaHito: 0, nuevo: 0 });
     $("[data-menu]").hidden = true; $("[data-fin]").hidden = true; $("[data-turbo]").hidden = true; pintaVidas(); pintaHud(); aplicaEsc(0, 0);
     pista(movil ? "Desliza: ⬅️ ➡️ carril · ⬆️ salto · ⬇️ agacharte" : "Flechas o WASD: ⬅️ ➡️ carril · ⬆️ salto · ⬇️ agacharte"); setTimeout(() => { if (S.fase === "corre" && S.dist < 120) pista(""); }, 4500);
     sonPita();
@@ -475,11 +560,20 @@ export function abrir(api, raiz) {
   function termina() {
     if (S.fase === "fin") return; S.fase = "fin";
     const d = datos(); d.part++; d.bal += S.monedas; const nuevo = S.pts > d.mejor; if (nuevo) d.mejor = S.pts; if (Math.floor(S.dist) > d.mejorm) d.mejorm = Math.floor(S.dist);
-    if (S.tiki) d.tiki++;
+    if (S.tiki) d.tiki++; if (S.regalo) d.cajas++;
     try { api.guardar(); } catch (e) { /* opcional */ }
     $("[data-fin-t]").textContent = t("¡TARJETA ROJA!"); $("[data-fin-m]").textContent = S.pts + " " + t("puntos") + " · " + Math.floor(S.dist) + " m · " + S.monedas + " TIKI";
     $("[data-fin-r]").textContent = nuevo ? t("¡Nuevo récord!") : "🏆 " + d.mejor;
-    $("[data-fin-tiki]").hidden = !S.tiki; $("[data-fin]").hidden = false; $("[data-turbo]").hidden = true; au.ambiente(0.1); au.suspiro(); pintaRecord();
+    const nt = (S.tiki ? 1 : 0) + S.regalo; $("[data-fin-tiki]").textContent = t(nt === 1 ? "⚡ +1 tikitexto" : "⚡ +" + nt + " tikitextos"); $("[data-fin-tiki]").hidden = nt === 0; pintaSaldo(); $("[data-fin]").hidden = false; $("[data-turbo]").hidden = true; au.ambiente(0.1); au.suspiro(); pintaRecord();
+  }
+  /* caja sorpresa: 1 tikitexto (60 %), 2 (30 %) o 3 (10 %) */
+  function regalo(x, y) {
+    if (S.cajaOk) return; S.cajaOk = true; const r = Math.random(), n = r < 0.6 ? 1 : r < 0.9 ? 2 : 3; S.regalo = n;
+    for (let i = 0; i < n; i++) { try { api.tiki(); } catch (e) { /* opcional */ } }
+    try { api.victoria(); } catch (e) { /* opcional */ }
+    sonTurbo(); au.rugido(true); for (let k = 0; k < 30; k++) chispas.emite(x, y, 0, rnd(-4, 4), rnd(0, 5), rnd(-3, 3), 0.9);
+    aviso(n === 1 ? "🎁 ¡Caja sorpresa! +1 tikitexto" : "🎁 ¡Caja sorpresa! +" + n + " tikitextos", "bien", 2600);
+    S.cajaN = 9;
   }
   function golpea(ob) {
     ob.golpe = 1; S.shake = reducido ? 0 : 0.5; flash(); sonGolpe();
@@ -514,17 +608,23 @@ export function abrir(api, raiz) {
       const ob = S.obs[i]; ob.z += dz;
       if (ob.tipo === "entrada" && ob.z > -26 && !ob.golpe) { ob.z += 6 * dt; ob.extra = Math.min(1, ob.extra + dt * 3); }
       if (ob.golpe && ob.golpe > 1) { /* derribado en turbo: sale volando */ ob.z += 0; }
+      if (ob.tipo === "pelotazo") ob.z += 11 * dt;
       if (ob.z > Z_FIN) { suelta(ob); S.obs.splice(i, 1); continue; }
       if (ob.tipo === "rodante") ob.x = 2.9 * Math.sin(S.t * 1.4 + ob.ph);
       else if (ob.tipo === "dron") ob.x = 2.7 * Math.sin(S.t * 1.2 + ob.ph);
       else if (ob.tipo === "extremo") ob.x = lerp(LX[ob.lane], LX[ob.lane + 1], 0.5 + 0.5 * Math.sin(S.t * 2.6 + ob.ph));
+      else if (ob.tipo === "carro") ob.x = 3.3 * Math.sin(S.t * 2.1 + ob.ph);
+      else if (ob.tipo === "mascota") { const u = S.t * 0.75 + ob.ph, k = Math.floor(u), f = u - k, sq = [0, 1, 2, 1], a = LX[sq[k % 4]], b2 = LX[sq[(k + 1) % 4]], e = clamp(f * 1.6 - 0.2, 0, 1); ob.x = lerp(a, b2, e * e * (3 - 2 * e)); ob.y = Math.sin(e * Math.PI) * 0.45; }
+      else if (ob.tipo === "pelotazo") ob.x = LX[ob.lane];
       else if (ob.tipo === "botando") { ob.x = LX[ob.lane]; ob.y = 0.4 + Math.abs(Math.sin(S.t * 3.6 + ob.ph)) * 2.4; }
       if (S.fase !== "corre" || ob.golpe) continue;
       const x = ob.x !== undefined ? ob.x : ob.lane < 0 ? 0 : LX[ob.lane], dx = Math.abs(S.x - x), dzz = Math.abs(ob.z);
-      if (ob.tipo === "moneda" || ob.tipo === "bota") {
-        if (dx < 1.05 && dzz < 0.9 && Math.abs(ob.y - (S.y + (S.desl > 0 ? 0.4 : 0.95))) < (ob.tipo === "bota" ? 1.3 : 1.0)) {
+      if (ob.tipo === "moneda" || ob.tipo === "bota" || ob.tipo === "caja") {
+        const gr = ob.tipo === "caja";
+        if (dx < (gr ? 1.3 : 1.05) && dzz < (gr ? 1.3 : 0.9) && Math.abs(ob.y - (S.y + (S.desl > 0 ? 0.4 : 0.95))) < (ob.tipo === "moneda" ? 1.0 : 1.4)) {
           ob.golpe = 2; suelta(ob); S.obs.splice(i, 1);
           if (ob.tipo === "moneda") { S.monedas++; sonMoneda(); for (let k = 0; k < 7; k++) chispas.emite(x, ob.y, 0, rnd(-2.5, 2.5), rnd(0.5, 4), rnd(-2, 2), 0.55); }
+          else if (gr) regalo(x, ob.y);
           else { S.turbo = 6; sonTurbo(); aviso("¡TURBO!", "oro", 1200); $("[data-turbo]").hidden = false; for (let k = 0; k < 24; k++) chispas.emite(x, 1, 0, rnd(-4, 4), rnd(0, 5), rnd(-3, 3), 0.8); }
           pintaHud();
         }
@@ -539,6 +639,9 @@ export function abrir(api, raiz) {
       else if (ob.tipo === "rodante") choca = dx < 0.95 && dzz < 0.7 && S.y < 1.0;
       else if (ob.tipo === "extremo") choca = dx < 0.85 && dzz < 0.6 && S.y < 1.9;
       else if (ob.tipo === "botando") choca = dx < 0.8 && dzz < 0.6 && ob.y - 0.36 < S.y + alt && ob.y + 0.36 > S.y;
+      else if (ob.tipo === "carro") choca = dx < 1.05 && dzz < 0.7 && S.y < 0.85;
+      else if (ob.tipo === "mascota") choca = dx < 0.95 && dzz < 0.65 && S.y < 1.9 + ob.y;
+      else if (ob.tipo === "pelotazo") choca = dx < 0.75 && dzz < 0.8 && S.y < 0.8;
       else if (ob.tipo === "dron") choca = dx < 1.0 && dzz < 0.6 && S.y + alt > 1.05 && S.y < 1.75;
       if (!choca) continue;
       if (S.turbo > 0) { ob.golpe = 2; S.bonus += 25; sonGolpe(); S.shake = reducido ? 0 : 0.2; for (let k = 0; k < 12; k++) chispas.emite(x, 0.9, ob.z, rnd(-4, 4), rnd(1, 5), rnd(-3, 1), 0.7); suelta(ob); S.obs.splice(i, 1); }
@@ -601,6 +704,10 @@ export function abrir(api, raiz) {
       else if (ob.tipo === "rodante") { m.position.set(ob.x === undefined ? 0 : ob.x, 0, ob.z); m.userData.bola.rotation.x = T * 6; m.userData.bola.rotation.z = T * 2; }
       else if (ob.tipo === "botando") { m.position.set(ob.x === undefined ? LX[ob.lane] : ob.x, 0, ob.z); m.userData.bola.position.y = ob.y; const k = 0.5 + 0.5 * clamp(1 - ob.y / 2.8, 0, 1); m.userData.so.scale.set(k, k, k); m.userData.bola.rotation.x = T * 5; }
       else if (ob.tipo === "dron") { m.position.set(ob.x === undefined ? 0 : ob.x, ob.y, ob.z); m.rotation.z = Math.cos(T * 1.2 + ob.ph) * 0.18; m.userData.rot.forEach((r, q) => { r.rotation.y = T * 40 + q; }); }
+      else if (ob.tipo === "carro") { m.position.set(ob.x === undefined ? 0 : ob.x, 0, ob.z); m.rotation.y = Math.cos(T * 2.1 + ob.ph) > 0 ? -0.5 : 0.5; }
+      else if (ob.tipo === "mascota") { m.position.set(ob.x === undefined ? 0 : ob.x, ob.y, ob.z); m.userData.cuerpo.scale.y = 1.15 + Math.sin(T * 9 + ob.ph) * 0.06; m.rotation.y = Math.PI * 0 + Math.sin(T * 3 + ob.ph) * 0.3; }
+      else if (ob.tipo === "pelotazo") { m.position.set(LX[ob.lane], 0, ob.z); m.userData.bola.rotation.x = -T * 14; const k = 2.2 + Math.sin(T * 20) * 0.3; m.userData.fu.scale.set(k, k, 1); }
+      else if (ob.tipo === "caja") { m.position.set(LX[ob.lane], 1.0 + Math.sin(T * 3) * 0.12, ob.z); m.rotation.y = T * 2.2; const k = 2.4 + Math.sin(T * 6) * 0.3; m.userData.sp.scale.set(k, k, 1); }
       else if (ob.tipo === "moneda") { m.position.set(LX[ob.lane], ob.y + Math.sin(T * 4 + ob.ph) * 0.08, ob.z); m.rotation.y = T * 4.5 + ob.ph; }
       else if (ob.tipo === "bota") { m.position.set(LX[ob.lane], 1.1 + Math.sin(T * 5) * 0.15, ob.z); const k = 1.4 + Math.sin(T * 8) * 0.15; m.userData.sp.scale.set(k, k, 1); }
       else { m.position.set(ob.lane < 0 ? 0 : LX[ob.lane], 0, ob.z); }
@@ -637,7 +744,7 @@ export function abrir(api, raiz) {
   let tocando = false, usado = false, sx = 0, sy = 0;
   raiz.addEventListener("pointerdown", function (e) {
     audioIni(); au.iniciar();
-    if (e.target.closest && e.target.closest("[data-sl], [data-menu], [data-fin], .sl-cab")) return;
+    if (e.target.closest && e.target.closest("[data-sl], [data-menu], [data-fin], [data-vest], .sl-cab")) return;
     tocando = true; usado = false; sx = e.clientX; sy = e.clientY;
   });
   raiz.addEventListener("pointermove", function (e) {
@@ -649,10 +756,13 @@ export function abrir(api, raiz) {
   raiz.addEventListener("click", function (e) {
     const b = e.target.closest ? e.target.closest("[data-sl]") : null; if (!b) return;
     if (b.dataset.sl === "salir") cerrar(); else if (b.dataset.sl === "jugar") empezar();
+    else if (b.dataset.sl === "vest") { pintaKits(); $("[data-vest]").hidden = false; } else if (b.dataset.sl === "vestcerrar") $("[data-vest]").hidden = true;
   });
+  raiz.addEventListener("click", function (e) { const b = e.target.closest ? e.target.closest("[data-kit]") : null; if (b) elegirKit(b.dataset.kit); });
   const onKey = (e) => {
     if (e.key === "Escape") { cerrar(); return; }
     const k = e.key.toLowerCase();
+    if (!$("[data-vest]").hidden) return;
     if (S.fase === "menu" || S.fase === "fin") { if ((k === " " || k === "enter") && !e.repeat) { e.preventDefault(); empezar(); } return; }
     if (k === "arrowleft" || k === "a") { e.preventDefault(); mover(-1); }
     else if (k === "arrowright" || k === "d") { e.preventDefault(); mover(1); }
@@ -673,8 +783,8 @@ export function abrir(api, raiz) {
   }
 
   if (E) { try { construye(); } catch (e) { E = null; $("[data-sin]").hidden = false; $("[data-menu]").hidden = true; } }
-  pintaRecord(); pintaVidas(); pintaHud();
+  pintaRecord(); pintaVidas(); pintaHud(); pintaSaldo();
   if (E) raf = requestAnimationFrame(function (n) { ultimo = n; bucle(n); });
   /* Solo para las pruebas automáticas */
-  return { ESC: ESC, vBase: vBase, NUEVOS: NUEVOS, aplicaEsc: aplicaEsc, mats: () => mundo.matMon, clima: () => clima, cerrar: cerrar, S: S, E: E, empezar: empezar, mover: mover, saltar: saltar, deslizar: deslizar, logica: logica, fila: fila, pon: pon, limpia: limpiaObs, LX: LX };
+  return { ESC: ESC, vBase: vBase, NUEVOS: NUEVOS, aplicaEsc: aplicaEsc, mats: () => mundo.matMon, clima: () => clima, cerrar: cerrar, S: S, E: E, empezar: empezar, mover: mover, saltar: saltar, deslizar: deslizar, logica: logica, fila: fila, pon: pon, limpia: limpiaObs, LX: LX, regalo: regalo, KIT_J: KIT_J, elegirKit: elegirKit, pintaKits: pintaKits };
 }

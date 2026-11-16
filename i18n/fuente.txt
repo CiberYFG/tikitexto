@@ -1988,3 +1988,24 @@ Nevada ||| Snowfall ||| Nevasca ||| Chute de neige ||| Nevicata ||| Schneefall
 ¡Dron de TV! Deslízate debajo ||| TV drone! Slide underneath ||| Drone de TV! Deslize por baixo ||| Drone de télé ! Glisse dessous ||| Drone della TV! Scivola sotto ||| TV-Drohne! Rutsch drunter durch
 ¡Vida recuperada! ||| Life recovered! ||| Vida recuperada! ||| Vie récupérée ! ||| Vita recuperata! ||| Leben zurückgewonnen!
 VER RESULTADO ||| SEE RESULT ||| VER RESULTADO ||| VOIR LE RÉSULTAT ||| VEDI IL RISULTATO ||| ERGEBNIS ANSEHEN
+Corredor de Tikitexto ||| Tikitexto Runner ||| Corredor do Tikitexto ||| Coureur de Tikitexto ||| Corridore di Tikitexto ||| Tikitexto-Läufer
+👕 Vestuario ||| 👕 Locker room ||| 👕 Vestiário ||| 👕 Vestiaire ||| 👕 Spogliatoio ||| 👕 Umkleide
+Gasta tus monedas en equipaciones nuevas. Las monedas se guardan entre partidas. ||| Spend your coins on new kits. Coins are kept between games. ||| Gaste suas moedas em novos uniformes. As moedas ficam guardadas entre partidas. ||| Dépense tes pièces en nouveaux maillots. Les pièces sont conservées entre les parties. ||| Spendi le tue monete in nuove divise. Le monete restano tra una partita e l'altra. ||| Gib deine Münzen für neue Trikots aus. Die Münzen bleiben zwischen den Spielen erhalten.
+Volver ||| Back ||| Voltar ||| Retour ||| Indietro ||| Zurück
+Equipada ||| Equipped ||| Equipada ||| Équipée ||| Equipaggiata ||| Angezogen
+Azul clásico ||| Classic blue ||| Azul clássico ||| Bleu classique ||| Blu classico ||| Klassisches Blau
+Rojo pasión ||| Passion red ||| Vermelho paixão ||| Rouge passion ||| Rosso passione ||| Leidenschaftsrot
+Verde esmeralda ||| Emerald green ||| Verde esmeralda ||| Vert émeraude ||| Verde smeraldo ||| Smaragdgrün
+Dorado de campeón ||| Champion gold ||| Dourado de campeão ||| Or de champion ||| Oro da campione ||| Meistergold
+Negro neón ||| Neon black ||| Preto neon ||| Noir néon ||| Nero neon ||| Neonschwarz
+Rosa eléctrico ||| Electric pink ||| Rosa elétrico ||| Rose électrique ||| Rosa elettrico ||| Elektro-Pink
+¡Equipación comprada! ||| Kit bought! ||| Uniforme comprado! ||| Maillot acheté ! ||| Divisa acquistata! ||| Trikot gekauft!
+P ||| ^Te faltan (\d+) monedas$ ||| You need $1 more coins ||| Faltam $1 moedas ||| Il te manque $1 pièces ||| Mancano $1 monete ||| Dir fehlen $1 Münzen
+¡Carrito de balones! Sáltalo ||| Ball trolley! Jump it ||| Carrinho de bolas! Salte-o ||| Chariot de ballons ! Saute-le ||| Carrello di palloni! Saltalo ||| Ballwagen! Spring drüber
+¡Mascota saltarina! Esquívala ||| Jumping mascot! Dodge it ||| Mascote saltitante! Desvie ||| Mascotte sauteuse ! Esquive-la ||| Mascotte saltellante! Schivala ||| Hüpfendes Maskottchen! Weich aus
+¡Pelotazo! Salta o esquiva ||| Cannonball! Jump or dodge ||| Bolada! Salte ou desvie ||| Boulet ! Saute ou esquive ||| Pallonata! Salta o schiva ||| Kracher! Spring oder weich aus
+🎁 ¡Caja sorpresa delante! ||| 🎁 Surprise box ahead! ||| 🎁 Caixa surpresa à frente! ||| 🎁 Boîte surprise devant ! ||| 🎁 Scatola a sorpresa davanti! ||| 🎁 Überraschungsbox voraus!
+🎁 ¡Caja sorpresa! +1 tikitexto ||| 🎁 Surprise box! +1 tikitexto ||| 🎁 Caixa surpresa! +1 tikitexto ||| 🎁 Boîte surprise ! +1 tikitexto ||| 🎁 Scatola a sorpresa! +1 tikitexto ||| 🎁 Überraschungsbox! +1 Tikitexto
+P ||| ^🎁 ¡Caja sorpresa! \+(\d+) tikitextos$ ||| 🎁 Surprise box! +$1 tikitextos ||| 🎁 Caixa surpresa! +$1 tikitextos ||| 🎁 Boîte surprise ! +$1 tikitextos ||| 🎁 Scatola a sorpresa! +$1 tikitextos ||| 🎁 Überraschungsbox! +$1 Tikitextos
+P ||| ^⚡ \+(\d+) tikitextos$ ||| ⚡ +$1 tikitextos ||| ⚡ +$1 tikitextos ||| ⚡ +$1 tikitextos ||| ⚡ +$1 tikitextos ||| ⚡ +$1 Tikitextos
+Corredor de Tikitexto en 3D: esquiva defensas y obstáculos que se mueven, gasta las monedas en equipaciones y busca la caja sorpresa con tikitextos de regalo. ||| Tikitexto Runner in 3D: dodge defenders and moving obstacles, spend your coins on kits and look for the surprise box with free tikitextos. ||| Corredor do Tikitexto em 3D: desvie de defensores e obstáculos em movimento, gaste as moedas em uniformes e procure a caixa surpresa com tikitextos de presente. ||| Coureur de Tikitexto en 3D : esquive défenseurs et obstacles mobiles, dépense tes pièces en maillots et cherche la boîte surprise avec des tikitextos offerts. ||| Corridore di Tikitexto in 3D: schiva difensori e ostacoli mobili, spendi le monete in divise e cerca la scatola a sorpresa con tikitextos in regalo. ||| Tikitexto-Läufer in 3D: Weiche Verteidigern und beweglichen Hindernissen aus, gib Münzen für Trikots aus und suche die Überraschungsbox mit geschenkten Tikitextos.
