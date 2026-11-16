@@ -1329,6 +1329,20 @@ try:
 except Exception as _ex:
     check("comparador: prueba de navegador", False, str(_ex)[:200])
 
+# 3al) duelos estáticos del comparador (es/en): páginas, hreflang, FAQ, sitemap y enlaces
+import re as _re3al
+_sm3 = open(_os.path.join(_raiz, "sitemap.xml"), encoding="utf-8").read()
+_n3 = 0; _mal3 = []
+for _r in ("comparador/", "en/football-comparator/"):
+    _dd = _os.path.join(_raiz, _r)
+    for _s in sorted(_os.listdir(_dd)):
+        if "-vs-" not in _s: continue
+        _n3 += 1; _h = open(_os.path.join(_dd, _s, "index.html"), encoding="utf-8").read()
+        _wc = len(_re3al.sub(r"<[^>]+>", " ", _h).split())
+        if _wc < 250 or "FAQPage" not in _h or "<table>" not in _h or 'hreflang="x-default"' not in _h or ("https://tikitexto.com/" + _r + _s + "/") not in _sm3:
+            _mal3.append(_r + _s)
+check("duelos del comparador: >=120 páginas con tabla, FAQ, hreflang y sitemap", _n3 >= 120 and not _mal3, str(_mal3[:3]) + " n=" + str(_n3))
+
 print(f"\n{len(ok)} correctas, {len(fallos)} con fallo")
 if fallos:
     print("FALLOS:\n - " + "\n - ".join(fallos))

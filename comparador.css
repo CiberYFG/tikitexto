@@ -148,3 +148,6 @@ main.cp { position: relative; z-index: 3; width: min(1120px, 100%); margin: 0 au
   *, *::before, *::after { animation: none !important; transition-duration: .01s !important; }
   .cp-fila { opacity: 1; transform: none; }
 }
+.cp-texto td.cp-w { color: var(--cy); font-weight: 800; text-shadow: 0 0 10px rgba(25,230,255,.55); }
+a.cp-btn { display: inline-block; text-decoration: none; }
+.cp-texto ul { line-height: 1.6; }

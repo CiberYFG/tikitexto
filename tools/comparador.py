@@ -50,7 +50,9 @@ def tablas(lg, d):
             f = lambda v: "—" if v is None else str(v)
             h += f'<tr><td>{e(s["es"] if k == 0 else s["en"])}</td><td>{f(va)}</td><td>{f(vb)}</td></tr>\n'
         h += "</tbody></table>\n"
-        h += "<p>" + e(" · ".join(f"{nom(items[x])} vs {nom(items[y])}" for x, y in bloque["duelos"])) + "</p>\n"
+        import comparador_duelos as DU
+        base = RUTAS[lg]
+        h += "<p>" + " · ".join(f'<a href="/{base}{x}-vs-{y}/">{e(nom(items[x]))} vs {e(nom(items[y]))}</a>' for mm, x, y in DU.pares(d) if mm == m) + "</p>\n"
     return h
 
 def pagina(lg, d):
