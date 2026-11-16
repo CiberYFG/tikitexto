@@ -348,6 +348,11 @@ for _pg in _ch.PAGINAS:
     _u = (DOM + "curiosidades/" + _pg["es"] + "/", DOM + "en/curiosidades/" + _pg["en"] + "/")
     _alts = '<xhtml:link rel="alternate" hreflang="es" href="%s"/><xhtml:link rel="alternate" hreflang="en" href="%s"/><xhtml:link rel="alternate" hreflang="x-default" href="%s"/>' % (_u[0], _u[1], _u[0])
     for _x in _u: sm.append("  <url><loc>%s</loc>%s</url>" % (_x, _alts))
+import curiosidades_estadisticas as _ce
+for _pg in _ce.PAGINAS:
+    _u = (DOM + "curiosidades/" + _pg["es"] + "/", DOM + "en/curiosidades/" + _pg["en"] + "/")
+    _alts = '<xhtml:link rel="alternate" hreflang="es" href="%s"/><xhtml:link rel="alternate" hreflang="en" href="%s"/><xhtml:link rel="alternate" hreflang="x-default" href="%s"/>' % (_u[0], _u[1], _u[0])
+    for _x in _u: sm.append("  <url><loc>%s</loc>%s</url>" % (_x, _alts))
 _ah_alts = '<xhtml:link rel="alternate" hreflang="es" href="%sahorcado-futbolistas/"/><xhtml:link rel="alternate" hreflang="en" href="%sen/football-hangman/"/><xhtml:link rel="alternate" hreflang="x-default" href="%sahorcado-futbolistas/"/>' % (DOM, DOM, DOM)
 for _x in (DOM + "ahorcado-futbolistas/", DOM + "en/football-hangman/"): sm.append("  <url><loc>%s</loc>%s</url>" % (_x, _ah_alts))
 

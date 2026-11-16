@@ -1262,6 +1262,15 @@ for _g in _cl:
 check("clases: 18 páginas es con +450 palabras, FAQ, hreflang y sitemap", len(_cl) == 18 and not _mal, "; ".join(_mal[:4]))
 check("clases: 18 páginas en inglés y hubs en el sitemap", len(_os.listdir(_os.path.join(_raiz, "en", "classes"))) == 19 and "https://tikitexto.com/en/classes/</loc>" in _smx and "https://tikitexto.com/clases/</loc>" in _smx)
 
+# 3aj) estudios estadísticos propios (es/en) con tabla filtrable
+for _r in ("curiosidades/estadisticas-finales-champions/", "curiosidades/estadisticas-mundiales/", "en/curiosidades/champions-league-finals-statistics/", "en/curiosidades/world-cup-statistics/"):
+    _fp = _os.path.join(_raiz, _r, "index.html"); _hh = open(_fp, encoding="utf-8").read() if _os.path.exists(_fp) else ""
+    _pal = len(re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[\s\S]*?</\1>", "", _hh)).split())
+    check("estadísticas %s: +500 palabras, gráficos SVG, tabla filtrable, FAQ, hreflang y sitemap" % _r, _pal > 500 and _hh.count("<svg") >= 2 and "data-filtro" in _hh and "/tabla_filtro.js" in _hh and "FAQPage" in _hh and 'hreflang="en"' in _hh and "/" + _r in open(_os.path.join(_raiz, "sitemap.xml"), encoding="utf-8").read(), str(_pal))
+_hh = open(_os.path.join(_raiz, "curiosidades/estadisticas-finales-champions/index.html"), encoding="utf-8").read()
+check("estadísticas Champions: Real Madrid 6 de 20 y 4 finales en penaltis (cálculo propio)", "ganó 6 de las 20" in _hh and "4 finales</b> se decidieron en los penaltis" in _hh)
+check("tabla_filtro.js existe y no carga recursos externos", "http" not in open(_os.path.join(_raiz, "tabla_filtro.js"), encoding="utf-8").read())
+
 print(f"\n{len(ok)} correctas, {len(fallos)} con fallo")
 if fallos:
     print("FALLOS:\n - " + "\n - ".join(fallos))
