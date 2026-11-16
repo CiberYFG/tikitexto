@@ -96,8 +96,9 @@ def alternates(extra=""):
     out.append('<link rel="alternate" hreflang="x-default" href="%s">' % DOM)
     return "\n".join(out)
 
-def pagina(lang, ruta, titulo, desc, h1, lead, modo_cta, bloques, faq, hreflang_html, profundidad, migas=None, nota_idioma=True):
+def pagina(lang, ruta, titulo, desc, h1, lead, modo_cta, bloques, faq, hreflang_html, profundidad, migas=None, nota_idioma=True, pasos=None, como=None):
     u = UI[lang]
+    if pasos is not None: u = dict(u, pasos=pasos, como=como or u["como"])
     base = "../" * profundidad
     canon = DOM + ruta
     cta = '%s?lang=%s%s' % (base, lang, ("&modo=" + modo_cta) if modo_cta else "")
@@ -154,7 +155,7 @@ def pagina(lang, ruta, titulo, desc, h1, lead, modo_cta, bloques, faq, hreflang_
 %(faq)s
 </main>
 <footer>
-<p><a href="%(curhref)s">%(curlabel)s</a><a href="%(base)saviso-legal.html">%(legal)s</a><a href="%(base)sprivacidad.html">%(priv)s</a><a href="%(base)scookies.html">%(cook)s</a><a href="%(base)saccesibilidad.html">%(acc)s</a></p>
+<p><a href="%(curhref)s">%(curlabel)s</a><a href="%(guiahref)s">%(guialabel)s</a><a href="%(base)saviso-legal.html">%(legal)s</a><a href="%(base)sprivacidad.html">%(priv)s</a><a href="%(base)scookies.html">%(cook)s</a><a href="%(base)saccesibilidad.html">%(acc)s</a></p>
 <p>%(nota)s</p>
 </footer>
 </body>
@@ -162,7 +163,7 @@ def pagina(lang, ruta, titulo, desc, h1, lead, modo_cta, bloques, faq, hreflang_
 """ % dict(lang=HREFLANG[lang] if lang != "es" else "es", titulo=esc(titulo), desc=esc(desc), canon=canon, alts=hreflang_html, loc=HREFLANG[lang].replace("-", "_") if lang != "es" else "es_ES",
            base=base, ld=ldj, css=CSS, sel=selector, h1=esc(h1), lead=esc(lead), cta=cta, jugar=esc(u["jugar"]), como=esc(u["como"]),
            pasos="".join("<li>%s</li>" % esc(p) for p in u["pasos"]), bloques=bloques, faqt=esc(u["faq"]), faq=faq_html,
-           curhref=base + ("" if lang == "es" else lang + "/") + "curiosidades/", curlabel=esc(CUR_LABEL[lang]), legal=esc(u["legal"]), priv=esc(u["priv"]), cook=esc(u["cook"]), acc=esc(u["acc"]), nota=esc(u["nota"]))
+           guiahref=base + ("juegos/" if lang == "es" else "en/games/"), guialabel=("Guías de los juegos" if lang == "es" else "Game guides"), curhref=base + ("" if lang == "es" else lang + "/") + "curiosidades/", curlabel=esc(CUR_LABEL[lang]), legal=esc(u["legal"]), priv=esc(u["priv"]), cook=esc(u["cook"]), acc=esc(u["acc"]), nota=esc(u["nota"]))
 
 def escribir(ruta, contenido):
     destino = os.path.join(RAIZ, ruta, "index.html")
@@ -226,6 +227,31 @@ for _l, _a in AHORCADO.items():
     _migas = [("TIKITEXTO", DOM + ("" if _l == "es" else "en/")), (_a["h1"], DOM + _ruta)]
     escribir(_ruta, pagina(_l, _ruta, _a["titulo"], _a["desc"], _a["h1"], _a["lead"], "ahorcado", _bl, _faq, _AH_ALTS, 1 if _l == "es" else 2, _migas))
 
+
+# ---- guías de los juegos nuevos (es/en) + hub ----
+import juegos_data as _jd
+_JT = {"es": ("Cómo se juega", "Reglas y puntuación", "Consejos para jugar mejor", "Más juegos", "Todas las guías de juegos", "Guías de los juegos de TIKITEXTO", "Guías de juegos de fútbol: cómo se juega, reglas y consejos | TIKITEXTO", "Aprende cómo se juega cada juego de TIKITEXTO: letras, 3D y retos de fútbol, con sus reglas, la puntuación, los consejos y las preguntas frecuentes.", "Cada juego de TIKITEXTO tiene su propia guía con las reglas, la puntuación, los trucos y las recompensas. Léelas antes de jugar o cuando te quedes atascado: todas se basan en cómo funciona el juego de verdad."),
+       "en": ("How to play", "Rules and scoring", "Tips to play better", "More games", "All game guides", "TIKITEXTO game guides", "Football game guides: how to play, rules and tips | TIKITEXTO", "Learn how each TIKITEXTO game works: word games, 3D games and football challenges, with rules, scoring, tips and frequently asked questions.", "Every TIKITEXTO game has its own guide with the rules, scoring, tricks and rewards. Read them before playing or when you get stuck: they all describe how each game really works.")}
+_JSL = {"es": ("juegos/", lambda g: "juegos/" + g["es"] + "/"), "en": ("en/games/", lambda g: "en/games/" + g["en"] + "/")}
+def _alts_juego(g):
+    return ('<link rel="alternate" hreflang="es" href="%sjuegos/%s/">\n<link rel="alternate" hreflang="en" href="%sen/games/%s/">\n<link rel="alternate" hreflang="x-default" href="%sjuegos/%s/">' % (DOM, g["es"], DOM, g["en"], DOM, g["es"]))
+for _l in ("es", "en"):
+    _t = _JT[_l]
+    for g in _jd.J:
+        _ul = lambda xs: "<ul>" + "".join("<li>%s</li>" % esc(x) for x in xs) + "</ul>"
+        _otros = "".join('<li><a href="../%s/">%s</a></li>' % (o[_l], esc(o[_l + "_h1"])) for o in _jd.J if o is not g)
+        _bl = "<h2>%s</h2>%s<h2>%s</h2>%s<h2>%s</h2><ul class=\"g\">%s<li><a href=\"../\">%s</a></li></ul>" % (_t[1], _ul(g[_l + "_reglas"]), _t[2], _ul(g[_l + "_cons"]), _t[3], _otros, _t[4])
+        _ruta = _JSL[_l][1](g)
+        _migas = [("TIKITEXTO", DOM + ("" if _l == "es" else "en/")), (_t[5], DOM + _JSL[_l][0]), (g[_l + "_h1"], DOM + _ruta)]
+        escribir(_ruta, pagina(_l, _ruta, g[_l + "_t"], g[_l + "_d"], g[_l + "_h1"], g[_l + "_lead"], g["modo"], _bl, g[_l + "_qa"], _alts_juego(g), 2 if _l == "es" else 3, _migas, pasos=g[_l + "_pasos"], como=_t[0]))
+    _items = "".join('<li><a href="%s/">%s</a></li>' % (g[_l], esc(g[_l + "_h1"])) for g in _jd.J)
+    _hub_bl = '<h2>%s</h2><ul class="g">%s</ul>' % (_t[5], _items)
+    _hub_alts = '<link rel="alternate" hreflang="es" href="%sjuegos/">\n<link rel="alternate" hreflang="en" href="%sen/games/">\n<link rel="alternate" hreflang="x-default" href="%sjuegos/">' % (DOM, DOM, DOM)
+    _hub_faq = [("¿Hace falta registrarse?" if _l == "es" else "Do I need to sign up?", "No: todos los juegos se pueden jugar como invitado y con cuenta guardas tu progreso." if _l == "es" else "No: every game can be played as a guest and with an account your progress is saved."),
+                ("¿Qué son los tikitextos?" if _l == "es" else "What are tikitextos?", "Son los puntos de TIKITEXTO: se ganan acertando o ganando partidas y cuentan para el ranking mundial." if _l == "es" else "They are TIKITEXTO points: you earn them by guessing or winning games and they count for the worldwide ranking.")]
+    _hub_ruta = _JSL[_l][0]
+    escribir(_hub_ruta, pagina(_l, _hub_ruta, _t[6], _t[7], _t[5], _t[8], None, _hub_bl, _hub_faq, _hub_alts, 1 if _l == "es" else 2, [("TIKITEXTO", DOM + ("" if _l == "es" else "en/")), (_t[5], DOM + _hub_ruta)], pasos=[(("Elige el juego que te interese en la lista." if _l == "es" else "Pick the game you like from the list.")), (("Lee las reglas, la puntuación y los consejos." if _l == "es" else "Read the rules, scoring and tips.")), (("Pulsa «Jugar» para empezar la partida." if _l == "es" else "Press “Play” to start the game."))], como=("Cómo usar las guías" if _l == "es" else "How to use the guides")))
+
 for lang, lista in (("en", MODOS_EN), ("de", MODOS_DE)):
     for m in lista:
         otros_t, todos_t = LABELS_ED[lang]
@@ -281,6 +307,11 @@ for _pg in _ch.PAGINAS:
     for _x in _u: sm.append("  <url><loc>%s</loc>%s</url>" % (_x, _alts))
 _ah_alts = '<xhtml:link rel="alternate" hreflang="es" href="%sahorcado-futbolistas/"/><xhtml:link rel="alternate" hreflang="en" href="%sen/football-hangman/"/><xhtml:link rel="alternate" hreflang="x-default" href="%sahorcado-futbolistas/"/>' % (DOM, DOM, DOM)
 for _x in (DOM + "ahorcado-futbolistas/", DOM + "en/football-hangman/"): sm.append("  <url><loc>%s</loc>%s</url>" % (_x, _ah_alts))
+
+for _x in (DOM + "juegos/", DOM + "en/games/"): sm.append("  <url><loc>%s</loc>%s</url>" % (_x, '<xhtml:link rel="alternate" hreflang="es" href="%sjuegos/"/><xhtml:link rel="alternate" hreflang="en" href="%sen/games/"/><xhtml:link rel="alternate" hreflang="x-default" href="%sjuegos/"/>' % (DOM, DOM, DOM)))
+for _g in _jd.J:
+    _a = '<xhtml:link rel="alternate" hreflang="es" href="%sjuegos/%s/"/><xhtml:link rel="alternate" hreflang="en" href="%sen/games/%s/"/><xhtml:link rel="alternate" hreflang="x-default" href="%sjuegos/%s/"/>' % (DOM, _g["es"], DOM, _g["en"], DOM, _g["es"])
+    for _x in (DOM + "juegos/" + _g["es"] + "/", DOM + "en/games/" + _g["en"] + "/"): sm.append("  <url><loc>%s</loc>%s</url>" % (_x, _a))
 for p in ("privacidad.html", "aviso-legal.html", "cookies.html", "accesibilidad.html", "contacto.html", "sobre-tikitexto.html"):
     sm.append("  <url><loc>%s%s</loc></url>" % (DOM, p))
 sm.append("</urlset>")

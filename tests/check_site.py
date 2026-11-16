@@ -1233,6 +1233,22 @@ for _g in ("adivina-el-jugador", "adivina-el-equipo", "adivina-la-seleccion", "a
     _hh = open(_os.path.join(_raiz, _g, "index.html"), encoding="utf-8").read()
     check("página de juego %s: lleva consejos y lecturas" % _g, "Consejos para jugar mejor" in _hh and "Para leer mientras tanto" in _hh)
 
+# 3ah) guías de los juegos (es/en), hub, autoría en artículos
+import sys as _s2; _s2.path.insert(0, _os.path.join(_raiz, "tools"))
+import juegos_data as _jd
+for _g in _jd.J:
+    for _l, _r in (("es", "juegos/%s/" % _g["es"]), ("en", "en/games/%s/" % _g["en"])):
+        _fp = _os.path.join(_raiz, _r, "index.html")
+        _hh = open(_fp, encoding="utf-8").read() if _os.path.exists(_fp) else ""
+        _pal = len(re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[\s\S]*?</\1>", "", _hh)).split())
+        check("guía %s (%s): +450 palabras, FAQ, hreflang y enlace al juego" % (_g["modo"], _l), _pal > 450 and "FAQPage" in _hh and 'hreflang="en"' in _hh and ("modo=" + _g["modo"]) in _hh, str(_pal))
+        check("guía %s (%s) está en el sitemap" % (_g["modo"], _l), "/" + _r in open(_os.path.join(_raiz, "sitemap.xml"), encoding="utf-8").read())
+for _r in ("juegos/", "en/games/"):
+    _hh = open(_os.path.join(_raiz, _r, "index.html"), encoding="utf-8").read()
+    check("hub %s enlaza a las 10 guías" % _r, _hh.count('href="') > 10 and all(((_g["es"] if _r == "juegos/" else _g["en"]) + "/") in _hh for _g in _jd.J))
+_hh = open(_os.path.join(_raiz, "articulos", "reglas-basicas-del-futbol-para-principiantes", "index.html"), encoding="utf-8").read()
+check("artículos: llevan autoría editorial y enlace a «cómo elaboramos el contenido»", "equipo editorial de TIKITEXTO" in _hh and "sobre-tikitexto.html#editorial" in _hh and '"author"' in _hh)
+
 print(f"\n{len(ok)} correctas, {len(fallos)} con fallo")
 if fallos:
     print("FALLOS:\n - " + "\n - ".join(fallos))
