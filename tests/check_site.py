@@ -1167,6 +1167,7 @@ with sync_playwright() as p:
         pb2.click("[data-menu] [data-cu=diario]"); pb2.wait_for_timeout(300)
         check("cuartetos: reto diario con número", "#" in pb2.inner_text("[data-modo-txt]"))
         pb2.evaluate("(()=>{const j=TIKI.cuartetos.juego(); for(let i=0;i<4;i++) j.resolverGrupo();})()"); pb2.wait_for_timeout(2200)
+        pb2.evaluate("document.querySelector('[data-cu=ver]').click()"); pb2.wait_for_timeout(300)
         pb2.click("[data-fin] [data-cu=menu]"); pb2.wait_for_timeout(200)
         check("cuartetos: el diario resuelto no se repite (muestra el resultado)", "resultado" in pb2.inner_text("[data-diario-txt]").lower() or "result" in pb2.inner_text("[data-diario-txt]").lower())
         pb2.click("[data-menu] [data-cu=salir]"); pb2.wait_for_timeout(300)
