@@ -1978,3 +1978,13 @@ Pendiente ||| Pending ||| Pendente ||| En attente ||| In sospeso ||| Offen
 P ||| ^Tu respuesta: (.+)$ ||| Your answer: $1 ||| Sua resposta: $1 ||| Ta réponse : $1 ||| La tua risposta: $1 ||| Deine Antwort: $1
 Guías de los juegos ||| Game guides ||| Guias dos jogos ||| Guides des jeux ||| Guide ai giochi ||| Spielanleitungen
 Clases de fútbol ||| Football lessons ||| Aulas de futebol ||| Leçons de football ||| Lezioni di calcio ||| Fußball-Lektionen
+Estadio de día ||| Stadium by day ||| Estádio de dia ||| Stade de jour ||| Stadio di giorno ||| Stadion bei Tag
+Noche de focos ||| Floodlit night ||| Noite de refletores ||| Nuit sous les projecteurs ||| Notte sotto i riflettori ||| Flutlichtnacht
+Nevada ||| Snowfall ||| Nevasca ||| Chute de neige ||| Nevicata ||| Schneefall
+¡Final de Copa! ||| Cup final! ||| Final da Copa! ||| Finale de coupe ! ||| Finale di coppa! ||| Pokalfinale!
+¡Balón gigante! Sáltalo ||| Giant ball! Jump it ||| Bola gigante! Salte ||| Ballon géant ! Saute ||| Pallone gigante! Saltalo ||| Riesenball! Spring drüber
+¡Balones botando! Cuidado con el bote ||| Bouncing balls! Watch the bounce ||| Bolas quicando! Cuidado com o quique ||| Ballons rebondissants ! Attention au rebond ||| Palloni che rimbalzano! Attento al rimbalzo ||| Hüpfende Bälle! Achte auf den Aufprall
+¡Extremo en zigzag! Esquívalo ||| Zigzagging winger! Dodge him ||| Ponta em ziguezague! Desvie ||| Ailier en zigzag ! Esquive-le ||| Ala a zigzag! Schivalo ||| Flügelspieler im Zickzack! Weich aus
+¡Dron de TV! Deslízate debajo ||| TV drone! Slide underneath ||| Drone de TV! Deslize por baixo ||| Drone de télé ! Glisse dessous ||| Drone della TV! Scivola sotto ||| TV-Drohne! Rutsch drunter durch
+¡Vida recuperada! ||| Life recovered! ||| Vida recuperada! ||| Vie récupérée ! ||| Vita recuperata! ||| Leben zurückgewonnen!
+VER RESULTADO ||| SEE RESULT ||| VER RESULTADO ||| VOIR LE RÉSULTAT ||| VEDI IL RISULTATO ||| ERGEBNIS ANSEHEN

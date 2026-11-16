@@ -15,11 +15,21 @@ const irnd = (n) => Math.floor(Math.random() * n);
 
 const LX = [-2.4, 0, 2.4], Z_SPAWN = -112, Z_FIN = 9, G = 22.5, SALTO = 8.1, DUR_DESL = 0.75, VIDAS = 2, META_TIKI = 500;
 const KITS = [[0xd62839, 0xffffff], [0xff8a00, 0x1a1a1a], [0x7b2cbf, 0xf2f4f8], [0x111111, 0xffd23a], [0x0a7d4f, 0xffffff]];
-const TEMAS = [
-  { cielo: 0x8fcbff, niebla: 0xbfe1ff, hemi: 1.05, sol: 2.7, solC: 0xfff1d6, exp: 1.05 },
-  { cielo: 0xff9a6b, niebla: 0xf3b48a, hemi: 0.85, sol: 2.0, solC: 0xffb36b, exp: 1.08 },
-  { cielo: 0x0a1430, niebla: 0x101c3c, hemi: 0.55, sol: 0.9, solC: 0x9db8ff, exp: 1.18 },
+/* Escenarios: cada TRAMO metros cambia el fondo (cielo, luz, césped, gradas, clima). Después del último se repite el ciclo. */
+const TRAMO = 600;
+const ESC = [
+  { nombre: "Estadio de día", cielo: 0x8fcbff, niebla: 0xbfe1ff, hemi: 1.05, sol: 2.7, solC: 0xfff1d6, exp: 1.05, cesped: 0xffffff, grada: 0xffffff, valla: 0xffffff, nieve: 0, clima: "", noche: 0, fn: 38, ff: 125 },
+  { nombre: "Atardecer", cielo: 0xff9a6b, niebla: 0xf3b48a, hemi: 0.85, sol: 2.0, solC: 0xffb36b, exp: 1.08, cesped: 0xffe2c4, grada: 0xffd2b0, valla: 0xffe6cf, nieve: 0, clima: "", noche: 0.3, fn: 38, ff: 125 },
+  { nombre: "Noche de focos", cielo: 0x0a1430, niebla: 0x101c3c, hemi: 0.55, sol: 0.9, solC: 0x9db8ff, exp: 1.18, cesped: 0xa9bde8, grada: 0xaab8e0, valla: 0xffffff, nieve: 0, clima: "", noche: 1, fn: 38, ff: 125 },
+  { nombre: "Tormenta", cielo: 0x55667a, niebla: 0x66798c, hemi: 0.7, sol: 0.9, solC: 0xbcd0e6, exp: 1.1, cesped: 0x9ab89a, grada: 0x8fa0b8, valla: 0xc8d4e4, nieve: 0, clima: "lluvia", noche: 0.5, fn: 30, ff: 95 },
+  { nombre: "Nevada", cielo: 0xcfd9e6, niebla: 0xdfe6f0, hemi: 1.0, sol: 1.5, solC: 0xf2f6ff, exp: 1.0, cesped: 0xd8e8ff, grada: 0xdfe6ff, valla: 0xeef3ff, nieve: 0.85, clima: "nieve", noche: 0.15, fn: 30, ff: 105 },
+  { nombre: "¡Final de Copa!", cielo: 0x3a1d6e, niebla: 0x4b2a86, hemi: 0.8, sol: 1.6, solC: 0xffd27a, exp: 1.12, cesped: 0xd8ffd0, grada: 0xe8c8ff, valla: 0xffe9a8, nieve: 0, clima: "confeti", noche: 0.9, fn: 38, ff: 125 },
 ];
+/* velocidad según la distancia: crece siempre pero cada vez más despacio (máx. ≈33 m/s) */
+const vBase = (d) => Math.min(33, 11 + 11 * (1 - Math.exp(-d / 800)) + 11 * (1 - Math.exp(-d / 4500)));
+/* obstáculos que se mueven: se van desbloqueando por distancia */
+const NUEVOS = [[450, "¡Balón gigante! Sáltalo"], [1050, "¡Balones botando! Cuidado con el bote"], [1750, "¡Extremo en zigzag! Esquívalo"], [2500, "¡Dron de TV! Deslízate debajo"]];
+
 
 const PLANTILLA = `
 <canvas class="sl-cv"></canvas><div class="sl-vineta"></div><div class="sl-flash" data-flash></div>
@@ -123,6 +133,24 @@ function texCartel() {
   x.strokeText("⬇ ¡GOOOL! ⬇", 256, 66); x.fillText("⬇ ¡GOOOL! ⬇", 256, 66);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
 }
+/* cara de la moneda: el logo de TIKITEXTO (icons/icon-512.png) dentro de un disco dorado; mientras carga se ve una «T» */
+function texMoneda() {
+  const c = lienzo(256, 256), x = c.getContext("2d");
+  const pinta = (img) => {
+    x.clearRect(0, 0, 256, 256);
+    const g = x.createRadialGradient(128, 128, 10, 128, 128, 128); g.addColorStop(0, "#fff3b0"); g.addColorStop(0.7, "#f5b800"); g.addColorStop(1, "#b87400");
+    x.fillStyle = g; x.beginPath(); x.arc(128, 128, 128, 0, 6.3); x.fill();
+    x.save(); x.beginPath(); x.arc(128, 128, 106, 0, 6.3); x.clip();
+    if (img) x.drawImage(img, 44, 44, 168, 168);
+    else { x.fillStyle = "#1fa971"; x.fillRect(0, 0, 256, 256); x.fillStyle = "#ffc400"; x.font = "900 150px Arial, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText("T", 128, 138); }
+    x.restore();
+    x.lineWidth = 12; x.strokeStyle = "#ffe27a"; x.beginPath(); x.arc(128, 128, 110, 0, 6.3); x.stroke();
+  };
+  pinta(null);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+  try { const im = new Image(); im.onload = () => { pinta(im); t.needsUpdate = true; }; im.src = new URL("./icons/icon-512.png", import.meta.url).href; } catch (e) { /* se queda la «T» */ }
+  return t;
+}
 function texBrillo(col) {
   const c = lienzo(64, 64), x = c.getContext("2d"), g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
   g.addColorStop(0, "rgba(255,255,255,1)"); g.addColorStop(0.25, col); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(0, 0, 64, 64);
@@ -191,15 +219,15 @@ export function abrir(api, raiz) {
   } catch (e) { E = null; }
   if (!E) { $("[data-sin]").hidden = false; $("[data-menu]").hidden = true; }
 
-  const S = { fase: "menu", t: 0, dist: 0, v: 0, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, obs: [], sig: 0, filas: 0, tiki: false, bonus: 0, shake: 0, activo: true, choque: 0, hito: 0, tema: 0, ciclo: 0, cola: [] };
+  const S = { fase: "menu", t: 0, dist: 0, v: 0, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, obs: [], sig: 0, filas: 0, tiki: false, bonus: 0, shake: 0, activo: true, choque: 0, hito: 0, tema: 0, ciclo: 0, cola: [], vidaHito: 0, nuevo: 0 };
   let raf = 0, ultimo = 0, vivo = true, escala = 1, fpsAcum = 0, fpsN = 0, hAviso = 0, hFlash = 0;
-  let camara, scene, sol, hemi, luces = [], mundo = {}, jug = null, piscina = [], libres = { def: [], valla: [], cono: [], cartel: [], moneda: [], bota: [] }, chispas, polvo, lineas = [];
+  let camara, scene, sol, hemi, luces = [], mundo = {}, jug = null, piscina = [], libres = { def: [], valla: [], cono: [], cartel: [], moneda: [], bota: [], rodante: [], botando: [], dron: [] }, clima = null, chispas, polvo, lineas = [];
 
   function construye() {
     const R = E.renderer, aniso = Math.min(R.capabilities.getMaxAnisotropy(), 8);
     R.setPixelRatio(Math.min(window.devicePixelRatio || 1, movil ? 1.5 : 2));
     R.shadowMap.enabled = true; R.shadowMap.type = THREE.PCFSoftShadowMap; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = 1.05; R.outputColorSpace = THREE.SRGBColorSpace;
-    scene = new THREE.Scene(); scene.background = new THREE.Color(TEMAS[0].cielo); scene.fog = new THREE.Fog(TEMAS[0].niebla, 38, 125);
+    scene = new THREE.Scene(); scene.background = new THREE.Color(ESC[0].cielo); scene.fog = new THREE.Fog(ESC[0].niebla, 38, 125);
     camara = new THREE.PerspectiveCamera(58, 16 / 9, 0.1, 300); scene.add(camara);
     hemi = new THREE.HemisphereLight(0xcfe3ff, 0x2a5a2a, 1.0); scene.add(hemi);
     sol = new THREE.DirectionalLight(0xfff1d6, 2.6); sol.position.set(8, 22, 12); sol.target.position.set(0, 0, -6); scene.add(sol, sol.target);
@@ -208,8 +236,11 @@ export function abrir(api, raiz) {
 
     /* suelo: césped con franjas + carriles */
     const tC = texCesped(aniso), tL = texCarril(aniso);
-    const cesped = new THREE.Mesh(new THREE.PlaneGeometry(144, 240), new THREE.MeshStandardMaterial({ map: tC, roughness: 0.95 }));
+    mundo.matCesped = new THREE.MeshStandardMaterial({ map: tC, roughness: 0.95 });
+    const cesped = new THREE.Mesh(new THREE.PlaneGeometry(144, 240), mundo.matCesped);
     cesped.rotation.x = -Math.PI / 2; cesped.position.set(0, 0, -95); cesped.receiveShadow = true; scene.add(cesped);
+    mundo.nieve = new THREE.Mesh(new THREE.PlaneGeometry(144, 240), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1, transparent: true, opacity: 0, depthWrite: false }));
+    mundo.nieve.rotation.x = -Math.PI / 2; mundo.nieve.position.set(0, 0.006, -95); mundo.nieve.visible = false; scene.add(mundo.nieve);
     const carril = new THREE.Mesh(new THREE.PlaneGeometry(7.8, 240), new THREE.MeshBasicMaterial({ map: tL, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 }));
     carril.rotation.x = -Math.PI / 2; carril.position.set(0, 0.012, -95); scene.add(carril);
     mundo.tC = tC; mundo.tL = tL;
@@ -219,10 +250,11 @@ export function abrir(api, raiz) {
     [-1, 1].forEach(function (s) {
       const tG = tG0.clone(), tV = tV0.clone(); tG.needsUpdate = true; tV.needsUpdate = true;
       mundo.scroll.push({ t: tG, k: -s / 10.9 }, { t: tV, k: -s / 17.1 });
-      const matG = new THREE.MeshBasicMaterial({ map: tG });
+      const matG = new THREE.MeshBasicMaterial({ map: tG }); (mundo.matsG = mundo.matsG || []).push(matG);
       const piv = new THREE.Group(); piv.position.set(s * 12, 0, -95); piv.rotation.z = -s * 0.5; scene.add(piv);
       const g = new THREE.Mesh(new THREE.PlaneGeometry(240, 15), matG); g.rotation.y = -s * Math.PI / 2; g.position.set(0, 7.5, 0); piv.add(g);
-      const valla = new THREE.Mesh(new THREE.PlaneGeometry(240, 1.1), new THREE.MeshBasicMaterial({ map: tV })); valla.rotation.y = -s * Math.PI / 2; valla.position.set(s * 8.2, 0.55, -95); scene.add(valla);
+      const matV = new THREE.MeshBasicMaterial({ map: tV }); (mundo.matsV = mundo.matsV || []).push(matV);
+      const valla = new THREE.Mesh(new THREE.PlaneGeometry(240, 1.1), matV); valla.rotation.y = -s * Math.PI / 2; valla.position.set(s * 8.2, 0.55, -95); scene.add(valla);
       const fondo = new THREE.Mesh(new THREE.BoxGeometry(1, 0.9, 240), new THREE.MeshStandardMaterial({ color: 0x15213a, roughness: 0.8 })); fondo.position.set(s * 8.6, 0.45, -95); scene.add(fondo);
     });
     /* focos */
@@ -241,15 +273,25 @@ export function abrir(api, raiz) {
     /* defensas: reserva reutilizable */
     for (let i = 0; i < 12; i++) nuevaDef();
     /* mallas de obstáculos y objetos (se crean bajo demanda) */
-    mundo.matMon = new THREE.MeshStandardMaterial({ color: 0xffc824, emissive: 0x8a5d00, emissiveIntensity: 0.8, metalness: 0.15, roughness: 0.35 });
-    mundo.geoMon = new THREE.CylinderGeometry(0.3, 0.3, 0.07, 28); mundo.geoMon.rotateX(Math.PI / 2);
+    const caraMon = new THREE.MeshBasicMaterial({ map: texMoneda() });
+    mundo.matMon = [new THREE.MeshStandardMaterial({ color: 0xffc824, emissive: 0x8a5d00, emissiveIntensity: 0.8, metalness: 0.15, roughness: 0.35 }), caraMon, caraMon];
+    mundo.geoMon = new THREE.CylinderGeometry(0.5, 0.5, 0.08, 40); mundo.geoMon.rotateX(Math.PI / 2);
     mundo.texRayo = texRayo(); mundo.texCartel = texCartel(); mundo.texBalon = texBalon(); mundo.texRed = texRed();
     chispas = crearParticulas(scene, 120, 0xffd23a, 0.22, true); polvo = crearParticulas(scene, 70, 0xdfe9d4, 0.32, false);
     for (let i = 0; i < 22; i++) {
       const m = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.015, 3), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45, fog: false }));
       m.position.set(rnd(-7, 7), rnd(0.3, 5.5), rnd(-30, 8)); m.visible = false; scene.add(m); lineas.push(m);
     }
-    tamano(); aplicaTema(0, 0);
+    /* clima: lluvia, nieve y confeti (un único sistema de puntos alrededor del jugador) */
+    {
+      const n = movil ? 260 : 420, geo = new THREE.BufferGeometry(), pos = new Float32Array(n * 3), col = new Float32Array(n * 3), pal = [[1, 0.3, 0.4], [1, 0.85, 0.2], [0.3, 0.9, 1], [0.5, 1, 0.5], [1, 0.5, 0.9]];
+      for (let i = 0; i < n; i++) { pos[i * 3] = rnd(-9, 9); pos[i * 3 + 1] = rnd(0, 11); pos[i * 3 + 2] = rnd(-50, 6); }
+      geo.setAttribute("position", new THREE.BufferAttribute(pos, 3)); geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+      const mat = new THREE.PointsMaterial({ size: 0.1, vertexColors: true, transparent: true, opacity: 0, depthWrite: false, sizeAttenuation: true, map: texBrillo("rgba(255,255,255,.8)") });
+      const pts = new THREE.Points(geo, mat); pts.frustumCulled = false; pts.visible = false; scene.add(pts);
+      clima = { pts: pts, pos: pos, col: col, n: n, tipo: "", pal: pal, geo: geo, mat: mat };
+    }
+    tamano(); aplicaEsc(0, 0);
   }
 
   /* ── objetos del juego ── */
@@ -289,6 +331,27 @@ export function abrir(api, raiz) {
     const tab = new THREE.Mesh(new THREE.BoxGeometry(7.5, 1.05, 0.14), new THREE.MeshStandardMaterial({ map: mundo.texCartel, roughness: 0.6, emissive: 0x1a1a1a })); tab.position.y = 1.72; tab.castShadow = true; g.add(tab);
     return g;
   }
+  /* balón gigante que rueda de lado a lado (se salta) */
+  function mallaRodante() {
+    const g = new THREE.Group(), b = new THREE.Mesh(new THREE.SphereGeometry(0.55, 28, 20), new THREE.MeshStandardMaterial({ map: mundo.texBalon, roughness: 0.4 }));
+    b.position.y = 0.55; b.castShadow = true; g.add(b); g.userData.bola = b; return g;
+  }
+  /* balón que bota: la sombra del suelo avisa de dónde cae */
+  function mallaBotando() {
+    const g = new THREE.Group(), b = new THREE.Mesh(new THREE.SphereGeometry(0.36, 24, 16), new THREE.MeshStandardMaterial({ map: mundo.texBalon, roughness: 0.4 }));
+    b.castShadow = true; g.add(b); g.userData.bola = b;
+    const so = new THREE.Mesh(new THREE.CircleGeometry(0.5, 20), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35, depthWrite: false })); so.rotation.x = -Math.PI / 2; so.position.y = 0.03; g.add(so); g.userData.so = so; return g;
+  }
+  /* dron de televisión que barre el campo a la altura de la cabeza (se pasa deslizándose) */
+  function mallaDron() {
+    const g = new THREE.Group(), os = new THREE.MeshStandardMaterial({ color: 0x232b3b, roughness: 0.5, metalness: 0.4 });
+    const c = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.24, 0.6), os); c.castShadow = true; g.add(c);
+    const ojo = new THREE.Mesh(new THREE.SphereGeometry(0.13, 12, 10), new THREE.MeshBasicMaterial({ color: 0xff3b4d })); ojo.position.set(0, -0.14, 0.3); g.add(ojo);
+    g.userData.rot = [];
+    [[-0.6, -0.4], [0.6, -0.4], [-0.6, 0.4], [0.6, 0.4]].forEach((q) => { const r = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.03, 18), new THREE.MeshBasicMaterial({ color: 0xbfe6ff, transparent: true, opacity: 0.55 })); r.position.set(q[0], 0.16, q[1]); g.add(r); g.userData.rot.push(r); });
+    const so = new THREE.Mesh(new THREE.CircleGeometry(0.7, 20), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3, depthWrite: false })); so.rotation.x = -Math.PI / 2; so.position.y = -1.27; g.add(so); g.userData.so = so;
+    return g;
+  }
   function mallaBota() {
     const g = new THREE.Group(), s = new THREE.Sprite(new THREE.SpriteMaterial({ map: mundo.texRayo, depthWrite: false, transparent: true, fog: false })); s.scale.set(1.5, 1.5, 1); g.add(s); g.userData.sp = s; return g;
   }
@@ -296,8 +359,8 @@ export function abrir(api, raiz) {
     let o = libres[tipo].pop();
     if (!o) {
       if (tipo === "moneda") o = new THREE.Mesh(mundo.geoMon, mundo.matMon);
-      else if (tipo === "valla") o = mallaValla(); else if (tipo === "cono") o = mallaCono(); else if (tipo === "cartel") o = mallaCartel(); else if (tipo === "bota") o = mallaBota();
-      else if (tipo === "def") return null;
+      else if (tipo === "valla") o = mallaValla(); else if (tipo === "cono") o = mallaCono(); else if (tipo === "cartel") o = mallaCartel(); else if (tipo === "bota") o = mallaBota(); else if (tipo === "rodante") o = mallaRodante(); else if (tipo === "botando") o = mallaBotando(); else if (tipo === "dron") o = mallaDron();
+      else if (tipo === "def" || tipo === "extremo") return null;
       if (tipo === "moneda") o.castShadow = false;
       scene.add(o);
     }
@@ -305,19 +368,19 @@ export function abrir(api, raiz) {
   }
   function suelta(ob) {
     ob.activo = false; const m = ob.m; if (!m) return;
-    if (ob.tipo === "def" || ob.tipo === "entrada") { m.raiz.visible = false; m.raiz.rotation.set(0, 0, 0); m.raiz.position.set(0, 0, 0); libres.def.push(m); }
+    if (ob.tipo === "def" || ob.tipo === "entrada" || ob.tipo === "extremo") { m.raiz.visible = false; m.raiz.rotation.set(0, 0, 0); m.raiz.position.set(0, 0, 0); libres.def.push(m); }
     else { m.visible = false; m.rotation.set(0, 0, 0); m.scale.set(1, 1, 1); libres[ob.tipo].push(m); }
     ob.m = null;
   }
   function pon(tipo, lane, z, y) {
-    const ob = { tipo: tipo, lane: lane, z: z, y: y || 0, activo: true, golpe: 0, extra: 0, ph: Math.random() * 6 };
-    if (tipo === "def" || tipo === "entrada") {
+    const ob = { tipo: tipo, lane: lane, z: z, y: y || 0, activo: true, golpe: 0, extra: 0, ph: Math.random() * 6, x: undefined };
+    if (tipo === "def" || tipo === "entrada" || tipo === "extremo") {
       const f = libres.def.pop() || (nDef < 22 ? (nuevaDef(), libres.def.pop()) : null); if (!f) return null; ob.m = f; f.raiz.visible = true; POSES.base(f);
     } else { const m = toma(tipo); if (!m) return null; ob.m = m; }
     S.obs.push(ob); colocaObj(ob); return ob;
   }
   function colocaObj(ob) {
-    const x = ob.lane < 0 ? 0 : LX[ob.lane], r = ob.m && ob.m.raiz ? ob.m.raiz : ob.m; if (!r) return;
+    const x = ob.x !== undefined ? ob.x : ob.lane < 0 ? 0 : LX[ob.lane], r = ob.m && ob.m.raiz ? ob.m.raiz : ob.m; if (!r) return;
     r.position.set(x, ob.y, ob.z);
   }
   function monedas(lane, z0, n, y, paso) { for (let i = 0; i < n; i++) pon("moneda", lane, z0 - i * (paso || 2.2), y || 1.0); }
@@ -326,6 +389,8 @@ export function abrir(api, raiz) {
   function fila() {
     const d = Math.min(1, S.dist / 1800), Z = Z_SPAWN, lanes = [0, 1, 2], libre = irnd(3), otros = lanes.filter((l) => l !== libre), n = S.filas++;
     const pats = [];
+    const D = S.dist;
+    pats.push([D > NUEVOS[0][0] ? 3 : 0, "rodante"], [D > NUEVOS[1][0] ? 3 : 0, "botando"], [D > NUEVOS[2][0] ? 3 : 0, "extremo"], [D > NUEVOS[3][0] ? 3 : 0, "dron"]);
     pats.push([5, "muro"], [3, "conos"], [d > 0.05 ? 4 : 0, "valla"], [d > 0.12 ? 3 : 0, "cartel"], [d > 0.2 ? 3 : 0, "entrada"], [d > 0.3 ? 3 : 0, "mix"], [d > 0.5 ? 3 : 0, "doble"]);
     if (n < 3) { pats.length = 0; pats.push([1, n === 0 ? "conos" : "muro"]); }
     let tot = 0; pats.forEach((p) => { tot += p[0]; }); let r = Math.random() * tot, tipo = "muro"; for (const p of pats) { if ((r -= p[0]) <= 0) { tipo = p[1]; break; } }
@@ -336,8 +401,12 @@ export function abrir(api, raiz) {
     else if (tipo === "entrada") { pon("entrada", libre, Z); if (d > 0.4) pon("def", otros[irnd(2)], Z); monedas(otros[0], Z + 22, 5); }
     else if (tipo === "mix") { pon("def", otros[0], Z); pon("valla", otros[1], Z); monedas(libre, Z + 20, 6); }
     else if (tipo === "doble") { otros.forEach((l) => pon("def", l, Z)); pon("cartel", -1, Z - 15); monedas(libre, Z + 20, 5); }
+    else if (tipo === "rodante") { pon("rodante", -1, Z); monedas(1, Z + 16, 4, 1.7); }
+    else if (tipo === "botando") { otros.forEach((l) => pon("botando", l, Z)); monedas(libre, Z + 20, 6); }
+    else if (tipo === "extremo") { const a = irnd(2); pon("extremo", a, Z); monedas(a === 0 ? 2 : 0, Z + 18, 5); }
+    else if (tipo === "dron") { pon("dron", -1, Z, 1.3); monedas(irnd(3), Z + 16, 5, 0.9); }
     if (S.turbo <= 0 && S.dist > 250 && Math.random() < 0.09) pon("bota", libre, Z + 30, 1.0);
-    S.sig = clamp(S.v * 1.4, 21, 38);
+    S.sig = clamp(S.v * 1.4, 21, 46);
   }
 
   /* ── interfaz ── */
@@ -351,14 +420,46 @@ export function abrir(api, raiz) {
   function pintaRecord() { const d = datos(); $("[data-rec]").textContent = d.mejor ? "🏆 " + d.mejor + " · " + d.mejorm + " m · " + d.part + " ⚽" : ""; }
   function flash() { const f = $("[data-flash]"); f.classList.add("on"); clearTimeout(hFlash); hFlash = setTimeout(() => f.classList.remove("on"), 90); }
 
-  /* ── temas (día → atardecer → noche) ── */
-  const cC = new THREE.Color(), cN = new THREE.Color(), cH = new THREE.Color();
-  function aplicaTema(i, k) {
-    const a = TEMAS[i % 3], b = TEMAS[(i + 1) % 3];
+  /* ── escenarios: se mezclan suavemente de uno al siguiente ── */
+  const cC = new THREE.Color(), cN = new THREE.Color(), cH = new THREE.Color(), cT = new THREE.Color();
+  function aplicaEsc(i, k) {
+    const a = ESC[i % ESC.length], b = ESC[(i + 1) % ESC.length];
     cC.set(a.niebla).lerp(cN.set(b.niebla), k); scene.fog.color.copy(cC); scene.background.copy(cC).lerp(cN.set(a.cielo).lerp(cH.set(b.cielo), k), 0.5);
+    scene.fog.near = lerp(a.fn, b.fn, k); scene.fog.far = lerp(a.ff, b.ff, k);
     hemi.intensity = lerp(a.hemi, b.hemi, k); sol.intensity = lerp(a.sol, b.sol, k); sol.color.set(a.solC).lerp(cN.set(b.solC), k); E.renderer.toneMappingExposure = lerp(a.exp, b.exp, k);
-    const noche = i % 3 === 2 ? 1 - k : i % 3 === 1 ? k : 0;
-    luces.forEach((l) => { l.sp.material.opacity = 0.3 + 0.55 * noche; });
+    mundo.matCesped.color.set(a.cesped).lerp(cT.set(b.cesped), k);
+    cT.set(a.grada).lerp(cN.set(b.grada), k); mundo.matsG.forEach((m) => m.color.copy(cT));
+    cT.set(a.valla).lerp(cN.set(b.valla), k); mundo.matsV.forEach((m) => m.color.copy(cT));
+    const nv = lerp(a.nieve, b.nieve, k); mundo.nieve.material.opacity = nv; mundo.nieve.visible = nv > 0.01;
+    const noche = lerp(a.noche, b.noche, k); luces.forEach((l) => { l.sp.material.opacity = 0.3 + 0.55 * noche; });
+    /* clima: el de «a» se apaga hasta la mitad y el de «b» entra después */
+    const tipo = k < 0.5 ? a.clima : b.clima, fuerza = k < 0.5 ? (a.clima ? 1 - 2 * k : 0) : (b.clima ? 2 * k - 1 : 0);
+    S.clima = tipo; S.climaK = fuerza; S.esc = i % ESC.length;
+  }
+  function ponClima(tipo) {
+    if (!clima || clima.tipo === tipo) return; clima.tipo = tipo;
+    const m = clima.mat; m.size = tipo === "lluvia" ? 0.14 : tipo === "nieve" ? 0.26 : 0.45;
+    for (let i = 0; i < clima.n; i++) {
+      const c = tipo === "confeti" ? clima.pal[i % clima.pal.length] : tipo === "lluvia" ? [0.7, 0.85, 1] : [1, 1, 1];
+      clima.col[i * 3] = c[0]; clima.col[i * 3 + 1] = c[1]; clima.col[i * 3 + 2] = c[2];
+    }
+    clima.geo.attributes.color.needsUpdate = true;
+  }
+  function pasoClima(dt, dz) {
+    if (!clima) return; const tipo = S.clima, f = S.climaK;
+    if (tipo) ponClima(tipo);
+    clima.pts.visible = !!tipo && f > 0.02 && !reducido; if (!clima.pts.visible) return;
+    clima.mat.opacity = Math.min(0.9, f) * (tipo === "lluvia" ? 0.75 : 0.95);
+    const pos = clima.pos, T = S.t;
+    for (let i = 0; i < clima.n; i++) {
+      let x = pos[i * 3], y = pos[i * 3 + 1], z = pos[i * 3 + 2] + dz;
+      if (tipo === "lluvia") { y -= 24 * dt; x -= 1.2 * dt; }
+      else if (tipo === "nieve") { y -= 2.1 * dt; x += Math.sin(T * 0.9 + i) * 0.7 * dt; }
+      else { y -= 3.2 * dt; x += Math.sin(T * 2 + i) * 1.4 * dt; z += Math.cos(T * 1.6 + i) * 0.6 * dt; }
+      if (y < 0 || z > 7) { y = 10 + Math.random() * 3; z = rnd(-52, -4); x = rnd(-9, 9); }
+      pos[i * 3] = x; pos[i * 3 + 1] = y; pos[i * 3 + 2] = z;
+    }
+    clima.geo.attributes.position.needsUpdate = true;
   }
 
   /* ── partida ── */
@@ -366,8 +467,8 @@ export function abrir(api, raiz) {
   function empezar() {
     audioIni(); au.iniciar(); au.ambiente(0.3);
     limpiaObs();
-    Object.assign(S, { fase: "corre", dist: 0, v: 9, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, bonus: 0, sig: 10, filas: 0, tiki: false, choque: 0, hito: 0, tema: 0 });
-    $("[data-menu]").hidden = true; $("[data-fin]").hidden = true; $("[data-turbo]").hidden = true; pintaVidas(); pintaHud(); aplicaTema(0, 0);
+    Object.assign(S, { fase: "corre", dist: 0, v: 9, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, bonus: 0, sig: 10, filas: 0, tiki: false, choque: 0, hito: 0, tema: 0, vidaHito: 0, nuevo: 0 });
+    $("[data-menu]").hidden = true; $("[data-fin]").hidden = true; $("[data-turbo]").hidden = true; pintaVidas(); pintaHud(); aplicaEsc(0, 0);
     pista(movil ? "Desliza: ⬅️ ➡️ carril · ⬆️ salto · ⬇️ agacharte" : "Flechas o WASD: ⬅️ ➡️ carril · ⬆️ salto · ⬇️ agacharte"); setTimeout(() => { if (S.fase === "corre" && S.dist < 120) pista(""); }, 4500);
     sonPita();
   }
@@ -376,7 +477,7 @@ export function abrir(api, raiz) {
     const d = datos(); d.part++; d.bal += S.monedas; const nuevo = S.pts > d.mejor; if (nuevo) d.mejor = S.pts; if (Math.floor(S.dist) > d.mejorm) d.mejorm = Math.floor(S.dist);
     if (S.tiki) d.tiki++;
     try { api.guardar(); } catch (e) { /* opcional */ }
-    $("[data-fin-t]").textContent = t("¡TARJETA ROJA!"); $("[data-fin-m]").textContent = S.pts + " " + t("puntos") + " · " + Math.floor(S.dist) + " m · " + S.monedas + " 🪙";
+    $("[data-fin-t]").textContent = t("¡TARJETA ROJA!"); $("[data-fin-m]").textContent = S.pts + " " + t("puntos") + " · " + Math.floor(S.dist) + " m · " + S.monedas + " TIKI";
     $("[data-fin-r]").textContent = nuevo ? t("¡Nuevo récord!") : "🏆 " + d.mejor;
     $("[data-fin-tiki]").hidden = !S.tiki; $("[data-fin]").hidden = false; $("[data-turbo]").hidden = true; au.ambiente(0.1); au.suspiro(); pintaRecord();
   }
@@ -396,7 +497,7 @@ export function abrir(api, raiz) {
   function logica(dt) {
     if (S.fase === "menu") { S.v = 7; S.dist += S.v * dt; return; }
     if (S.fase === "fin") return;
-    const base = 11 + 13 * (1 - Math.exp(-S.dist / 900)), objetivo = S.fase === "choque" ? 0 : base * (S.turbo > 0 ? 1.35 : 1);
+    const base = vBase(S.dist), objetivo = S.fase === "choque" ? 0 : base * (S.turbo > 0 ? 1.35 : 1);
     S.v += (objetivo - S.v) * Math.min(1, dt * (S.fase === "choque" ? 3.5 : 1.6));
     const dz = S.v * dt; S.dist += dz;
     if (S.fase === "choque") { S.choque += dt; if (S.choque > 1.1) termina(); }
@@ -414,8 +515,12 @@ export function abrir(api, raiz) {
       if (ob.tipo === "entrada" && ob.z > -26 && !ob.golpe) { ob.z += 6 * dt; ob.extra = Math.min(1, ob.extra + dt * 3); }
       if (ob.golpe && ob.golpe > 1) { /* derribado en turbo: sale volando */ ob.z += 0; }
       if (ob.z > Z_FIN) { suelta(ob); S.obs.splice(i, 1); continue; }
+      if (ob.tipo === "rodante") ob.x = 2.9 * Math.sin(S.t * 1.4 + ob.ph);
+      else if (ob.tipo === "dron") ob.x = 2.7 * Math.sin(S.t * 1.2 + ob.ph);
+      else if (ob.tipo === "extremo") ob.x = lerp(LX[ob.lane], LX[ob.lane + 1], 0.5 + 0.5 * Math.sin(S.t * 2.6 + ob.ph));
+      else if (ob.tipo === "botando") { ob.x = LX[ob.lane]; ob.y = 0.4 + Math.abs(Math.sin(S.t * 3.6 + ob.ph)) * 2.4; }
       if (S.fase !== "corre" || ob.golpe) continue;
-      const x = ob.lane < 0 ? 0 : LX[ob.lane], dx = Math.abs(S.x - x), dzz = Math.abs(ob.z);
+      const x = ob.x !== undefined ? ob.x : ob.lane < 0 ? 0 : LX[ob.lane], dx = Math.abs(S.x - x), dzz = Math.abs(ob.z);
       if (ob.tipo === "moneda" || ob.tipo === "bota") {
         if (dx < 1.05 && dzz < 0.9 && Math.abs(ob.y - (S.y + (S.desl > 0 ? 0.4 : 0.95))) < (ob.tipo === "bota" ? 1.3 : 1.0)) {
           ob.golpe = 2; suelta(ob); S.obs.splice(i, 1);
@@ -431,6 +536,10 @@ export function abrir(api, raiz) {
       else if (ob.tipo === "valla") choca = dx < 1.0 && dzz < 0.4 && S.y < 0.72;
       else if (ob.tipo === "cono") choca = dx < 1.6 && dzz < 0.4 && S.y < 0.58 && (ob.lane === 1 ? true : dx < 1.0 + 0.7);
       else if (ob.tipo === "cartel") choca = dzz < 0.35 && S.y + alt > 1.2;
+      else if (ob.tipo === "rodante") choca = dx < 0.95 && dzz < 0.7 && S.y < 1.0;
+      else if (ob.tipo === "extremo") choca = dx < 0.85 && dzz < 0.6 && S.y < 1.9;
+      else if (ob.tipo === "botando") choca = dx < 0.8 && dzz < 0.6 && ob.y - 0.36 < S.y + alt && ob.y + 0.36 > S.y;
+      else if (ob.tipo === "dron") choca = dx < 1.0 && dzz < 0.6 && S.y + alt > 1.05 && S.y < 1.75;
       if (!choca) continue;
       if (S.turbo > 0) { ob.golpe = 2; S.bonus += 25; sonGolpe(); S.shake = reducido ? 0 : 0.2; for (let k = 0; k < 12; k++) chispas.emite(x, 0.9, ob.z, rnd(-4, 4), rnd(1, 5), rnd(-3, 1), 0.7); suelta(ob); S.obs.splice(i, 1); }
       else if (S.inv <= 0) golpea(ob);
@@ -439,8 +548,12 @@ export function abrir(api, raiz) {
       S.pts = Math.floor(S.dist) + S.monedas * 10 + S.bonus;
       /* hitos */
       if (!S.tiki && S.dist >= META_TIKI) { S.tiki = true; try { api.tiki(); } catch (e) { /* opcional */ } try { api.victoria(); } catch (e) { /* opcional */ } aviso("¡" + META_TIKI + " m! ⚡ +1 tikitexto", "bien", 2200); au.rugido(true); }
-      else if (Math.floor(S.dist / 300) > S.hito) { S.hito = Math.floor(S.dist / 300); aviso("¡" + Math.floor(S.dist / 100) * 100 + " m!", "bien", 1000); }
-      S.tema = Math.floor(S.dist / 700); pintaHud();
+      else if (Math.floor(S.dist / 500) > S.hito) { S.hito = Math.floor(S.dist / 500); aviso("¡" + Math.floor(S.dist / 100) * 100 + " m!", "bien", 1000); }
+      const tramo = Math.floor(S.dist / TRAMO);
+      if (tramo > S.tema) { S.tema = tramo; aviso(ESC[tramo % ESC.length].nombre, "oro", 2000); S.hito = Math.floor(S.dist / 500); }
+      if (S.nuevo < NUEVOS.length && S.dist >= NUEVOS[S.nuevo][0]) { aviso(NUEVOS[S.nuevo][1], "mal", 2600); S.nuevo++; }
+      if (Math.floor(S.dist / 1000) > S.vidaHito) { S.vidaHito = Math.floor(S.dist / 1000); if (S.vidas < VIDAS) { S.vidas++; pintaVidas(); aviso("¡Vida recuperada!", "bien", 1500); } }
+      pintaHud();
     }
   }
 
@@ -468,7 +581,7 @@ export function abrir(api, raiz) {
     mundo.tC.offset.y += dz / 24; mundo.tL.offset.y += dz / (240 / 18); mundo.scroll.forEach((q) => { q.t.offset.x += dz * q.k; });
     luces.forEach((l) => { l.g.position.z += dz; if (l.g.position.z > 20) l.g.position.z -= 252; });
     /* tema */
-    const tt = S.dist / 700; aplicaTema(Math.floor(tt) % 3, tt - Math.floor(tt));
+    const et = Math.floor(S.dist / TRAMO), u = S.dist / TRAMO - et; aplicaEsc(et, clamp((u - 0.55) / 0.45, 0, 1));
     /* jugador */
     const r = jug.raiz, vx = (LX[S.lane] - S.x);
     r.position.set(S.x, 0, 0); r.rotation.y = Math.PI - clamp(vx * 0.22, -0.45, 0.45); r.rotation.x = 0;
@@ -484,12 +597,16 @@ export function abrir(api, raiz) {
       const m = ob.m; if (!m) return;
       if (ob.tipo === "def") { colocaObj(ob); POSES.quieto(m, T + i, true); m.raiz.rotation.y = 0; m.raiz.position.x += Math.sin(T * 2 + ob.ph) * 0.12; }
       else if (ob.tipo === "entrada") { colocaObj(ob); if (ob.extra > 0.01) poseDesliza(m, ob.extra); else POSES.quieto(m, T + i, true); m.raiz.rotation.y = 0; }
-      else if (ob.tipo === "moneda") { m.position.set(LX[ob.lane], ob.y + Math.sin(T * 4 + ob.ph) * 0.08, ob.z); m.rotation.y = T * 3 + ob.ph; }
+      else if (ob.tipo === "extremo") { colocaObj(ob); POSES.carrera(m, 0.9, T * 11 + i); m.raiz.rotation.y = Math.PI + Math.cos(T * 2.6 + ob.ph) * 0.5; }
+      else if (ob.tipo === "rodante") { m.position.set(ob.x === undefined ? 0 : ob.x, 0, ob.z); m.userData.bola.rotation.x = T * 6; m.userData.bola.rotation.z = T * 2; }
+      else if (ob.tipo === "botando") { m.position.set(ob.x === undefined ? LX[ob.lane] : ob.x, 0, ob.z); m.userData.bola.position.y = ob.y; const k = 0.5 + 0.5 * clamp(1 - ob.y / 2.8, 0, 1); m.userData.so.scale.set(k, k, k); m.userData.bola.rotation.x = T * 5; }
+      else if (ob.tipo === "dron") { m.position.set(ob.x === undefined ? 0 : ob.x, ob.y, ob.z); m.rotation.z = Math.cos(T * 1.2 + ob.ph) * 0.18; m.userData.rot.forEach((r, q) => { r.rotation.y = T * 40 + q; }); }
+      else if (ob.tipo === "moneda") { m.position.set(LX[ob.lane], ob.y + Math.sin(T * 4 + ob.ph) * 0.08, ob.z); m.rotation.y = T * 4.5 + ob.ph; }
       else if (ob.tipo === "bota") { m.position.set(LX[ob.lane], 1.1 + Math.sin(T * 5) * 0.15, ob.z); const k = 1.4 + Math.sin(T * 8) * 0.15; m.userData.sp.scale.set(k, k, 1); }
       else { m.position.set(ob.lane < 0 ? 0 : LX[ob.lane], 0, ob.z); }
     });
     /* partículas y líneas de velocidad */
-    chispas.paso(dt, dz); polvo.paso(dt, dz);
+    chispas.paso(dt, dz); polvo.paso(dt, dz); pasoClima(dt, dz);
     const vel = clamp((S.v - 15) / 12, 0, 1) + (S.turbo > 0 ? 0.6 : 0);
     lineas.forEach(function (m) {
       m.visible = vel > 0.05 && !reducido; if (!m.visible) return; m.material.opacity = 0.18 + vel * 0.35;
@@ -513,7 +630,7 @@ export function abrir(api, raiz) {
     let dt = Math.min((ahora - ultimo) / 1000, 0.05); ultimo = ahora; if (!(dt > 0)) dt = 0.016;
     S.activo = !document.hidden; if (!S.activo) return;
     fpsAcum += dt; fpsN++; if (fpsAcum > 2.5) { const fps = fpsN / fpsAcum; if (fps < 26 && escala > 0.55) { escala -= 0.15; E.renderer.setPixelRatio((movil ? 1.5 : Math.min(window.devicePixelRatio || 1, 2)) * escala); tamano(); } fpsAcum = 0; fpsN = 0; }
-    S.t += dt; const d0 = S.dist; logica(dt); dibuja(dt, S.dist - d0);
+    S.t += dt; const d0 = S.dist, n = Math.max(1, Math.ceil(dt / 0.02)); for (let i = 0; i < n; i++) logica(dt / n); dibuja(dt, S.dist - d0);
   }
 
   /* ── entrada ── */
@@ -559,5 +676,5 @@ export function abrir(api, raiz) {
   pintaRecord(); pintaVidas(); pintaHud();
   if (E) raf = requestAnimationFrame(function (n) { ultimo = n; bucle(n); });
   /* Solo para las pruebas automáticas */
-  return { cerrar: cerrar, S: S, E: E, empezar: empezar, mover: mover, saltar: saltar, deslizar: deslizar, logica: logica, fila: fila, pon: pon, limpia: limpiaObs, LX: LX };
+  return { ESC: ESC, vBase: vBase, NUEVOS: NUEVOS, aplicaEsc: aplicaEsc, mats: () => mundo.matMon, clima: () => clima, cerrar: cerrar, S: S, E: E, empezar: empezar, mover: mover, saltar: saltar, deslizar: deslizar, logica: logica, fila: fila, pon: pon, limpia: limpiaObs, LX: LX };
 }

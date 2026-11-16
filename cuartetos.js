@@ -137,6 +137,12 @@ const PLANTILLA = `
     <button type="button" class="cu-sec cu-salir" data-cu="salir">Salir</button>
   </div>
 </div>
+<div class="cu-ver" data-ver hidden>
+  <div class="cu-ver__c">
+    <p class="cu-kicker">Partida terminada</p>
+    <button type="button" class="cu-ver__b" data-cu="ver">VER RESULTADO</button>
+  </div>
+</div>
 <div class="cu-fin" data-fin hidden>
   <div class="cu-caja cu-caja--s">
     <p class="cu-kicker" data-fin-kicker>Reto completado</p>
@@ -191,7 +197,7 @@ export function abrir(api, raiz) {
     else { S.puz = generar(Math.random); S.num = 0; }
     if (!S.puz) { S.puz = generar(Math.random); }
     S.orden = S.puz.tiles.slice(); S.fase = "juego"; au.activar();
-    $("[data-menu]").hidden = true; $("[data-fin]").hidden = true;
+    $("[data-menu]").hidden = true; $("[data-fin]").hidden = true; $("[data-ver]").hidden = true;
     $("[data-modo-txt]").textContent = modo === "diario" ? t("Reto diario") + " #" + S.num : t("Modo libre");
     msg(""); pintarVidas(); pintarPistas(); pintarResueltos(); pintarRejilla();
     if (!d.vistoAyuda) { d.vistoAyuda = 1; try { api.guardar(); } catch (e) { /* opcional */ } }
@@ -250,7 +256,9 @@ export function abrir(api, raiz) {
     if (tiki) { try { api.tiki(); } catch (e) { /* opcional */ } S.tikis = 1; au.tiki(); }
     try { api.guardar(); } catch (e) { /* opcional */ }
     if (gana) au.gana(); else { au.pierde(); S.puz.cats.forEach((c, k) => { if (S.res.indexOf(k) < 0) S.res.push(k); }); pintarResueltos(); pintarRejilla(); }
-    setTimeout(function () { if (!vivo) return; mostrarFin(gana); if (gana) { try { api.victoria(); } catch (e) { /* opcional */ } } }, gana ? 900 : 1300);
+    /* primero una pantalla neutra «VER RESULTADO» (igual si has ganado o perdido); el resultado sale al pulsarla */
+    S.verGana = gana;
+    setTimeout(function () { if (!vivo || S.fase !== "fin") return; $("[data-ver]").hidden = false; try { $("[data-cu=ver]").focus(); } catch (e) { /* opcional */ } }, gana ? 900 : 1300);
   }
   function ayerTxt() { const d = new Date(Date.now() - 864e5); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
   function mostrarFin(gana) {
@@ -274,7 +282,8 @@ export function abrir(api, raiz) {
     $("[data-diario-txt]").textContent = t(hecho ? "Ver resultado de hoy" : "Reto de hoy");
     $("[data-diario-sub]").textContent = "#" + numDia();
   }
-  function irMenu() { S.fase = "menu"; $("[data-fin]").hidden = true; $("[data-menu]").hidden = false; pintarMenu(); }
+  function verResultado() { $("[data-ver]").hidden = true; mostrarFin(S.verGana); if (S.verGana) { try { api.victoria(); } catch (e) { /* opcional */ } } }
+  function irMenu() { S.fase = "menu"; $("[data-fin]").hidden = true; $("[data-ver]").hidden = true; $("[data-menu]").hidden = false; pintarMenu(); }
   function diario() {
     const d = datos();
     if (d.dia === hoyTxt() && d.grid) {
@@ -292,12 +301,13 @@ export function abrir(api, raiz) {
   const onKey = (e) => {
     if (e.code === "Escape") { if (S.fase === "juego") irMenu(); else cerrar(); }
     else if (e.code === "Enter" && S.fase === "juego") { e.preventDefault(); enviar(); }
+    else if (e.code === "Enter" && !$("[data-ver]").hidden) { e.preventDefault(); verResultado(); }
   };
   raiz.addEventListener("click", function (e) {
     const f = e.target.closest && e.target.closest(".cu-ficha"); if (f) { alternar(f.dataset.id); return; }
     const b = e.target.closest && e.target.closest("[data-cu]"); if (!b) return;
     const a = b.dataset.cu;
-    if (a === "salir") cerrar(); else if (a === "diario") diario(); else if (a === "libre") empezar("libre"); else if (a === "enviar") enviar();
+    if (a === "salir") cerrar(); else if (a === "ver") verResultado(); else if (a === "diario") diario(); else if (a === "libre") empezar("libre"); else if (a === "enviar") enviar();
     else if (a === "mezclar") mezclar(); else if (a === "quitar") quitar(); else if (a === "pista") pista(); else if (a === "menu") irMenu(); else if (a === "ayuda") irMenu(); else if (a === "compartir") compartir();
   });
   raiz.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -313,5 +323,5 @@ export function abrir(api, raiz) {
       S.sel = mezcla; pintarRejilla(); enviar(); return;
     }
   }
-  return { cerrar: cerrar, S: S, empezar: empezar, resolverGrupo: resolverGrupo, fallar: fallar, generar: generar, DB: DB, mulberry: mulberry, enviar: enviar };
+  return { verResultado: verResultado, cerrar: cerrar, S: S, empezar: empezar, resolverGrupo: resolverGrupo, fallar: fallar, generar: generar, DB: DB, mulberry: mulberry, enviar: enviar };
 }

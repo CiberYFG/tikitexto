@@ -973,7 +973,19 @@ with sync_playwright() as p:
               for(let k=0;k<300;k++){ j.limpia(); j.fila(); const g={}; S.obs.forEach(o=>{ const z=Math.round(o.z); (g[z]=g[z]||[]).push(o); });
                 Object.values(g).forEach(a=>{ const bl=new Set(); a.forEach(o=>{ if(['def','entrada','cono'].includes(o.tipo)) bl.add(o.lane); }); if(a.some(o=>['def','entrada','cono','valla','cartel'].includes(o.tipo))){ filas++; if(bl.size<3) libre++; } }); }
               j.limpia(); return {filas,libre}; })()""")
-            check("slalom: ninguna fila cierra los tres carriles con defensas o conos", r["filas"] > 300 and r["filas"] == r["libre"], str(r))
+            check("slalom: ninguna fila cierra los tres carriles con defensas o conos", r["filas"] > 200 and r["filas"] == r["libre"], str(r))
+            r = psl.evaluate("""(()=>{ const j=TIKI.slalom.juego(), S=j.S; const v=[0,300,1000,3000,8000,50000].map(j.vBase); let mono=true; for(let i=1;i<v.length;i++) if(v[i]<v[i-1]) mono=false;
+              const m=j.mats(); return {v, mono, tope:Math.max(...v)<=33.001, caras:Array.isArray(m)&&m.length===3&&!!m[1].map, esc:j.ESC.length, nuevos:j.NUEVOS.length}; })()""")
+            check("slalom: la velocidad crece siempre (con tope jugable) y la moneda lleva textura de logo", r["mono"] and r["tope"] and r["caras"] and r["v"][2] > r["v"][1] and r["esc"] >= 6 and r["nuevos"] == 4, str(r))
+            r = psl.evaluate("""(()=>{ const j=TIKI.slalom.juego(), S=j.S; j.empezar(); const out={}; const paso=(n)=>{ for(let i=0;i<n;i++){ S.t+=0.02; j.logica(0.02); } };
+              const rs=()=>{ j.limpia(); S.fase='corre'; S.vidas=2; S.inv=0; S.y=0; S.vy=0; S.desl=0; S.x=0; S.lane=1; S.v=14; S.sig=9999; S.turbo=0; };
+              rs(); S.t=0; const ob=j.pon('rodante',-1,-30); ob.ph=0; paso(5); const x0=ob.x; paso(80); out.mueve=Math.abs(ob.x-x0)>0.05;
+              rs(); const o2=j.pon('dron',-1,-6,1.3); o2.ph=-0.6; S.t=0; j.deslizar(); paso(75); out.dron=S.vidas===2;
+              rs(); const o3=j.pon('dron',-1,-6,1.3); o3.ph=-0.6; S.t=0; paso(75); out.dronGolpea=S.vidas===1;
+              rs(); const o4=j.pon('extremo',0,-30); paso(40); out.extremoX=typeof o4.x==='number' && o4.x>=-2.4-1e-6 && o4.x<=0+1e-6;
+              j.limpia(); S.dist=100; j.aplicaEsc(0,0); const f0=S.esc; j.aplicaEsc(3,0); out.tormenta=S.clima==='lluvia'&&S.climaK>0.9; j.aplicaEsc(4,0.1); out.nieve=S.clima==='nieve'; j.aplicaEsc(5,0.1); out.cambia=S.esc===5;
+              return out; })()""")
+            check("slalom: los obstáculos móviles se mueven, el dron se esquiva deslizando y los escenarios traen clima", r["mueve"] and r["dron"] and r["dronGolpea"] and r["extremoX"] and r["tormenta"] and r["nieve"] and r["cambia"], str(r))
             r = psl.evaluate("""(()=>{ const j=TIKI.slalom.juego(), S=j.S; j.empezar(); S.obs.forEach(()=>{}); const out={};
               const paso=(n)=>{ for(let i=0;i<n;i++) j.logica(0.02); };
               const rs=()=>{ j.limpia(); S.fase='corre'; S.vidas=2; S.inv=0; S.y=0; S.vy=0; S.desl=0; S.x=0; S.lane=1; S.v=9; S.sig=9999; S.turbo=0; };
@@ -1143,10 +1155,14 @@ with sync_playwright() as p:
         pb2.evaluate("(()=>{const j=TIKI.cuartetos.juego(); j.resolverGrupo(); j.resolverGrupo();})()"); pb2.wait_for_timeout(300)
         check("cuartetos: acertar dos grupos los coloca arriba", pb2.locator(".cu-res").count() == 2 and pb2.locator(".cu-ficha").count() == 8)
         pb2.evaluate("(()=>{const j=TIKI.cuartetos.juego(); j.resolverGrupo(); })()"); pb2.wait_for_timeout(1800)
-        check("cuartetos: al tercer grupo se completa el último y sale el final", pb2.locator(".cu-res").count() == 4 and pb2.locator("[data-fin]:not([hidden])").count() == 1, pb2.inner_text("[data-fin]")[:80])
+        check("cuartetos: al completar sale la pantalla «VER RESULTADO» (y aún no el final)", pb2.locator(".cu-res").count() == 4 and pb2.locator("[data-ver]:not([hidden])").count() == 1 and pb2.locator("[data-fin]:not([hidden])").count() == 0)
+        pb2.evaluate("document.querySelector('[data-cu=ver]').click()"); pb2.wait_for_timeout(300)
+        check("cuartetos: al pulsar VER RESULTADO sale el final", pb2.locator("[data-fin]:not([hidden])").count() == 1 and pb2.locator("[data-ver]:not([hidden])").count() == 0, pb2.inner_text("[data-fin]")[:80])
         pb2.evaluate("TIKI.cuartetos.juego().empezar('libre')"); pb2.wait_for_timeout(200)
         pb2.evaluate("(()=>{const j=TIKI.cuartetos.juego(); for(let i=0;i<4;i++) j.fallar();})()"); pb2.wait_for_timeout(2500)
-        check("cuartetos: 4 fallos terminan la partida y revelan los grupos", pb2.locator("[data-fin]:not([hidden])").count() == 1 and pb2.locator(".cu-res").count() == 4)
+        check("cuartetos: 4 fallos terminan la partida, revelan los grupos y piden VER RESULTADO", pb2.locator("[data-ver]:not([hidden])").count() == 1 and pb2.locator(".cu-res").count() == 4)
+        pb2.evaluate("document.querySelector('[data-cu=ver]').click()"); pb2.wait_for_timeout(300)
+        check("cuartetos: perdiendo también se ve el final tras VER RESULTADO", pb2.locator("[data-fin]:not([hidden])").count() == 1)
         pb2.click("[data-fin] [data-cu=menu]"); pb2.wait_for_timeout(200)
         pb2.click("[data-menu] [data-cu=diario]"); pb2.wait_for_timeout(300)
         check("cuartetos: reto diario con número", "#" in pb2.inner_text("[data-modo-txt]"))

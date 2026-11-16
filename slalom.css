@@ -43,7 +43,7 @@
 .sl-marc small { font: 800 .72rem/1 ui-monospace, monospace; color: #19e6ff; letter-spacing: .08em; }
 .sl-der { display: grid; gap: 6px; justify-items: end; }
 .sl-mon { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; background: rgba(6,10,22,.7); border: 1px solid rgba(255,233,74,.4); font: 900 .95rem/1 ui-monospace, monospace; color: #ffe94a; }
-.sl-mon i { width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff6b0, #f5b800 60%, #b87400); box-shadow: 0 0 8px rgba(255,200,0,.8); }
+.sl-mon i { width: 22px; height: 22px; border-radius: 50%; background: url(icons/favicon-48.png) center/cover, radial-gradient(circle at 35% 30%, #fff6b0, #f5b800 60%, #b87400); border: 2px solid #ffd23a; box-shadow: 0 0 8px rgba(255,200,0,.8); }
 .sl-vidas { display: flex; gap: 5px; }
 .sl-vidas s { width: 15px; height: 21px; border-radius: 3px; background: #35f0a0; border: 2px solid rgba(255,255,255,.7); text-decoration: none; box-shadow: 0 0 8px rgba(53,240,160,.7); transition: background .2s; }
 .sl-vidas s.am { background: #ffe94a; box-shadow: 0 0 8px rgba(255,233,74,.8); }
