@@ -1823,8 +1823,7 @@ html.vs-abierto { overflow: hidden; }
 .cm-barra--a { bottom: 72px; width: 46%; background: linear-gradient(90deg, transparent, #19e6ff); box-shadow: 0 0 14px #19e6ff; }
 .cm-barra--b { bottom: 54px; width: 32%; background: linear-gradient(90deg, transparent, #ff2fd6); box-shadow: 0 0 14px #ff2fd6; animation-delay: .5s; }
 @keyframes cmBarra { 50% { transform: scaleX(.7); transform-origin: right; } }
-@media (min-width: 1000px) { .portal { grid-template-columns: repeat(4, 1fr); max-width: 1280px; } }
-@media (min-width: 1000px) { .portal__titulo { font-size: clamp(1.45rem, 2.1vw, 1.9rem); } .cm-anillo { top: auto; bottom: 96px; right: 10%; width: 84px; } .cm-anillo--2 { width: 60px; bottom: 108px; right: calc(10% + 12px); top: auto; } .cm-vs { top: auto; bottom: 122px; right: calc(10% + 22px); font-size: 1.3rem; } }
+@media (min-width: 760px) { .cm-anillo { top: auto; bottom: 36px; right: 8%; width: 96px; } .cm-anillo--2 { width: 68px; bottom: 50px; right: calc(8% + 14px); top: auto; } .cm-vs { top: auto; bottom: 68px; right: calc(8% + 25px); font-size: 1.4rem; } .cm-barra--a { bottom: 22px; right: 26%; } .cm-barra--b { bottom: 10px; right: 26%; } }
 @media (prefers-reduced-motion: reduce) { .cm-anillo, .cm-vs, .cm-barra { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .vd-tira::before, .vd-haz, .vd-play { animation: none; } }
 .portal__card--juegos { background: #04140c; animation: none; box-shadow: 0 0 0 3px transparent, 0 18px 44px rgba(0, 0, 0, .45); }
