@@ -8,7 +8,7 @@ import * as THREE from "./lib/three.module.min.js";
 import { POSES, precargar } from "./penaltis.js";
 import { crearFigura } from "./penaltis_cuerpo.js";
 
-const W = 400, H = 640, SUELO = 548, CADX = 200, CADY = SUELO - 172, L = 104, RB = 22, RP = 30, PARED = 26;
+const W = 400, H = 640, SUELO = 548, CADX = 200, CADY = SUELO - 172, L = 104, RB = 22, PARED = 26;
 const G0 = 720, G1 = 1050, CD_TOQUE = 0.13, UMBRALES_TIKI = [30, 100];
 const REACH = 140, HX_MIN = 62, HX_MAX = 338, PX = 196, ANK = 10;   /* alcance de la pierna (px), límites del cuerpo, px por metro, tobillo sobre el centro del pie */
 const hexN = (s) => parseInt(String(s).slice(1), 16);
@@ -291,7 +291,7 @@ export function abrir(api, raiz) {
     return d;
   };
   const son = crearSonido(api);
-  const S = { fase: "menu", ball: { x: CADX, y: 200, vx: 0, vy: 0, ang: 0, w: 0 }, foot: { x: CADX + 60, y: CADY + 110, vx: 0, vy: 0 }, obj: { x: CADX + 60, y: CADY + 110 }, hx: CADX, hvx: 0, lado: 1, gx: [CADX - 24, CADX + 24], w: [0, 1], lift: [0, 0], toques: 0, pts: 0, mult: 1, cool: 0, t: 0, g: G0, viento: 0, tikis: 0, flot: [], polvo: [], sacudida: 0, enSuelo: 0 };
+  const S = { fase: "menu", ball: { x: CADX, y: 200, vx: 0, vy: 0, ang: 0, w: 0 }, foot: { x: CADX + 60, y: CADY + 110, vx: 0, vy: 0 }, obj: { x: CADX + 60, y: CADY + 110 }, hx: CADX, hvx: 0, lado: 1, gx: [CADX - 24, CADX + 24], w: [0, 1], lift: [0, 0], dip: 0, sw: 0, swv: 0, hax: 0, toques: 0, pts: 0, mult: 1, cool: 0, t: 0, g: G0, viento: 0, tikis: 0, flot: [], polvo: [], sacudida: 0, enSuelo: 0 };
   let vivo = true, raf = 0, ultimo = 0, cw = 0, ch = 0, dpr = 1, esc = 1, ox = 0, oy = 0, bgCache = null, bgId = "", fotos = {}, lista = {}, puntero = false, esTactil = false;
 
   /* fotos libres opcionales */
@@ -366,14 +366,17 @@ export function abrir(api, raiz) {
     const f = fig; if (!f || !resto) return; const t = S.t;
     POSES.base(f);
     const mov = clamp(S.hvx / 700, -1, 1), kick = S.lado, idx = kick > 0 ? 1 : 0;
-    const hipH = SUELO - CADY - 2 - Math.abs(Math.sin(t * 9)) * Math.min(4, Math.abs(S.hvx) * 0.01);
+    const hipH = SUELO - CADY - 2 - S.dip * 7 - Math.abs(Math.sin(t * 9)) * Math.min(4, Math.abs(S.hvx) * 0.01);
     f.cadera.position.y = 0.95 + (hipH - resto[0].hy) / (0.97 * PX);
     jug.position.set(S.hx, -SUELO, 0);
-    f.torso.rotation.z = -mov * 0.2 - kick * 0.04; f.torso.rotation.x = 0.04; f.cadera.rotation.z = mov * 0.04;
-    /* brazos para equilibrar: el contrario a la pierna que golpea se abre más */
-    const abre = 0.5 + Math.abs(mov) * 0.35, cerca = 0.22 + Math.sin(t * 3) * 0.02;
-    f.brI.s.rotation.z = -(kick > 0 ? abre : cerca); f.brD.s.rotation.z = kick > 0 ? cerca : abre; f.brI.e.rotation.x = -0.35; f.brD.e.rotation.x = -0.35;
-    f.brI.s.rotation.x = -0.1 - Math.max(0, mov) * 0.1; f.brD.s.rotation.x = -0.1 + Math.min(0, mov) * 0.1;
+    const elev = clamp((SUELO - 60 - S.foot.y) / 160, 0, 1);
+    f.torso.rotation.z = -mov * 0.12 - kick * 0.05 * elev; f.torso.rotation.x = 0.06 + S.dip * 0.14; f.cadera.rotation.z = mov * 0.04 + kick * 0.04 * elev;
+    /* brazos relajados: cuelgan con péndulo (inercia al moverse), el contrario a la pierna que golpea se abre y adelanta un poco para equilibrar */
+    const resp = Math.sin(t * 2.2) * 0.015, base = 0.13 + S.dip * 0.05;
+    const aI = base + S.sw + (kick > 0 ? elev * 0.3 : 0) + resp, aD = base - S.sw + (kick > 0 ? 0 : elev * 0.3) - resp;
+    f.brI.s.rotation.z = -clamp(aI, 0.03, 0.95); f.brD.s.rotation.z = clamp(aD, 0.03, 0.95);
+    f.brI.s.rotation.x = -0.05 - (kick > 0 ? elev * 0.28 : -elev * 0.05) - S.dip * 0.1; f.brD.s.rotation.x = -0.05 - (kick > 0 ? -elev * 0.05 : elev * 0.28) - S.dip * 0.1;
+    f.brI.e.rotation.x = -0.28 - S.dip * 0.15 - Math.abs(S.sw) * 0.3; f.brD.e.rotation.x = -0.28 - S.dip * 0.15 - Math.abs(S.sw) * 0.3;
     const mx = clamp((S.ball.x - S.hx) / 150, -1, 1), up = clamp((CADY - 120 - S.ball.y) / 320, -0.4, 1);
     f.cabeza.rotation.y = mx * 0.45; f.cabeza.rotation.x = -up * 0.42; f.torso.rotation.y = mx * 0.12;
     jug.updateMatrixWorld(true);
@@ -382,7 +385,7 @@ export function abrir(api, raiz) {
       const Hh = wp(q.h), w = S.w[i], gnd = V(S.gx[i], -(SUELO - 23 - S.lift[i]), 0);
       const alto = clamp((CADY - S.foot.y) / 150 + 0.25, 0, 1), foot = V(S.foot.x, -(S.foot.y - ANK), 6 + alto * 46);
       const T = gnd.clone().lerp(foot, w);
-      pierna(q, resto[i], Hh, T, V((i ? 1 : -1) * 0.18, 0, 1), true, w > 0.5 ? 0.5 : 0);
+      pierna(q, resto[i], Hh, T, V((i ? 1 : -1) * 0.18, 0, 1), true, w > 0.5 ? clamp(0.55 + S.foot.vy * 0.0004, 0.15, 0.85) : 0);
       if (w < 0.5) { q.f.quaternion.copy(new THREE.Quaternion()); const q12 = q.h.quaternion.clone().multiply(q.k.quaternion); q.f.quaternion.copy(q12.invert()); }
     });
     R3.r.render(R3.scene, R3.cam);
@@ -404,17 +407,33 @@ export function abrir(api, raiz) {
     UMBRALES_TIKI.forEach((u) => { if (S.toques === u) { S.tikis++; try { api.tiki(); } catch (e) { /* opcional */ } try { api.victoria(); } catch (e) { /* opcional */ } S.flot.push({ x: CADX, y: 120, v: 1.6, txt: t("⚡ +1 tikitexto") }); } });
     pintaMarcador();
   }
+  /* La pierna (cadera → tobillo → suela) y el tronco son cápsulas: el balón rebota en cualquier punto del cuerpo y nunca lo atraviesa. */
+  function segmentos() {
+    const f = S.foot, out = [], hy = CADY;
+    [0, 1].forEach((i) => {
+      const w = S.w[i], hx = S.hx + (i ? 1 : -1) * 12, gy = SUELO - 23 - S.lift[i];
+      const ex = lerp(S.gx[i], f.x, w), ey = lerp(gy, f.y, w), vx = f.vx * w, vy = f.vy * w;
+      out.push({ x1: hx, y1: hy, x2: ex, y2: ey, r1: 17, r2: 12, v1x: S.hvx, v1y: 0, v2x: vx, v2y: vy });
+    });
+    out.push({ x1: S.hx, y1: hy - 6, x2: S.hx, y2: hy - 96, r1: 22, r2: 20, v1x: S.hvx, v1y: 0, v2x: S.hvx, v2y: 0, pecho: 1 });
+    return out;
+  }
   function colision() {
-    const b = S.ball, f = S.foot, dx = b.x - f.x, dy = b.y - f.y, d = Math.hypot(dx, dy), R = RB + RP; if (d >= R || d < 0.001) return;
-    const nx = dx / d, ny = dy / d; b.x = f.x + nx * (R + 0.5); b.y = f.y + ny * (R + 0.5);
-    const rvx = b.vx - f.vx, rvy = b.vy - f.vy, vn = rvx * nx + rvy * ny;
-    if (vn < 0) { b.vx -= 1.75 * vn * nx; b.vy -= 1.75 * vn * ny; }
-    if (S.cool > 0) return;
-    if (ny < 0.4 || b.vy < -200) {
-      /* toque válido: asegura un impulso hacia arriba controlado */
-      const apex = 150; const vmax = Math.sqrt(2 * S.g * Math.max(60, b.y - 70)), vmin = Math.sqrt(2 * S.g * Math.min(330, Math.max(120, b.y - apex)));
-      b.vy = -clamp(Math.abs(b.vy), Math.min(vmin, vmax), vmax); b.vx = clamp(b.vx * 0.4 + f.vx * 0.1 + (S.hx - b.x) * 0.9 + rnd(-14, 14) * (1 + S.toques / 60), -300, 300); b.w = b.vx * 0.04; S.cool = CD_TOQUE; toque();
-    } else { b.vy = Math.max(b.vy, 80); }
+    const b = S.ball;
+    segmentos().forEach((s) => {
+      const ex = s.x2 - s.x1, ey = s.y2 - s.y1, l2 = ex * ex + ey * ey || 1, tt = clamp(((b.x - s.x1) * ex + (b.y - s.y1) * ey) / l2, 0, 1);
+      const px = s.x1 + ex * tt, py = s.y1 + ey * tt, dx = b.x - px, dy = b.y - py, d = Math.hypot(dx, dy), R = RB + lerp(s.r1, s.r2, tt);
+      if (d >= R || d < 0.001) return;
+      const nx = dx / d, ny = dy / d; b.x = px + nx * (R + 0.5); b.y = py + ny * (R + 0.5);
+      const fvx = lerp(s.v1x, s.v2x, tt), fvy = lerp(s.v1y, s.v2y, tt), rvx = b.vx - fvx, rvy = b.vy - fvy, vn = rvx * nx + rvy * ny;
+      if (vn < 0) { b.vx -= (s.pecho ? 1.3 : 1.75) * vn * nx; b.vy -= (s.pecho ? 1.3 : 1.75) * vn * ny; }
+      if (S.cool > 0) return;
+      if (ny < 0.25 || b.vy < -200) {
+        /* toque válido (empeine, muslo o pecho): impulso hacia arriba controlado */
+        const apex = 150; const vmax = Math.sqrt(2 * S.g * Math.max(60, b.y - 70)), vmin = Math.sqrt(2 * S.g * Math.min(330, Math.max(120, b.y - apex)));
+        b.vy = -clamp(Math.abs(b.vy), Math.min(vmin, vmax), vmax); b.vx = clamp(b.vx * 0.4 + fvx * 0.1 + (S.hx - b.x) * 0.9 + rnd(-14, 14) * (1 + S.toques / 60), -300, 300); b.w = b.vx * 0.04; S.cool = CD_TOQUE; S.dip = 1; toque();
+      }
+    });
   }
   function finPartida() {
     S.fase = "fin"; son.suelo(); S.sacudida = 0.3; const d = datos(), antes = nuevosDe(d.pts), nuevo = S.toques > d.mejor;
@@ -431,10 +450,12 @@ export function abrir(api, raiz) {
     const b = S.ball, f = S.foot;
     /* el cuerpo sigue al dedo (con un pequeño retraso) y el pie sale hacia él desde la cadera de la pierna que golpea */
     const hx0 = S.hx; S.hx = lerp(S.hx, clamp(S.obj.x, HX_MIN, HX_MAX), 1 - Math.pow(0.0012, dt)); S.hvx = lerp(S.hvx, (S.hx - hx0) / dt, 0.4);
+    S.hax = (S.hvx - (S.hvxAnt || 0)) / dt; S.hvxAnt = S.hvx; S.dip = Math.max(0, S.dip - dt * 4.5);
+    S.swv += (-S.hax * 0.00045 - S.sw * 90 - S.swv * 11) * dt; S.sw = clamp(S.sw + S.swv * dt, -0.7, 0.7);
     if (S.obj.x - S.hx > 14) S.lado = 1; else if (S.obj.x - S.hx < -14) S.lado = -1;
     const nx = lerp(f.x, S.obj.x, 1 - Math.pow(0.0006, dt)), ny = lerp(f.y, S.obj.y, 1 - Math.pow(0.0006, dt));
     const cx = S.hx + S.lado * 14, dx = nx - cx, dy = ny - CADY, d = Math.hypot(dx, dy), kx = d > REACH ? REACH / d : 1;
-    const fx = cx + dx * kx, fy = Math.min(SUELO - 12, CADY + dy * kx);
+    const fx = cx + dx * kx, fy = clamp(CADY + dy * kx, CADY - 70, SUELO - 12);
     f.vx = lerp(f.vx, (fx - f.x) / dt, 0.6); f.vy = lerp(f.vy, (fy - f.y) / dt, 0.6); f.vx = clamp(f.vx, -1400, 1400); f.vy = clamp(f.vy, -1400, 1400); f.x = fx; f.y = fy;
     /* pierna de apoyo: da pasitos para seguir al cuerpo; cada pie pasa suavemente de «apoyo» a «golpeo» */
     [0, 1].forEach((i) => {
@@ -442,7 +463,7 @@ export function abrir(api, raiz) {
       const v = Math.abs(S.gx[i] - antes) / dt; S.lift[i] = lerp(S.lift[i], clamp(v * 0.035, 0, 20), 0.35);
       const objetivo = (i ? 1 : -1) === S.lado ? 1 : 0; S.w[i] = lerp(S.w[i], objetivo, 1 - Math.pow(0.0004, dt));
     });
-    if (S.fase === "menu") { b.x = f.x; b.y = f.y - RB - RP - 2 + Math.sin(S.t * 3) * 3; b.vx = b.vy = 0; b.ang += dt; return; }
+    if (S.fase === "menu") { b.x = f.x; b.y = f.y - ANK - RB - 12 + Math.sin(S.t * 3) * 3; b.vx = b.vy = 0; b.ang += dt; return; }
     if (S.fase === "fin") { b.vy += 1200 * dt; b.y += b.vy * dt; if (b.y > SUELO - RB) { b.y = SUELO - RB; b.vy *= -0.45; b.vx *= 0.7; if (Math.abs(b.vy) < 40) b.vy = 0; } b.x += b.vx * dt; b.ang += b.w * dt; return; }
     const sub = 4, h = dt / sub;
     for (let i = 0; i < sub; i++) {
@@ -538,5 +559,5 @@ export function abrir(api, raiz) {
   inicia3D(); tamano(); pintaStats(); raf = requestAnimationFrame(bucle);
   precargar().then(() => { listo = true; }).catch(() => { R3 = null; });
   /* Solo para las pruebas automáticas */
-  return { cerrar: cerrar, S: S, empezar: empezar, fisica: fisica, colision: colision, datos: datos, FONDOS: FONDOS, EQUIPACIONES: EQUIPACIONES, BALONES: BALONES, constantes: { REACH: REACH, W: W, H: H, SUELO: SUELO, CADX: CADX, CADY: CADY, RB: RB, RP: RP, L: L } };
+  return { cerrar: cerrar, S: S, empezar: empezar, fisica: fisica, colision: colision, datos: datos, FONDOS: FONDOS, EQUIPACIONES: EQUIPACIONES, BALONES: BALONES, constantes: { REACH: REACH, W: W, H: H, SUELO: SUELO, CADX: CADX, CADY: CADY, RB: RB, RP: 12, L: L } };
 }
