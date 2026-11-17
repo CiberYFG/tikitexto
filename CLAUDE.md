@@ -319,3 +319,9 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 - **Sin brillos:** la tarjeta voladora es mate (amarilla con borde negro, sin emisivo ni sprite aditivo) y pelotazo/árbitro tampoco brillan, para no confundirse con el rayo del turbo (`texRayo`).
 - **Modo infernal antes:** `velMov` sube desde 1:05 (×2,5 a 3:20), `espaciado` desde 1:40 y `filasExtra` 1 fila a 2:30 y 2 a 3:30; avisos a 1:05, 2:00 y 2:30.
 - Cracks Ocultos: pista −5 s (también las seguidas, `COSTE_PISTA_SEG = 5`).
+
+## Modo admin oculto (17-nov-2026)
+- Solo local, para el titular: se activa/desactiva con una secuencia secreta (teclas en PC o toques en las esquinas en móvil; **la secuencia no está escrita en el repo, que es público**: `index.html` solo guarda hashes `HK`/`HT` por prefijo; el titular la conoce). Bloque «Modo admin oculto» tras `api()` en `index.html` (`ADM_K = tikitexto:z9`, `ADM_ON`).
+- Activo: banner fijo «MODO ADMIN» arriba al centro (`.adm-banner`, en cualquier pantalla), `api()` no envía nada al ranking (solo deja pasar `ranking_top`; el resto devuelve `{estado:"admin"}`), `p.pend` no crece y se dan tikitextos, monedas de TIKI RUSH, puntos de Toques y estadísticas de Chapas casi infinitos (99.999.999). Al activarlo se guarda una copia del perfil; al desactivarlo se restaura (conservando `token`/`online`). Recarga la página al cambiar.
+- Si se añade una tienda/desbloqueo nuevo basado en otro contador del perfil, ampliar `alternar()`. Test 3am (solo se ejecuta con `TIKI_ADMIN_TECLAS`/`TIKI_ADMIN_TOQUES` definidas).
+

@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-6haigsWMCgqiSacR95d/JyHeO9IsRKs8aWLtV8kSLWk=' 'sha256-B1FZN5/Evo9AuSHms1Xjgwie0UnCmXgc8SwQYaIhtfw=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-4Z/3RMaU6FBEzjFv6JZvug6YGtU1sGYJBkgWVfKpPbA=' 'sha256-6haigsWMCgqiSacR95d/JyHeO9IsRKs8aWLtV8kSLWk=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>
 <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WN89TQCM"></script>
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -2299,6 +2299,8 @@ html:has(.modal:not([hidden]), .idioma) :is(.curio,.info,.novedad,.ah-card,.modo
 .info details p { margin: 8px 0 0; }
 html.t-espera body { visibility: hidden; }
 html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not([data-idioma="es"]):not([data-idioma="en"]) [data-solo-es-en] { display: none; }
+.adm-banner{position:fixed;top:3px;left:50%;transform:translateX(-50%);z-index:2147483647;pointer-events:none;font:700 10px/1 system-ui,sans-serif;letter-spacing:.14em;color:#fff;background:rgba(200,30,50,.88);padding:3px 9px;border-radius:99px;box-shadow:0 1px 6px rgba(0,0,0,.4)}
+.adm-aviso{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:2147483647;pointer-events:none;font:600 14px system-ui,sans-serif;color:#fff;background:rgba(20,20,28,.92);padding:10px 18px;border-radius:12px}
 </style>
 </head>
 <body>
@@ -5693,7 +5695,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (suma) {
       const enLinea = ONLINE && p.online;
       textoPunto = "⚡ +1 tikitexto · " + p.pts + " en total" + (enLinea || esInvitado() ? "" : " · puesto #" + puesto()) + " · Ver ranking";
-      if (enLinea) { p.pend = (p.pend || 0) + 1; guardarJ(); enviarPend(); }
+      if (enLinea && !ADM_ON) { p.pend = (p.pend || 0) + 1; guardarJ(); enviarPend(); }
       mostrarPunto();
       pedirNickname();
     }
@@ -5725,12 +5727,90 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   let enviando = false;
 
   function api(fn, cuerpo) {
+    if (ADM_ON && fn !== "ranking_top") return Promise.resolve({ estado: "admin" });
     return fetch(RANKING_URL.replace(/\/$/, "") + "/rest/v1/rpc/" + fn, {
       method: "POST",
       headers: { "Content-Type": "application/json", apikey: RANKING_KEY },
       body: JSON.stringify(cuerpo || {})
     }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
   }
+
+  /* ---------- Modo admin oculto (solo local; no se envía nada al ranking) ---------- */
+  const ADM_K = "tikitexto:z9";
+  let ADM_ON = false;
+  try { ADM_ON = Boolean(localStorage.getItem(ADM_K)); } catch (error) { /* sin almacenamiento */ }
+  (function () {
+    function h(s) {
+      let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+      for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); }
+      h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507); h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+      h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507); h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+      return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+    }
+    const HK = [6718660352238605, 6008094352954502, 7461995637431809, 6563114591922476, 7263502142381636, 2391971673914918, 5410985146991167, 3095426302316906];
+    const HT = [4402313628706285, 639661936652826, 6072656312239979, 2113621850708908, 3864815473727645, 3004334792808215, 827567783569114, 3943133707577271];
+    function aviso(txt) {
+      const e = document.createElement("div"); e.className = "adm-aviso"; e.textContent = txt; document.body.appendChild(e);
+      setTimeout(function () { e.remove(); }, 2600);
+    }
+    function banner() {
+      if (!ADM_ON || document.getElementById("admBanner")) return;
+      const b = document.createElement("div"); b.id = "admBanner"; b.className = "adm-banner"; b.setAttribute("data-no-t", ""); b.textContent = "MODO ADMIN"; document.body.appendChild(b);
+    }
+    function alternar() {
+      try {
+        if (!ADM_ON) {
+          const p = perfil();
+          localStorage.setItem(ADM_K, JSON.stringify({ n: datosJ.actual, b: JSON.stringify(p) }));
+          const G = 99999999;
+          p.pts = G; p.pend = 0;
+          if (!p.nv) p.nv = { t: 0, f: 0, tut: {} };
+          const nv2 = p.nv;
+          nv2.c = Object.assign(nv2.c || {}, { gan: G, gol: G, golc: G, par: G, racha: G, mejor: G, gast: 0 });
+          nv2.sl = Object.assign(nv2.sl || {}, { bal: G, gast: 0 });
+          nv2.to = Object.assign(nv2.to || {}, { pts: G });
+          guardarJ();
+          sessionStorage.setItem("tikitexto:z9m", "1");
+        } else {
+          const s = JSON.parse(localStorage.getItem(ADM_K) || "null");
+          if (s && datosJ.perfiles[s.n]) {
+            const cur = datosJ.perfiles[s.n], bak = JSON.parse(s.b);
+            bak.token = cur.token; bak.online = cur.online;
+            datosJ.perfiles[s.n] = bak; guardarJ();
+          }
+          localStorage.removeItem(ADM_K);
+          sessionStorage.setItem("tikitexto:z9m", "0");
+        }
+        location.reload();
+      } catch (error) { /* sin almacenamiento */ }
+    }
+    window.addEventListener("DOMContentLoaded", function () {
+      banner();
+      let m = null; try { m = sessionStorage.getItem("tikitexto:z9m"); sessionStorage.removeItem("tikitexto:z9m"); } catch (error) { /* nada */ }
+      if (m === "1") aviso("Modo admin activado"); else if (m === "0") aviso("Modo admin desactivado");
+    });
+    /* secuencia 1 (PC): ocho teclas seguidas; secuencia 2 (móvil): ocho toques en las esquinas */
+    let sk = [], tk = 0, st = [], tt = 0, tragar = false;
+    function avanza(arr, v, hs, t0) {
+      const ahora = Date.now(); if (ahora - t0 > 1800) arr.length = 0;
+      arr.push(v);
+      if (h("tkx|" + arr.join(",")) !== hs[arr.length - 1]) { arr.length = 0; arr.push(v); if (h("tkx|" + v) !== hs[0]) arr.length = 0; }
+      return { ok: arr.length === hs.length, t: ahora };
+    }
+    document.addEventListener("keydown", function (e) {
+      const el = e.target; if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA")) return;
+      const r = avanza(sk, e.code, HK, tk); tk = r.t;
+      if (r.ok) { sk.length = 0; alternar(); }
+    }, true);
+    document.addEventListener("pointerdown", function (e) {
+      const w = window.innerWidth, hh = window.innerHeight, z = 84, x = e.clientX, y = e.clientY;
+      const c = (x < z && y < z) ? 0 : (x > w - z && y < z) ? 1 : (x < z && y > hh - z) ? 2 : (x > w - z && y > hh - z) ? 3 : -1;
+      if (c < 0) { st.length = 0; return; }
+      const r = avanza(st, c, HT, tt); tt = r.t; tragar = st.length >= 2;
+      if (r.ok) { st.length = 0; tragar = true; alternar(); }
+    }, true);
+    document.addEventListener("click", function (e) { if (tragar) { tragar = false; e.preventDefault(); e.stopPropagation(); } }, true);
+  })();
 
   const ALFABETO = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   function nuevoToken() {
@@ -5773,7 +5853,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   function enviarPend() {
     const nombre = datosJ.actual;
     const p = datosJ.perfiles[nombre];
-    if (!ONLINE || !p.online || !p.pend || enviando) return;
+    if (!ONLINE || ADM_ON || !p.online || !p.pend || enviando) return;
     enviando = true;
 
     api("registrar_acierto", { p_nombre: nombre, p_token: p.token }).then(function (r) {
@@ -6609,7 +6689,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     const p = perfil();
     p.pts++;
     nv.ganados++;
-    const enLinea = ONLINE && p.online;
+    const enLinea = ONLINE && p.online && !ADM_ON;
     if (enLinea) p.pend = (p.pend || 0) + 1;
     guardarJ();
     pintarTikis();

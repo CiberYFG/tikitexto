@@ -1360,6 +1360,47 @@ for _r in ("comparador/", "en/football-comparator/"):
             _mal3.append(_r + _s)
 check("duelos del comparador: >=120 páginas con tabla, FAQ, hreflang y sitemap", _n3 >= 120 and not _mal3, str(_mal3[:3]) + " n=" + str(_n3))
 
+# 3am) modo admin oculto (la secuencia secreta NO está en el repo: variables de entorno TIKI_ADMIN_TECLAS="Code,Code,..." y TIKI_ADMIN_TOQUES="0,3,2,..." con 0=sup.izq 1=sup.der 2=inf.izq 3=inf.der; sin ellas se omite)
+_SEQ = [k for k in os.environ.get("TIKI_ADMIN_TECLAS", "").split(",") if k]
+_TAPS = []
+for _c in [k for k in os.environ.get("TIKI_ADMIN_TOQUES", "").split(",") if k]:
+    _TAPS.append({"0": (10, 10), "1": (380, 10), "2": (10, 834), "3": (380, 834)}[_c])
+if not _SEQ:
+    print("(3am omitido: define TIKI_ADMIN_TECLAS y TIKI_ADMIN_TOQUES para probar el modo admin)")
+else:
+ try:
+   with _spw() as _pw:
+     _br = _pw.chromium.launch(); _cx = _br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+     _cx.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');")
+     _pa = _cx.new_page(); _errs = []; _reqs = []
+     _pa.on("pageerror", lambda e: _errs.append(str(e))); _pa.on("request", lambda r: _reqs.append(r.url) if "/rpc/" in r.url else None)
+     _pa.goto(BASE, wait_until="networkidle", timeout=60000); _pa.wait_for_timeout(800)
+     _pa.evaluate("(()=>{const d=JSON.parse(localStorage.getItem('tikitexto:jugadores')||'null')||{actual:'',perfiles:{'':{pts:3,jugadas:0,aciertos:0,racha:0,mejor:0,dist:[0,0,0,0,0,0],diario:'',token:'',online:false,pend:0}}};d.perfiles[d.actual].pts=3;localStorage.setItem('tikitexto:jugadores',JSON.stringify(d));})()")
+     _pa.reload(wait_until="networkidle"); _pa.wait_for_timeout(500)
+     for _k in ("KeyQ","KeyW","KeyE","KeyR"): _pa.keyboard.press(_k)
+     check("admin: una secuencia errónea no activa nada", _pa.evaluate("!localStorage.getItem('tikitexto:z9') && !document.getElementById('admBanner')"))
+     for _k in _SEQ: _pa.keyboard.press(_k)
+     _pa.wait_for_timeout(1500)
+     _r = _pa.evaluate("(()=>{const d=JSON.parse(localStorage.getItem('tikitexto:jugadores'));const p=d.perfiles[d.actual];const b=document.getElementById('admBanner');return {b:b&&b.textContent,pts:p.pts,bal:p.nv.sl.bal,to:p.nv.to.pts,gan:p.nv.c.gan}})()")
+     check("admin: la secuencia de teclas activa el modo, muestra MODO ADMIN y da recursos", _r["b"] == "MODO ADMIN" and _r["pts"] > 1e6 and _r["bal"] > 1e6 and _r["to"] > 1e6 and _r["gan"] > 1e6, str(_r))
+     _n0 = len(_reqs)
+     _pa.evaluate("fetch('/x')"); 
+     _q = _pa.evaluate("(()=>{try{return typeof TIKI.cuenta}catch(e){return 'x'}})()")
+     check("admin: no se hacen peticiones de escritura al ranking", len([u for u in _reqs if "registrar" in u or "reclamar" in u]) == 0, str(_reqs[:3]))
+     for _k in _SEQ: _pa.keyboard.press(_k)
+     _pa.wait_for_timeout(1500)
+     _r = _pa.evaluate("(()=>{const d=JSON.parse(localStorage.getItem('tikitexto:jugadores'));const p=d.perfiles[d.actual];return {b:!!document.getElementById('admBanner'),pts:p.pts,k:localStorage.getItem('tikitexto:z9')}})()")
+     check("admin: repetir la secuencia lo desactiva y restaura los valores", not _r["b"] and _r["pts"] == 3 and _r["k"] is None, str(_r))
+     _w, _hh = 390, 844
+     for _pt in _TAPS:
+         _pa.mouse.click(*_pt); _pa.wait_for_timeout(150)
+     _pa.wait_for_timeout(1500)
+     check("admin: la secuencia de toques en las esquinas lo activa", _pa.evaluate("!!document.getElementById('admBanner')"))
+     check("admin: sin errores de JavaScript", not _errs, str(_errs[:2]))
+     _br.close()
+ except Exception as _ex:
+     check("admin: prueba de navegador", False, str(_ex)[:200])
+
 print(f"\n{len(ok)} correctas, {len(fallos)} con fallo")
 if fallos:
     print("FALLOS:\n - " + "\n - ".join(fallos))
