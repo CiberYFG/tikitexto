@@ -4,8 +4,14 @@
    Fondos: si existe la foto libre `img/toques/<id>.jpg` (ver img/toques/LEEME.md) se usa; si no, se pinta una escena propia con código.
    Módulo ES; todo en <canvas>; sonidos sintetizados; sin escudos, logos ni fotos de jugadores. */
 
-const W = 400, H = 640, SUELO = 548, CADX = 200, CADY = SUELO - 184, L = 104, RB = 22, RP = 19, PARED = 26;
-const G0 = 950, G1 = 1500, CD_TOQUE = 0.13, UMBRALES_TIKI = [30, 100];
+import * as THREE from "./lib/three.module.min.js";
+import { POSES, precargar } from "./penaltis.js";
+import { crearFigura } from "./penaltis_cuerpo.js";
+
+const W = 400, H = 640, SUELO = 548, CADX = 200, CADY = SUELO - 172, L = 104, RB = 22, RP = 30, PARED = 26;
+const G0 = 720, G1 = 1050, CD_TOQUE = 0.13, UMBRALES_TIKI = [30, 100];
+const REACH = 140, HX_MIN = 62, HX_MAX = 338, PX = 196, ANK = 10;   /* alcance de la pierna (px), límites del cuerpo, px por metro, tobillo sobre el centro del pie */
+const hexN = (s) => parseInt(String(s).slice(1), 16);
 const rnd = (a, b) => a + Math.random() * (b - a);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -225,7 +231,9 @@ function crearSonido(api) {
 }
 
 const PLANTILLA = `
-<canvas class="to-cv" data-cv></canvas>
+<canvas class="to-cv" data-cvf></canvas>
+<canvas class="to-cv3" data-cv3></canvas>
+<canvas class="to-cv2" data-cv></canvas>
 <div class="to-cab">
   <button type="button" class="to-btn" data-to="salir" aria-label="Salir">✕</button>
   <div class="to-marc" data-marc hidden><b data-toques data-no-t>0</b><small>toques</small><span data-mult data-no-t></span></div>
@@ -236,9 +244,9 @@ const PLANTILLA = `
   <div class="to-caja">
     <p class="to-kicker">Videojuego</p>
     <h2 class="to-titulo">TOQUES</h2>
-    <p class="to-sub">Mueve solo el pie y mantén el balón en el aire. Cada toque suma puntos y, con ellos, desbloqueas equipaciones, balones y fondos.</p>
+    <p class="to-sub">Mueve al jugador y mantén el balón en el aire. Cada toque suma puntos y, con ellos, desbloqueas equipaciones, balones y fondos.</p>
     <ul class="to-como">
-      <li><b>1</b><span>Arrastra el dedo (o el ratón): el pie va hacia ti.</span></li>
+      <li><b>1</b><span>Arrastra el dedo (o el ratón): el jugador se mueve y su pie va hacia ti.</span></li>
       <li><b>2</b><span>Colócalo bajo el balón para darle un toque. Más toques seguidos, más multiplicador.</span></li>
       <li><b>3</b><span>Si el balón toca el suelo, se acaba.</span></li>
     </ul>
@@ -276,14 +284,14 @@ const PLANTILLA = `
 export function abrir(api, raiz) {
   const t = (s) => (api.t ? api.t(s) : s);
   raiz.innerHTML = PLANTILLA;
-  const $ = (s) => raiz.querySelector(s), cv = $("[data-cv]"), g = cv.getContext("2d");
+  const $ = (s) => raiz.querySelector(s), cv = $("[data-cv]"), g = cv.getContext("2d"), cvf = $("[data-cvf]"), gf = cvf.getContext("2d"), cv3 = $("[data-cv3]");
   const datos = () => {
     const d = api.datos(); ["mejor", "pts", "tot", "part", "tiki"].forEach((k) => { if (typeof d[k] !== "number") d[k] = 0; });
     if (!d.sel) d.sel = { k: "azul", b: "clasico", f: "callejon" };
     return d;
   };
   const son = crearSonido(api);
-  const S = { fase: "menu", ball: { x: CADX, y: 200, vx: 0, vy: 0, ang: 0, w: 0 }, foot: { x: CADX + 60, y: CADY + 120, vx: 0, vy: 0 }, obj: { x: CADX + 60, y: CADY + 120 }, toques: 0, pts: 0, mult: 1, cool: 0, t: 0, g: G0, viento: 0, tikis: 0, flot: [], polvo: [], sacudida: 0, enSuelo: 0 };
+  const S = { fase: "menu", ball: { x: CADX, y: 200, vx: 0, vy: 0, ang: 0, w: 0 }, foot: { x: CADX + 60, y: CADY + 110, vx: 0, vy: 0 }, obj: { x: CADX + 60, y: CADY + 110 }, hx: CADX, hvx: 0, lado: 1, gx: [CADX - 24, CADX + 24], w: [0, 1], lift: [0, 0], toques: 0, pts: 0, mult: 1, cool: 0, t: 0, g: G0, viento: 0, tikis: 0, flot: [], polvo: [], sacudida: 0, enSuelo: 0 };
   let vivo = true, raf = 0, ultimo = 0, cw = 0, ch = 0, dpr = 1, esc = 1, ox = 0, oy = 0, bgCache = null, bgId = "", fotos = {}, lista = {}, puntero = false, esTactil = false;
 
   /* fotos libres opcionales */
@@ -296,8 +304,8 @@ export function abrir(api, raiz) {
 
   /* ── Tamaño y fondo ── */
   function tamano() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2); cw = raiz.clientWidth || innerWidth; ch = raiz.clientHeight || innerHeight; cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr); cv.style.width = cw + "px"; cv.style.height = ch + "px";
-    esc = Math.min(cw / W, ch / H); ox = (cw - W * esc) / 2; oy = (ch - H * esc) / 2; bgCache = null;
+    dpr = Math.min(window.devicePixelRatio || 1, 2); cw = raiz.clientWidth || innerWidth; ch = raiz.clientHeight || innerHeight; [cv, cvf].forEach((c) => { c.width = Math.round(cw * dpr); c.height = Math.round(ch * dpr); c.style.width = cw + "px"; c.style.height = ch + "px"; });
+    esc = Math.min(cw / W, ch / H); ox = (cw - W * esc) / 2; oy = (ch - H * esc) / 2; bgCache = null; ajusta3D();
   }
   function fondoActual() { const id = datos().sel.f; return ID_FONDO[id] || FONDOS[0]; }
   function construyeFondo() {
@@ -311,6 +319,75 @@ export function abrir(api, raiz) {
     bgId = f.id; bgCache = c; pintaCred();
   }
 
+
+  /* ── Jugador 3D (mismo cuerpo que el resto de juegos), dibujado en un lienzo transparente entre el fondo y el balón ── */
+  let R3 = null, fig = null, jug = null, resto = null, kitFig = "", listo = false;
+  function ajusta3D() {
+    if (!R3) return;
+    R3.r.setPixelRatio(dpr); R3.r.setSize(cw, ch, false); cv3.style.width = cw + "px"; cv3.style.height = ch + "px";
+    const c = R3.cam; c.left = -ox / esc; c.right = (cw - ox) / esc; c.top = oy / esc; c.bottom = -(ch - oy) / esc; c.updateProjectionMatrix();
+  }
+  function inicia3D() {
+    try {
+      const r = new THREE.WebGLRenderer({ canvas: cv3, alpha: true, antialias: true, powerPreference: "high-performance" });
+      r.setClearColor(0x000000, 0); r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.05;
+      const scene = new THREE.Scene(), cam = new THREE.OrthographicCamera(-200, 200, 320, -320, 1, 2000); cam.position.set(0, 0, 900);
+      scene.add(new THREE.HemisphereLight(0xdfe8ff, 0x445066, 1.05));
+      const sol = new THREE.DirectionalLight(0xfff2dc, 2.3); sol.position.set(160, 420, 700); scene.add(sol);
+      const luz2 = new THREE.DirectionalLight(0x9db8ff, 0.6); luz2.position.set(-300, 120, 500); scene.add(luz2);
+      jug = new THREE.Group(); jug.scale.setScalar(PX); scene.add(jug);
+      R3 = { r: r, scene: scene, cam: cam }; ajusta3D();
+    } catch (e) { R3 = null; }
+  }
+  function pantalonDe(k) { return (k.c2 === "#f2f4f8" || k.c2 === "#f4f4f4" || k.c2 === "#f4f6fa") ? ((k.dib === "rayas" && k.c1 === "#ffffff") ? "#ffffff" : "#1b2a4a") : k.c2; }
+  function montaFigura(kit) {
+    if (!R3) return;
+    if (fig) { jug.remove(fig.raiz); fig.malla.material.dispose(); fig = null; }
+    fig = crearFigura({ cuerpo: "jugador", camisa: hexN(kit.c1), camisa2: hexN(kit.c2), patron: kit.dib === "liso" ? undefined : kit.dib, pantalon: hexN(pantalonDe(kit)), media: hexN(kit.c1), media2: hexN(kit.c2), bota: 0x14161c, piel: 0xe8b78d, pelo: 0x2a1b12, manga: true });
+    jug.add(fig.raiz); kitFig = kit.id;
+    /* medidas de reposo de las piernas (en píxeles del mundo) */
+    POSES.base(fig); jug.position.set(0, 0, 0); jug.updateMatrixWorld(true);
+    const wp = (b) => b.getWorldPosition(new THREE.Vector3());
+    resto = [fig.pI, fig.pD].map((q) => { const Hh = wp(q.h), K = wp(q.k), F = wp(q.f); return { LT: Hh.distanceTo(K), LS: K.distanceTo(F), d1: K.clone().sub(Hh).normalize(), d2: F.clone().sub(K).normalize(), hy: Hh.y, hx: Hh.x }; });
+  }
+  const V = (x, y, z) => new THREE.Vector3(x, y, z);
+  /* cinemática inversa de dos huesos con la rodilla hacia delante (hacia la cámara) */
+  function pierna(q, r, Hh, T, polo, plano, giroPie) {
+    let d = Hh.distanceTo(T); const a = r.LT, b = r.LS, u = T.clone().sub(Hh); const maxd = a + b - 0.6;
+    if (d > maxd) { u.multiplyScalar(maxd / d); d = maxd; } if (d < 4) { u.set(0, -1, 0); d = 4; } u.normalize();
+    const T2 = Hh.clone().addScaledVector(u, d), al = (a * a - b * b + d * d) / (2 * d), h = Math.sqrt(Math.max(0, a * a - al * al));
+    const pd = polo.clone().addScaledVector(u, -polo.dot(u)); if (pd.lengthSq() < 1e-6) pd.set(0, 0, 1); pd.normalize();
+    const K = Hh.clone().addScaledVector(u, al).addScaledVector(pd, h), d1 = K.clone().sub(Hh).normalize(), d2 = T2.clone().sub(K).normalize();
+    const q1 = new THREE.Quaternion().setFromUnitVectors(r.d1, d1), d2l = d2.clone().applyQuaternion(q1.clone().invert()), q2 = new THREE.Quaternion().setFromUnitVectors(r.d2, d2l);
+    q.h.quaternion.copy(q1); q.k.quaternion.copy(q2);
+    const q12 = q1.clone().multiply(q2), pie = q12.clone().invert(); if (giroPie) pie.multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(giroPie, 0, 0))); q.f.quaternion.copy(pie);
+  }
+  function poseJugador(dt) {
+    const f = fig; if (!f || !resto) return; const t = S.t;
+    POSES.base(f);
+    const mov = clamp(S.hvx / 700, -1, 1), kick = S.lado, idx = kick > 0 ? 1 : 0;
+    const hipH = SUELO - CADY - 2 - Math.abs(Math.sin(t * 9)) * Math.min(4, Math.abs(S.hvx) * 0.01);
+    f.cadera.position.y = 0.95 + (hipH - resto[0].hy) / (0.97 * PX);
+    jug.position.set(S.hx, -SUELO, 0);
+    f.torso.rotation.z = -mov * 0.2 - kick * 0.04; f.torso.rotation.x = 0.04; f.cadera.rotation.z = mov * 0.04;
+    /* brazos para equilibrar: el contrario a la pierna que golpea se abre más */
+    const abre = 0.5 + Math.abs(mov) * 0.35, cerca = 0.22 + Math.sin(t * 3) * 0.02;
+    f.brI.s.rotation.z = -(kick > 0 ? abre : cerca); f.brD.s.rotation.z = kick > 0 ? cerca : abre; f.brI.e.rotation.x = -0.35; f.brD.e.rotation.x = -0.35;
+    f.brI.s.rotation.x = -0.1 - Math.max(0, mov) * 0.1; f.brD.s.rotation.x = -0.1 + Math.min(0, mov) * 0.1;
+    const mx = clamp((S.ball.x - S.hx) / 150, -1, 1), up = clamp((CADY - 120 - S.ball.y) / 320, -0.4, 1);
+    f.cabeza.rotation.y = mx * 0.45; f.cabeza.rotation.x = -up * 0.42; f.torso.rotation.y = mx * 0.12;
+    jug.updateMatrixWorld(true);
+    const wp = (b) => b.getWorldPosition(new THREE.Vector3());
+    [f.pI, f.pD].forEach((q, i) => {
+      const Hh = wp(q.h), w = S.w[i], gnd = V(S.gx[i], -(SUELO - 23 - S.lift[i]), 0);
+      const alto = clamp((CADY - S.foot.y) / 150 + 0.25, 0, 1), foot = V(S.foot.x, -(S.foot.y - ANK), 6 + alto * 46);
+      const T = gnd.clone().lerp(foot, w);
+      pierna(q, resto[i], Hh, T, V((i ? 1 : -1) * 0.18, 0, 1), true, w > 0.5 ? 0.5 : 0);
+      if (w < 0.5) { q.f.quaternion.copy(new THREE.Quaternion()); const q12 = q.h.quaternion.clone().multiply(q.k.quaternion); q.f.quaternion.copy(q12.invert()); }
+    });
+    R3.r.render(R3.scene, R3.cam);
+  }
+
   /* ── Juego ── */
   function reiniciaBalon() { Object.assign(S.ball, { x: CADX + rnd(-40, 40), y: 150, vx: rnd(-30, 30), vy: 0, ang: 0, w: 0 }); }
   function empezar() {
@@ -321,8 +398,8 @@ export function abrir(api, raiz) {
   function pintaMarcador() { $("[data-toques]").textContent = String(S.toques); $("[data-mult]").textContent = S.mult > 1 ? "×" + S.mult : ""; $("[data-pts]").textContent = S.pts + " pts"; }
   function toque(rel) {
     S.toques++; S.mult = Math.min(6, 1 + Math.floor(S.toques / 10)); const ganados = 10 * S.mult; S.pts += ganados;
-    S.g = lerp(G0, G1, clamp(S.toques / 80, 0, 1)); S.viento = S.toques > 25 ? Math.sin(S.toques * 1.7) * Math.min(180, (S.toques - 25) * 4) : 0;
-    S.flot.push({ x: S.ball.x, y: S.ball.y - 30, v: 1, txt: "+" + ganados }); for (let i = 0; i < 6; i++) S.polvo.push({ x: S.foot.x, y: S.foot.y + 10, vx: rnd(-90, 90), vy: rnd(-120, -10), v: 0.4 });
+    S.g = lerp(G0, G1, clamp(S.toques / 80, 0, 1)); S.viento = S.toques > 30 ? Math.sin(S.toques * 1.7) * Math.min(110, (S.toques - 30) * 2.5) : 0;
+    S.flot.push({ x: S.ball.x, y: S.ball.y - 30, v: 1, txt: "+" + ganados }); for (let i = 0; i < 6; i++) S.polvo.push({ x: S.foot.x, y: S.foot.y + 14, vx: rnd(-90, 90), vy: rnd(-120, -10), v: 0.4 });
     son.toque(S.toques); if (S.toques % 10 === 0) { son.hito(); S.sacudida = 0.18; }
     UMBRALES_TIKI.forEach((u) => { if (S.toques === u) { S.tikis++; try { api.tiki(); } catch (e) { /* opcional */ } try { api.victoria(); } catch (e) { /* opcional */ } S.flot.push({ x: CADX, y: 120, v: 1.6, txt: t("⚡ +1 tikitexto") }); } });
     pintaMarcador();
@@ -333,10 +410,10 @@ export function abrir(api, raiz) {
     const rvx = b.vx - f.vx, rvy = b.vy - f.vy, vn = rvx * nx + rvy * ny;
     if (vn < 0) { b.vx -= 1.75 * vn * nx; b.vy -= 1.75 * vn * ny; }
     if (S.cool > 0) return;
-    if (ny < 0.12 || b.vy < -200) {
+    if (ny < 0.4 || b.vy < -200) {
       /* toque válido: asegura un impulso hacia arriba controlado */
-      const apex = 120; const vmax = Math.sqrt(2 * S.g * Math.max(60, b.y - 70)), vmin = Math.sqrt(2 * S.g * Math.min(330, Math.max(120, b.y - apex)));
-      b.vy = -clamp(Math.abs(b.vy), Math.min(vmin, vmax), vmax); b.vx = clamp(b.vx * 0.9 + f.vx * 0.12 + rnd(-24, 24) * (1 + S.toques / 30), -380, 380); b.w = b.vx * 0.04; S.cool = CD_TOQUE; toque();
+      const apex = 150; const vmax = Math.sqrt(2 * S.g * Math.max(60, b.y - 70)), vmin = Math.sqrt(2 * S.g * Math.min(330, Math.max(120, b.y - apex)));
+      b.vy = -clamp(Math.abs(b.vy), Math.min(vmin, vmax), vmax); b.vx = clamp(b.vx * 0.4 + f.vx * 0.1 + (S.hx - b.x) * 0.9 + rnd(-14, 14) * (1 + S.toques / 60), -300, 300); b.w = b.vx * 0.04; S.cool = CD_TOQUE; toque();
     } else { b.vy = Math.max(b.vy, 80); }
   }
   function finPartida() {
@@ -352,11 +429,19 @@ export function abrir(api, raiz) {
   function nuevosDe(p) { const o = []; EQUIPACIONES.concat(BALONES, FONDOS).forEach((x) => { if (x.p <= p) o.push(x.n); }); return o; }
   function fisica(dt) {
     const b = S.ball, f = S.foot;
-    /* el pie persigue el objetivo con un poco de inercia */
+    /* el cuerpo sigue al dedo (con un pequeño retraso) y el pie sale hacia él desde la cadera de la pierna que golpea */
+    const hx0 = S.hx; S.hx = lerp(S.hx, clamp(S.obj.x, HX_MIN, HX_MAX), 1 - Math.pow(0.0012, dt)); S.hvx = lerp(S.hvx, (S.hx - hx0) / dt, 0.4);
+    if (S.obj.x - S.hx > 14) S.lado = 1; else if (S.obj.x - S.hx < -14) S.lado = -1;
     const nx = lerp(f.x, S.obj.x, 1 - Math.pow(0.0006, dt)), ny = lerp(f.y, S.obj.y, 1 - Math.pow(0.0006, dt));
-    const dx = nx - CADX, dy = ny - (CADY + 6), d = Math.hypot(dx, dy), max = 2 * L - 2, kx = d > max ? max / d : 1;
-    const fx = CADX + dx * kx, fy = Math.min(SUELO - 12, CADY + 6 + dy * kx);
+    const cx = S.hx + S.lado * 14, dx = nx - cx, dy = ny - CADY, d = Math.hypot(dx, dy), kx = d > REACH ? REACH / d : 1;
+    const fx = cx + dx * kx, fy = Math.min(SUELO - 12, CADY + dy * kx);
     f.vx = lerp(f.vx, (fx - f.x) / dt, 0.6); f.vy = lerp(f.vy, (fy - f.y) / dt, 0.6); f.vx = clamp(f.vx, -1400, 1400); f.vy = clamp(f.vy, -1400, 1400); f.x = fx; f.y = fy;
+    /* pierna de apoyo: da pasitos para seguir al cuerpo; cada pie pasa suavemente de «apoyo» a «golpeo» */
+    [0, 1].forEach((i) => {
+      const meta = S.hx + (i ? 1 : -1) * 22, antes = S.gx[i]; S.gx[i] = lerp(antes, meta, 1 - Math.pow(0.002, dt));
+      const v = Math.abs(S.gx[i] - antes) / dt; S.lift[i] = lerp(S.lift[i], clamp(v * 0.035, 0, 20), 0.35);
+      const objetivo = (i ? 1 : -1) === S.lado ? 1 : 0; S.w[i] = lerp(S.w[i], objetivo, 1 - Math.pow(0.0004, dt));
+    });
     if (S.fase === "menu") { b.x = f.x; b.y = f.y - RB - RP - 2 + Math.sin(S.t * 3) * 3; b.vx = b.vy = 0; b.ang += dt; return; }
     if (S.fase === "fin") { b.vy += 1200 * dt; b.y += b.vy * dt; if (b.y > SUELO - RB) { b.y = SUELO - RB; b.vy *= -0.45; b.vx *= 0.7; if (Math.abs(b.vy) < 40) b.vy = 0; } b.x += b.vx * dt; b.ang += b.w * dt; return; }
     const sub = 4, h = dt / sub;
@@ -370,14 +455,34 @@ export function abrir(api, raiz) {
   }
 
   /* ── Dibujo ── */
+  function paredes(x, w, h) {
+    /* fuera de la pared: oscuro; paredes y techo en neón para ver bien dónde acaba el campo */
+    x.fillStyle = "rgba(3,8,22,.58)"; x.fillRect(-3000, -3000, 3000 + PARED, 6000); x.fillRect(W - PARED, -3000, 3000 + PARED, 6000); x.fillRect(PARED, -3000, W - 2 * PARED, 3000);
+    const lin = (x1, y1, x2, y2) => { x.beginPath(); x.moveTo(x1, y1); x.lineTo(x2, y2); x.stroke(); };
+    x.save(); x.lineCap = "round"; x.shadowColor = "#19e6ff"; x.shadowBlur = 16; x.strokeStyle = "#19e6ff"; x.lineWidth = 3.5;
+    lin(PARED, -3000, PARED, SUELO + 6); lin(W - PARED, -3000, W - PARED, SUELO + 6); lin(PARED, 0, W - PARED, 0);
+    x.shadowBlur = 0; x.strokeStyle = "rgba(255,255,255,.55)"; x.lineWidth = 1.2; lin(PARED, -3000, PARED, SUELO + 6); lin(W - PARED, -3000, W - PARED, SUELO + 6); lin(PARED, 0, W - PARED, 0);
+    /* marcas de altura en las paredes */
+    x.strokeStyle = "rgba(25,230,255,.45)"; x.lineWidth = 2; for (let yy = 90; yy < SUELO; yy += 90) { lin(PARED, yy, PARED + 9, yy); lin(W - PARED, yy, W - PARED - 9, yy); }
+    x.restore();
+  }
   function dibuja(dt) {
     if (!bgCache) construyeFondo();
-    g.setTransform(1, 0, 0, 1, 0, 0); g.drawImage(bgCache, 0, 0, cv.width, cv.height); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const sk = S.sacudida > 0 ? (Math.random() - 0.5) * 8 * S.sacudida * 4 : 0; g.save(); g.translate(ox + sk, oy + (S.sacudida > 0 ? (Math.random() - 0.5) * 6 * S.sacudida * 4 : 0)); g.scale(esc, esc);
-    /* sombra del balón en el suelo */
-    const alt = clamp((SUELO - S.ball.y) / 420, 0, 1); g.fillStyle = "rgba(0,0,0," + (0.32 - alt * 0.2).toFixed(2) + ")"; g.beginPath(); g.ellipse(S.ball.x, SUELO + 4, RB * (1.1 - alt * 0.5), 6 * (1.1 - alt * 0.4), 0, 0, 7); g.fill();
     const d = datos(), kit = EQUIPACIONES.filter((e) => e.id === d.sel.k)[0] || EQUIPACIONES[0], bal = BALONES.filter((e) => e.id === d.sel.b)[0] || BALONES[0];
-    pintaJugador(g, S, kit, S.t);
+    const sk = S.sacudida > 0 ? (Math.random() - 0.5) * 8 * S.sacudida * 4 : 0, sy = S.sacudida > 0 ? (Math.random() - 0.5) * 6 * S.sacudida * 4 : 0;
+    /* capa de fondo: escena, paredes y sombras */
+    gf.setTransform(1, 0, 0, 1, 0, 0); gf.drawImage(bgCache, 0, 0, cvf.width, cvf.height); gf.setTransform(dpr, 0, 0, dpr, 0, 0);
+    gf.save(); gf.translate(ox + sk, oy + sy); gf.scale(esc, esc);
+    paredes(gf);
+    const alt = clamp((SUELO - S.ball.y) / 420, 0, 1); gf.fillStyle = "rgba(0,0,0," + (0.32 - alt * 0.2).toFixed(2) + ")"; gf.beginPath(); gf.ellipse(S.ball.x, SUELO + 4, RB * (1.1 - alt * 0.5), 6 * (1.1 - alt * 0.4), 0, 0, 7); gf.fill();
+    gf.fillStyle = "rgba(0,0,0,.3)"; gf.beginPath(); gf.ellipse(S.hx, SUELO + 4, 66, 11, 0, 0, 7); gf.fill();
+    if (!R3 || !fig) { gf.save(); gf.translate(S.hx - CADX, 0); pintaJugador(gf, S, kit, S.t); gf.restore(); }
+    gf.restore();
+    /* capa 3D: el jugador */
+    if (R3) { if (listo && (!fig || kitFig !== kit.id)) montaFigura(kit); if (fig) poseJugador(dt); else R3.r.clear(); }
+    /* capa superior: balón, polvo y textos */
+    g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, cv.width, cv.height); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.save(); g.translate(ox + sk, oy + sy); g.scale(esc, esc);
     pintaBalon(g, S.ball.x, S.ball.y, RB, bal, S.ball.ang);
     S.polvo.forEach((p) => { g.fillStyle = "rgba(255,255,255," + (p.v * 1.4).toFixed(2) + ")"; g.beginPath(); g.arc(p.x, p.y, 3 + p.v * 4, 0, 7); g.fill(); });
     g.textAlign = "center"; g.font = "900 22px system-ui,Arial"; S.flot.forEach((p) => { g.globalAlpha = clamp(p.v, 0, 1); g.fillStyle = "#ffd23a"; g.strokeStyle = "rgba(0,0,0,.6)"; g.lineWidth = 4; g.strokeText(p.txt, p.x, p.y); g.fillText(p.txt, p.x, p.y); }); g.globalAlpha = 1;
@@ -394,7 +499,7 @@ export function abrir(api, raiz) {
 
   /* ── Entrada: el pie sigue al dedo / ratón ── */
   function aArena(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left - ox) / esc, y: (e.clientY - r.top - oy) / esc }; }
-  function mueve(e) { const p = aArena(e), off = e.pointerType === "touch" || e.pointerType === "pen" ? -46 : 0; S.obj.x = clamp(p.x, 0, W); S.obj.y = clamp(p.y + off, CADY - 60, SUELO - 12); }
+  function mueve(e) { const p = aArena(e), off = e.pointerType === "touch" || e.pointerType === "pen" ? -46 : 0; S.obj.x = clamp(p.x, PARED, W - PARED); S.obj.y = clamp(p.y + off, CADY - 30, SUELO - 12); }
   cv.addEventListener("pointerdown", (e) => { son.ini(); puntero = true; esTactil = e.pointerType === "touch"; try { cv.setPointerCapture(e.pointerId); } catch (x) { /* opcional */ } mueve(e); });
   cv.addEventListener("pointermove", (e) => { if (puntero || e.pointerType === "mouse") mueve(e); });
   ["pointerup", "pointercancel"].forEach((n) => cv.addEventListener(n, () => { puntero = false; }));
@@ -428,9 +533,10 @@ export function abrir(api, raiz) {
   window.addEventListener("keydown", onKey);
   const onRes = () => tamano(); window.addEventListener("resize", onRes);
   function cerrar() {
-    if (!vivo) return; vivo = false; cancelAnimationFrame(raf); window.removeEventListener("keydown", onKey); window.removeEventListener("resize", onRes); son.cerrar(); raiz.innerHTML = ""; if (api.salir) api.salir();
+    if (!vivo) return; vivo = false; cancelAnimationFrame(raf); window.removeEventListener("keydown", onKey); window.removeEventListener("resize", onRes); son.cerrar(); try { if (R3) { R3.r.dispose(); R3.r.forceContextLoss(); } } catch (e) { /* nada */ } raiz.innerHTML = ""; if (api.salir) api.salir();
   }
-  tamano(); pintaStats(); raf = requestAnimationFrame(bucle);
+  inicia3D(); tamano(); pintaStats(); raf = requestAnimationFrame(bucle);
+  precargar().then(() => { listo = true; }).catch(() => { R3 = null; });
   /* Solo para las pruebas automáticas */
-  return { cerrar: cerrar, S: S, empezar: empezar, fisica: fisica, colision: colision, datos: datos, FONDOS: FONDOS, EQUIPACIONES: EQUIPACIONES, BALONES: BALONES, constantes: { W: W, H: H, SUELO: SUELO, CADX: CADX, CADY: CADY, RB: RB, RP: RP, L: L } };
+  return { cerrar: cerrar, S: S, empezar: empezar, fisica: fisica, colision: colision, datos: datos, FONDOS: FONDOS, EQUIPACIONES: EQUIPACIONES, BALONES: BALONES, constantes: { REACH: REACH, W: W, H: H, SUELO: SUELO, CADX: CADX, CADY: CADY, RB: RB, RP: RP, L: L } };
 }

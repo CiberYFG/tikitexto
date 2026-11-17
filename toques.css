@@ -2,7 +2,9 @@
 .to-raiz { position: fixed; inset: 0; z-index: 2000; color: #fff; font-family: var(--fuente, system-ui, sans-serif); overflow: hidden; background: #0b1020; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
 .to-raiz * { box-sizing: border-box; }
 .to-raiz [hidden] { display: none !important; }
-.to-cv { position: absolute; inset: 0; display: block; touch-action: none; cursor: crosshair; }
+.to-cv, .to-cv3, .to-cv2 { position: absolute; inset: 0; display: block; }
+.to-cv, .to-cv3 { pointer-events: none; }
+.to-cv2 { touch-action: none; cursor: crosshair; }
 .to-cab { position: absolute; left: 0; right: 0; top: 0; display: flex; align-items: flex-start; justify-content: space-between; padding: calc(10px + env(safe-area-inset-top)) 12px 0; pointer-events: none; }
 .to-btn { pointer-events: auto; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255,255,255,.3); background: rgba(8,12,24,.65); backdrop-filter: blur(8px); color: #fff; font: 800 1rem/1 inherit; cursor: pointer; display: grid; place-items: center; }
 .to-btn:hover { background: rgba(30,40,70,.85); }

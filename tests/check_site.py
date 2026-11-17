@@ -1141,8 +1141,8 @@ with sync_playwright() as p:
         check("toques: un toque suma 1 toque y 10 puntos y lanza el balón hacia arriba", r["t"] == 1 and r["p"] == 10 and r["vy"] < -300, str(r))
         m = pto.evaluate("""(()=>{const j=TIKI.toques.juego(), S=j.S; S.toques=9; S.cool=0; S.ball.x=S.foot.x; S.ball.y=S.foot.y-30; S.ball.vx=0; S.ball.vy=300; j.colision(); return {t:S.toques,m:S.mult,p:S.pts};})()""")
         check("toques: a los 10 toques el multiplicador sube a ×2", m["t"] == 10 and m["m"] == 2, str(m))
-        pie = pto.evaluate("""(()=>{const j=TIKI.toques.juego(), S=j.S, k=j.constantes; const f0=S.fase; S.fase='menu'; S.obj.x=k.CADX+500; S.obj.y=k.CADY-400; for(let i=0;i<60;i++) j.fisica(0.016); S.fase=f0; const d=Math.hypot(S.foot.x-k.CADX, S.foot.y-(k.CADY+6)); return {d:Math.round(d), max:2*k.L, y:Math.round(S.foot.y), suelo:k.SUELO};})()""")
-        check("toques: el pie nunca se aleja de la cadera más que la longitud de la pierna", pie["d"] <= pie["max"], str(pie))
+        pie = pto.evaluate("""(()=>{const j=TIKI.toques.juego(), S=j.S, k=j.constantes; const f0=S.fase; S.fase='menu'; S.obj.x=k.CADX+500; S.obj.y=k.CADY-400; for(let i=0;i<60;i++) j.fisica(0.016); S.fase=f0; const d=Math.hypot(S.foot.x-(S.hx+S.lado*14), S.foot.y-k.CADY); return {d:Math.round(d), max:k.REACH+1, y:Math.round(S.foot.y), suelo:k.SUELO, hx:Math.round(S.hx)};})()""")
+        check("toques: el pie nunca se aleja de la cadera más que la longitud de la pierna y el cuerpo se desplaza hacia el dedo", pie["d"] <= pie["max"] and pie["hx"] > 250, str(pie))
         pto.evaluate("(()=>{const j=TIKI.toques.juego(), S=j.S; S.toques=29; S.cool=0; S.ball.x=S.foot.x; S.ball.y=S.foot.y-30; S.ball.vx=0; S.ball.vy=300; j.colision();})()")
         check("toques: el toque 30 da +1 tikitexto", pto.evaluate("TIKI.toques.juego().S.tikis") == 1)
         pto.evaluate("(()=>{const j=TIKI.toques.juego(), S=j.S; S.ball.x=40; S.ball.y=530; S.ball.vy=600; for(let i=0;i<20&&S.fase==='juego';i++) j.fisica(0.02);})()"); pto.wait_for_timeout(1000)
@@ -1360,13 +1360,10 @@ for _r in ("comparador/", "en/football-comparator/"):
             _mal3.append(_r + _s)
 check("duelos del comparador: >=120 páginas con tabla, FAQ, hreflang y sitemap", _n3 >= 120 and not _mal3, str(_mal3[:3]) + " n=" + str(_n3))
 
-# 3am) modo admin oculto (la secuencia secreta NO está en el repo: variables de entorno TIKI_ADMIN_TECLAS="Code,Code,..." y TIKI_ADMIN_TOQUES="0,3,2,..." con 0=sup.izq 1=sup.der 2=inf.izq 3=inf.der; sin ellas se omite)
+# 3am) modo admin oculto (la secuencia secreta NO está en el repo: variables de entorno TIKI_ADMIN_TECLAS="Code,Code,..."; en móvil se prueba dibujando una W en el selector de idioma; sin la variable se omite)
 _SEQ = [k for k in os.environ.get("TIKI_ADMIN_TECLAS", "").split(",") if k]
-_TAPS = []
-for _c in [k for k in os.environ.get("TIKI_ADMIN_TOQUES", "").split(",") if k]:
-    _TAPS.append({"0": (10, 10), "1": (380, 10), "2": (10, 834), "3": (380, 834)}[_c])
 if not _SEQ:
-    print("(3am omitido: define TIKI_ADMIN_TECLAS y TIKI_ADMIN_TOQUES para probar el modo admin)")
+    print("(3am omitido: define TIKI_ADMIN_TECLAS para probar el modo admin)")
 else:
  try:
    with _spw() as _pw:
@@ -1391,11 +1388,17 @@ else:
      _pa.wait_for_timeout(1500)
      _r = _pa.evaluate("(()=>{const d=JSON.parse(localStorage.getItem('tikitexto:jugadores'));const p=d.perfiles[d.actual];return {b:!!document.getElementById('admBanner'),pts:p.pts,k:localStorage.getItem('tikitexto:z9')}})()")
      check("admin: repetir la secuencia lo desactiva y restaura los valores", not _r["b"] and _r["pts"] == 3 and _r["k"] is None, str(_r))
-     _w, _hh = 390, 844
-     for _pt in _TAPS:
-         _pa.mouse.click(*_pt); _pa.wait_for_timeout(150)
+     _pa.evaluate("document.querySelector('#abrirIdioma').click()"); _pa.wait_for_timeout(400)
+     def _trazo(pts):
+         _pa.mouse.move(*pts[0]); _pa.mouse.down()
+         for _a, _b in zip(pts, pts[1:]):
+             _pa.mouse.move(*_b, steps=8)
+         _pa.mouse.up(); _pa.wait_for_timeout(300)
+     _trazo([(80, 300), (130, 330), (180, 300)])
+     check("admin: un trazo que no es una W en el selector de idioma no activa nada", _pa.evaluate("!localStorage.getItem('tikitexto:z9')") and _pa.evaluate("!!document.querySelector('.idioma')"))
+     _trazo([(60, 280), (110, 420), (160, 280), (210, 420), (260, 280)])
      _pa.wait_for_timeout(1500)
-     check("admin: la secuencia de toques en las esquinas lo activa", _pa.evaluate("!!document.getElementById('admBanner')"))
+     check("admin: dibujar una W en el selector de idioma lo activa", _pa.evaluate("!!document.getElementById('admBanner')"))
      check("admin: sin errores de JavaScript", not _errs, str(_errs[:2]))
      _br.close()
  except Exception as _ex:

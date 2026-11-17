@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-4Z/3RMaU6FBEzjFv6JZvug6YGtU1sGYJBkgWVfKpPbA=' 'sha256-6haigsWMCgqiSacR95d/JyHeO9IsRKs8aWLtV8kSLWk=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-6haigsWMCgqiSacR95d/JyHeO9IsRKs8aWLtV8kSLWk=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-amkoopc9ueszKgj7gp+rnvFlyRQHkJ6jaYaMoOOzEyA=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>
 <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WN89TQCM"></script>
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -2299,6 +2299,7 @@ html:has(.modal:not([hidden]), .idioma) :is(.curio,.info,.novedad,.ah-card,.modo
 .info details p { margin: 8px 0 0; }
 html.t-espera body { visibility: hidden; }
 html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not([data-idioma="es"]):not([data-idioma="en"]) [data-solo-es-en] { display: none; }
+.idioma{touch-action:none}
 .adm-banner{position:fixed;top:3px;left:50%;transform:translateX(-50%);z-index:2147483647;pointer-events:none;font:700 10px/1 system-ui,sans-serif;letter-spacing:.14em;color:#fff;background:rgba(200,30,50,.88);padding:3px 9px;border-radius:99px;box-shadow:0 1px 6px rgba(0,0,0,.4)}
 .adm-aviso{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:2147483647;pointer-events:none;font:600 14px system-ui,sans-serif;color:#fff;background:rgba(20,20,28,.92);padding:10px 18px;border-radius:12px}
 </style>
@@ -5748,7 +5749,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       return 4294967296 * (2097151 & h2) + (h1 >>> 0);
     }
     const HK = [6718660352238605, 6008094352954502, 7461995637431809, 6563114591922476, 7263502142381636, 2391971673914918, 5410985146991167, 3095426302316906];
-    const HT = [4402313628706285, 639661936652826, 6072656312239979, 2113621850708908, 3864815473727645, 3004334792808215, 827567783569114, 3943133707577271];
     function aviso(txt) {
       const e = document.createElement("div"); e.className = "adm-aviso"; e.textContent = txt; document.body.appendChild(e);
       setTimeout(function () { e.remove(); }, 2600);
@@ -5789,8 +5789,8 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       let m = null; try { m = sessionStorage.getItem("tikitexto:z9m"); sessionStorage.removeItem("tikitexto:z9m"); } catch (error) { /* nada */ }
       if (m === "1") aviso("Modo admin activado"); else if (m === "0") aviso("Modo admin desactivado");
     });
-    /* secuencia 1 (PC): ocho teclas seguidas; secuencia 2 (móvil): ocho toques en las esquinas */
-    let sk = [], tk = 0, st = [], tt = 0, tragar = false;
+    /* PC: ocho teclas seguidas */
+    let sk = [], tk = 0, tragar = false;
     function avanza(arr, v, hs, t0) {
       const ahora = Date.now(); if (ahora - t0 > 1800) arr.length = 0;
       arr.push(v);
@@ -5802,12 +5802,33 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       const r = avanza(sk, e.code, HK, tk); tk = r.t;
       if (r.ok) { sk.length = 0; alternar(); }
     }, true);
-    document.addEventListener("pointerdown", function (e) {
-      const w = window.innerWidth, hh = window.innerHeight, z = 84, x = e.clientX, y = e.clientY;
-      const c = (x < z && y < z) ? 0 : (x > w - z && y < z) ? 1 : (x < z && y > hh - z) ? 2 : (x > w - z && y > hh - z) ? 3 : -1;
-      if (c < 0) { st.length = 0; return; }
-      const r = avanza(st, c, HT, tt); tt = r.t; tragar = st.length >= 2;
-      if (r.ok) { st.length = 0; tragar = true; alternar(); }
+    /* móvil: dibujar una «W» con el dedo dentro del selector de idioma */
+    let trazo = null;
+    function esW(pts) {
+      if (pts.length < 8) return false;
+      let minY = 1e9, maxY = -1e9, minX = 1e9, maxX = -1e9;
+      pts.forEach(function (q) { minY = Math.min(minY, q.y); maxY = Math.max(maxY, q.y); minX = Math.min(minX, q.x); maxX = Math.max(maxX, q.x); });
+      const T = Math.max(26, (maxY - minY) * 0.45); if (maxY - minY < 52 || maxX - minX < 90) return false;
+      const ext = []; let dir = 0, ult = pts[0];
+      pts.forEach(function (q) {
+        if (dir !== 1 && q.y - ult.y > T) { ext.push(ult); dir = 1; ult = q; }
+        else if (dir !== -1 && ult.y - q.y > T) { ext.push(ult); dir = -1; ult = q; }
+        else if ((dir === 1 && q.y > ult.y) || (dir === -1 && q.y < ult.y)) ult = q;
+      });
+      ext.push(ult);
+      /* extremos: arriba, abajo, arriba, abajo, arriba */
+      if (ext.length !== 5) return false;
+      const ok = ext[1].y > ext[0].y + T * 0.9 && ext[2].y < ext[1].y - T * 0.9 && ext[3].y > ext[2].y + T * 0.9 && ext[4].y < ext[3].y - T * 0.9;
+      const xs = ext.map(function (q) { return q.x; }), crece = xs[4] - xs[0] > 80 && xs.every(function (v, k) { return k === 0 || v >= xs[k - 1] - 18; }), decrece = xs[0] - xs[4] > 80 && xs.every(function (v, k) { return k === 0 || v <= xs[k - 1] + 18; });
+      return ok && (crece || decrece);
+    }
+    document.addEventListener("pointerdown", function (e) { trazo = e.target && e.target.closest && e.target.closest(".idioma") ? [{ x: e.clientX, y: e.clientY }] : null; }, true);
+    document.addEventListener("pointermove", function (e) { if (trazo && trazo.length < 600) trazo.push({ x: e.clientX, y: e.clientY }); }, true);
+    document.addEventListener("pointercancel", function () { trazo = null; }, true);
+    document.addEventListener("pointerup", function () {
+      const t = trazo; trazo = null; if (!t || t.length < 6) return;
+      tragar = true; setTimeout(function () { tragar = false; }, 400);
+      if (esW(t)) alternar();
     }, true);
     document.addEventListener("click", function (e) { if (tragar) { tragar = false; e.preventDefault(); e.stopPropagation(); } }, true);
   })();

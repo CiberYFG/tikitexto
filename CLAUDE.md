@@ -321,7 +321,12 @@ Tests: `BASE_URL=http://localhost:8000/ SKIP_RANKING=1 python tests/check_site.p
 - Cracks Ocultos: pista −5 s (también las seguidas, `COSTE_PISTA_SEG = 5`).
 
 ## Modo admin oculto (17-nov-2026)
-- Solo local, para el titular: se activa/desactiva con una secuencia secreta (teclas en PC o toques en las esquinas en móvil; **la secuencia no está escrita en el repo, que es público**: `index.html` solo guarda hashes `HK`/`HT` por prefijo; el titular la conoce). Bloque «Modo admin oculto» tras `api()` en `index.html` (`ADM_K = tikitexto:z9`, `ADM_ON`).
+- Solo local, para el titular: se activa/desactiva con una secuencia secreta (teclas en PC o, en móvil, dibujar una «W» con el dedo dentro del selector de idioma; **la secuencia no está escrita en el repo, que es público**: `index.html` solo guarda hashes `HK`/`HT` por prefijo; el titular la conoce). Bloque «Modo admin oculto» tras `api()` en `index.html` (`ADM_K = tikitexto:z9`, `ADM_ON`).
 - Activo: banner fijo «MODO ADMIN» arriba al centro (`.adm-banner`, en cualquier pantalla), `api()` no envía nada al ranking (solo deja pasar `ranking_top`; el resto devuelve `{estado:"admin"}`), `p.pend` no crece y se dan tikitextos, monedas de TIKI RUSH, puntos de Toques y estadísticas de Chapas casi infinitos (99.999.999). Al activarlo se guarda una copia del perfil; al desactivarlo se restaura (conservando `token`/`online`). Recarga la página al cambiar.
-- Si se añade una tienda/desbloqueo nuevo basado en otro contador del perfil, ampliar `alternar()`. Test 3am (solo se ejecuta con `TIKI_ADMIN_TECLAS`/`TIKI_ADMIN_TOQUES` definidas).
+- Si se añade una tienda/desbloqueo nuevo basado en otro contador del perfil, ampliar `alternar()`. Test 3am (solo se ejecuta con `TIKI_ADMIN_TECLAS` definida).
 
+
+## Toques v2 (17-nov-2026)
+- El jugador es ahora el cuerpo 3D Rocketbox (`crearFigura`, `POSES.base` + cinemática inversa propia `pierna()`), dibujado con three.js en un lienzo transparente `[data-cv3]` entre la capa de fondo (`[data-cvf]`: escena, paredes y sombras) y la superior (`[data-cv]`: balón, polvo y textos; es la que recibe el puntero). Si no hay WebGL se usa el dibujo 2D antiguo (`pintaJugador`).
+- **El cuerpo se mueve** (`S.hx`, sigue al dedo entre `HX_MIN`/`HX_MAX`), la pierna que golpea sale de su cadera con alcance `REACH = 140` y rodilla hacia delante, la otra pisa el suelo y da pasitos (`S.gx`, `S.lift`, `S.w` mezcla apoyo/golpeo), con inclinación del torso, brazos de equilibrio y cabeza mirando al balón.
+- Más fácil: `RP = 30`, gravedad 720→1050, menos azar y viento, el toque dirige el balón hacia el cuerpo y acepta contactos con `ny < 0.4`. **Paredes neón** (`paredes()`) y zona exterior oscurecida para ver dónde acaba el campo en PC. Test 3ag actualizado.
