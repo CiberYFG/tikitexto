@@ -4,7 +4,7 @@
    Módulo ES; todo es propio (canvas + sonidos sintetizados). Sin escudos, fotos ni logos. */
 
 const C = 5, R = 6, N = C * R;
-const TIEMPO = 120, TIEMPO_MAX = 150, BONUS_T = 30, COSTE_PISTA = 10, COSTE_PISTA_SEG = 5, COSTE_VER = 15;
+const TIEMPO = 180, TIEMPO_MAX = 240, BONUS_T = 45, COSTE_PISTA = 6, COSTE_PISTA_SEG = 3, COSTE_VER = 10;
 const COLS = ["#19e6ff", "#ff3dcb", "#ffe94a", "#41ff8a", "#ff9a1f", "#c77dff", "#ff6b7c", "#7dd3fc"];
 
 /* Nombres sin tildes ni espacios (A-Z), de 3 a 9 letras. Equipos, estadios y leyendas MUY conocidos. Cada tema tiene 10+ para poder combinar. */
@@ -143,7 +143,7 @@ const PLANTILLA = `
 <div class="sp-chips" data-chips></div>
 <div class="sp-cur" data-cur data-no-t>&nbsp;</div>
 <div class="sp-zona" data-zona><canvas class="sp-cv" data-cv></canvas></div>
-<div class="sp-pie"><button type="button" class="sp-pista" data-sp="pista"><span>💡 Pista</span><small data-coste data-no-t>−10 s</small></button><button type="button" class="sp-pista sp-ver" data-sp="ver"><span data-vertxt>👁 Ver respuestas</span></button></div>
+<div class="sp-pie"><button type="button" class="sp-pista" data-sp="pista"><span>💡 Pista</span><small data-coste data-no-t>−6 s</small></button><button type="button" class="sp-pista sp-ver" data-sp="ver"><span data-vertxt>👁 Ver respuestas</span></button></div>
 <div class="sp-menu" data-menu>
   <div class="sp-caja">
     <p class="sp-kicker">Juego de letras</p>

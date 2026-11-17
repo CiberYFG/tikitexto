@@ -1924,7 +1924,7 @@ Un fallo no resta tiempo, pero esa letra ya no se puede recuperar. ||| A mistake
 Escribe la respuesta ||| Type the answer ||| Digite a resposta ||| Écris la réponse ||| Scrivi la risposta ||| Tippe die Antwort
 Responder ||| Answer ||| Responder ||| Répondre ||| Rispondi ||| Antworten
 Pasapalabra ||| Pasapalabra ||| Pasapalabra ||| Pasapalabra ||| Pasapalabra ||| Pasapalabra
-Pista · −10 s ||| Hint · −10 s ||| Dica · −10 s ||| Indice · −10 s ||| Indizio · −10 s ||| Hinweis · −10 s
+Pista · −6 s ||| Hint · −6 s ||| Dica · −6 s ||| Indice · −6 s ||| Indizio · −6 s ||| Hinweis · −6 s
 No quedan más pistas ||| No more hints ||| Não há mais dicas ||| Plus d'indices ||| Niente più indizi ||| Keine Hinweise mehr
 Campeón del mundo ||| World champion ||| Campeão do mundo ||| Champion du monde ||| Campione del mondo ||| Weltmeister
 Fin del rosco ||| End of the wheel ||| Fim do rosco ||| Fin du rosco ||| Fine del rosco ||| Ende des Rades

@@ -912,7 +912,7 @@ with sync_playwright() as p:
           b.click(); const t1=S.t; b.click(); const t2=S.t; b.click(); const t3=S.t;
           const tot=S.puz.nombres.reduce((a,n)=>a+n.pista,0);
           return {d1:t0-t1,d2:t1-t2,d3:t2-t3,tot,max:S.t}})()""")
-        check("cracks ocultos: pista −10 s y las siguientes seguidas −5 s", 9 <= h["d1"] <= 11 and 4 <= h["d2"] <= 6 and 4 <= h["d3"] <= 6 and h["tot"] == 3, str(h))
+        check("cracks ocultos: pista −6 s y las siguientes seguidas −3 s", 5 <= h["d1"] <= 7 and 2 <= h["d2"] <= 4 and 2 <= h["d3"] <= 4 and h["tot"] == 3, str(h))
         pz.click("[data-sp=ver]"); pz.wait_for_timeout(200)
         check("cracks ocultos: «Ver respuestas» revela y ofrece Siguiente", pz.evaluate("TIKI.serpiente.juego().S.fase") == "revela" and "Siguiente" in pz.inner_text("[data-sp=ver]"))
         pz.click("[data-sp=ver]"); pz.wait_for_timeout(200)
