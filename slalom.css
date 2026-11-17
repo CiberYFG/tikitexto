@@ -74,3 +74,6 @@
 .sl-kit.on { border-color: #41ff8a; background: rgba(65,255,138,.14); }
 .sl-kit.on b { color: #41ff8a; }
 .sl-kit.no { opacity: .55; }
+.sl-cat { margin: 10px 0 2px; width: 100%; text-align: left; font: 900 .78rem/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #19e6ff; }
+.sl-vest { align-items: start; }
+.sl-vest .sl-caja { margin: auto; max-height: none; }

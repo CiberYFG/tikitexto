@@ -976,7 +976,7 @@ with sync_playwright() as p:
             check("slalom: ninguna fila cierra los tres carriles con defensas o conos", r["filas"] > 200 and r["filas"] == r["libre"], str(r))
             r = psl.evaluate("""(()=>{ const j=TIKI.slalom.juego(), S=j.S; const v=[0,300,1000,3000,8000,50000].map(j.vBase); let mono=true; for(let i=1;i<v.length;i++) if(v[i]<v[i-1]) mono=false;
               const m=j.mats(); return {v, mono, tope:Math.max(...v)<=33.001, caras:Array.isArray(m)&&m.length===3&&!!m[1].map, esc:j.ESC.length, nuevos:j.NUEVOS.length}; })()""")
-            check("slalom: la velocidad crece siempre (con tope jugable) y la moneda lleva textura de logo", r["mono"] and r["tope"] and r["caras"] and r["v"][2] > r["v"][1] and r["esc"] >= 6 and r["nuevos"] == 7, str(r))
+            check("slalom: la velocidad crece siempre (con tope jugable) y la moneda lleva textura de logo", r["mono"] and r["tope"] and r["caras"] and r["v"][2] > r["v"][1] and r["esc"] >= 6 and r["nuevos"] == 12, str(r))
             r = psl.evaluate("""(()=>{ const j=TIKI.slalom.juego(), S=j.S; j.empezar(); const out={}; const paso=(n)=>{ for(let i=0;i<n;i++){ S.t+=0.02; j.logica(0.02); } };
               const rs=()=>{ j.limpia(); S.fase='corre'; S.vidas=2; S.inv=0; S.y=0; S.vy=0; S.desl=0; S.x=0; S.lane=1; S.v=14; S.sig=9999; S.turbo=0; };
               rs(); S.t=0; const ob=j.pon('rodante',-1,-30); ob.ph=0; paso(5); const x0=ob.x; paso(80); out.mueve=Math.abs(ob.x-x0)>0.05;
@@ -1003,11 +1003,28 @@ with sync_playwright() as p:
               rs(); S.t=0; const m=j.pon('mascota',-1,-30); m.ph=0; paso(5); const mx=m.x; paso(60); out.mascota=Math.abs(m.x-mx)>0.1;
               rs(); j.pon('pelotazo',1,-14); paso(110); out.pelotazoGolpea=S.vidas===1;
               rs(); j.pon('pelotazo',1,-14); j.saltar(); paso(4); out.pelotazoSalto=true;
-              rs(); S.cajaOk=false; S.cajaN=0; out.cajaFecha=S.cajaD>=3000&&S.cajaD<=6000; S.dist=S.cajaD+1; j.fila(); out.cajaSale=S.obs.some(o=>o.tipo==='caja');
-              rs(); S.cajaOk=false; j.pon('caja',1,-2); paso(30); out.cajaPremio=S.cajaOk&&S.regalo>=1&&S.regalo<=3;
+              rs(); S.cajaOk=false; S.cajaN=0; out.cajaFecha=S.cajaD>=500&&S.cajaD<=900; S.dist=S.cajaD+1; j.fila(); out.cajaSale=S.obs.some(o=>o.tipo==='caja');
+              rs(); S.cajaOk=false; S.cajasRec=0; j.pon('caja',1,-2); paso(30); out.cajaPremio=S.cajasRec===1;
               S.dist=0; return out; })()""")
-            check("slalom: carrito y mascota se mueven, el pelotazo golpea, la caja sorpresa sale (3.000-6.000 m) y da 1-3 tikitextos", r["carro"] and r["mascota"] and r["pelotazoGolpea"] and r["cajaFecha"] and r["cajaSale"] and r["cajaPremio"], str(r))
-            r = psl.evaluate("""(()=>{ const j=TIKI.slalom.juego(), S=j.S; j.empezar(); S.monedas=100; S.sig=9999; S.obs.length=0; S.inv=0; S.vidas=1; j.pon('def',1,-5);
+            check("slalom: carrito y mascota se mueven, el pelotazo golpea, la caja sorpresa sale pronto (500-900 m) y da un premio", r["carro"] and r["mascota"] and r["pelotazoGolpea"] and r["cajaFecha"] and r["cajaSale"] and r["cajaPremio"], str(r))
+            r = psl.evaluate("""(()=>{ const j=TIKI.slalom.juego(), S=j.S; j.empezar(); const out={}; const paso=(n)=>{ for(let i=0;i<n;i++){ S.t+=0.02; j.logica(0.02); } };
+              const rs=()=>{ j.limpia(); S.fase='corre'; S.vidas=2; S.inv=0; S.y=0; S.vy=0; S.desl=0; S.x=0; S.lane=1; S.v=14; S.sig=9999; S.turbo=0; S.tc=0; S.cajaD=1e9; };
+              out.vm=[0,60,100,180,300,400].map(j.velMov); out.sp=[0,150,300].map(j.espaciado); out.ex=[0,239,240,330].map(j.filasExtra);
+              rs(); const a=j.pon('arbitro',0,-80); a.lane2=2; a.ph=0; paso(80); out.arbitro=a.x>LXm(a);
+              function LXm(o){ return -2.4; }
+              rs(); const po=j.pon('portero',-1,-30); po.ph=0; paso(5); const px=po.x; paso(40); out.portero=Math.abs(po.x-px)>0.2;
+              rs(); const ba=j.pon('barrera',-1,-6); ba.ph=0; S.t=0; S.x=0; paso(40); out.barrera=S.vidas===1 || ba.x!==undefined;
+              rs(); const t1=j.pon('tarjeta',-1,-6,1.55); t1.ph=-0.6; j.deslizar(); paso(75); out.tarjeta=S.vidas===2;
+              rs(); const t2=j.pon('tarjeta',-1,-6,1.55); t2.ph=-0.6; paso(75); out.tarjetaGolpea=S.vidas===1;
+              rs(); const c1=j.pon('cortacesped',-1,-6); c1.ph=-0.1; j.saltar(); paso(60); out.cortacesped=S.vidas===2;
+              rs(); S.tc=0; const q0=j.pon('portero',-1,-30); q0.ph=0; paso(50); const d0=Math.abs(q0.fa); rs(); S.tc=300; const q1=j.pon('portero',-1,-30); q1.ph=0; paso(50); out.rapido=q1.fa>d0*1.8;
+              rs(); S.tc=330; S.dist=3000; S.filas=10; S.libreAnt=1; let todas=true, mult=0;
+              for(let k=0;k<60;k++){ j.limpia(); j.fila(); const g={}; S.obs.filter(o=>['def','cono','entrada'].includes(o.tipo)).forEach(o=>{ const z=Math.round(o.z); (g[z]=g[z]||new Set()).add(o.lane); }); Object.values(g).forEach(z=>{ if(z.size>=3) todas=false; }); mult+=S.obs.length; }
+              out.infernal=todas; out.denso=mult/60>8;
+              rs(); S.vidas=1; const v0=S.vidas; j.regalo(0,1); out.reg=S.cajasRec===1;
+              j.limpia(); return out; })()""")
+            check("slalom: obstáculos nuevos (árbitro, portero, barrera, tarjeta, cortacésped), el tiempo acelera y satura la pista sin cerrar los tres carriles, y los regalos dan premios", r["arbitro"] and r["portero"] and r["barrera"] and r["tarjeta"] and r["tarjetaGolpea"] and r["cortacesped"] and r["rapido"] and r["infernal"] and r["reg"] and r["vm"][0] == 1 and r["vm"][4] > 2 and r["sp"][2] < 0.6 and r["ex"][3] == 2, str(r))
+            r = psl.evaluate("""(()=>{ const j=TIKI.slalom.juego(), S=j.S; j.empezar(); S.monedas=200; S.sig=9999; S.obs.length=0; S.inv=0; S.vidas=1; j.pon('def',1,-5);
               for(let i=0;i<400;i++) j.logica(0.02); return {fase:S.fase, vidas:S.vidas}; })()""")
             psl.wait_for_timeout(300)
             check("slalom: la segunda tarjeta termina la carrera y sale la pantalla final", r["fase"] in ("fin", "choque") and psl.locator("[data-fin]:not([hidden])").count() == 1, str(r))
@@ -1016,7 +1033,7 @@ with sync_playwright() as p:
             psl.evaluate("document.querySelector('[data-kit=dorado]').click()"); psl.wait_for_timeout(100)
             sin = psl.locator("[data-kit=dorado].on").count() == 0
             psl.evaluate("document.querySelector('[data-kit=rojo]').click()"); psl.wait_for_timeout(300)
-            check("slalom: el vestuario ofrece 6 equipaciones, no vende sin monedas y compra con ellas", nk == 6 and sin and psl.locator("[data-kit=rojo].on").count() == 1 and psl.locator("[data-vest] [data-saldo]").inner_text().strip() == "60", "%s %s %s" % (nk, sin, psl.locator("[data-vest] [data-saldo]").inner_text()))
+            check("slalom: el vestuario ofrece equipaciones, botas, pelo y estelas, no vende sin monedas y compra con ellas (precios ×3)", nk == 32 and sin and psl.locator("[data-kit=rojo].on").count() == 1 and psl.locator("[data-vest] [data-saldo]").inner_text().strip() == "80", "%s %s %s" % (nk, sin, psl.locator("[data-vest] [data-saldo]").inner_text()))
             psl.evaluate("document.querySelector('[data-sl=vestcerrar]').click()"); psl.wait_for_timeout(100)
             psl.evaluate("document.querySelector('[data-sl=salir]').click()"); psl.wait_for_timeout(400)
             check("slalom: salir cierra la pantalla", psl.locator(".sl-raiz").count() == 0)

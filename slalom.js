@@ -28,16 +28,46 @@ const ESC = [
 /* velocidad según la distancia: crece siempre pero cada vez más despacio (máx. ≈33 m/s) */
 const vBase = (d) => Math.min(33, 11 + 11 * (1 - Math.exp(-d / 800)) + 11 * (1 - Math.exp(-d / 4500)));
 /* obstáculos que se mueven: se van desbloqueando por distancia */
-const NUEVOS = [[450, "¡Balón gigante! Sáltalo", "rodante"], [900, "¡Carrito de balones! Sáltalo", "carro"], [1050, "¡Balones botando! Cuidado con el bote", "botando"], [1450, "¡Mascota saltarina! Esquívala", "mascota"], [1750, "¡Extremo en zigzag! Esquívalo", "extremo"], [2100, "¡Pelotazo! Salta o esquiva", "pelotazo"], [2500, "¡Dron de TV! Deslízate debajo", "dron"]];
+const NUEVOS = [[450, "¡Balón gigante! Sáltalo", "rodante"], [700, "¡El árbitro te corta el paso! Cambia de carril", "arbitro"], [900, "¡Carrito de balones! Sáltalo", "carro"], [1050, "¡Balones botando! Cuidado con el bote", "botando"], [1250, "¡Tarjeta voladora! Deslízate debajo", "tarjeta"], [1450, "¡Mascota saltarina! Esquívala", "mascota"], [1650, "¡Portero en plancha! Busca su hueco", "portero"], [1750, "¡Extremo en zigzag! Esquívalo", "extremo"], [1950, "¡Cortacésped del campo! Sáltalo", "cortacesped"], [2100, "¡Pelotazo! Salta o esquiva", "pelotazo"], [2300, "¡La barrera! Busca el hueco", "barrera"], [2500, "¡Dron de TV! Deslízate debajo", "dron"]];
+/* dificultad por tiempo de partida (tc, en segundos): desde ~1:40 los obstáculos móviles se aceleran, a los 3 min van mucho más rápido
+   y a partir de 4-5 min la pista se llena (filas más juntas y dobles): casi imposible, pero siempre queda un carril libre */
+const velMov = (tc) => 1 + clamp((tc - 100) / 80, 0, 1) * 0.7 + clamp((tc - 200) / 100, 0, 1) * 0.8;
+const espaciado = (tc) => 1 - clamp((tc - 150) / 150, 0, 1) * 0.45;
+const filasExtra = (tc) => (tc >= 330 ? 2 : tc >= 240 ? 1 : 0);
 /* equipaciones del corredor: se compran con las monedas */
 const KIT_J = [
   { id: "azul", n: "Azul clásico", c: 0x1d5fd6, c2: 0xffffff, p: 0xf2f4f8, m: 0x1d5fd6, precio: 0 },
-  { id: "rojo", n: "Rojo pasión", c: 0xd7263d, c2: 0xffffff, p: 0xffffff, m: 0xd7263d, precio: 40 },
-  { id: "verde", n: "Verde esmeralda", c: 0x0e9f55, c2: 0xffffff, p: 0xf2f4f8, m: 0x0e9f55, precio: 80 },
-  { id: "dorado", n: "Dorado de campeón", c: 0xf2b300, c2: 0x1a1a1a, p: 0x1a1a1a, m: 0xf2b300, precio: 150 },
-  { id: "negro", n: "Negro neón", c: 0x14141c, c2: 0x19e6ff, p: 0x14141c, m: 0x14141c, precio: 250 },
-  { id: "rosa", n: "Rosa eléctrico", c: 0xff3dcb, c2: 0xffe94a, p: 0x7b2cbf, m: 0xff3dcb, precio: 400 }
+  { id: "rojo", n: "Rojo pasión", c: 0xd7263d, c2: 0xffffff, p: 0xffffff, m: 0xd7263d, precio: 120 },
+  { id: "verde", n: "Verde esmeralda", c: 0x0e9f55, c2: 0xffffff, p: 0xf2f4f8, m: 0x0e9f55, precio: 240 },
+  { id: "naranja", n: "Naranja mandarina", c: 0xff7a00, c2: 0x1a1a1a, p: 0x1a1a1a, m: 0xff7a00, precio: 300 },
+  { id: "rayas", n: "Rayas rojas y blancas", c: 0xd7263d, c2: 0xffffff, p: 0x1a1a1a, m: 0xffffff, pat: "rayas", precio: 360 },
+  { id: "aros", n: "Aros verdes", c: 0x0e9f55, c2: 0xffffff, p: 0xffffff, m: 0x0e9f55, pat: "aros", precio: 420 },
+  { id: "dorado", n: "Dorado de campeón", c: 0xf2b300, c2: 0x1a1a1a, p: 0x1a1a1a, m: 0xf2b300, precio: 450 },
+  { id: "morado", n: "Morado real", c: 0x7b2cbf, c2: 0xf2f4f8, p: 0xf2f4f8, m: 0x7b2cbf, precio: 600 },
+  { id: "negro", n: "Negro neón", c: 0x14141c, c2: 0x19e6ff, p: 0x14141c, m: 0x14141c, precio: 750 },
+  { id: "plata", n: "Plata galáctica", c: 0xc9d3e0, c2: 0x3b2bd6, p: 0x3b2bd6, m: 0xc9d3e0, precio: 900 },
+  { id: "rosa", n: "Rosa eléctrico", c: 0xff3dcb, c2: 0xffe94a, p: 0x7b2cbf, m: 0xff3dcb, precio: 1200 },
+  { id: "fuego", n: "Fuego", c: 0xff3b00, c2: 0xffd23a, p: 0x1a1a1a, m: 0xff3b00, pat: "rayas", precio: 1500 }
 ];
+const BOTAS = [
+  { id: "b_negra", n: "Botas negras", c: 0x1b1d24, precio: 0 }, { id: "b_blanca", n: "Botas blancas", c: 0xf2f4f8, precio: 90 },
+  { id: "b_roja", n: "Botas rojas", c: 0xe0245e, precio: 180 }, { id: "b_azul", n: "Botas azul eléctrico", c: 0x1f6bff, precio: 240 },
+  { id: "b_verde", n: "Botas verde neón", c: 0x3dff6a, precio: 300 }, { id: "b_oro", n: "Botas de oro", c: 0xffc933, precio: 600 },
+  { id: "b_rosa", n: "Botas rosa", c: 0xff5fd2, precio: 750 }
+];
+const PELOS = [
+  { id: "p_cast", n: "Pelo castaño", c: 0x2b1b12, precio: 0 }, { id: "p_negro", n: "Pelo negro", c: 0x0d0d10, precio: 60 },
+  { id: "p_rubio", n: "Pelo rubio", c: 0xe3c37a, precio: 150 }, { id: "p_rojo", n: "Pelo pelirrojo", c: 0xb8451f, precio: 240 },
+  { id: "p_azul", n: "Pelo azul", c: 0x2a6bff, precio: 450 }, { id: "p_rosa", n: "Pelo rosa", c: 0xff6fc8, precio: 600 },
+  { id: "p_plat", n: "Pelo platino", c: 0xf3f0e6, precio: 750 }
+];
+/* estelas: partículas que deja el corredor al correr (cols = colores de las partículas) */
+const ESTELAS = [
+  { id: "e_ninguna", n: "Sin estela", cols: null, c: [0x555555], precio: 0 }, { id: "e_oro", n: "Chispas doradas", cols: [0xffd23a], c: [0xffd23a, 0xfff2a8], precio: 450 },
+  { id: "e_fuego", n: "Estela de fuego", cols: [0xff5a14, 0xffa01a], c: [0xff5a14, 0xffa01a], precio: 750 }, { id: "e_hielo", n: "Estela de hielo", cols: [0x9fe8ff, 0xffffff], c: [0x9fe8ff, 0x4fb8ff], precio: 750 },
+  { id: "e_neon", n: "Estela neón", cols: [0x19e6ff, 0xff2fd6], c: [0x19e6ff, 0xff2fd6], precio: 1200 }, { id: "e_arco", n: "Estela arcoíris", cols: [0xff3b3b, 0xffd23a, 0x41ff8a, 0x2f9bff, 0xb04dff], c: [0xff3b3b, 0x41ff8a, 0x2f9bff], precio: 1800 }
+];
+const VEST = [["kit", "Equipaciones", KIT_J, "azul"], ["bota", "Botas", BOTAS, "b_negra"], ["pelo", "Pelo", PELOS, "p_cast"], ["estela", "Estelas", ESTELAS, "e_ninguna"]];
 
 
 const PLANTILLA = `
@@ -78,9 +108,9 @@ const PLANTILLA = `
 <div class="sl-vest" data-vest hidden>
   <div class="sl-caja">
     <h3>Vestuario</h3>
-    <p class="sl-sub">Gasta tus monedas en equipaciones nuevas. Las monedas se guardan entre partidas.</p>
+    <p class="sl-sub">Gasta tus monedas en equipaciones, botas, pelo y estelas. Las monedas se guardan entre partidas.</p>
     <p class="sl-rec">🪙 <b data-saldo data-no-t>0</b></p>
-    <div class="sl-kits" data-kits></div>
+    <div data-kits></div>
     <button type="button" class="sl-sec" data-sl="vestcerrar">Volver</button>
   </div>
 </div>
@@ -211,7 +241,7 @@ export function abrir(api, raiz) {
   raiz.innerHTML = PLANTILLA;
   const $ = (s) => raiz.querySelector(s);
   const cv = $(".sl-cv");
-  const datos = () => { const d = api.datos(); ["mejor", "mejorm", "part", "bal", "tiki", "gast", "cajas"].forEach((k) => { if (typeof d[k] !== "number") d[k] = 0; }); if (!Array.isArray(d.tiene)) d.tiene = ["azul"]; if (typeof d.kit !== "string") d.kit = "azul"; return d; };
+  const datos = () => { const d = api.datos(); ["mejor", "mejorm", "part", "bal", "tiki", "gast", "cajas"].forEach((k) => { if (typeof d[k] !== "number") d[k] = 0; }); if (!Array.isArray(d.tiene)) d.tiene = ["azul"]; VEST.forEach((v) => { if (typeof d[v[0]] !== "string") d[v[0]] = v[3]; if (d.tiene.indexOf(v[3]) < 0) d.tiene.push(v[3]); }); return d; };
   const au = crearAudio(api);
 
   /* ── mini sintetizador propio para los efectos cortos ── */
@@ -240,7 +270,7 @@ export function abrir(api, raiz) {
 
   const S = { fase: "menu", t: 0, dist: 0, v: 0, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, obs: [], sig: 0, filas: 0, tiki: false, regalo: 0, cajaD: 0, cajaN: 0, cajaOk: false, bonus: 0, shake: 0, activo: true, choque: 0, hito: 0, tema: 0, ciclo: 0, cola: [], vidaHito: 0, nuevo: 0 };
   let raf = 0, ultimo = 0, vivo = true, escala = 1, fpsAcum = 0, fpsN = 0, hAviso = 0, hFlash = 0;
-  let camara, scene, sol, hemi, luces = [], mundo = {}, jug = null, piscina = [], libres = { def: [], valla: [], cono: [], cartel: [], moneda: [], bota: [], rodante: [], botando: [], dron: [], carro: [], mascota: [], pelotazo: [], caja: [] }, clima = null, chispas, polvo, lineas = [];
+  let camara, scene, sol, hemi, luces = [], mundo = {}, jug = null, piscina = [], libres = { def: [], valla: [], cono: [], cartel: [], moneda: [], bota: [], rodante: [], botando: [], dron: [], carro: [], mascota: [], pelotazo: [], caja: [], arbitro: [], portero: [], barrera: [], tarjeta: [], cortacesped: [] }, estSis = {}, estelaAct = ESTELAS[0], clima = null, chispas, polvo, lineas = [];
 
   function construye() {
     const R = E.renderer, aniso = Math.min(R.capabilities.getMaxAnisotropy(), 8);
@@ -295,7 +325,7 @@ export function abrir(api, raiz) {
     mundo.matMon = [new THREE.MeshStandardMaterial({ color: 0xffc824, emissive: 0x8a5d00, emissiveIntensity: 0.8, metalness: 0.15, roughness: 0.35 }), caraMon, caraMon];
     mundo.geoMon = new THREE.CylinderGeometry(0.5, 0.5, 0.08, 40); mundo.geoMon.rotateX(Math.PI / 2);
     mundo.texFuego = texBrillo("rgba(255,140,40,.9)"); mundo.texRayo = texRayo(); mundo.texCartel = texCartel(); mundo.texBalon = texBalon(); mundo.texRed = texRed();
-    chispas = crearParticulas(scene, 120, 0xffd23a, 0.22, true); polvo = crearParticulas(scene, 70, 0xdfe9d4, 0.32, false);
+    estSis = {}; chispas = crearParticulas(scene, 120, 0xffd23a, 0.22, true); polvo = crearParticulas(scene, 70, 0xdfe9d4, 0.32, false);
     for (let i = 0; i < 22; i++) {
       const m = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.015, 3), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45, fog: false }));
       m.position.set(rnd(-7, 7), rnd(0.3, 5.5), rnd(-30, 8)); m.visible = false; scene.add(m); lineas.push(m);
@@ -314,9 +344,10 @@ export function abrir(api, raiz) {
 
   /* jugador con la equipación elegida (se vuelve a crear al cambiar de vestuario) */
   function creaJug() {
-    const k = KIT_J.find((x) => x.id === datos().kit) || KIT_J[0];
+    const d = datos(), k = KIT_J.find((x) => x.id === d.kit) || KIT_J[0], bt = BOTAS.find((x) => x.id === d.bota) || BOTAS[0], pl = PELOS.find((x) => x.id === d.pelo) || PELOS[0];
+    estelaAct = ESTELAS.find((x) => x.id === d.estela) || ESTELAS[0];
     if (jug) { scene.remove(jug.raiz); }
-    jug = crearFigura({ cuerpo: "jugador", camisa2: k.c2, camisa: k.c, pantalon: k.p, media: k.m, piel: 0xf0c8a0, pelo: 0x2b1b12, dorsal: 7, nombre: (api.nombre ? api.nombre() : "") || "TIKI", numColor: "#ffffff", manga: true });
+    jug = crearFigura({ cuerpo: "jugador", camisa2: k.c2, camisa: k.c, patron: k.pat, pantalon: k.p, media: k.m, bota: bt.c, piel: 0xf0c8a0, pelo: pl.c, dorsal: 7, nombre: (api.nombre ? api.nombre() : "") || "TIKI", numColor: "#ffffff", manga: true });
     jug.raiz.rotation.y = Math.PI; scene.add(jug.raiz);
   }
   /* ── objetos del juego ── */
@@ -403,6 +434,48 @@ export function abrir(api, raiz) {
     const f = new THREE.Sprite(new THREE.SpriteMaterial({ map: mundo.texFuego, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false })); f.scale.set(2.4, 2.4, 1); f.position.set(0, 0.5, 0.9); g.add(f); g.userData.fu = f;
     return g;
   }
+
+  /* humanoide sencillo (árbitro, portero, barrera): primitivas, sin escudos ni marcas */
+  function humanoide(camisa, pant, piel, abiertos) {
+    const g = new THREE.Group(), M = (c, r) => new THREE.MeshStandardMaterial({ color: c, roughness: r || 0.7 });
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.26, 0.75, 14), M(camisa)); torso.position.y = 1.2; torso.castShadow = true; g.add(torso);
+    const cab = new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 12), M(piel, 0.6)); cab.position.y = 1.75; g.add(cab);
+    const sh = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.3, 14), M(pant)); sh.position.y = 0.72; g.add(sh);
+    const piernas = [-0.13, 0.13].map((x) => { const l = new THREE.Group(); l.position.set(x, 0.72, 0); const m = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.085, 0.7, 10), M(piel, 0.6)); m.position.y = -0.38; l.add(m); g.add(l); return l; });
+    const brazos = [-1, 1].map((sg) => { const a = new THREE.Group(); a.position.set(sg * 0.38, 1.47, 0); const m = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.065, 0.62, 10), M(camisa)); m.position.y = -0.3; a.add(m); const mano = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), M(piel, 0.6)); mano.position.y = -0.64; a.add(mano); if (abiertos) a.rotation.z = -sg * 1.4; g.add(a); return a; });
+    g.userData = { piernas: piernas, brazos: brazos, torso: torso }; return g;
+  }
+  /* árbitro: corre hacia ti y se cruza de carril; lleva una tarjeta amarilla en alto */
+  function mallaArbitro() {
+    const g = humanoide(0x16161a, 0x16161a, 0xf0c8a0, false); const b = g.userData.brazos[1]; b.rotation.z = -2.6;
+    const c = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.32, 0.03), new THREE.MeshStandardMaterial({ color: 0xffd400, emissive: 0x665500, emissiveIntensity: 0.6 })); c.position.set(0, -0.82, 0.02); b.add(c); return g;
+  }
+  /* portero en plancha: brazos abiertos con guantes grandes que barre la pista */
+  function mallaPortero() {
+    const g = humanoide(0xff7a00, 0x1a1a1a, 0xf0c8a0, true);
+    g.userData.brazos.forEach((a) => { const gu = new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 10), new THREE.MeshStandardMaterial({ color: 0xe8ff3a, roughness: 0.5 })); gu.position.y = -0.66; a.add(gu); });
+    return g;
+  }
+  /* barrera: tres jugadores hombro con hombro que se desplazan a la vez */
+  function mallaBarrera() {
+    const g = new THREE.Group(), tel = [];
+    [-0.95, 0, 0.95].forEach((x, i) => { const h = humanoide(i === 1 ? 0xffffff : 0x1d5fd6, 0x1a1a1a, [0xf0c8a0, 0xd9a273, 0xa8764d][i], false); h.position.x = x; h.userData.brazos.forEach((a, k) => { a.rotation.x = -0.9; a.rotation.z = (k ? 1 : -1) * 0.25; }); g.add(h); tel.push(h); });
+    g.userData.hs = tel; return g;
+  }
+  /* tarjeta amarilla gigante que gira en el aire (agáchate para pasar) */
+  function mallaTarjeta() {
+    const g = new THREE.Group(), c = new THREE.Mesh(new THREE.BoxGeometry(0.95, 1.3, 0.08), new THREE.MeshStandardMaterial({ color: 0xffd400, roughness: 0.35, emissive: 0x806400, emissiveIntensity: 0.7 })); c.castShadow = true; g.add(c); g.userData.c = c;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: mundo.texRayo, depthWrite: false, transparent: true, fog: false, blending: THREE.AdditiveBlending })); sp.scale.set(2.6, 2.6, 1); g.add(sp); return g;
+  }
+  /* cortacésped del campo: cruza de lado a lado, sáltalo */
+  function mallaCortacesped() {
+    const g = new THREE.Group(), M = (c) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.5, metalness: 0.2 });
+    const cuerpo = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.45, 0.9), M(0x2fbf4a)); cuerpo.position.y = 0.42; cuerpo.castShadow = true; g.add(cuerpo);
+    const motor = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.3, 0.5), M(0x333a45)); motor.position.set(0, 0.8, -0.05); g.add(motor);
+    const mang = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.9, 8), M(0x222831)); mang.position.set(0, 0.85, 0.62); mang.rotation.x = 0.8; g.add(mang);
+    const rue = new THREE.MeshStandardMaterial({ color: 0x15181d }); [[-0.55, 0.4], [0.55, 0.4], [-0.55, -0.4], [0.55, -0.4]].forEach((q) => { const r = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.12, 12), rue); r.rotation.z = Math.PI / 2; r.position.set(q[0], 0.17, q[1]); g.add(r); });
+    return g;
+  }
   /* caja sorpresa (regalo) */
   function mallaCaja() {
     const g = new THREE.Group(), roja = new THREE.MeshStandardMaterial({ color: 0xe0245e, roughness: 0.4, emissive: 0x4a0018, emissiveIntensity: 0.5 }), oro = new THREE.MeshStandardMaterial({ color: 0xffd23a, roughness: 0.3, metalness: 0.3, emissive: 0x6a4a00, emissiveIntensity: 0.6 });
@@ -420,7 +493,7 @@ export function abrir(api, raiz) {
     let o = libres[tipo].pop();
     if (!o) {
       if (tipo === "moneda") o = new THREE.Mesh(mundo.geoMon, mundo.matMon);
-      else if (tipo === "valla") o = mallaValla(); else if (tipo === "cono") o = mallaCono(); else if (tipo === "cartel") o = mallaCartel(); else if (tipo === "bota") o = mallaBota(); else if (tipo === "rodante") o = mallaRodante(); else if (tipo === "botando") o = mallaBotando(); else if (tipo === "dron") o = mallaDron(); else if (tipo === "carro") o = mallaCarro(); else if (tipo === "mascota") o = mallaMascota(); else if (tipo === "pelotazo") o = mallaPelotazo(); else if (tipo === "caja") o = mallaCaja();
+      else if (tipo === "valla") o = mallaValla(); else if (tipo === "cono") o = mallaCono(); else if (tipo === "cartel") o = mallaCartel(); else if (tipo === "bota") o = mallaBota(); else if (tipo === "rodante") o = mallaRodante(); else if (tipo === "botando") o = mallaBotando(); else if (tipo === "dron") o = mallaDron(); else if (tipo === "carro") o = mallaCarro(); else if (tipo === "mascota") o = mallaMascota(); else if (tipo === "pelotazo") o = mallaPelotazo(); else if (tipo === "caja") o = mallaCaja(); else if (tipo === "arbitro") o = mallaArbitro(); else if (tipo === "portero") o = mallaPortero(); else if (tipo === "barrera") o = mallaBarrera(); else if (tipo === "tarjeta") o = mallaTarjeta(); else if (tipo === "cortacesped") o = mallaCortacesped();
       else if (tipo === "def" || tipo === "extremo") return null;
       if (tipo === "moneda") o.castShadow = false;
       scene.add(o);
@@ -447,14 +520,8 @@ export function abrir(api, raiz) {
   function monedas(lane, z0, n, y, paso) { for (let i = 0; i < n; i++) pon("moneda", lane, z0 - i * (paso || 2.2), y || 1.0); }
 
   /* ── generador de filas: siempre hay camino libre ── */
-  function fila() {
-    const d = Math.min(1, S.dist / 1800), Z = Z_SPAWN, lanes = [0, 1, 2], libre = irnd(3), otros = lanes.filter((l) => l !== libre), n = S.filas++;
-    const pats = [];
-    const D = S.dist;
-    NUEVOS.forEach((nv) => pats.push([D > nv[0] ? 3 : 0, nv[2]]));
-    pats.push([5, "muro"], [3, "conos"], [d > 0.05 ? 4 : 0, "valla"], [d > 0.12 ? 3 : 0, "cartel"], [d > 0.2 ? 3 : 0, "entrada"], [d > 0.3 ? 3 : 0, "mix"], [d > 0.5 ? 3 : 0, "doble"]);
-    if (n < 3) { pats.length = 0; pats.push([1, n === 0 ? "conos" : "muro"]); }
-    let tot = 0; pats.forEach((p) => { tot += p[0]; }); let r = Math.random() * tot, tipo = "muro"; for (const p of pats) { if ((r -= p[0]) <= 0) { tipo = p[1]; break; } }
+  function patron(tipo, Z, libre) {
+    const lanes = [0, 1, 2], otros = lanes.filter((l) => l !== libre), d = Math.min(1, S.dist / 1800);
     if (tipo === "muro") { otros.forEach((l) => pon("def", l, Z)); monedas(libre, Z + 20, 6); }
     else if (tipo === "conos") { otros.forEach((l) => pon("cono", l, Z)); monedas(libre, Z + 20, 6); if (Math.random() < 0.5) pon("def", libre, Z - 14); }
     else if (tipo === "valla") { lanes.forEach((l) => pon("valla", l, Z)); for (let i = 0; i < 5; i++) pon("moneda", 1, Z + 3 - i * 1.5, 1.2 + Math.sin(i / 4 * Math.PI) * 1.2); }
@@ -469,10 +536,29 @@ export function abrir(api, raiz) {
     else if (tipo === "carro") { pon("carro", -1, Z); monedas(1, Z + 16, 4, 1.7); }
     else if (tipo === "mascota") { pon("mascota", -1, Z); monedas(irnd(3), Z + 18, 5); }
     else if (tipo === "pelotazo") { pon("pelotazo", libre === 1 ? (Math.random() < 0.5 ? 0 : 2) : 1, Z - 20); monedas(libre, Z + 14, 5); }
-    /* caja sorpresa: una por partida, entre los 3.000 y los 6.000 m (si se te escapa, vuelve a salir) */
-    if (!S.cajaOk && S.cajaD > 0 && S.dist >= S.cajaD && S.cajaN < 3) { S.cajaN++; S.cajaD = S.dist + 500; pon("caja", libre, Z + 26, 1.0); aviso("🎁 ¡Caja sorpresa delante!", "oro", 1800); }
+    else if (tipo === "arbitro") { const a = pon("arbitro", otros[0], Z); if (a) a.lane2 = otros[1]; monedas(libre, Z + 20, 5); }
+    else if (tipo === "portero") { pon("portero", -1, Z); monedas(irnd(3), Z + 18, 5); }
+    else if (tipo === "barrera") { pon("barrera", -1, Z); monedas(libre, Z + 18, 5); }
+    else if (tipo === "tarjeta") { pon("tarjeta", -1, Z, 1.55); monedas(irnd(3), Z + 16, 5, 0.9); }
+    else if (tipo === "cortacesped") { const a = pon("cortacesped", -1, Z), b = pon("cortacesped", -1, Z - 9); if (a && b) b.ph = a.ph + Math.PI; monedas(1, Z + 16, 4, 1.7); }
+  }
+  function fila() {
+    const d = Math.min(1, S.dist / 1800), Z = Z_SPAWN, lanes = [0, 1, 2], n = S.filas++, D = S.dist, tc = S.tc || 0;
+    /* a partir de ~2 min las filas están más juntas: el carril libre de una fila a la siguiente cambia como mucho un carril */
+    const cand = tc > 100 && n > 0 ? lanes.filter((l) => Math.abs(l - S.libreAnt) <= 1) : lanes; const libre = cand[irnd(cand.length)]; S.libreAnt = libre;
+    const pats = [];
+    NUEVOS.forEach((nv) => pats.push([D > nv[0] ? 3 : 0, nv[2]]));
+    pats.push([5, "muro"], [3, "conos"], [d > 0.05 ? 4 : 0, "valla"], [d > 0.12 ? 3 : 0, "cartel"], [d > 0.2 ? 3 : 0, "entrada"], [d > 0.3 ? 3 : 0, "mix"], [d > 0.5 ? 3 : 0, "doble"]);
+    if (n < 3) { pats.length = 0; pats.push([1, n === 0 ? "conos" : "muro"]); }
+    const elige = (lista) => { let tot = 0; lista.forEach((p) => { tot += p[0]; }); let r = Math.random() * tot, tipo = "muro"; for (const p of lista) { if ((r -= p[0]) <= 0) { tipo = p[1]; break; } } return tipo; };
+    patron(elige(pats), Z, libre);
+    /* tras 4-5 min: filas dobles y triples de obstáculos que no se saltan (siempre dejan libre el mismo carril) */
+    const ex = filasExtra(tc);
+    if (ex && n > 3) { const solo = pats.filter((p) => ["muro", "mascota", "extremo", "portero", "arbitro", "barrera", "botando"].indexOf(p[1]) >= 0 && p[0] > 0); for (let k = 1; k <= ex; k++) patron(solo.length ? elige(solo) : "muro", Z - 13 * k, libre); }
+    /* regalos: una caja cada 900-1.600 m (cada vez con un premio distinto) */
+    if (S.cajaD > 0 && S.dist >= S.cajaD) { S.cajaD = S.dist + rnd(900, 1600); pon("caja", libre, Z + 26, 1.0); aviso("🎁 ¡Caja sorpresa delante!", "oro", 1800); }
     if (S.turbo <= 0 && S.dist > 250 && Math.random() < 0.09) pon("bota", libre, Z + 30, 1.0);
-    S.sig = clamp(S.v * 1.4, 21, 46);
+    S.sig = clamp(S.v * 1.4, 21, 46) * espaciado(tc) * (ex ? 1 + 0.25 * ex : 1);
   }
 
   /* ── interfaz ── */
@@ -486,20 +572,21 @@ export function abrir(api, raiz) {
   function pintaSaldo() { const d = datos(), v = Math.max(0, d.bal - d.gast); raiz.querySelectorAll("[data-saldo]").forEach((e) => { e.textContent = String(v); }); }
   function pintaKits() {
     const d = datos(), saldo = d.bal - d.gast, c = (n) => "#" + n.toString(16).padStart(6, "0");
-    $("[data-kits]").innerHTML = KIT_J.map((k) => {
-      const tiene = d.tiene.indexOf(k.id) >= 0, puesta = d.kit === k.id;
+    $("[data-kits]").innerHTML = VEST.map((v) => '<h4 class="sl-cat">' + t(v[1]) + '</h4><div class="sl-kits">' + v[2].map((k) => {
+      const tiene = d.tiene.indexOf(k.id) >= 0, puesta = d[v[0]] === k.id;
       const et = puesta ? t("Equipada") : tiene ? t("Usar") : "🪙 " + k.precio;
-      return '<button type="button" class="sl-kit' + (puesta ? " on" : "") + (!tiene && saldo < k.precio ? " no" : "") + '" data-kit="' + k.id + '"><i style="background:linear-gradient(135deg,' + c(k.c) + ' 0 50%,' + c(k.p) + ' 50% 100%);border-color:' + c(k.c2) + '"></i><span>' + t(k.n) + '</span><b data-no-t>' + et + "</b></button>";
-    }).join("");
+      const fondo = v[0] === "kit" ? "linear-gradient(135deg," + c(k.c) + " 0 50%," + c(k.p) + " 50% 100%)" : v[0] === "estela" ? "linear-gradient(135deg," + k.c.map(c).join(",") + (k.c.length < 2 ? "," + c(k.c[0]) : "") + ")" : c(k.c);
+      return '<button type="button" class="sl-kit' + (puesta ? " on" : "") + (!tiene && saldo < k.precio ? " no" : "") + '" data-kit="' + k.id + '"><i style="background:' + fondo + ";border-color:" + (v[0] === "kit" ? c(k.c2) : "#fff") + '"></i><span>' + t(k.n) + '</span><b data-no-t>' + et + "</b></button>";
+    }).join("") + "</div>").join("");
     pintaSaldo();
   }
   function elegirKit(id) {
-    const d = datos(), k = KIT_J.find((x) => x.id === id); if (!k) return;
+    const d = datos(); let v = null, k = null; VEST.forEach((x) => { const f = x[2].find((y) => y.id === id); if (f) { v = x; k = f; } }); if (!k) return;
     if (d.tiene.indexOf(id) < 0) {
       const saldo = d.bal - d.gast; if (saldo < k.precio) { aviso("Te faltan " + (k.precio - saldo) + " monedas", "mal", 1400); return; }
-      d.gast += k.precio; d.tiene.push(id); sonMoneda(); aviso("¡Equipación comprada!", "bien", 1400);
+      d.gast += k.precio; d.tiene.push(id); sonMoneda(); aviso("¡Comprado!", "bien", 1400);
     }
-    d.kit = id; try { api.guardar(); } catch (e) { /* opcional */ }
+    d[v[0]] = id; try { api.guardar(); } catch (e) { /* opcional */ }
     if (E && scene) creaJug(); pintaKits();
   }
   function pintaRecord() { const d = datos(); $("[data-rec]").textContent = d.mejor ? "🏆 " + d.mejor + " · " + d.mejorm + " m · " + d.part + " ⚽" : ""; }
@@ -552,7 +639,7 @@ export function abrir(api, raiz) {
   function empezar() {
     audioIni(); au.iniciar(); au.ambiente(0.3);
     limpiaObs();
-    Object.assign(S, { fase: "corre", dist: 0, v: 9, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, bonus: 0, sig: 10, filas: 0, tiki: false, regalo: 0, cajaD: rnd(3000, 6000), cajaN: 0, cajaOk: false, choque: 0, hito: 0, tema: 0, vidaHito: 0, nuevo: 0 });
+    Object.assign(S, { fase: "corre", dist: 0, v: 9, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, bonus: 0, sig: 10, filas: 0, tiki: false, regalo: 0, cajaD: rnd(500, 900), cajaN: 0, cajasRec: 0, cajaOk: false, tc: 0, aviT: 0, libreAnt: 1, choque: 0, hito: 0, tema: 0, vidaHito: 0, nuevo: 0 });
     $("[data-menu]").hidden = true; $("[data-fin]").hidden = true; $("[data-turbo]").hidden = true; pintaVidas(); pintaHud(); aplicaEsc(0, 0);
     pista(movil ? "Desliza: ⬅️ ➡️ carril · ⬆️ salto · ⬇️ agacharte" : "Flechas o WASD: ⬅️ ➡️ carril · ⬆️ salto · ⬇️ agacharte"); setTimeout(() => { if (S.fase === "corre" && S.dist < 120) pista(""); }, 4500);
     sonPita();
@@ -566,14 +653,20 @@ export function abrir(api, raiz) {
     $("[data-fin-r]").textContent = nuevo ? t("¡Nuevo récord!") : "🏆 " + d.mejor;
     const nt = (S.tiki ? 1 : 0) + S.regalo; $("[data-fin-tiki]").textContent = t(nt === 1 ? "⚡ +1 tikitexto" : "⚡ +" + nt + " tikitextos"); $("[data-fin-tiki]").hidden = nt === 0; pintaSaldo(); $("[data-fin]").hidden = false; $("[data-turbo]").hidden = true; au.ambiente(0.1); au.suspiro(); pintaRecord();
   }
-  /* caja sorpresa: 1 tikitexto (60 %), 2 (30 %) o 3 (10 %) */
+  /* caja sorpresa: premio al azar (monedas, turbo, vida, escudo o, raras veces, tikitextos: 1-3, una sola vez por partida) */
   function regalo(x, y) {
-    if (S.cajaOk) return; S.cajaOk = true; const r = Math.random(), n = r < 0.6 ? 1 : r < 0.9 ? 2 : 3; S.regalo = n;
-    for (let i = 0; i < n; i++) { try { api.tiki(); } catch (e) { /* opcional */ } }
-    try { api.victoria(); } catch (e) { /* opcional */ }
+    const r = Math.random(); S.cajasRec = (S.cajasRec || 0) + 1; let msg = "";
+    if (r < 0.07 && !S.cajaOk) {
+      S.cajaOk = true; const q = Math.random(), n = q < 0.6 ? 1 : q < 0.9 ? 2 : 3; S.regalo = n;
+      for (let i = 0; i < n; i++) { try { api.tiki(); } catch (e) { /* opcional */ } }
+      try { api.victoria(); } catch (e) { /* opcional */ }
+      msg = n === 1 ? "🎁 ¡Caja sorpresa! +1 tikitexto" : "🎁 ¡Caja sorpresa! +" + n + " tikitextos";
+    } else if (r < 0.40) { const n = 15 + irnd(4) * 5; S.monedas += n; msg = "🎁 ¡Regalo! +" + n + " monedas"; }
+    else if (r < 0.62) { S.turbo = 8; $("[data-turbo]").hidden = false; msg = "🎁 ¡Regalo! Turbo extra"; }
+    else if (r < 0.80) { if (S.vidas < VIDAS) { S.vidas++; pintaVidas(); msg = "🎁 ¡Regalo! Vida extra"; } else { S.inv = Math.max(S.inv, 7); msg = "🎁 ¡Regalo! Escudo de 7 s"; } }
+    else { S.inv = Math.max(S.inv, 7); msg = "🎁 ¡Regalo! Escudo de 7 s"; }
     sonTurbo(); au.rugido(true); for (let k = 0; k < 30; k++) chispas.emite(x, y, 0, rnd(-4, 4), rnd(0, 5), rnd(-3, 3), 0.9);
-    aviso(n === 1 ? "🎁 ¡Caja sorpresa! +1 tikitexto" : "🎁 ¡Caja sorpresa! +" + n + " tikitextos", "bien", 2600);
-    S.cajaN = 9;
+    aviso(msg, "bien", 2400); pintaHud();
   }
   function golpea(ob) {
     ob.golpe = 1; S.shake = reducido ? 0 : 0.5; flash(); sonGolpe();
@@ -594,29 +687,37 @@ export function abrir(api, raiz) {
     const base = vBase(S.dist), objetivo = S.fase === "choque" ? 0 : base * (S.turbo > 0 ? 1.35 : 1);
     S.v += (objetivo - S.v) * Math.min(1, dt * (S.fase === "choque" ? 3.5 : 1.6));
     const dz = S.v * dt; S.dist += dz;
+    if (S.fase === "corre") S.tc += dt;
+    const vm = velMov(S.tc);
     if (S.fase === "choque") { S.choque += dt; if (S.choque > 1.1) termina(); }
     /* jugador */
     S.x += (LX[S.lane] - S.x) * Math.min(1, dt * 14);
     if (S.y > 0 || S.vy > 0) { S.vy -= G * dt; S.y += S.vy * dt; if (S.y <= 0) { S.y = 0; S.vy = 0; for (let i = 0; i < 5; i++) polvo.emite(S.x + rnd(-0.3, 0.3), 0.1, rnd(-0.3, 0.3), rnd(-1.2, 1.2), rnd(0.4, 1.6), rnd(0, 2.5), 0.5); } }
     if (S.desl > 0) S.desl -= dt;
     if (S.inv > 0) S.inv -= dt;
-    if (S.turbo > 0) { S.turbo -= dt; if (S.turbo <= 0) $("[data-turbo]").hidden = true; else $("[data-turbo-i]").style.transform = "scaleX(" + (S.turbo / 6).toFixed(3) + ")"; }
+    if (S.turbo > 0) { S.turbo -= dt; if (S.turbo <= 0) $("[data-turbo]").hidden = true; else $("[data-turbo-i]").style.transform = "scaleX(" + Math.min(1, S.turbo / 6).toFixed(3) + ")"; }
     /* generación y movimiento */
     if (S.fase === "corre") { S.sig -= dz; if (S.sig <= 0) fila(); }
     const alt = S.desl > 0 ? 0.7 : 1.85;
     for (let i = S.obs.length - 1; i >= 0; i--) {
-      const ob = S.obs[i]; ob.z += dz;
+      const ob = S.obs[i]; ob.z += dz; ob.fa = (ob.fa || 0) + dt * vm;
       if (ob.tipo === "entrada" && ob.z > -26 && !ob.golpe) { ob.z += 6 * dt; ob.extra = Math.min(1, ob.extra + dt * 3); }
       if (ob.golpe && ob.golpe > 1) { /* derribado en turbo: sale volando */ ob.z += 0; }
-      if (ob.tipo === "pelotazo") ob.z += 11 * dt;
+      if (ob.tipo === "pelotazo") ob.z += 11 * dt * vm;
+      if (ob.tipo === "arbitro") ob.z += 4 * dt * vm;
       if (ob.z > Z_FIN) { suelta(ob); S.obs.splice(i, 1); continue; }
-      if (ob.tipo === "rodante") ob.x = 2.9 * Math.sin(S.t * 1.4 + ob.ph);
-      else if (ob.tipo === "dron") ob.x = 2.7 * Math.sin(S.t * 1.2 + ob.ph);
-      else if (ob.tipo === "extremo") ob.x = lerp(LX[ob.lane], LX[ob.lane + 1], 0.5 + 0.5 * Math.sin(S.t * 2.6 + ob.ph));
-      else if (ob.tipo === "carro") ob.x = 3.3 * Math.sin(S.t * 2.1 + ob.ph);
-      else if (ob.tipo === "mascota") { const u = S.t * 0.75 + ob.ph, k = Math.floor(u), f = u - k, sq = [0, 1, 2, 1], a = LX[sq[k % 4]], b2 = LX[sq[(k + 1) % 4]], e = clamp(f * 1.6 - 0.2, 0, 1); ob.x = lerp(a, b2, e * e * (3 - 2 * e)); ob.y = Math.sin(e * Math.PI) * 0.45; }
+      if (ob.tipo === "rodante") ob.x = 2.9 * Math.sin(ob.fa * 1.4 + ob.ph);
+      else if (ob.tipo === "dron") ob.x = 2.7 * Math.sin(ob.fa * 1.2 + ob.ph);
+      else if (ob.tipo === "extremo") ob.x = lerp(LX[ob.lane], LX[ob.lane + 1], 0.5 + 0.5 * Math.sin(ob.fa * 2.6 + ob.ph));
+      else if (ob.tipo === "carro") ob.x = 3.3 * Math.sin(ob.fa * 2.1 + ob.ph);
+      else if (ob.tipo === "mascota") { const u = ob.fa * 0.75 + ob.ph, k = Math.floor(u), f = u - k, sq = [0, 1, 2, 1], a = LX[sq[k % 4]], b2 = LX[sq[(k + 1) % 4]], e = clamp(f * 1.6 - 0.2, 0, 1); ob.x = lerp(a, b2, e * e * (3 - 2 * e)); ob.y = Math.sin(e * Math.PI) * 0.45; }
       else if (ob.tipo === "pelotazo") ob.x = LX[ob.lane];
-      else if (ob.tipo === "botando") { ob.x = LX[ob.lane]; ob.y = 0.4 + Math.abs(Math.sin(S.t * 3.6 + ob.ph)) * 2.4; }
+      else if (ob.tipo === "botando") { ob.x = LX[ob.lane]; ob.y = 0.4 + Math.abs(Math.sin(ob.fa * 3.6 + ob.ph)) * 2.4; }
+      else if (ob.tipo === "arbitro") { const u = clamp((ob.z + 56) / 26, 0, 1); ob.x = lerp(LX[ob.lane], LX[ob.lane2 === undefined ? ob.lane : ob.lane2], u * u * (3 - 2 * u)); }
+      else if (ob.tipo === "portero") ob.x = 3.0 * Math.sin(ob.fa * 1.7 + ob.ph);
+      else if (ob.tipo === "barrera") ob.x = 2.2 * Math.sin(ob.fa * 0.9 + ob.ph);
+      else if (ob.tipo === "tarjeta") { ob.x = 3.0 * Math.sin(ob.fa * 1.3 + ob.ph); ob.y = 1.55 + Math.sin(ob.fa * 3 + ob.ph) * 0.08; }
+      else if (ob.tipo === "cortacesped") ob.x = 3.4 * Math.sin(ob.fa * 1.5 + ob.ph);
       if (S.fase !== "corre" || ob.golpe) continue;
       const x = ob.x !== undefined ? ob.x : ob.lane < 0 ? 0 : LX[ob.lane], dx = Math.abs(S.x - x), dzz = Math.abs(ob.z);
       if (ob.tipo === "moneda" || ob.tipo === "bota" || ob.tipo === "caja") {
@@ -642,6 +743,11 @@ export function abrir(api, raiz) {
       else if (ob.tipo === "carro") choca = dx < 1.05 && dzz < 0.7 && S.y < 0.85;
       else if (ob.tipo === "mascota") choca = dx < 0.95 && dzz < 0.65 && S.y < 1.9 + ob.y;
       else if (ob.tipo === "pelotazo") choca = dx < 0.75 && dzz < 0.8 && S.y < 0.8;
+      else if (ob.tipo === "arbitro") choca = dx < 0.85 && dzz < 0.6 && S.y < 1.9;
+      else if (ob.tipo === "portero") choca = dx < 1.1 && dzz < 0.6 && S.y < 1.9;
+      else if (ob.tipo === "barrera") choca = dx < 2.0 && dzz < 0.6 && S.y < 1.9;
+      else if (ob.tipo === "tarjeta") choca = dx < 1.0 && dzz < 0.45 && S.y + alt > 1.2 && S.y < 2.3;
+      else if (ob.tipo === "cortacesped") choca = dx < 1.0 && dzz < 0.8 && S.y < 0.8;
       else if (ob.tipo === "dron") choca = dx < 1.0 && dzz < 0.6 && S.y + alt > 1.05 && S.y < 1.75;
       if (!choca) continue;
       if (S.turbo > 0) { ob.golpe = 2; S.bonus += 25; sonGolpe(); S.shake = reducido ? 0 : 0.2; for (let k = 0; k < 12; k++) chispas.emite(x, 0.9, ob.z, rnd(-4, 4), rnd(1, 5), rnd(-3, 1), 0.7); suelta(ob); S.obs.splice(i, 1); }
@@ -654,6 +760,9 @@ export function abrir(api, raiz) {
       else if (Math.floor(S.dist / 500) > S.hito) { S.hito = Math.floor(S.dist / 500); aviso("¡" + Math.floor(S.dist / 100) * 100 + " m!", "bien", 1000); }
       const tramo = Math.floor(S.dist / TRAMO);
       if (tramo > S.tema) { S.tema = tramo; aviso(ESC[tramo % ESC.length].nombre, "oro", 2000); S.hito = Math.floor(S.dist / 500); }
+      if (S.aviT < 1 && S.tc >= 100) { S.aviT = 1; aviso("¡Los obstáculos se aceleran!", "mal", 2400); }
+      else if (S.aviT < 2 && S.tc >= 180) { S.aviT = 2; aviso("¡Cada vez más rápido!", "mal", 2400); }
+      else if (S.aviT < 3 && S.tc >= 240) { S.aviT = 3; aviso("¡Modo infernal! Aguanta como puedas", "mal", 3000); }
       if (S.nuevo < NUEVOS.length && S.dist >= NUEVOS[S.nuevo][0]) { aviso(NUEVOS[S.nuevo][1], "mal", 2600); S.nuevo++; }
       if (Math.floor(S.dist / 1000) > S.vidaHito) { S.vidaHito = Math.floor(S.dist / 1000); if (S.vidas < VIDAS) { S.vidas++; pintaVidas(); aviso("¡Vida recuperada!", "bien", 1500); } }
       pintaHud();
@@ -695,6 +804,7 @@ export function abrir(api, raiz) {
     else if (S.desl > 0) { poseDesliza(jug, Math.min(1, Math.min(S.desl, DUR_DESL - S.desl) * 9)); }
     else { POSES.carrera(jug, S.fase === "menu" ? 0.9 : 0.1, S.ciclo); if (S.turbo > 0) { jug.torso.rotation.x = 0.4; } }
     if (S.fase === "corre" && S.y <= 0.03 && S.desl <= 0 && Math.random() < dt * S.v * 0.5) polvo.emite(S.x + rnd(-0.2, 0.2), 0.05, rnd(0.2, 0.6), rnd(-0.6, 0.6), rnd(0.2, 0.8), rnd(2, 4), 0.45);
+    if ((S.fase === "corre" || S.fase === "menu") && estelaAct.cols && !reducido) { const cs = estelaAct.cols; for (let q = 0; q < 2; q++) { const col = cs[irnd(cs.length)]; (estSis[col] || (estSis[col] = crearParticulas(scene, 70, col, 0.3, true))).emite(S.x + rnd(-0.2, 0.2), S.y + 0.2 + rnd(0, 0.3), 0.35, rnd(-0.5, 0.5), rnd(0.2, 1.3), rnd(2, 5), 0.6); } }
     /* obstáculos */
     S.obs.forEach(function (ob, i) {
       const m = ob.m; if (!m) return;
@@ -707,13 +817,18 @@ export function abrir(api, raiz) {
       else if (ob.tipo === "carro") { m.position.set(ob.x === undefined ? 0 : ob.x, 0, ob.z); m.rotation.y = Math.cos(T * 2.1 + ob.ph) > 0 ? -0.5 : 0.5; }
       else if (ob.tipo === "mascota") { m.position.set(ob.x === undefined ? 0 : ob.x, ob.y, ob.z); m.userData.cuerpo.scale.y = 1.15 + Math.sin(T * 9 + ob.ph) * 0.06; m.rotation.y = Math.PI * 0 + Math.sin(T * 3 + ob.ph) * 0.3; }
       else if (ob.tipo === "pelotazo") { m.position.set(LX[ob.lane], 0, ob.z); m.userData.bola.rotation.x = -T * 14; const k = 2.2 + Math.sin(T * 20) * 0.3; m.userData.fu.scale.set(k, k, 1); }
+      else if (ob.tipo === "arbitro") { m.position.set(ob.x === undefined ? LX[ob.lane] : ob.x, 0, ob.z); m.rotation.y = Math.PI; const u = m.userData; u.piernas[0].rotation.x = Math.sin(T * 14) * 0.9; u.piernas[1].rotation.x = -Math.sin(T * 14) * 0.9; u.brazos[0].rotation.x = Math.sin(T * 14) * 0.7; }
+      else if (ob.tipo === "portero") { m.position.set(ob.x === undefined ? 0 : ob.x, 0, ob.z); m.rotation.y = Math.PI; m.rotation.z = Math.cos(ob.fa * 1.7 + ob.ph) * 0.35; const u = m.userData; u.brazos[0].rotation.x = Math.sin(T * 9) * 0.3; u.brazos[1].rotation.x = -Math.sin(T * 9) * 0.3; }
+      else if (ob.tipo === "barrera") { m.position.set(ob.x === undefined ? 0 : ob.x, 0, ob.z); m.rotation.y = Math.PI; m.userData.hs.forEach((h, q) => { h.position.y = Math.abs(Math.sin(T * 5 + q)) * 0.07; }); }
+      else if (ob.tipo === "tarjeta") { m.position.set(ob.x === undefined ? 0 : ob.x, ob.y, ob.z); m.userData.c.rotation.y = T * 3.2; m.userData.c.rotation.z = Math.sin(T * 2 + ob.ph) * 0.25; }
+      else if (ob.tipo === "cortacesped") { m.position.set(ob.x === undefined ? 0 : ob.x, 0, ob.z); m.rotation.y = Math.cos(ob.fa * 1.5 + ob.ph) > 0 ? -0.5 : 0.5; m.position.y = Math.sin(T * 40) * 0.015; }
       else if (ob.tipo === "caja") { m.position.set(LX[ob.lane], 1.0 + Math.sin(T * 3) * 0.12, ob.z); m.rotation.y = T * 2.2; const k = 2.4 + Math.sin(T * 6) * 0.3; m.userData.sp.scale.set(k, k, 1); }
       else if (ob.tipo === "moneda") { m.position.set(LX[ob.lane], ob.y + Math.sin(T * 4 + ob.ph) * 0.08, ob.z); m.rotation.y = T * 4.5 + ob.ph; }
       else if (ob.tipo === "bota") { m.position.set(LX[ob.lane], 1.1 + Math.sin(T * 5) * 0.15, ob.z); const k = 1.4 + Math.sin(T * 8) * 0.15; m.userData.sp.scale.set(k, k, 1); }
       else { m.position.set(ob.lane < 0 ? 0 : LX[ob.lane], 0, ob.z); }
     });
     /* partículas y líneas de velocidad */
-    chispas.paso(dt, dz); polvo.paso(dt, dz); pasoClima(dt, dz);
+    chispas.paso(dt, dz); polvo.paso(dt, dz); Object.keys(estSis).forEach((k) => estSis[k].paso(dt, dz)); pasoClima(dt, dz);
     const vel = clamp((S.v - 15) / 12, 0, 1) + (S.turbo > 0 ? 0.6 : 0);
     lineas.forEach(function (m) {
       m.visible = vel > 0.05 && !reducido; if (!m.visible) return; m.material.opacity = 0.18 + vel * 0.35;
@@ -786,5 +901,5 @@ export function abrir(api, raiz) {
   pintaRecord(); pintaVidas(); pintaHud(); pintaSaldo();
   if (E) raf = requestAnimationFrame(function (n) { ultimo = n; bucle(n); });
   /* Solo para las pruebas automáticas */
-  return { ESC: ESC, vBase: vBase, NUEVOS: NUEVOS, aplicaEsc: aplicaEsc, mats: () => mundo.matMon, clima: () => clima, cerrar: cerrar, S: S, E: E, empezar: empezar, mover: mover, saltar: saltar, deslizar: deslizar, logica: logica, fila: fila, pon: pon, limpia: limpiaObs, LX: LX, regalo: regalo, KIT_J: KIT_J, elegirKit: elegirKit, pintaKits: pintaKits };
+  return { ESC: ESC, vBase: vBase, NUEVOS: NUEVOS, velMov: velMov, espaciado: espaciado, filasExtra: filasExtra, regalo: regalo, VEST: VEST, aplicaEsc: aplicaEsc, mats: () => mundo.matMon, clima: () => clima, cerrar: cerrar, S: S, E: E, empezar: empezar, mover: mover, saltar: saltar, deslizar: deslizar, logica: logica, fila: fila, pon: pon, limpia: limpiaObs, LX: LX, regalo: regalo, KIT_J: KIT_J, elegirKit: elegirKit, pintaKits: pintaKits };
 }

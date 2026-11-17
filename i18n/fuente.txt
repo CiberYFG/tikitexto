@@ -2012,3 +2012,45 @@ Corredor de Tikitexto en 3D: esquiva defensas y obstáculos que se mueven, gasta
 Comparador ||| Comparator ||| Comparador ||| Comparateur ||| Confronto ||| Vergleich
 Cara a cara: jugadores, equipos, selecciones y entrenadores ||| Head to head: players, clubs, national teams and managers ||| Frente a frente: jogadores, clubes, seleções e treinadores ||| Face à face : joueurs, clubs, sélections et entraîneurs ||| Faccia a faccia: giocatori, club, nazionali e allenatori ||| Duell: Spieler, Vereine, Nationalteams und Trainer
 Comparar ||| Compare ||| Comparar ||| Comparer ||| Confronta ||| Vergleichen
+¡El árbitro te corta el paso! Cambia de carril ||| The referee cuts you off! Change lane ||| O árbitro corta o seu caminho! Mude de faixa ||| L'arbitre te coupe la route ! Change de couloir ||| L'arbitro ti taglia la strada! Cambia corsia ||| Der Schiedsrichter schneidet dir den Weg ab! Wechsle die Spur
+¡Tarjeta voladora! Deslízate debajo ||| Flying card! Slide underneath ||| Cartão voador! Deslize por baixo ||| Carton volant ! Glisse dessous ||| Cartellino volante! Scivola sotto ||| Fliegende Karte! Rutsche darunter durch
+¡Portero en plancha! Busca su hueco ||| Diving keeper! Find his gap ||| Goleiro em voo! Procure o espaço ||| Gardien en plongeon ! Trouve son espace ||| Portiere in tuffo! Cerca il suo spazio ||| Torwart im Hechtsprung! Such die Lücke
+¡Cortacésped del campo! Sáltalo ||| Pitch mower! Jump it ||| Cortador de grama! Salte ||| Tondeuse du terrain ! Saute-la ||| Tosaerba del campo! Saltalo ||| Rasenmäher des Platzes! Spring drüber
+¡La barrera! Busca el hueco ||| The wall! Find the gap ||| A barreira! Procure o espaço ||| Le mur ! Trouve l'espace ||| La barriera! Cerca lo spazio ||| Die Mauer! Such die Lücke
+¡Los obstáculos se aceleran! ||| The obstacles speed up! ||| Os obstáculos aceleram! ||| Les obstacles accélèrent ! ||| Gli ostacoli accelerano! ||| Die Hindernisse werden schneller!
+¡Cada vez más rápido! ||| Faster and faster! ||| Cada vez mais rápido! ||| De plus en plus vite ! ||| Sempre più veloce! ||| Immer schneller!
+¡Modo infernal! Aguanta como puedas ||| Hell mode! Hang on as long as you can ||| Modo infernal! Aguente o quanto puder ||| Mode infernal ! Tiens le plus longtemps possible ||| Modalità infernale! Resisti il più possibile ||| Höllenmodus! Halte so lange du kannst durch
+🎁 ¡Regalo! Turbo extra ||| 🎁 Gift! Extra turbo ||| 🎁 Presente! Turbo extra ||| 🎁 Cadeau ! Turbo en plus ||| 🎁 Regalo! Turbo extra ||| 🎁 Geschenk! Extra-Turbo
+🎁 ¡Regalo! Vida extra ||| 🎁 Gift! Extra life ||| 🎁 Presente! Vida extra ||| 🎁 Cadeau ! Vie en plus ||| 🎁 Regalo! Vita extra ||| 🎁 Geschenk! Extra-Leben
+🎁 ¡Regalo! Escudo de 7 s ||| 🎁 Gift! 7 s shield ||| 🎁 Presente! Escudo de 7 s ||| 🎁 Cadeau ! Bouclier de 7 s ||| 🎁 Regalo! Scudo di 7 s ||| 🎁 Geschenk! 7 s Schild
+P ||| ^🎁 ¡Regalo! \+(\d+) monedas$ ||| 🎁 Gift! +$1 coins ||| 🎁 Presente! +$1 moedas ||| 🎁 Cadeau ! +$1 pièces ||| 🎁 Regalo! +$1 monete ||| 🎁 Geschenk! +$1 Münzen
+¡Comprado! ||| Bought! ||| Comprado! ||| Acheté ! ||| Acquistato! ||| Gekauft!
+Gasta tus monedas en equipaciones, botas, pelo y estelas. Las monedas se guardan entre partidas. ||| Spend your coins on kits, boots, hair and trails. Coins are kept between games. ||| Gaste suas moedas em uniformes, chuteiras, cabelo e rastros. As moedas ficam guardadas entre partidas. ||| Dépense tes pièces en maillots, chaussures, coiffures et traînées. Les pièces sont conservées entre les parties. ||| Spendi le monete in divise, scarpe, capelli e scie. Le monete restano tra una partita e l'altra. ||| Gib deine Münzen für Trikots, Schuhe, Haare und Spuren aus. Münzen bleiben zwischen den Spielen erhalten.
+Equipaciones ||| Kits ||| Uniformes ||| Maillots ||| Divise ||| Trikots
+Botas ||| Boots ||| Chuteiras ||| Chaussures ||| Scarpe ||| Schuhe
+Pelo ||| Hair ||| Cabelo ||| Cheveux ||| Capelli ||| Haare
+Estelas ||| Trails ||| Rastros ||| Traînées ||| Scie ||| Spuren
+Naranja mandarina ||| Tangerine orange ||| Laranja tangerina ||| Orange mandarine ||| Arancio mandarino ||| Mandarinenorange
+Rayas rojas y blancas ||| Red and white stripes ||| Listras vermelhas e brancas ||| Rayures rouges et blanches ||| Righe rosse e bianche ||| Rot-weiße Streifen
+Aros verdes ||| Green hoops ||| Aros verdes ||| Cerceaux verts ||| Anelli verdi ||| Grüne Ringe
+Morado real ||| Royal purple ||| Roxo real ||| Violet royal ||| Viola reale ||| Königslila
+Plata galáctica ||| Galactic silver ||| Prata galáctica ||| Argent galactique ||| Argento galattico ||| Galaktisches Silber
+Botas negras ||| Black boots ||| Chuteiras pretas ||| Chaussures noires ||| Scarpe nere ||| Schwarze Schuhe
+Botas blancas ||| White boots ||| Chuteiras brancas ||| Chaussures blanches ||| Scarpe bianche ||| Weiße Schuhe
+Botas rojas ||| Red boots ||| Chuteiras vermelhas ||| Chaussures rouges ||| Scarpe rosse ||| Rote Schuhe
+Botas azul eléctrico ||| Electric blue boots ||| Chuteiras azul elétrico ||| Chaussures bleu électrique ||| Scarpe blu elettrico ||| Elektroblaue Schuhe
+Botas verde neón ||| Neon green boots ||| Chuteiras verde neon ||| Chaussures vert néon ||| Scarpe verde neon ||| Neongrüne Schuhe
+Botas de oro ||| Golden boots ||| Chuteiras de ouro ||| Chaussures en or ||| Scarpe d'oro ||| Goldene Schuhe
+Botas rosa ||| Pink boots ||| Chuteiras rosa ||| Chaussures roses ||| Scarpe rosa ||| Rosa Schuhe
+Pelo castaño ||| Brown hair ||| Cabelo castanho ||| Cheveux châtains ||| Capelli castani ||| Braune Haare
+Pelo negro ||| Black hair ||| Cabelo preto ||| Cheveux noirs ||| Capelli neri ||| Schwarze Haare
+Pelo rubio ||| Blond hair ||| Cabelo loiro ||| Cheveux blonds ||| Capelli biondi ||| Blonde Haare
+Pelo pelirrojo ||| Red hair ||| Cabelo ruivo ||| Cheveux roux ||| Capelli rossi ||| Rote Haare
+Pelo azul ||| Blue hair ||| Cabelo azul ||| Cheveux bleus ||| Capelli blu ||| Blaue Haare
+Pelo rosa ||| Pink hair ||| Cabelo rosa ||| Cheveux roses ||| Capelli rosa ||| Rosa Haare
+Pelo platino ||| Platinum hair ||| Cabelo platinado ||| Cheveux platine ||| Capelli platino ||| Platinblonde Haare
+Chispas doradas ||| Golden sparks ||| Faíscas douradas ||| Étincelles dorées ||| Scintille dorate ||| Goldene Funken
+Estela de fuego ||| Fire trail ||| Rastro de fogo ||| Traînée de feu ||| Scia di fuoco ||| Feuerspur
+Estela de hielo ||| Ice trail ||| Rastro de gelo ||| Traînée de glace ||| Scia di ghiaccio ||| Eisspur
+Estela neón ||| Neon trail ||| Rastro neon ||| Traînée néon ||| Scia neon ||| Neonspur
+Estela arcoíris ||| Rainbow trail ||| Rastro arco-íris ||| Traînée arc-en-ciel ||| Scia arcobaleno ||| Regenbogenspur
