@@ -28,12 +28,12 @@ const ESC = [
 /* velocidad según la distancia: crece siempre pero cada vez más despacio (máx. ≈33 m/s) */
 const vBase = (d) => Math.min(33, 11 + 11 * (1 - Math.exp(-d / 800)) + 11 * (1 - Math.exp(-d / 4500)));
 /* obstáculos que se mueven: se van desbloqueando por distancia */
-const NUEVOS = [[450, "¡Balón gigante! Sáltalo", "rodante"], [700, "¡El árbitro te corta el paso! Cambia de carril", "arbitro"], [900, "¡Carrito de balones! Sáltalo", "carro"], [1050, "¡Balones botando! Cuidado con el bote", "botando"], [1250, "¡Tarjeta voladora! Deslízate debajo", "tarjeta"], [1450, "¡Mascota saltarina! Esquívala", "mascota"], [1650, "¡Portero en plancha! Busca su hueco", "portero"], [1750, "¡Extremo en zigzag! Esquívalo", "extremo"], [1950, "¡Cortacésped del campo! Sáltalo", "cortacesped"], [2100, "¡Pelotazo! Salta o esquiva", "pelotazo"], [2300, "¡La barrera! Busca el hueco", "barrera"], [2500, "¡Dron de TV! Deslízate debajo", "dron"]];
-/* dificultad por tiempo de partida (tc, en segundos): desde ~1:40 los obstáculos móviles se aceleran, a los 3 min van mucho más rápido
-   y a partir de 4-5 min la pista se llena (filas más juntas y dobles): casi imposible, pero siempre queda un carril libre */
-const velMov = (tc) => 1 + clamp((tc - 100) / 80, 0, 1) * 0.7 + clamp((tc - 200) / 100, 0, 1) * 0.8;
-const espaciado = (tc) => 1 - clamp((tc - 150) / 150, 0, 1) * 0.45;
-const filasExtra = (tc) => (tc >= 330 ? 2 : tc >= 240 ? 1 : 0);
+const NUEVOS = [[450, "¡Balón gigante! Sáltalo", "rodante"], [700, "¡El árbitro te corta el paso! Cambia de carril", "arbitro"], [900, "¡Carrito de balones! Sáltalo", "carro"], [1050, "¡Balones botando! Cuidado con el bote", "botando"], [1150, "¡Recogepelotas a toda velocidad! Esquívalo", "recogepelotas"], [1250, "¡Tarjeta voladora! Deslízate debajo", "tarjeta"], [1450, "¡Mascota saltarina! Esquívala", "mascota"], [1650, "¡Portero en plancha! Busca su hueco", "portero"], [1750, "¡Extremo en zigzag! Esquívalo", "extremo"], [1950, "¡Cortacésped del campo! Sáltalo", "cortacesped"], [2100, "¡Pelotazo! Salta o esquiva", "pelotazo"], [2300, "¡La barrera! Busca el hueco", "barrera"], [2400, "¡Camilla! Salta por el medio", "camillero"], [2500, "¡Dron de TV! Deslízate debajo", "dron"]];
+/* dificultad por tiempo de partida (tc, en segundos): desde ~1:05 los obstáculos móviles se aceleran, a los 2 min van mucho más rápido
+   y a partir de 2:30-3:30 la pista se llena (modo infernal) (filas más juntas y dobles): casi imposible, pero siempre queda un carril libre */
+const velMov = (tc) => 1 + clamp((tc - 65) / 55, 0, 1) * 0.7 + clamp((tc - 130) / 70, 0, 1) * 0.8;
+const espaciado = (tc) => 1 - clamp((tc - 100) / 100, 0, 1) * 0.45;
+const filasExtra = (tc) => (tc >= 210 ? 2 : tc >= 150 ? 1 : 0);
 /* equipaciones del corredor: se compran con las monedas */
 const KIT_J = [
   { id: "azul", n: "Azul clásico", c: 0x1d5fd6, c2: 0xffffff, p: 0xf2f4f8, m: 0x1d5fd6, precio: 0 },
@@ -270,7 +270,7 @@ export function abrir(api, raiz) {
 
   const S = { fase: "menu", t: 0, dist: 0, v: 0, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, obs: [], sig: 0, filas: 0, tiki: false, regalo: 0, cajaD: 0, cajaN: 0, cajaOk: false, bonus: 0, shake: 0, activo: true, choque: 0, hito: 0, tema: 0, ciclo: 0, cola: [], vidaHito: 0, nuevo: 0 };
   let raf = 0, ultimo = 0, vivo = true, escala = 1, fpsAcum = 0, fpsN = 0, hAviso = 0, hFlash = 0;
-  let camara, scene, sol, hemi, luces = [], mundo = {}, jug = null, piscina = [], libres = { def: [], valla: [], cono: [], cartel: [], moneda: [], bota: [], rodante: [], botando: [], dron: [], carro: [], mascota: [], pelotazo: [], caja: [], arbitro: [], portero: [], barrera: [], tarjeta: [], cortacesped: [] }, estSis = {}, estelaAct = ESTELAS[0], clima = null, chispas, polvo, lineas = [];
+  let camara, scene, sol, hemi, luces = [], mundo = {}, jug = null, piscina = [], libres = { def: [], valla: [], cono: [], cartel: [], moneda: [], bota: [], rodante: [], botando: [], dron: [], carro: [], mascota: [], pelotazo: [], caja: [], arbitro: [], portero: [], barrera: [], tarjeta: [], cortacesped: [], recogepelotas: [], camillero: [] }, estSis = {}, estelaAct = ESTELAS[0], clima = null, chispas, polvo, lineas = [];
 
   function construye() {
     const R = E.renderer, aniso = Math.min(R.capabilities.getMaxAnisotropy(), 8);
@@ -429,43 +429,49 @@ export function abrir(api, raiz) {
   }
   /* pelotazo: balón en llamas que viene más rápido que el campo */
   function mallaPelotazo() {
-    const g = new THREE.Group(), b = new THREE.Mesh(new THREE.SphereGeometry(0.4, 22, 16), new THREE.MeshStandardMaterial({ map: mundo.texBalon, roughness: 0.4, emissive: 0x662200, emissiveIntensity: 0.6 }));
+    const g = new THREE.Group(), b = new THREE.Mesh(new THREE.SphereGeometry(0.4, 22, 16), new THREE.MeshStandardMaterial({ map: mundo.texBalon, roughness: 0.5 }));
     b.position.y = 0.42; b.castShadow = true; g.add(b); g.userData.bola = b;
-    const f = new THREE.Sprite(new THREE.SpriteMaterial({ map: mundo.texFuego, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false })); f.scale.set(2.4, 2.4, 1); f.position.set(0, 0.5, 0.9); g.add(f); g.userData.fu = f;
+    const f = new THREE.Sprite(new THREE.SpriteMaterial({ map: mundo.texFuego, depthWrite: false, transparent: true, opacity: 0.8, fog: false })); f.scale.set(1.8, 1.8, 1); f.position.set(0, 0.5, 0.9); g.add(f); g.userData.fu = f;
     return g;
   }
 
-  /* humanoide sencillo (árbitro, portero, barrera): primitivas, sin escudos ni marcas */
-  function humanoide(camisa, pant, piel, abiertos) {
-    const g = new THREE.Group(), M = (c, r) => new THREE.MeshStandardMaterial({ color: c, roughness: r || 0.7 });
-    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.26, 0.75, 14), M(camisa)); torso.position.y = 1.2; torso.castShadow = true; g.add(torso);
-    const cab = new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 12), M(piel, 0.6)); cab.position.y = 1.75; g.add(cab);
-    const sh = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.3, 14), M(pant)); sh.position.y = 0.72; g.add(sh);
-    const piernas = [-0.13, 0.13].map((x) => { const l = new THREE.Group(); l.position.set(x, 0.72, 0); const m = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.085, 0.7, 10), M(piel, 0.6)); m.position.y = -0.38; l.add(m); g.add(l); return l; });
-    const brazos = [-1, 1].map((sg) => { const a = new THREE.Group(); a.position.set(sg * 0.38, 1.47, 0); const m = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.065, 0.62, 10), M(camisa)); m.position.y = -0.3; a.add(m); const mano = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), M(piel, 0.6)); mano.position.y = -0.64; a.add(mano); if (abiertos) a.rotation.z = -sg * 1.4; g.add(a); return a; });
-    g.userData = { piernas: piernas, brazos: brazos, torso: torso }; return g;
-  }
+  /* personajes con el mismo cuerpo (Rocketbox) que el corredor y los defensas */
+  function figEq(o) { return crearFigura(Object.assign({ cuerpo: "jugador", piel: 0xf0c8a0, pelo: 0x1c140f, nombre: "", numColor: "#ffffff", manga: true }, o)); }
+  function envuelve(figs) { const g = new THREE.Group(); figs.forEach((f) => g.add(f.raiz)); g.userData.fs = figs; g.userData.f = figs[0]; return g; }
   /* árbitro: corre hacia ti y se cruza de carril; lleva una tarjeta amarilla en alto */
   function mallaArbitro() {
-    const g = humanoide(0x16161a, 0x16161a, 0xf0c8a0, false); const b = g.userData.brazos[1]; b.rotation.z = -2.6;
-    const c = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.32, 0.03), new THREE.MeshStandardMaterial({ color: 0xffd400, emissive: 0x665500, emissiveIntensity: 0.6 })); c.position.set(0, -0.82, 0.02); b.add(c); return g;
+    const f = figEq({ camisa: 0x15151a, camisa2: 0xd9d9de, pantalon: 0x15151a, media: 0x15151a, bota: 0x111111, piel: 0xd9a273 });
+    const c = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.3, 0.03), new THREE.MeshStandardMaterial({ color: 0xf2c200, roughness: 0.6 })); c.position.set(0, 0.12, 0.05); f.brD.m.add(c);
+    return envuelve([f]);
   }
-  /* portero en plancha: brazos abiertos con guantes grandes que barre la pista */
+  /* portero en plancha: guantes y camiseta naranja */
   function mallaPortero() {
-    const g = humanoide(0xff7a00, 0x1a1a1a, 0xf0c8a0, true);
-    g.userData.brazos.forEach((a) => { const gu = new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 10), new THREE.MeshStandardMaterial({ color: 0xe8ff3a, roughness: 0.5 })); gu.position.y = -0.66; a.add(gu); });
+    return envuelve([figEq({ cuerpo: "portero", camisa: 0xff7a00, camisa2: 0x1a1a1a, pantalon: 0x1a1a1a, media: 0xff7a00, guante: 0xe8ff3a, largo: true, piel: 0xa8764d })]);
+  }
+  /* barrera: cuatro jugadores hombro con hombro que se desplazan a la vez */
+  function mallaBarrera() {
+    const col = [[0x1d5fd6, 0xffffff], [0xffffff, 0x1d5fd6], [0x1d5fd6, 0xffffff], [0xffffff, 0x1d5fd6]], piel = [0xf0c8a0, 0xd9a273, 0xa8764d, 0x7a5233];
+    const fs = col.map((k, i) => { const f = figEq({ camisa: k[0], camisa2: k[1], pantalon: k[1], media: k[0], piel: piel[i] }); f.raiz.position.x = (i - 1.5) * 0.9; return f; });
+    return envuelve(fs);
+  }
+  /* recogepelotas: chico con peto que corre con un balón bajo el brazo */
+  function mallaRecogepelotas() {
+    const f = figEq({ camisa: 0x19c8ff, camisa2: 0xffffff, pantalon: 0x1a1a1a, media: 0x1a1a1a, piel: 0xd9a273 }), g = envuelve([f]);
+    const b = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 12), new THREE.MeshStandardMaterial({ map: mundo.texBalon, roughness: 0.5 })); b.position.set(0.32, 1.1, 0.25); b.castShadow = true; g.add(b); g.userData.bola = b; return g;
+  }
+  /* camilla: dos sanitarios con peto naranja la llevan de lado a lado; los sanitarios no se saltan, la camilla sí */
+  function mallaCamillero() {
+    const fs = [-1.15, 1.15].map((x) => { const f = figEq({ camisa: 0xff8a00, camisa2: 0xffffff, pantalon: 0x222831, media: 0x222831, piel: x < 0 ? 0xf0c8a0 : 0xa8764d }); f.raiz.position.x = x; return f; }), g = envuelve(fs);
+    const lona = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.08, 0.62), new THREE.MeshStandardMaterial({ color: 0x2a6bd6, roughness: 0.8 })); lona.position.set(0, 0.72, 0); lona.castShadow = true; g.add(lona);
+    const asa = new THREE.MeshStandardMaterial({ color: 0x20242c, roughness: 0.5 }); [-0.28, 0.28].forEach((z) => { const a = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.05, 0.05), asa); a.position.set(0, 0.74, z); g.add(a); });
     return g;
   }
-  /* barrera: tres jugadores hombro con hombro que se desplazan a la vez */
-  function mallaBarrera() {
-    const g = new THREE.Group(), tel = [];
-    [-0.95, 0, 0.95].forEach((x, i) => { const h = humanoide(i === 1 ? 0xffffff : 0x1d5fd6, 0x1a1a1a, [0xf0c8a0, 0xd9a273, 0xa8764d][i], false); h.position.x = x; h.userData.brazos.forEach((a, k) => { a.rotation.x = -0.9; a.rotation.z = (k ? 1 : -1) * 0.25; }); g.add(h); tel.push(h); });
-    g.userData.hs = tel; return g;
-  }
-  /* tarjeta amarilla gigante que gira en el aire (agáchate para pasar) */
+  /* tarjeta amarilla gigante que gira en el aire: opaca, con borde negro y sin brillo (agáchate para pasar) */
   function mallaTarjeta() {
-    const g = new THREE.Group(), c = new THREE.Mesh(new THREE.BoxGeometry(0.95, 1.3, 0.08), new THREE.MeshStandardMaterial({ color: 0xffd400, roughness: 0.35, emissive: 0x806400, emissiveIntensity: 0.7 })); c.castShadow = true; g.add(c); g.userData.c = c;
-    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: mundo.texRayo, depthWrite: false, transparent: true, fog: false, blending: THREE.AdditiveBlending })); sp.scale.set(2.6, 2.6, 1); g.add(sp); return g;
+    const g = new THREE.Group(), pivote = new THREE.Group();
+    const c = new THREE.Mesh(new THREE.BoxGeometry(0.95, 1.3, 0.1), new THREE.MeshStandardMaterial({ color: 0xf2c200, roughness: 0.75, metalness: 0 })); c.castShadow = true; pivote.add(c);
+    const borde = new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.45, 0.08), new THREE.MeshStandardMaterial({ color: 0x15151a, roughness: 0.8 })); borde.position.z = -0.01; pivote.add(borde);
+    g.add(pivote); g.userData.c = pivote; return g;
   }
   /* cortacésped del campo: cruza de lado a lado, sáltalo */
   function mallaCortacesped() {
@@ -493,7 +499,7 @@ export function abrir(api, raiz) {
     let o = libres[tipo].pop();
     if (!o) {
       if (tipo === "moneda") o = new THREE.Mesh(mundo.geoMon, mundo.matMon);
-      else if (tipo === "valla") o = mallaValla(); else if (tipo === "cono") o = mallaCono(); else if (tipo === "cartel") o = mallaCartel(); else if (tipo === "bota") o = mallaBota(); else if (tipo === "rodante") o = mallaRodante(); else if (tipo === "botando") o = mallaBotando(); else if (tipo === "dron") o = mallaDron(); else if (tipo === "carro") o = mallaCarro(); else if (tipo === "mascota") o = mallaMascota(); else if (tipo === "pelotazo") o = mallaPelotazo(); else if (tipo === "caja") o = mallaCaja(); else if (tipo === "arbitro") o = mallaArbitro(); else if (tipo === "portero") o = mallaPortero(); else if (tipo === "barrera") o = mallaBarrera(); else if (tipo === "tarjeta") o = mallaTarjeta(); else if (tipo === "cortacesped") o = mallaCortacesped();
+      else if (tipo === "valla") o = mallaValla(); else if (tipo === "cono") o = mallaCono(); else if (tipo === "cartel") o = mallaCartel(); else if (tipo === "bota") o = mallaBota(); else if (tipo === "rodante") o = mallaRodante(); else if (tipo === "botando") o = mallaBotando(); else if (tipo === "dron") o = mallaDron(); else if (tipo === "carro") o = mallaCarro(); else if (tipo === "mascota") o = mallaMascota(); else if (tipo === "pelotazo") o = mallaPelotazo(); else if (tipo === "caja") o = mallaCaja(); else if (tipo === "arbitro") o = mallaArbitro(); else if (tipo === "portero") o = mallaPortero(); else if (tipo === "barrera") o = mallaBarrera(); else if (tipo === "tarjeta") o = mallaTarjeta(); else if (tipo === "recogepelotas") o = mallaRecogepelotas(); else if (tipo === "camillero") o = mallaCamillero(); else if (tipo === "cortacesped") o = mallaCortacesped();
       else if (tipo === "def" || tipo === "extremo") return null;
       if (tipo === "moneda") o.castShadow = false;
       scene.add(o);
@@ -539,13 +545,15 @@ export function abrir(api, raiz) {
     else if (tipo === "arbitro") { const a = pon("arbitro", otros[0], Z); if (a) a.lane2 = otros[1]; monedas(libre, Z + 20, 5); }
     else if (tipo === "portero") { pon("portero", -1, Z); monedas(irnd(3), Z + 18, 5); }
     else if (tipo === "barrera") { pon("barrera", -1, Z); monedas(libre, Z + 18, 5); }
+    else if (tipo === "recogepelotas") { const a = pon("recogepelotas", otros[irnd(2)], Z - 10); monedas(libre, Z + 16, 5); }
+    else if (tipo === "camillero") { pon("camillero", -1, Z); monedas(irnd(3), Z + 18, 5, 1.7); }
     else if (tipo === "tarjeta") { pon("tarjeta", -1, Z, 1.55); monedas(irnd(3), Z + 16, 5, 0.9); }
     else if (tipo === "cortacesped") { const a = pon("cortacesped", -1, Z), b = pon("cortacesped", -1, Z - 9); if (a && b) b.ph = a.ph + Math.PI; monedas(1, Z + 16, 4, 1.7); }
   }
   function fila() {
     const d = Math.min(1, S.dist / 1800), Z = Z_SPAWN, lanes = [0, 1, 2], n = S.filas++, D = S.dist, tc = S.tc || 0;
     /* a partir de ~2 min las filas están más juntas: el carril libre de una fila a la siguiente cambia como mucho un carril */
-    const cand = tc > 100 && n > 0 ? lanes.filter((l) => Math.abs(l - S.libreAnt) <= 1) : lanes; const libre = cand[irnd(cand.length)]; S.libreAnt = libre;
+    const cand = tc > 65 && n > 0 ? lanes.filter((l) => Math.abs(l - S.libreAnt) <= 1) : lanes; const libre = cand[irnd(cand.length)]; S.libreAnt = libre;
     const pats = [];
     NUEVOS.forEach((nv) => pats.push([D > nv[0] ? 3 : 0, nv[2]]));
     pats.push([5, "muro"], [3, "conos"], [d > 0.05 ? 4 : 0, "valla"], [d > 0.12 ? 3 : 0, "cartel"], [d > 0.2 ? 3 : 0, "entrada"], [d > 0.3 ? 3 : 0, "mix"], [d > 0.5 ? 3 : 0, "doble"]);
@@ -554,7 +562,7 @@ export function abrir(api, raiz) {
     patron(elige(pats), Z, libre);
     /* tras 4-5 min: filas dobles y triples de obstáculos que no se saltan (siempre dejan libre el mismo carril) */
     const ex = filasExtra(tc);
-    if (ex && n > 3) { const solo = pats.filter((p) => ["muro", "mascota", "extremo", "portero", "arbitro", "barrera", "botando"].indexOf(p[1]) >= 0 && p[0] > 0); for (let k = 1; k <= ex; k++) patron(solo.length ? elige(solo) : "muro", Z - 13 * k, libre); }
+    if (ex && n > 3) { const solo = pats.filter((p) => ["muro", "mascota", "extremo", "portero", "arbitro", "barrera", "botando", "recogepelotas"].indexOf(p[1]) >= 0 && p[0] > 0); for (let k = 1; k <= ex; k++) patron(solo.length ? elige(solo) : "muro", Z - 13 * k, libre); }
     /* regalos: una caja cada 900-1.600 m (cada vez con un premio distinto) */
     if (S.cajaD > 0 && S.dist >= S.cajaD) { S.cajaD = S.dist + rnd(900, 1600); pon("caja", libre, Z + 26, 1.0); aviso("🎁 ¡Caja sorpresa delante!", "oro", 1800); }
     if (S.turbo <= 0 && S.dist > 250 && Math.random() < 0.09) pon("bota", libre, Z + 30, 1.0);
@@ -705,6 +713,7 @@ export function abrir(api, raiz) {
       if (ob.golpe && ob.golpe > 1) { /* derribado en turbo: sale volando */ ob.z += 0; }
       if (ob.tipo === "pelotazo") ob.z += 11 * dt * vm;
       if (ob.tipo === "arbitro") ob.z += 4 * dt * vm;
+      if (ob.tipo === "recogepelotas") ob.z += 9 * dt * vm;
       if (ob.z > Z_FIN) { suelta(ob); S.obs.splice(i, 1); continue; }
       if (ob.tipo === "rodante") ob.x = 2.9 * Math.sin(ob.fa * 1.4 + ob.ph);
       else if (ob.tipo === "dron") ob.x = 2.7 * Math.sin(ob.fa * 1.2 + ob.ph);
@@ -717,6 +726,8 @@ export function abrir(api, raiz) {
       else if (ob.tipo === "portero") ob.x = 3.0 * Math.sin(ob.fa * 1.7 + ob.ph);
       else if (ob.tipo === "barrera") ob.x = 2.2 * Math.sin(ob.fa * 0.9 + ob.ph);
       else if (ob.tipo === "tarjeta") { ob.x = 3.0 * Math.sin(ob.fa * 1.3 + ob.ph); ob.y = 1.55 + Math.sin(ob.fa * 3 + ob.ph) * 0.08; }
+      else if (ob.tipo === "recogepelotas") ob.x = LX[ob.lane];
+      else if (ob.tipo === "camillero") ob.x = 2.2 * Math.sin(ob.fa * 1.2 + ob.ph);
       else if (ob.tipo === "cortacesped") ob.x = 3.4 * Math.sin(ob.fa * 1.5 + ob.ph);
       if (S.fase !== "corre" || ob.golpe) continue;
       const x = ob.x !== undefined ? ob.x : ob.lane < 0 ? 0 : LX[ob.lane], dx = Math.abs(S.x - x), dzz = Math.abs(ob.z);
@@ -745,7 +756,9 @@ export function abrir(api, raiz) {
       else if (ob.tipo === "pelotazo") choca = dx < 0.75 && dzz < 0.8 && S.y < 0.8;
       else if (ob.tipo === "arbitro") choca = dx < 0.85 && dzz < 0.6 && S.y < 1.9;
       else if (ob.tipo === "portero") choca = dx < 1.1 && dzz < 0.6 && S.y < 1.9;
-      else if (ob.tipo === "barrera") choca = dx < 2.0 && dzz < 0.6 && S.y < 1.9;
+      else if (ob.tipo === "recogepelotas") choca = dx < 0.8 && dzz < 0.6 && S.y < 1.9;
+      else if (ob.tipo === "camillero") choca = dzz < 0.7 && ((Math.abs(S.x - (x - 1.15)) < 0.8 || Math.abs(S.x - (x + 1.15)) < 0.8) ? S.y < 1.9 : dx < 1.4 && S.y < 0.85);
+      else if (ob.tipo === "barrera") choca = dx < 2.05 && dzz < 0.6 && S.y < 1.9;
       else if (ob.tipo === "tarjeta") choca = dx < 1.0 && dzz < 0.45 && S.y + alt > 1.2 && S.y < 2.3;
       else if (ob.tipo === "cortacesped") choca = dx < 1.0 && dzz < 0.8 && S.y < 0.8;
       else if (ob.tipo === "dron") choca = dx < 1.0 && dzz < 0.6 && S.y + alt > 1.05 && S.y < 1.75;
@@ -760,9 +773,9 @@ export function abrir(api, raiz) {
       else if (Math.floor(S.dist / 500) > S.hito) { S.hito = Math.floor(S.dist / 500); aviso("¡" + Math.floor(S.dist / 100) * 100 + " m!", "bien", 1000); }
       const tramo = Math.floor(S.dist / TRAMO);
       if (tramo > S.tema) { S.tema = tramo; aviso(ESC[tramo % ESC.length].nombre, "oro", 2000); S.hito = Math.floor(S.dist / 500); }
-      if (S.aviT < 1 && S.tc >= 100) { S.aviT = 1; aviso("¡Los obstáculos se aceleran!", "mal", 2400); }
-      else if (S.aviT < 2 && S.tc >= 180) { S.aviT = 2; aviso("¡Cada vez más rápido!", "mal", 2400); }
-      else if (S.aviT < 3 && S.tc >= 240) { S.aviT = 3; aviso("¡Modo infernal! Aguanta como puedas", "mal", 3000); }
+      if (S.aviT < 1 && S.tc >= 65) { S.aviT = 1; aviso("¡Los obstáculos se aceleran!", "mal", 2400); }
+      else if (S.aviT < 2 && S.tc >= 120) { S.aviT = 2; aviso("¡Cada vez más rápido!", "mal", 2400); }
+      else if (S.aviT < 3 && S.tc >= 150) { S.aviT = 3; aviso("¡Modo infernal! Aguanta como puedas", "mal", 3000); }
       if (S.nuevo < NUEVOS.length && S.dist >= NUEVOS[S.nuevo][0]) { aviso(NUEVOS[S.nuevo][1], "mal", 2600); S.nuevo++; }
       if (Math.floor(S.dist / 1000) > S.vidaHito) { S.vidaHito = Math.floor(S.dist / 1000); if (S.vidas < VIDAS) { S.vidas++; pintaVidas(); aviso("¡Vida recuperada!", "bien", 1500); } }
       pintaHud();
@@ -816,11 +829,13 @@ export function abrir(api, raiz) {
       else if (ob.tipo === "dron") { m.position.set(ob.x === undefined ? 0 : ob.x, ob.y, ob.z); m.rotation.z = Math.cos(T * 1.2 + ob.ph) * 0.18; m.userData.rot.forEach((r, q) => { r.rotation.y = T * 40 + q; }); }
       else if (ob.tipo === "carro") { m.position.set(ob.x === undefined ? 0 : ob.x, 0, ob.z); m.rotation.y = Math.cos(T * 2.1 + ob.ph) > 0 ? -0.5 : 0.5; }
       else if (ob.tipo === "mascota") { m.position.set(ob.x === undefined ? 0 : ob.x, ob.y, ob.z); m.userData.cuerpo.scale.y = 1.15 + Math.sin(T * 9 + ob.ph) * 0.06; m.rotation.y = Math.PI * 0 + Math.sin(T * 3 + ob.ph) * 0.3; }
-      else if (ob.tipo === "pelotazo") { m.position.set(LX[ob.lane], 0, ob.z); m.userData.bola.rotation.x = -T * 14; const k = 2.2 + Math.sin(T * 20) * 0.3; m.userData.fu.scale.set(k, k, 1); }
-      else if (ob.tipo === "arbitro") { m.position.set(ob.x === undefined ? LX[ob.lane] : ob.x, 0, ob.z); m.rotation.y = Math.PI; const u = m.userData; u.piernas[0].rotation.x = Math.sin(T * 14) * 0.9; u.piernas[1].rotation.x = -Math.sin(T * 14) * 0.9; u.brazos[0].rotation.x = Math.sin(T * 14) * 0.7; }
-      else if (ob.tipo === "portero") { m.position.set(ob.x === undefined ? 0 : ob.x, 0, ob.z); m.rotation.y = Math.PI; m.rotation.z = Math.cos(ob.fa * 1.7 + ob.ph) * 0.35; const u = m.userData; u.brazos[0].rotation.x = Math.sin(T * 9) * 0.3; u.brazos[1].rotation.x = -Math.sin(T * 9) * 0.3; }
-      else if (ob.tipo === "barrera") { m.position.set(ob.x === undefined ? 0 : ob.x, 0, ob.z); m.rotation.y = Math.PI; m.userData.hs.forEach((h, q) => { h.position.y = Math.abs(Math.sin(T * 5 + q)) * 0.07; }); }
-      else if (ob.tipo === "tarjeta") { m.position.set(ob.x === undefined ? 0 : ob.x, ob.y, ob.z); m.userData.c.rotation.y = T * 3.2; m.userData.c.rotation.z = Math.sin(T * 2 + ob.ph) * 0.25; }
+      else if (ob.tipo === "pelotazo") { m.position.set(LX[ob.lane], 0, ob.z); m.userData.bola.rotation.x = -T * 14; const k = 1.7 + Math.sin(T * 20) * 0.2; m.userData.fu.scale.set(k, k, 1); }
+      else if (ob.tipo === "arbitro") { m.position.set(ob.x === undefined ? LX[ob.lane] : ob.x, 0, ob.z); const f = m.userData.f; POSES.carrera(f, 0.9, T * 13 + ob.ph); f.brD.s.rotation.x = -2.9; f.brD.e.rotation.x = -0.15; f.raiz.rotation.y = Math.sin(T * 2 + ob.ph) * 0.15; }
+      else if (ob.tipo === "portero") { m.position.set(ob.x === undefined ? 0 : ob.x, 0, ob.z); const f = m.userData.f, c = Math.cos(ob.fa * 1.7 + ob.ph); POSES.parada(f, 1, c < 0 ? -1 : 1, 1.0); m.rotation.z = c * 0.3; m.rotation.y = c < 0 ? 0.5 : -0.5; }
+      else if (ob.tipo === "barrera") { m.position.set(ob.x === undefined ? 0 : ob.x, 0, ob.z); m.userData.fs.forEach((f, q) => { POSES.quieto(f, T + q, true); f.brI.s.rotation.x = -0.9; f.brD.s.rotation.x = -0.9; f.brI.e.rotation.x = -1.2; f.brD.e.rotation.x = -1.2; f.cadera.position.y += Math.abs(Math.sin(T * 5 + q)) * 0.05; }); }
+      else if (ob.tipo === "recogepelotas") { m.position.set(LX[ob.lane], 0, ob.z); POSES.carrera(m.userData.f, 0.95, T * 15 + ob.ph); m.userData.bola.rotation.x = T * 9; m.userData.bola.position.y = 1.1 + Math.abs(Math.sin(T * 15)) * 0.06; }
+      else if (ob.tipo === "camillero") { m.position.set(ob.x === undefined ? 0 : ob.x, 0, ob.z); const dir = Math.cos(ob.fa * 1.2 + ob.ph) >= 0 ? 1 : -1; m.userData.fs.forEach((f, q) => { POSES.carrera(f, 0.8, T * 10 + q * 0.7); f.brI.s.rotation.x = -0.45; f.brD.s.rotation.x = -0.45; f.brI.e.rotation.x = -0.5; f.brD.e.rotation.x = -0.5; f.raiz.rotation.y = dir * Math.PI / 2; }); }
+      else if (ob.tipo === "tarjeta") { m.position.set(ob.x === undefined ? 0 : ob.x, ob.y, ob.z); m.userData.c.rotation.y = Math.sin(T * 2.4 + ob.ph) * 0.9; m.userData.c.rotation.z = Math.sin(T * 2 + ob.ph) * 0.25; }
       else if (ob.tipo === "cortacesped") { m.position.set(ob.x === undefined ? 0 : ob.x, 0, ob.z); m.rotation.y = Math.cos(ob.fa * 1.5 + ob.ph) > 0 ? -0.5 : 0.5; m.position.y = Math.sin(T * 40) * 0.015; }
       else if (ob.tipo === "caja") { m.position.set(LX[ob.lane], 1.0 + Math.sin(T * 3) * 0.12, ob.z); m.rotation.y = T * 2.2; const k = 2.4 + Math.sin(T * 6) * 0.3; m.userData.sp.scale.set(k, k, 1); }
       else if (ob.tipo === "moneda") { m.position.set(LX[ob.lane], ob.y + Math.sin(T * 4 + ob.ph) * 0.08, ob.z); m.rotation.y = T * 4.5 + ob.ph; }

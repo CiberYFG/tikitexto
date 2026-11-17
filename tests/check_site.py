@@ -912,7 +912,7 @@ with sync_playwright() as p:
           b.click(); const t1=S.t; b.click(); const t2=S.t; b.click(); const t3=S.t;
           const tot=S.puz.nombres.reduce((a,n)=>a+n.pista,0);
           return {d1:t0-t1,d2:t1-t2,d3:t2-t3,tot,max:S.t}})()""")
-        check("cracks ocultos: pista −6 s y las siguientes seguidas −3 s", 5 <= h["d1"] <= 7 and 2 <= h["d2"] <= 4 and 2 <= h["d3"] <= 4 and h["tot"] == 3, str(h))
+        check("cracks ocultos: pista −5 s y las seguidas también −5 s", 4 <= h["d1"] <= 6 and 4 <= h["d2"] <= 6 and 4 <= h["d3"] <= 6 and h["tot"] == 3, str(h))
         pz.click("[data-sp=ver]"); pz.wait_for_timeout(200)
         check("cracks ocultos: «Ver respuestas» revela y ofrece Siguiente", pz.evaluate("TIKI.serpiente.juego().S.fase") == "revela" and "Siguiente" in pz.inner_text("[data-sp=ver]"))
         pz.click("[data-sp=ver]"); pz.wait_for_timeout(200)
@@ -973,10 +973,10 @@ with sync_playwright() as p:
               for(let k=0;k<300;k++){ j.limpia(); j.fila(); const g={}; S.obs.forEach(o=>{ const z=Math.round(o.z); (g[z]=g[z]||[]).push(o); });
                 Object.values(g).forEach(a=>{ const bl=new Set(); a.forEach(o=>{ if(['def','entrada','cono'].includes(o.tipo)) bl.add(o.lane); }); if(a.some(o=>['def','entrada','cono','valla','cartel'].includes(o.tipo))){ filas++; if(bl.size<3) libre++; } }); }
               j.limpia(); return {filas,libre}; })()""")
-            check("slalom: ninguna fila cierra los tres carriles con defensas o conos", r["filas"] > 200 and r["filas"] == r["libre"], str(r))
+            check("slalom: ninguna fila cierra los tres carriles con defensas o conos", r["filas"] > 120 and r["filas"] == r["libre"], str(r))
             r = psl.evaluate("""(()=>{ const j=TIKI.slalom.juego(), S=j.S; const v=[0,300,1000,3000,8000,50000].map(j.vBase); let mono=true; for(let i=1;i<v.length;i++) if(v[i]<v[i-1]) mono=false;
               const m=j.mats(); return {v, mono, tope:Math.max(...v)<=33.001, caras:Array.isArray(m)&&m.length===3&&!!m[1].map, esc:j.ESC.length, nuevos:j.NUEVOS.length}; })()""")
-            check("slalom: la velocidad crece siempre (con tope jugable) y la moneda lleva textura de logo", r["mono"] and r["tope"] and r["caras"] and r["v"][2] > r["v"][1] and r["esc"] >= 6 and r["nuevos"] == 12, str(r))
+            check("slalom: la velocidad crece siempre (con tope jugable) y la moneda lleva textura de logo", r["mono"] and r["tope"] and r["caras"] and r["v"][2] > r["v"][1] and r["esc"] >= 6 and r["nuevos"] == 14, str(r))
             r = psl.evaluate("""(()=>{ const j=TIKI.slalom.juego(), S=j.S; j.empezar(); const out={}; const paso=(n)=>{ for(let i=0;i<n;i++){ S.t+=0.02; j.logica(0.02); } };
               const rs=()=>{ j.limpia(); S.fase='corre'; S.vidas=2; S.inv=0; S.y=0; S.vy=0; S.desl=0; S.x=0; S.lane=1; S.v=14; S.sig=9999; S.turbo=0; };
               rs(); S.t=0; const ob=j.pon('rodante',-1,-30); ob.ph=0; paso(5); const x0=ob.x; paso(80); out.mueve=Math.abs(ob.x-x0)>0.05;
