@@ -86,12 +86,12 @@
 .sl-niv { position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%) scale(1.5); display: grid; justify-items: center; gap: 4px; opacity: 0; pointer-events: none; text-align: center; z-index: 2; color: var(--c, #fff); font-family: Impact, "Arial Black", "Haettenschweiler", fantasy; }
 .sl-niv b { font-weight: 400; font-size: clamp(2.2rem, 9vw, 4.6rem); line-height: 1; letter-spacing: .04em; text-transform: uppercase; text-shadow: 0 0 22px var(--c, #fff), 0 4px 0 rgba(0,0,0,.55); font-style: italic; }
 .sl-niv small { font-size: clamp(1rem, 4.4vw, 1.9rem); letter-spacing: .22em; text-transform: uppercase; color: #fff; text-shadow: 0 2px 12px rgba(0,0,0,.8); }
-.sl-niv.on { animation: slNiv 3s cubic-bezier(.3,.8,.3,1) forwards; }
+.sl-niv.on { animation: slNiv 1.7s cubic-bezier(.3,.8,.3,1) forwards; }
 @keyframes slNiv { 0% { opacity: 0; top: 40%; transform: translate(-50%, -50%) scale(2.1); } 12% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 62% { opacity: 1; top: 40%; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; top: calc(92px + env(safe-area-inset-top)); transform: translate(-50%, -50%) scale(.2); } }
 .sl-niv--inf b { animation: slInfT .18s steps(2) infinite; }
 @keyframes slInfT { 50% { transform: translate(1px, -1px); } }
 .sl-niv-i { position: absolute; left: 50%; top: calc(86px + env(safe-area-inset-top)); transform: translateX(-50%); padding: 3px 12px; border-radius: 999px; background: rgba(6,10,22,.6); border: 1px solid var(--c, #fff); color: var(--c, #fff); font: 400 .8rem/1.3 Impact, "Arial Black", fantasy; letter-spacing: .1em; text-transform: uppercase; opacity: 0; pointer-events: none; white-space: nowrap; z-index: 1; }
-.sl-niv-i.on { animation: slNivI .4s 2.6s forwards; }
+.sl-niv-i.on { animation: slNivI .3s 1.4s forwards; }
 @keyframes slNivI { to { opacity: 1; } }
 .sl-niv-i--inf { box-shadow: 0 0 14px rgba(255,40,20,.8); }
 /* poderes activos: iconos minimalistas con color y tiempo */
@@ -107,3 +107,12 @@
 .sl-inf .sl-vineta { background: radial-gradient(ellipse at 50% 55%, rgba(120,0,0,0) 45%, rgba(150,10,0,.62) 100%); animation: slInfV 1.4s ease-in-out infinite; }
 @keyframes slInfV { 50% { opacity: .65; } }
 @media (prefers-reduced-motion: reduce) { .sl-niv.on, .sl-niv--inf b, .sl-inf .sl-vineta, .sl-pwc.fin { animation: none; } .sl-niv.on { opacity: 1; } .sl-niv-i.on { opacity: 1; animation: none; } }
+
+.sl-aviso--peq { font-size: clamp(1.1rem, 4vw, 1.7rem); top: 24%; }
+/* poderes activos: en el centro, grandes */
+.sl-pw { left: 50%; right: auto; top: 20%; transform: translateX(-50%); display: flex; gap: 16px; }
+.sl-pwc { grid-template-columns: 66px auto; column-gap: 12px; padding: 10px 18px 16px; border-radius: 22px; background: rgba(6,10,22,.5); }
+.sl-pwc svg { width: 66px; height: 66px; filter: drop-shadow(0 0 8px var(--c)); }
+.sl-pwc b { font-size: 2.6rem; }
+.sl-pwc i { left: 14px; right: 14px; bottom: 6px; height: 5px; }
+@media (max-width: 560px) { .sl-pwc { grid-template-columns: 48px auto; padding: 8px 12px 14px; } .sl-pwc svg { width: 48px; height: 48px; } .sl-pwc b { font-size: 1.9rem; } }

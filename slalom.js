@@ -39,7 +39,7 @@ const NIV_NOM = ["Calentamiento", "Ritmo de liga", "Partido igualado", "Cuartos 
 const NIV_COL = ["#41ff8a", "#7dff5a", "#c6ff3d", "#ffe94a", "#ffc02e", "#ff9a1f", "#ff7a1f", "#ff5a2a", "#ff3b3b", "#ff1f1f"];
 /* obstáculos del modo infernal (nivel 10): aparecen por primera vez avisados */
 const INFERNAL = [["¡Ultra con bengala! Esquívalo", "ultra"], ["¡Bengalas en el campo! Salta", "bengala"], ["¡Seguridad en la pista! Busca el hueco", "steward"]];
-const PODERES = { pw_iman: { id: "iman", seg: 5, col: "#ff4d8d" }, pw_rayo: { id: "rayo", seg: 4, col: "#ffe94a" }, pw_escudo: { id: "escudo", seg: 4, col: "#5fd4ff" } };
+const PODERES = { pw_iman: { id: "iman", seg: 5, col: "#ff4d8d" }, pw_rayo: { id: "rayo", seg: 5, col: "#ffe94a" }, pw_escudo: { id: "escudo", seg: 5, col: "#5fd4ff" } };
 const MAX_PODERES = 20;
 const filasExtra = (tc) => (tc >= 210 ? 2 : tc >= 150 ? 1 : 0);
 /* equipaciones del corredor: se compran con las monedas */
@@ -264,7 +264,7 @@ export function abrir(api, raiz) {
     o.type = tipo || "sine"; o.frequency.setValueAtTime(f, q); if (f2) o.frequency.exponentialRampToValueAtTime(f2, q + dur);
     g.gain.setValueAtTime(vol, q); g.gain.exponentialRampToValueAtTime(0.0001, q + dur); o.connect(g); g.connect(ctx.destination); o.start(q); o.stop(q + dur + 0.02);
   }
-  const sonMoneda = () => { blip(988, 0.09, 0.07, "square"); blip(1319, 0.16, 0.07, "square", 0, 0.07); };
+  const sonMoneda = () => { blip(1175, 0.1, 0.035, "sine"); blip(1568, 0.22, 0.04, "sine", 0, 0.065); blip(3136, 0.14, 0.008, "sine", 0, 0.065); };
   const sonSalto = () => blip(260, 0.22, 0.12, "sine", 620);
   const sonDesliza = () => blip(520, 0.25, 0.07, "sawtooth", 140);
   const sonCarril = () => blip(340, 0.09, 0.05, "triangle", 220);
@@ -606,7 +606,7 @@ export function abrir(api, raiz) {
     const x = ob.x !== undefined ? ob.x : ob.lane < 0 ? 0 : LX[ob.lane], r = ob.m && ob.m.raiz ? ob.m.raiz : ob.m; if (!r) return;
     r.position.set(x, ob.y, ob.z);
   }
-  function monedas(lane, z0, n, y, paso) { for (let i = 0; i < n; i++) pon("moneda", lane, z0 - i * (paso || 2.2), y || 1.0); }
+  function monedas(lane, z0, n, y, paso) { for (let i = 0; i < n; i++) pon("moneda", lane, z0 - 5 - i * (paso || 2.2), y || 1.0); }
 
   /* ── generador de filas: siempre hay camino libre ── */
   function patron(tipo, Z, libre) {
@@ -640,6 +640,15 @@ export function abrir(api, raiz) {
     const d = Math.min(1, S.dist / 1800), Z = Z_SPAWN, lanes = [0, 1, 2], n = S.filas++, D = S.dist, tc = S.tc || 0;
     /* a partir de ~2 min las filas están más juntas: el carril libre de una fila a la siguiente cambia como mucho un carril */
     const cand = tc > 65 && n > 0 ? lanes.filter((l) => Math.abs(l - S.libreAnt) <= 1) : lanes; const libre = cand[irnd(cand.length)]; S.libreAnt = libre;
+    /* regalos y poderes salen SOLOS: una fila propia sin obstáculos ni monedas, y sin nada cerca delante ni detrás */
+    if (n >= 3) {
+      const quiereCaja = S.cajaD > 0 && S.dist >= S.cajaD, quierePod = S.dist > 250 && S.dist >= S.podSig && S.poderes < MAX_PODERES;
+      if ((quiereCaja || quierePod) && !S.obs.some((o) => o.tipo !== "moneda" && Math.abs(o.z - Z) < 16)) {
+        if (quiereCaja) { S.cajaD = S.dist + rnd(900, 1600); pon("caja", irnd(3), Z, 1.0); aviso("🎁 ¡Caja sorpresa delante!", "oro", 1400); }
+        else { S.podSig = S.dist + rnd(380, 760); S.poderes++; pon(["pw_iman", "pw_rayo", "pw_escudo"][irnd(3)], irnd(3), Z, 1.1); }
+        S.sig = Math.max(34, clamp(S.v * 1.4, 21, 46) * espaciado(tc)); return;
+      }
+    }
     const pats = []; const vistos = S.vistos || (S.vistos = {});
     NUEVOS.forEach((nv) => pats.push([vistos[nv[2]] ? 3 : 0, nv[2]]));
     const inf = nivelDe(tc) >= 10; INFERNAL.forEach((nv) => pats.push([inf && vistos[nv[1]] ? 4 : 0, nv[1]]));
@@ -656,9 +665,6 @@ export function abrir(api, raiz) {
     /* tras 4-5 min: filas dobles y triples de obstáculos que no se saltan (siempre dejan libre el mismo carril) */
     const ex = filasExtra(tc);
     if (ex && n > 3) { const solo = pats.filter((p) => ["muro", "mascota", "extremo", "portero", "arbitro", "barrera", "botando", "recogepelotas", "ultra", "steward"].indexOf(p[1]) >= 0 && p[0] > 0); for (let k = 1; k <= ex; k++) patron(solo.length ? elige(solo) : "muro", Z - 13 * k, libre); }
-    /* regalos: una caja cada 900-1.600 m (cada vez con un premio distinto) */
-    if (S.cajaD > 0 && S.dist >= S.cajaD) { S.cajaD = S.dist + rnd(900, 1600); pon("caja", libre, Z + 26, 1.0); aviso("🎁 ¡Caja sorpresa delante!", "oro", 1800); }
-    /* poderes: raros (cada 380-760 m, máx. ~20 por partida) */
     if (S.dist > 250 && S.dist >= S.podSig && S.poderes < MAX_PODERES) { S.podSig = S.dist + rnd(380, 760); S.poderes++; pon(["pw_iman", "pw_rayo", "pw_escudo"][irnd(3)], libre, Z + 30, 1.1); }
     S.sig = clamp(S.v * 1.4, 21, 46) * espaciado(tc) * (ex ? 1 + 0.25 * ex : 1);
   }
@@ -789,9 +795,9 @@ export function abrir(api, raiz) {
       try { api.victoria(); } catch (e) { /* opcional */ }
       msg = n === 1 ? "🎁 ¡Caja sorpresa! +1 tikitexto" : "🎁 ¡Caja sorpresa! +" + n + " tikitextos";
     } else if (r < 0.40) { const n = 15 + irnd(4) * 5; S.monedas += n; msg = "🎁 ¡Regalo! +" + n + " monedas"; }
-    else if (r < 0.62) { S.turbo = 4; msg = "🎁 ¡Regalo! Turbo extra"; }
-    else if (r < 0.80) { if (S.vidas < VIDAS) { S.vidas++; pintaVidas(); msg = "🎁 ¡Regalo! Vida extra"; } else { S.escu = 4; msg = "🎁 ¡Regalo! Escudo de 4 s"; } }
-    else { S.escu = 4; msg = "🎁 ¡Regalo! Escudo de 4 s"; }
+    else if (r < 0.62) { S.turbo = 5; msg = "🎁 ¡Regalo! Turbo extra"; }
+    else if (r < 0.80) { if (S.vidas < VIDAS) { S.vidas++; pintaVidas(); msg = "🎁 ¡Regalo! Vida extra"; } else { S.escu = 5; msg = "🎁 ¡Regalo! Escudo de 5 s"; } }
+    else { S.escu = 5; msg = "🎁 ¡Regalo! Escudo de 5 s"; }
     sonTurbo(); au.rugido(true); for (let k = 0; k < 30; k++) chispas.emite(x, y, 0, rnd(-4, 4), rnd(0, 5), rnd(-3, 3), 0.9);
     aviso(msg, "bien", 2400); pintaHud();
   }
@@ -861,7 +867,7 @@ export function abrir(api, raiz) {
           if (ob.tipo === "moneda") { S.monedas++; sonMoneda(); for (let k = 0; k < 7; k++) chispas.emite(x, ob.y, 0, rnd(-2.5, 2.5), rnd(0.5, 4), rnd(-2, 2), 0.55); }
           else if (ob.tipo.indexOf("pw_") === 0) daPoder(ob.tipo, x, ob.y);
           else if (gr) regalo(x, ob.y);
-          else { S.turbo = 4; sonTurbo(); aviso("¡TURBO!", "oro", 1200); for (let k = 0; k < 24; k++) chispas.emite(x, 1, 0, rnd(-4, 4), rnd(0, 5), rnd(-3, 3), 0.8); }
+          else { S.turbo = 5; sonTurbo(); aviso("¡TURBO!", "oro", 1200); for (let k = 0; k < 24; k++) chispas.emite(x, 1, 0, rnd(-4, 4), rnd(0, 5), rnd(-3, 3), 0.8); }
           pintaHud();
         }
         continue;
@@ -897,9 +903,9 @@ export function abrir(api, raiz) {
       S.pts = Math.floor(S.dist) + S.monedas * 10 + S.bonus;
       /* hitos */
       if (!S.tiki && S.dist >= META_TIKI) { S.tiki = true; try { api.tiki(); } catch (e) { /* opcional */ } try { api.victoria(); } catch (e) { /* opcional */ } aviso("¡" + META_TIKI + " m! ⚡ +1 tikitexto", "bien", 2200); au.rugido(true); }
-      else if (Math.floor(S.dist / 500) > S.hito) { S.hito = Math.floor(S.dist / 500); aviso("¡" + Math.floor(S.dist / 100) * 100 + " m!", "bien", 1000); }
+      else if (Math.floor(S.dist / 500) > S.hito) { S.hito = Math.floor(S.dist / 500); aviso("¡" + Math.floor(S.dist / 100) * 100 + " m!", "bien sl-aviso--peq", 800); }
       const tramo = Math.floor(S.dist / TRAMO);
-      if (tramo > S.tema) { S.tema = tramo; aviso(ESC[tramo % ESC.length].nombre, "oro", 2000); S.hito = Math.floor(S.dist / 500); }
+      if (tramo > S.tema) { S.tema = tramo; aviso(ESC[tramo % ESC.length].nombre, "oro sl-aviso--peq", 1000); S.hito = Math.floor(S.dist / 500); }
       const nv = nivelDe(S.tc); if (nv > S.nivel) { S.nivel = nv; cartelNivel(nv); }
       if (Math.floor(S.dist / 1000) > S.vidaHito) { S.vidaHito = Math.floor(S.dist / 1000); if (S.vidas < VIDAS) { S.vidas++; pintaVidas(); aviso("¡Vida recuperada!", "bien", 1500); } }
       pintaHud();

@@ -1003,7 +1003,7 @@ with sync_playwright() as p:
               rs(); S.t=0; const m=j.pon('mascota',-1,-30); m.ph=0; paso(5); const mx=m.x; paso(60); out.mascota=Math.abs(m.x-mx)>0.1;
               rs(); j.pon('pelotazo',1,-14); paso(110); out.pelotazoGolpea=S.vidas===1;
               rs(); j.pon('pelotazo',1,-14); j.saltar(); paso(4); out.pelotazoSalto=true;
-              rs(); S.cajaOk=false; S.cajaN=0; out.cajaFecha=S.cajaD>=500&&S.cajaD<=900; S.dist=S.cajaD+1; j.fila(); out.cajaSale=S.obs.some(o=>o.tipo==='caja');
+              rs(); S.cajaOk=false; S.cajaN=0; out.cajaFecha=S.cajaD>=500&&S.cajaD<=900; S.filas=10; S.dist=S.cajaD+1; j.fila(); out.cajaSale=S.obs.some(o=>o.tipo==='caja');
               rs(); S.cajaOk=false; S.cajasRec=0; j.pon('caja',1,-2); paso(30); out.cajaPremio=S.cajasRec===1;
               S.dist=0; return out; })()""")
             check("slalom: carrito y mascota se mueven, el pelotazo golpea, la caja sorpresa sale pronto (500-900 m) y da un premio", r["carro"] and r["mascota"] and r["pelotazoGolpea"] and r["cajaFecha"] and r["cajaSale"] and r["cajaPremio"], str(r))
@@ -1031,12 +1031,12 @@ with sync_playwright() as p:
               out.orden=seen.join(','); const ord=j.NUEVOS.map(q=>q[2]).filter(t=>seen.includes(t)); out.coherente=seen.join(',')===ord.join(',') && seen.length===j.NUEVOS.filter(q=>q[0]<3000).length;
               rs(); S.dist=3000; S.filas=10; S.tc=200; const s2=[]; for(let k=0;k<400;k++){ j.limpia(); const a=Object.keys(S.vistos).length; j.fila(); if(Object.keys(S.vistos).length>a) s2.push(1); } out.infernal=S.vistos.ultra&&S.vistos.bengala&&S.vistos.steward;
               rs(); S.iman=0; j.pon('pw_iman',1,-1,1.1); paso(5); out.iman=S.iman>4.5;
-              rs(); j.pon('pw_rayo',1,-1,1.1); paso(5); out.rayo=S.turbo>3.5 && S.turbo<=4;
-              rs(); j.pon('pw_escudo',1,-1,1.1); paso(5); out.escudo=S.escu>3.5 && S.escu<=4 && S.turbo<=0;
+              rs(); j.pon('pw_rayo',1,-1,1.1); paso(5); out.rayo=S.turbo>4.5 && S.turbo<=5;
+              rs(); j.pon('pw_escudo',1,-1,1.1); paso(5); out.escudo=S.escu>4.5 && S.escu<=5 && S.turbo<=0;
               rs(); S.escu=3; j.pon('def',1,-2); paso(10); out.escudoDerriba=S.vidas===2;
               rs(); S.iman=5; const mo=j.pon('moneda',2,-8,1.0); const x0=mo.x===undefined?2.4:mo.x; paso(40); out.imanAtrae=S.monedas>=1 || (mo.x!==undefined && Math.abs(mo.x)<2.3);
-              rs(); S.dist=1000; S.podSig=0; S.poderes=0; j.fila(); out.poder=S.obs.some(o=>o.tipo.indexOf('pw_')===0) && S.poderes===1;
-              rs(); S.poderes=20; S.podSig=0; S.dist=5000; j.limpia(); j.fila(); out.tope=!S.obs.some(o=>o.tipo.indexOf('pw_')===0);
+              rs(); S.filas=10; S.dist=1000; S.podSig=0; S.poderes=0; j.fila(); out.poder=S.obs.some(o=>o.tipo.indexOf('pw_')===0) && S.poderes===1 && S.obs.filter(o=>o.tipo!=='moneda').length===1;
+              rs(); S.filas=10; S.poderes=20; S.podSig=0; S.dist=5000; j.limpia(); j.fila(); out.tope=!S.obs.some(o=>o.tipo.indexOf('pw_')===0);
               rs(); const b=j.pon('barrera',-1,-6); b.ph=0; S.t=0; S.x=2.4; b.x=0; paso(1); out.barreraEstrecha=S.vidas===2;
               j.limpia(); return out; })()""")
             check("slalom: dificultad 1-10, avisos de obstáculos en orden y solo al aparecer, modo infernal, poderes (imán, rayo, escudo) y barrera más estrecha", r["niv"]==[1,1,2,7,9,10,10] and r["coherente"] and r["infernal"] and r["iman"] and r["rayo"] and r["escudo"] and r["escudoDerriba"] and r["imanAtrae"] and r["poder"] and r["tope"] and r["barreraEstrecha"], str(r))
