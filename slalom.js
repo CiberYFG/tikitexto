@@ -33,6 +33,14 @@ const NUEVOS = [[450, "¡Balón gigante! Sáltalo", "rodante"], [700, "¡El árb
    y a partir de 2:30-3:30 la pista se llena (modo infernal) (filas más juntas y dobles): casi imposible, pero siempre queda un carril libre */
 const velMov = (tc) => 1 + clamp((tc - 65) / 55, 0, 1) * 0.7 + clamp((tc - 130) / 70, 0, 1) * 0.8;
 const espaciado = (tc) => 1 - clamp((tc - 100) / 100, 0, 1) * 0.45;
+/* dificultad 1-10 por tiempo de partida: el 10 es el modo infernal */
+const NIV_SEG = 16.5, nivelDe = (tc) => Math.min(10, 1 + Math.floor(tc / NIV_SEG));
+const NIV_NOM = ["Calentamiento", "Ritmo de liga", "Partido igualado", "Cuartos de final", "Semifinal", "La final", "Prórroga", "Tanda de penaltis", "Muerte súbita", "MODO INFERNAL"];
+const NIV_COL = ["#41ff8a", "#7dff5a", "#c6ff3d", "#ffe94a", "#ffc02e", "#ff9a1f", "#ff7a1f", "#ff5a2a", "#ff3b3b", "#ff1f1f"];
+/* obstáculos del modo infernal (nivel 10): aparecen por primera vez avisados */
+const INFERNAL = [["¡Ultra con bengala! Esquívalo", "ultra"], ["¡Bengalas en el campo! Salta", "bengala"], ["¡Seguridad en la pista! Busca el hueco", "steward"]];
+const PODERES = { pw_iman: { id: "iman", seg: 5, col: "#ff4d8d" }, pw_rayo: { id: "rayo", seg: 4, col: "#ffe94a" }, pw_escudo: { id: "escudo", seg: 4, col: "#5fd4ff" } };
+const MAX_PODERES = 20;
 const filasExtra = (tc) => (tc >= 210 ? 2 : tc >= 150 ? 1 : 0);
 /* equipaciones del corredor: se compran con las monedas */
 const KIT_J = [
@@ -78,6 +86,10 @@ const PLANTILLA = `
   <div class="sl-der"><div class="sl-mon"><i></i><span data-sl-mon data-no-t>0</span></div><div class="sl-vidas" data-vidas></div></div>
 </div>
 <div class="sl-turbo" data-turbo hidden><i data-turbo-i></i></div>
+<div class="sl-pw" data-pw></div>
+<div class="sl-niv-i" data-niv-i data-no-t></div>
+<div class="sl-niv" data-niv data-no-t></div>
+<div class="sl-avob" data-avob data-no-t></div>
 <div class="sl-aviso" data-aviso data-no-t></div>
 <p class="sl-pista" data-pista></p>
 <div class="sl-menu" data-menu>
@@ -89,7 +101,7 @@ const PLANTILLA = `
       <li><b>⬅️➡️</b><span>Cambia de carril</span></li>
       <li><b>⬆️</b><span>Salta</span></li>
       <li><b>⬇️</b><span>Deslízate</span></li>
-      <li><b>⚡</b><span>Las botas doradas te dan turbo</span></li>
+      <li><b>⚡</b><span>Rayo, escudo e imán: poderes con aura de colores</span></li>
     </ul>
     <p class="sl-rec" data-rec data-no-t></p>
     <div class="sl-saldo"><span>🪙 <b data-saldo data-no-t>0</b></span><button type="button" class="sl-sec" data-sl="vest">👕 Vestuario</button></div>
@@ -268,9 +280,9 @@ export function abrir(api, raiz) {
   } catch (e) { E = null; }
   if (!E) { $("[data-sin]").hidden = false; $("[data-menu]").hidden = true; }
 
-  const S = { fase: "menu", t: 0, dist: 0, v: 0, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, obs: [], sig: 0, filas: 0, tiki: false, regalo: 0, cajaD: 0, cajaN: 0, cajaOk: false, bonus: 0, shake: 0, activo: true, choque: 0, hito: 0, tema: 0, ciclo: 0, cola: [], vidaHito: 0, nuevo: 0 };
-  let raf = 0, ultimo = 0, vivo = true, escala = 1, fpsAcum = 0, fpsN = 0, hAviso = 0, hFlash = 0;
-  let camara, scene, sol, hemi, luces = [], mundo = {}, jug = null, piscina = [], libres = { def: [], valla: [], cono: [], cartel: [], moneda: [], bota: [], rodante: [], botando: [], dron: [], carro: [], mascota: [], pelotazo: [], caja: [], arbitro: [], portero: [], barrera: [], tarjeta: [], cortacesped: [], recogepelotas: [], camillero: [] }, estSis = {}, estelaAct = ESTELAS[0], clima = null, chispas, polvo, lineas = [];
+  const S = { fase: "menu", t: 0, dist: 0, v: 0, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, obs: [], sig: 0, filas: 0, tiki: false, regalo: 0, cajaD: 0, cajaN: 0, cajaOk: false, bonus: 0, shake: 0, activo: true, choque: 0, hito: 0, tema: 0, ciclo: 0, cola: [], vidaHito: 0, nuevo: 0, iman: 0, escu: 0, nivel: 1, inf: 0, vistos: {}, poderes: 0, podSig: 0 };
+  let raf = 0, ultimo = 0, vivo = true, escala = 1, fpsAcum = 0, fpsN = 0, hAviso = 0, hFlash = 0, hAvOb = 0, hNiv = 0, pwKey = null;
+  let camara, scene, sol, hemi, luces = [], mundo = {}, jug = null, piscina = [], libres = { def: [], valla: [], cono: [], cartel: [], moneda: [], bota: [], rodante: [], botando: [], dron: [], carro: [], mascota: [], pelotazo: [], caja: [], arbitro: [], portero: [], barrera: [], tarjeta: [], cortacesped: [], recogepelotas: [], camillero: [], ultra: [], bengala: [], steward: [], pw_iman: [], pw_rayo: [], pw_escudo: [] }, estSis = {}, estelaAct = ESTELAS[0], clima = null, chispas, polvo, lineas = [];
 
   function construye() {
     const R = E.renderer, aniso = Math.min(R.capabilities.getMaxAnisotropy(), 8);
@@ -324,7 +336,7 @@ export function abrir(api, raiz) {
     const caraMon = new THREE.MeshBasicMaterial({ map: texMoneda() });
     mundo.matMon = [new THREE.MeshStandardMaterial({ color: 0xffc824, emissive: 0x8a5d00, emissiveIntensity: 0.8, metalness: 0.15, roughness: 0.35 }), caraMon, caraMon];
     mundo.geoMon = new THREE.CylinderGeometry(0.5, 0.5, 0.08, 40); mundo.geoMon.rotateX(Math.PI / 2);
-    mundo.texFuego = texBrillo("rgba(255,140,40,.9)"); mundo.texRayo = texRayo(); mundo.texCartel = texCartel(); mundo.texBalon = texBalon(); mundo.texRed = texRed();
+    mundo.texFuego = texBrillo("rgba(255,170,60,1)"); mundo.texAura = texBrillo("rgba(255,255,255,.95)"); mundo.texRayo = texRayo(); mundo.texCartel = texCartel(); mundo.texBalon = texBalon(); mundo.texRed = texRed();
     estSis = {}; chispas = crearParticulas(scene, 120, 0xffd23a, 0.22, true); polvo = crearParticulas(scene, 70, 0xdfe9d4, 0.32, false);
     for (let i = 0; i < 22; i++) {
       const m = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.015, 3), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45, fog: false }));
@@ -339,7 +351,39 @@ export function abrir(api, raiz) {
       const pts = new THREE.Points(geo, mat); pts.frustumCulled = false; pts.visible = false; scene.add(pts);
       clima = { pts: pts, pos: pos, col: col, n: n, tipo: "", pal: pal, geo: geo, mat: mat };
     }
+    /* esfera azul clara (rayo/escudo) y anillo del imán */
+    { const g = new THREE.Group(), m1 = new THREE.MeshBasicMaterial({ color: 0x9fe0ff, transparent: true, opacity: 0.3, depthWrite: false, fog: false });
+      g.add(new THREE.Mesh(new THREE.SphereGeometry(1.38, 28, 20), m1)); const w = new THREE.Mesh(new THREE.SphereGeometry(1.4, 14, 10), new THREE.MeshBasicMaterial({ color: 0xcdf1ff, wireframe: true, transparent: true, opacity: 0.22, depthWrite: false, fog: false })); g.add(w);
+      g.userData.m = m1; g.visible = false; scene.add(g); mundo.esfera = g;
+      mundo.imanR = new THREE.Mesh(new THREE.TorusGeometry(1, 0.035, 8, 48), new THREE.MeshBasicMaterial({ color: 0xff4d8d, transparent: true, opacity: 0.85, depthWrite: false, blending: THREE.AdditiveBlending, fog: false })); mundo.imanR.visible = false; scene.add(mundo.imanR); }
+    /* modo infernal: nubes rojas y llamas en las gradas (bengalas del público) */
+    { const c = lienzo(512, 256), x = c.getContext("2d"); x.fillStyle = "#000"; x.fillRect(0, 0, 512, 256);
+      for (let i = 0; i < 90; i++) { const cx = Math.random() * 512, cy = 40 + Math.random() * 170, r = 30 + Math.random() * 70, gr = x.createRadialGradient(cx, cy, 2, cx, cy, r), a = 0.12 + Math.random() * 0.3; gr.addColorStop(0, "rgba(" + (150 + irnd(105)) + "," + irnd(50) + ",10," + a + ")"); gr.addColorStop(1, "rgba(60,0,0,0)"); x.fillStyle = gr; x.fillRect(cx - r, cy - r, r * 2, r * 2); }
+      const t0 = new THREE.CanvasTexture(c); t0.colorSpace = THREE.SRGBColorSpace; t0.wrapS = THREE.RepeatWrapping; mundo.texNubes = t0;
+      mundo.nubes = []; [[-170, 52, 380, 130, 0.9], [-120, 34, 300, 90, 0.7]].forEach((q) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(q[2], q[3]), new THREE.MeshBasicMaterial({ map: t0, transparent: true, opacity: 0, depthWrite: false, fog: false, blending: THREE.NormalBlending })); m.position.set(0, q[1], q[0]); m.visible = false; scene.add(m); mundo.nubes.push(m); });
+      const n = movil ? 24 : 42; mundo.llamas = []; for (let i = 0; i < n; i++) { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: mundo.texFuego, color: 0xff4a10, depthWrite: false, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, fog: false })); sp.visible = false; scene.add(sp); mundo.llamas.push({ sp: sp, s: i % 2 ? 1 : -1, ph: Math.random() * 6 }); recolocaLlama(mundo.llamas[i], true); } }
     tamano(); aplicaEsc(0, 0);
+  }
+  function recolocaLlama(l, ini) { const yy = rnd(1.2, 8.5); l.sp.position.set(l.s * (12 + yy * 0.48 + rnd(-0.6, 0.6)), yy, ini ? rnd(-105, 8) : rnd(-108, -90)); l.k = rnd(4.5, 8); }
+  const cR1 = new THREE.Color(0x2a0404), cR2 = new THREE.Color(0x6a1006), cR3 = new THREE.Color(0xff7a4a), cR4 = new THREE.Color(0x8a2a1a), cR5 = new THREE.Color(0xff8a6a);
+  /* nivel 10: cielo rojo y nublado, gradas con bengalas; sube poco a poco desde el nivel 9 */
+  function ambienteInf(dt, dz) {
+    if (!mundo.nubes) return;
+    const obj = S.fase === "corre" || S.fase === "choque" ? (S.nivel >= 10 ? 1 : S.nivel === 9 ? 0.3 : 0) : S.inf > 0.5 && S.fase === "fin" ? 1 : 0;
+    S.inf += (obj - S.inf) * Math.min(1, dt * 0.6); const f = S.inf, T = S.t;
+    raiz.classList.toggle("sl-inf", f > 0.5);
+    mundo.nubes.forEach((m, i) => { m.visible = f > 0.02; m.material.opacity = Math.min(1, f * 1.1); m.position.x = Math.sin(T * 0.05 + i) * 12; });
+    mundo.texNubes.offset.x += dt * 0.004; 
+    if (f > 0.01) {
+      scene.background.lerp(cR1, f * 0.9); scene.fog.color.lerp(cR2, f * 0.9); scene.fog.far = lerp(scene.fog.far, 78, f); scene.fog.near = lerp(scene.fog.near, 16, f);
+      hemi.intensity *= 1 - 0.4 * f; hemi.color.set(0xcfe3ff).lerp(cR3, f * 0.7); sol.color.lerp(cR3, f * 0.8); sol.intensity *= 1 - 0.25 * f;
+      mundo.matCesped.color.lerp(cR4, f * 0.55); mundo.matsG.forEach((m) => m.color.lerp(cR5, f * 0.6));
+    } else { hemi.color.set(0xcfe3ff); }
+    mundo.llamas.forEach((l) => {
+      l.sp.visible = f > 0.05 && !reducido; if (!l.sp.visible) return;
+      l.sp.position.z += dz; if (l.sp.position.z > 12) recolocaLlama(l, false);
+      const k = l.k * (1 + Math.sin(T * 17 + l.ph) * 0.18); l.sp.scale.set(k, k * 1.6, 1); l.sp.material.opacity = Math.min(0.95, f) * (0.7 + Math.sin(T * 23 + l.ph * 2) * 0.25);
+    });
   }
 
   /* jugador con la equipación elegida (se vuelve a crear al cambiar de vestuario) */
@@ -448,10 +492,10 @@ export function abrir(api, raiz) {
   function mallaPortero() {
     return envuelve([figEq({ cuerpo: "portero", camisa: 0xff7a00, camisa2: 0x1a1a1a, pantalon: 0x1a1a1a, media: 0xff7a00, guante: 0xe8ff3a, largo: true, piel: 0xa8764d })]);
   }
-  /* barrera: cuatro jugadores hombro con hombro que se desplazan a la vez */
+  /* barrera: tres jugadores hombro con hombro que se desplazan a la vez */
   function mallaBarrera() {
-    const col = [[0x1d5fd6, 0xffffff], [0xffffff, 0x1d5fd6], [0x1d5fd6, 0xffffff], [0xffffff, 0x1d5fd6]], piel = [0xf0c8a0, 0xd9a273, 0xa8764d, 0x7a5233];
-    const fs = col.map((k, i) => { const f = figEq({ camisa: k[0], camisa2: k[1], pantalon: k[1], media: k[0], piel: piel[i] }); f.raiz.position.x = (i - 1.5) * 0.9; return f; });
+    const col = [[0x1d5fd6, 0xffffff], [0xffffff, 0x1d5fd6], [0x1d5fd6, 0xffffff]], piel = [0xf0c8a0, 0xd9a273, 0xa8764d];
+    const fs = col.map((k, i) => { const f = figEq({ camisa: k[0], camisa2: k[1], pantalon: k[1], media: k[0], piel: piel[i] }); f.raiz.position.x = (i - 1) * 1.1; return f; });
     return envuelve(fs);
   }
   /* recogepelotas: chico con peto que corre con un balón bajo el brazo */
@@ -495,11 +539,50 @@ export function abrir(api, raiz) {
   function mallaBota() {
     const g = new THREE.Group(), s = new THREE.Sprite(new THREE.SpriteMaterial({ map: mundo.texRayo, depthWrite: false, transparent: true, fog: false })); s.scale.set(1.5, 1.5, 1); g.add(s); g.userData.sp = s; return g;
   }
+  /* llama de bengala: sprite aditivo + núcleo */
+  function llama(esc) { const f = new THREE.Sprite(new THREE.SpriteMaterial({ map: mundo.texFuego, depthWrite: false, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, fog: false })); f.scale.set(esc, esc * 1.5, 1); return f; }
+  function barraBengala(h) { const b = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.045, h, 10), new THREE.MeshStandardMaterial({ color: 0xc8102e, emissive: 0x7a0010, emissiveIntensity: 0.8, roughness: 0.5 })); return b; }
+  /* ultra: aficionado con gorro, bufanda y bengala encendida en alto */
+  function mallaUltra() {
+    const f = figEq({ camisa: 0x1a1a22, camisa2: 0xc8102e, pantalon: 0x22252e, media: 0x1a1a22, bota: 0x111111, piel: 0xe0b48a, pelo: 0x2a1a10 });
+    const b = barraBengala(0.4); b.position.set(0, 0.2, 0); f.brD.m.add(b);
+    const fu = llama(1.1); fu.position.set(0, 0.55, 0); f.brD.m.add(fu);
+    const bu = new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.06, 8, 18), new THREE.MeshStandardMaterial({ color: 0xc8102e, roughness: 0.8 })); bu.rotation.x = Math.PI / 2; bu.position.set(0, 1.5, 0.02); f.raiz.add(bu);
+    const g = envuelve([f]); g.userData.fu = fu; return g;
+  }
+  /* bengala caída en el césped: se salta */
+  function mallaBengala() {
+    const g = new THREE.Group(), b = barraBengala(0.6); b.rotation.z = Math.PI / 2; b.position.y = 0.1; b.castShadow = true; g.add(b);
+    const f1 = llama(1.5); f1.position.set(0.32, 0.65, 0); g.add(f1); const f2 = llama(1.0); f2.position.set(0.3, 0.45, 0.05); g.add(f2);
+    const hu = new THREE.Mesh(new THREE.CircleGeometry(0.9, 20), new THREE.MeshBasicMaterial({ color: 0xff3a10, transparent: true, opacity: 0.28, depthWrite: false, blending: THREE.AdditiveBlending, fog: false })); hu.rotation.x = -Math.PI / 2; hu.position.y = 0.02; g.add(hu);
+    g.userData.f1 = f1; g.userData.f2 = f2; return g;
+  }
+  /* steward: guardia de seguridad con chaleco amarillo fosforito y brazos abiertos */
+  function mallaSteward() {
+    return envuelve([figEq({ camisa: 0xd7ff1a, camisa2: 0x1a1a1a, pantalon: 0x14151a, media: 0x14151a, bota: 0x0a0a0a, piel: 0xb98a5e })]);
+  }
+  /* poderes: objeto con icono 3D, aura RGB que cambia de color y anillo giratorio */
+  function formaRayo() { const s = new THREE.Shape(); s.moveTo(0.1, 0.62); s.lineTo(-0.32, -0.05); s.lineTo(-0.04, -0.05); s.lineTo(-0.14, -0.62); s.lineTo(0.34, 0.12); s.lineTo(0.06, 0.12); s.lineTo(0.1, 0.62); return s; }
+  function formaEscudo() { const s = new THREE.Shape(); s.moveTo(0, 0.6); s.bezierCurveTo(0.2, 0.5, 0.42, 0.5, 0.5, 0.52); s.bezierCurveTo(0.52, 0, 0.4, -0.38, 0, -0.62); s.bezierCurveTo(-0.4, -0.38, -0.52, 0, -0.5, 0.52); s.bezierCurveTo(-0.42, 0.5, -0.2, 0.5, 0, 0.6); return s; }
+  function mallaPoder(tipo) {
+    const g = new THREE.Group(); let ico;
+    if (tipo === "pw_rayo") { ico = new THREE.Mesh(new THREE.ExtrudeGeometry(formaRayo(), { depth: 0.18, bevelEnabled: true, bevelSize: 0.03, bevelThickness: 0.03, bevelSegments: 2 }), new THREE.MeshStandardMaterial({ color: 0xffe94a, emissive: 0xffb800, emissiveIntensity: 1.1, metalness: 0.2, roughness: 0.3 })); ico.position.z = -0.09; }
+    else if (tipo === "pw_escudo") { ico = new THREE.Mesh(new THREE.ExtrudeGeometry(formaEscudo(), { depth: 0.16, bevelEnabled: true, bevelSize: 0.04, bevelThickness: 0.04, bevelSegments: 2 }), new THREE.MeshStandardMaterial({ color: 0x4fc3ff, emissive: 0x0b6fb8, emissiveIntensity: 0.9, metalness: 0.3, roughness: 0.3 })); ico.position.z = -0.08; }
+    else {
+      ico = new THREE.Group(); const mt = new THREE.MeshStandardMaterial({ color: 0xff2d55, emissive: 0x8a0020, emissiveIntensity: 0.9, metalness: 0.4, roughness: 0.3 }), pl = new THREE.MeshStandardMaterial({ color: 0xe8edf5, metalness: 0.6, roughness: 0.25 });
+      const arco = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.15, 14, 28, Math.PI), mt); arco.position.y = 0.06; ico.add(arco);
+      [-0.34, 0.34].forEach((x) => { const a = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.3, 18), mt); a.position.set(x, -0.1, 0); const p = new THREE.Mesh(new THREE.CylinderGeometry(0.151, 0.151, 0.14, 18), pl); p.position.set(x, -0.3, 0); ico.add(a, p); });
+    }
+    ico.traverse((o) => { if (o.isMesh) o.castShadow = false; }); g.add(ico);
+    const au = new THREE.Sprite(new THREE.SpriteMaterial({ map: mundo.texAura, depthWrite: false, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, fog: false })); au.scale.set(3.4, 3.4, 1); g.add(au);
+    const an = new THREE.Mesh(new THREE.TorusGeometry(0.85, 0.045, 8, 40), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false, fog: false })); g.add(an);
+    g.userData.ico = ico; g.userData.au = au; g.userData.an = an; return g;
+  }
   function toma(tipo) {
     let o = libres[tipo].pop();
     if (!o) {
       if (tipo === "moneda") o = new THREE.Mesh(mundo.geoMon, mundo.matMon);
-      else if (tipo === "valla") o = mallaValla(); else if (tipo === "cono") o = mallaCono(); else if (tipo === "cartel") o = mallaCartel(); else if (tipo === "bota") o = mallaBota(); else if (tipo === "rodante") o = mallaRodante(); else if (tipo === "botando") o = mallaBotando(); else if (tipo === "dron") o = mallaDron(); else if (tipo === "carro") o = mallaCarro(); else if (tipo === "mascota") o = mallaMascota(); else if (tipo === "pelotazo") o = mallaPelotazo(); else if (tipo === "caja") o = mallaCaja(); else if (tipo === "arbitro") o = mallaArbitro(); else if (tipo === "portero") o = mallaPortero(); else if (tipo === "barrera") o = mallaBarrera(); else if (tipo === "tarjeta") o = mallaTarjeta(); else if (tipo === "recogepelotas") o = mallaRecogepelotas(); else if (tipo === "camillero") o = mallaCamillero(); else if (tipo === "cortacesped") o = mallaCortacesped();
+      else if (tipo === "valla") o = mallaValla(); else if (tipo === "cono") o = mallaCono(); else if (tipo === "cartel") o = mallaCartel(); else if (tipo === "bota") o = mallaBota(); else if (tipo === "rodante") o = mallaRodante(); else if (tipo === "botando") o = mallaBotando(); else if (tipo === "dron") o = mallaDron(); else if (tipo === "carro") o = mallaCarro(); else if (tipo === "mascota") o = mallaMascota(); else if (tipo === "pelotazo") o = mallaPelotazo(); else if (tipo === "caja") o = mallaCaja(); else if (tipo === "arbitro") o = mallaArbitro(); else if (tipo === "portero") o = mallaPortero(); else if (tipo === "barrera") o = mallaBarrera(); else if (tipo === "tarjeta") o = mallaTarjeta(); else if (tipo === "recogepelotas") o = mallaRecogepelotas(); else if (tipo === "camillero") o = mallaCamillero(); else if (tipo === "cortacesped") o = mallaCortacesped(); else if (tipo === "ultra") o = mallaUltra(); else if (tipo === "bengala") o = mallaBengala(); else if (tipo === "steward") o = mallaSteward(); else if (tipo.indexOf("pw_") === 0) o = mallaPoder(tipo);
       else if (tipo === "def" || tipo === "extremo") return null;
       if (tipo === "moneda") o.castShadow = false;
       scene.add(o);
@@ -548,24 +631,35 @@ export function abrir(api, raiz) {
     else if (tipo === "recogepelotas") { const a = pon("recogepelotas", otros[irnd(2)], Z - 10); monedas(libre, Z + 16, 5); }
     else if (tipo === "camillero") { pon("camillero", -1, Z); monedas(irnd(3), Z + 18, 5, 1.7); }
     else if (tipo === "tarjeta") { pon("tarjeta", -1, Z, 1.55); monedas(irnd(3), Z + 16, 5, 0.9); }
+    else if (tipo === "ultra") { const a = irnd(2); pon("ultra", a, Z); monedas(a === 0 ? 2 : 0, Z + 18, 5); }
+    else if (tipo === "bengala") { otros.forEach((l) => pon("bengala", l, Z)); if (Math.random() < 0.5) pon("bengala", libre, Z - 14); monedas(libre, Z + 18, 5); }
+    else if (tipo === "steward") { pon("steward", -1, Z); monedas(irnd(3), Z + 18, 5); }
     else if (tipo === "cortacesped") { const a = pon("cortacesped", -1, Z), b = pon("cortacesped", -1, Z - 9); if (a && b) b.ph = a.ph + Math.PI; monedas(1, Z + 16, 4, 1.7); }
   }
   function fila() {
     const d = Math.min(1, S.dist / 1800), Z = Z_SPAWN, lanes = [0, 1, 2], n = S.filas++, D = S.dist, tc = S.tc || 0;
     /* a partir de ~2 min las filas están más juntas: el carril libre de una fila a la siguiente cambia como mucho un carril */
     const cand = tc > 65 && n > 0 ? lanes.filter((l) => Math.abs(l - S.libreAnt) <= 1) : lanes; const libre = cand[irnd(cand.length)]; S.libreAnt = libre;
-    const pats = [];
-    NUEVOS.forEach((nv) => pats.push([D > nv[0] ? 3 : 0, nv[2]]));
+    const pats = []; const vistos = S.vistos || (S.vistos = {});
+    NUEVOS.forEach((nv) => pats.push([vistos[nv[2]] ? 3 : 0, nv[2]]));
+    const inf = nivelDe(tc) >= 10; INFERNAL.forEach((nv) => pats.push([inf && vistos[nv[1]] ? 4 : 0, nv[1]]));
     pats.push([5, "muro"], [3, "conos"], [d > 0.05 ? 4 : 0, "valla"], [d > 0.12 ? 3 : 0, "cartel"], [d > 0.2 ? 3 : 0, "entrada"], [d > 0.3 ? 3 : 0, "mix"], [d > 0.5 ? 3 : 0, "doble"]);
     if (n < 3) { pats.length = 0; pats.push([1, n === 0 ? "conos" : "muro"]); }
     const elige = (lista) => { let tot = 0; lista.forEach((p) => { tot += p[0]; }); let r = Math.random() * tot, tipo = "muro"; for (const p of lista) { if ((r -= p[0]) <= 0) { tipo = p[1]; break; } } return tipo; };
-    patron(elige(pats), Z, libre);
+    /* aviso: solo cuando el obstáculo nuevo va a salir YA (el primero que toque, en orden) */
+    let tipo0 = null;
+    if (n >= 3) {
+      const nv = NUEVOS.find((q) => D > q[0] && !vistos[q[2]]) || (inf ? INFERNAL.map((q) => [0, q[0], q[1]]).find((q) => !vistos[q[2]]) : null);
+      if (nv) { tipo0 = nv[2]; vistos[tipo0] = true; avisoOb(nv[1]); }
+    }
+    patron(tipo0 || elige(pats), Z, libre);
     /* tras 4-5 min: filas dobles y triples de obstáculos que no se saltan (siempre dejan libre el mismo carril) */
     const ex = filasExtra(tc);
-    if (ex && n > 3) { const solo = pats.filter((p) => ["muro", "mascota", "extremo", "portero", "arbitro", "barrera", "botando", "recogepelotas"].indexOf(p[1]) >= 0 && p[0] > 0); for (let k = 1; k <= ex; k++) patron(solo.length ? elige(solo) : "muro", Z - 13 * k, libre); }
+    if (ex && n > 3) { const solo = pats.filter((p) => ["muro", "mascota", "extremo", "portero", "arbitro", "barrera", "botando", "recogepelotas", "ultra", "steward"].indexOf(p[1]) >= 0 && p[0] > 0); for (let k = 1; k <= ex; k++) patron(solo.length ? elige(solo) : "muro", Z - 13 * k, libre); }
     /* regalos: una caja cada 900-1.600 m (cada vez con un premio distinto) */
     if (S.cajaD > 0 && S.dist >= S.cajaD) { S.cajaD = S.dist + rnd(900, 1600); pon("caja", libre, Z + 26, 1.0); aviso("🎁 ¡Caja sorpresa delante!", "oro", 1800); }
-    if (S.turbo <= 0 && S.dist > 250 && Math.random() < 0.09) pon("bota", libre, Z + 30, 1.0);
+    /* poderes: raros (cada 380-760 m, máx. ~20 por partida) */
+    if (S.dist > 250 && S.dist >= S.podSig && S.poderes < MAX_PODERES) { S.podSig = S.dist + rnd(380, 760); S.poderes++; pon(["pw_iman", "pw_rayo", "pw_escudo"][irnd(3)], libre, Z + 30, 1.1); }
     S.sig = clamp(S.v * 1.4, 21, 46) * espaciado(tc) * (ex ? 1 + 0.25 * ex : 1);
   }
 
@@ -573,6 +667,31 @@ export function abrir(api, raiz) {
   function aviso(txt, cls, ms) {
     const a = $("[data-aviso]"); a.className = "sl-aviso sl-aviso--" + (cls || "n"); a.textContent = t(txt); void a.offsetWidth; a.classList.add("sl-aviso--on");
     clearTimeout(hAviso); hAviso = setTimeout(function () { a.classList.remove("sl-aviso--on"); }, ms || 1300);
+  }
+  function avisoOb(txt) {
+    const a = $("[data-avob]"); a.textContent = t(txt); a.classList.remove("on"); void a.offsetWidth; a.classList.add("on");
+    clearTimeout(hAvOb); hAvOb = setTimeout(function () { a.classList.remove("on"); }, 3200);
+  }
+  /* dificultad: cartel grande en otra fuente que se encoge y sube hasta el indicador pequeño «Dificultad x/10» */
+  function cartelNivel(n) {
+    const txt = t("Dificultad " + n + "/10"), nom = t(NIV_NOM[n - 1]), col = NIV_COL[n - 1];
+    const c = $("[data-niv]"), i = $("[data-niv-i]"); c.style.setProperty("--c", col); i.style.setProperty("--c", col);
+    c.innerHTML = "<b></b><small></small>"; c.firstChild.textContent = txt; c.lastChild.textContent = nom;
+    c.classList.toggle("sl-niv--inf", n >= 10); i.classList.toggle("sl-niv-i--inf", n >= 10);
+    c.classList.remove("on"); i.classList.remove("on"); void c.offsetWidth; c.classList.add("on"); i.classList.add("on");
+    i.textContent = (n >= 10 ? "🔥 " : "") + txt;
+    if (n >= 10) { try { au.rugido(true); } catch (e) { /* opcional */ } }
+  }
+  const ICO_PW = { iman: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 3h5v8a3 3 0 0 0 6 0V3h5v8a8 8 0 0 1-16 0zM4 3h5v3H4zm11 0h5v3h-5z"/></svg>', rayo: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 2L5 13.5h5.5L9.5 22 19 9.5h-5.8z"/></svg>', escudo: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l8 3v6.2c0 5-3.4 8.8-8 10.8-4.6-2-8-5.8-8-10.8V5z"/></svg>' };
+  function pintaPoderes() {
+    const a = [["iman", S.iman, PODERES.pw_iman], ["rayo", S.turbo, PODERES.pw_rayo], ["escudo", S.escu, PODERES.pw_escudo]].filter((x) => x[1] > 0), key = a.map((x) => x[0]).join(), box = $("[data-pw]");
+    if (key !== pwKey) { pwKey = key; box.innerHTML = a.map((x) => '<div class="sl-pwc" style="--c:' + x[2].col + '" data-pwc="' + x[0] + '">' + ICO_PW[x[0]] + '<b data-pws></b><i><u data-pwb></u></i></div>').join(""); }
+    a.forEach((x) => { const e = box.querySelector('[data-pwc="' + x[0] + '"]'); if (!e) return; e.querySelector("[data-pws]").textContent = x[1].toFixed(1) + "s"; e.querySelector("[data-pwb]").style.transform = "scaleX(" + Math.min(1, x[1] / x[2].seg).toFixed(3) + ")"; e.classList.toggle("fin", x[1] < 1); });
+  }
+  function daPoder(tipo, x, y) {
+    const p = PODERES[tipo]; if (!p) return;
+    if (p.id === "rayo") S.turbo = p.seg; else if (p.id === "iman") S.iman = p.seg; else S.escu = p.seg;
+    sonTurbo(); for (let k = 0; k < 22; k++) chispas.emite(x, y, 0, rnd(-4, 4), rnd(0, 5), rnd(-3, 3), 0.8); pintaPoderes();
   }
   function pista(txt) { $("[data-pista]").textContent = txt ? t(txt) : ""; }
   function pintaVidas() { let h = ""; for (let i = 0; i < VIDAS; i++) { const rest = S.vidas - i; h += '<s class="' + (rest > 0 ? "" : (i === VIDAS - 1 && S.vidas <= 0 ? "ro" : "am")) + '"></s>'; } $("[data-vidas]").innerHTML = h; }
@@ -647,8 +766,8 @@ export function abrir(api, raiz) {
   function empezar() {
     audioIni(); au.iniciar(); au.ambiente(0.3);
     limpiaObs();
-    Object.assign(S, { fase: "corre", dist: 0, v: 9, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, bonus: 0, sig: 10, filas: 0, tiki: false, regalo: 0, cajaD: rnd(500, 900), cajaN: 0, cajasRec: 0, cajaOk: false, tc: 0, aviT: 0, libreAnt: 1, choque: 0, hito: 0, tema: 0, vidaHito: 0, nuevo: 0 });
-    $("[data-menu]").hidden = true; $("[data-fin]").hidden = true; $("[data-turbo]").hidden = true; pintaVidas(); pintaHud(); aplicaEsc(0, 0);
+    Object.assign(S, { fase: "corre", dist: 0, v: 9, x: 0, lane: 1, y: 0, vy: 0, desl: 0, vidas: VIDAS, inv: 0, turbo: 0, monedas: 0, pts: 0, bonus: 0, sig: 10, filas: 0, tiki: false, regalo: 0, cajaD: rnd(500, 900), cajaN: 0, cajasRec: 0, cajaOk: false, tc: 0, aviT: 0, libreAnt: 1, choque: 0, hito: 0, tema: 0, vidaHito: 0, nuevo: 0, iman: 0, escu: 0, nivel: 1, inf: 0, vistos: {}, poderes: 0, podSig: rnd(300, 520) });
+    $("[data-menu]").hidden = true; $("[data-fin]").hidden = true; $("[data-turbo]").hidden = true; pintaVidas(); pintaHud(); aplicaEsc(0, 0); pwKey = null; $("[data-pw]").innerHTML = ""; cartelNivel(1); $("[data-avob]").classList.remove("on");
     pista(movil ? "Desliza: ⬅️ ➡️ carril · ⬆️ salto · ⬇️ agacharte" : "Flechas o WASD: ⬅️ ➡️ carril · ⬆️ salto · ⬇️ agacharte"); setTimeout(() => { if (S.fase === "corre" && S.dist < 120) pista(""); }, 4500);
     sonPita();
   }
@@ -670,9 +789,9 @@ export function abrir(api, raiz) {
       try { api.victoria(); } catch (e) { /* opcional */ }
       msg = n === 1 ? "🎁 ¡Caja sorpresa! +1 tikitexto" : "🎁 ¡Caja sorpresa! +" + n + " tikitextos";
     } else if (r < 0.40) { const n = 15 + irnd(4) * 5; S.monedas += n; msg = "🎁 ¡Regalo! +" + n + " monedas"; }
-    else if (r < 0.62) { S.turbo = 8; $("[data-turbo]").hidden = false; msg = "🎁 ¡Regalo! Turbo extra"; }
-    else if (r < 0.80) { if (S.vidas < VIDAS) { S.vidas++; pintaVidas(); msg = "🎁 ¡Regalo! Vida extra"; } else { S.inv = Math.max(S.inv, 7); msg = "🎁 ¡Regalo! Escudo de 7 s"; } }
-    else { S.inv = Math.max(S.inv, 7); msg = "🎁 ¡Regalo! Escudo de 7 s"; }
+    else if (r < 0.62) { S.turbo = 4; msg = "🎁 ¡Regalo! Turbo extra"; }
+    else if (r < 0.80) { if (S.vidas < VIDAS) { S.vidas++; pintaVidas(); msg = "🎁 ¡Regalo! Vida extra"; } else { S.escu = 4; msg = "🎁 ¡Regalo! Escudo de 4 s"; } }
+    else { S.escu = 4; msg = "🎁 ¡Regalo! Escudo de 4 s"; }
     sonTurbo(); au.rugido(true); for (let k = 0; k < 30; k++) chispas.emite(x, y, 0, rnd(-4, 4), rnd(0, 5), rnd(-3, 3), 0.9);
     aviso(msg, "bien", 2400); pintaHud();
   }
@@ -703,7 +822,7 @@ export function abrir(api, raiz) {
     if (S.y > 0 || S.vy > 0) { S.vy -= G * dt; S.y += S.vy * dt; if (S.y <= 0) { S.y = 0; S.vy = 0; for (let i = 0; i < 5; i++) polvo.emite(S.x + rnd(-0.3, 0.3), 0.1, rnd(-0.3, 0.3), rnd(-1.2, 1.2), rnd(0.4, 1.6), rnd(0, 2.5), 0.5); } }
     if (S.desl > 0) S.desl -= dt;
     if (S.inv > 0) S.inv -= dt;
-    if (S.turbo > 0) { S.turbo -= dt; if (S.turbo <= 0) $("[data-turbo]").hidden = true; else $("[data-turbo-i]").style.transform = "scaleX(" + Math.min(1, S.turbo / 6).toFixed(3) + ")"; }
+    if (S.turbo > 0) S.turbo -= dt; if (S.escu > 0) S.escu -= dt; if (S.iman > 0) S.iman -= dt; if (S.fase === "corre") pintaPoderes();
     /* generación y movimiento */
     if (S.fase === "corre") { S.sig -= dz; if (S.sig <= 0) fila(); }
     const alt = S.desl > 0 ? 0.7 : 1.85;
@@ -727,17 +846,22 @@ export function abrir(api, raiz) {
       else if (ob.tipo === "barrera") ob.x = 2.2 * Math.sin(ob.fa * 0.9 + ob.ph);
       else if (ob.tipo === "tarjeta") { ob.x = 3.0 * Math.sin(ob.fa * 1.3 + ob.ph); ob.y = 1.55 + Math.sin(ob.fa * 3 + ob.ph) * 0.08; }
       else if (ob.tipo === "recogepelotas") ob.x = LX[ob.lane];
+      else if (ob.tipo === "ultra") ob.x = lerp(LX[ob.lane], LX[ob.lane + 1], 0.5 + 0.5 * Math.sin(ob.fa * 3.4 + ob.ph));
+      else if (ob.tipo === "steward") ob.x = 2.6 * Math.sin(ob.fa * 2.0 + ob.ph);
+      else if (ob.tipo === "bengala") ob.x = LX[ob.lane];
       else if (ob.tipo === "camillero") ob.x = 2.2 * Math.sin(ob.fa * 1.2 + ob.ph);
       else if (ob.tipo === "cortacesped") ob.x = 3.4 * Math.sin(ob.fa * 1.5 + ob.ph);
       if (S.fase !== "corre" || ob.golpe) continue;
+      if (S.iman > 0 && ob.tipo === "moneda" && ob.z > -17 && ob.z < 4) { if (ob.x === undefined) ob.x = LX[ob.lane]; const kk = Math.min(1, dt * 8); ob.x += (S.x - ob.x) * kk; ob.y += (S.y + 0.95 - ob.y) * kk; ob.z -= ob.z * Math.min(1, dt * 5); }
       const x = ob.x !== undefined ? ob.x : ob.lane < 0 ? 0 : LX[ob.lane], dx = Math.abs(S.x - x), dzz = Math.abs(ob.z);
-      if (ob.tipo === "moneda" || ob.tipo === "bota" || ob.tipo === "caja") {
-        const gr = ob.tipo === "caja";
+      if (ob.tipo === "moneda" || ob.tipo === "bota" || ob.tipo === "caja" || ob.tipo.indexOf("pw_") === 0) {
+        const gr = ob.tipo === "caja" || ob.tipo.indexOf("pw_") === 0;
         if (dx < (gr ? 1.3 : 1.05) && dzz < (gr ? 1.3 : 0.9) && Math.abs(ob.y - (S.y + (S.desl > 0 ? 0.4 : 0.95))) < (ob.tipo === "moneda" ? 1.0 : 1.4)) {
           ob.golpe = 2; suelta(ob); S.obs.splice(i, 1);
           if (ob.tipo === "moneda") { S.monedas++; sonMoneda(); for (let k = 0; k < 7; k++) chispas.emite(x, ob.y, 0, rnd(-2.5, 2.5), rnd(0.5, 4), rnd(-2, 2), 0.55); }
+          else if (ob.tipo.indexOf("pw_") === 0) daPoder(ob.tipo, x, ob.y);
           else if (gr) regalo(x, ob.y);
-          else { S.turbo = 6; sonTurbo(); aviso("¡TURBO!", "oro", 1200); $("[data-turbo]").hidden = false; for (let k = 0; k < 24; k++) chispas.emite(x, 1, 0, rnd(-4, 4), rnd(0, 5), rnd(-3, 3), 0.8); }
+          else { S.turbo = 4; sonTurbo(); aviso("¡TURBO!", "oro", 1200); for (let k = 0; k < 24; k++) chispas.emite(x, 1, 0, rnd(-4, 4), rnd(0, 5), rnd(-3, 3), 0.8); }
           pintaHud();
         }
         continue;
@@ -758,12 +882,15 @@ export function abrir(api, raiz) {
       else if (ob.tipo === "portero") choca = dx < 1.1 && dzz < 0.6 && S.y < 1.9;
       else if (ob.tipo === "recogepelotas") choca = dx < 0.8 && dzz < 0.6 && S.y < 1.9;
       else if (ob.tipo === "camillero") choca = dzz < 0.7 && ((Math.abs(S.x - (x - 1.15)) < 0.8 || Math.abs(S.x - (x + 1.15)) < 0.8) ? S.y < 1.9 : dx < 1.4 && S.y < 0.85);
-      else if (ob.tipo === "barrera") choca = dx < 2.05 && dzz < 0.6 && S.y < 1.9;
+      else if (ob.tipo === "barrera") choca = dx < 1.75 && dzz < 0.6 && S.y < 1.9;
       else if (ob.tipo === "tarjeta") choca = dx < 1.0 && dzz < 0.45 && S.y + alt > 1.2 && S.y < 2.3;
       else if (ob.tipo === "cortacesped") choca = dx < 1.0 && dzz < 0.8 && S.y < 0.8;
+      else if (ob.tipo === "ultra") choca = dx < 0.85 && dzz < 0.6 && S.y < 1.9;
+      else if (ob.tipo === "steward") choca = dx < 1.05 && dzz < 0.6 && S.y < 1.9;
+      else if (ob.tipo === "bengala") choca = dx < 0.8 && dzz < 0.5 && S.y < 0.75;
       else if (ob.tipo === "dron") choca = dx < 1.0 && dzz < 0.6 && S.y + alt > 1.05 && S.y < 1.75;
       if (!choca) continue;
-      if (S.turbo > 0) { ob.golpe = 2; S.bonus += 25; sonGolpe(); S.shake = reducido ? 0 : 0.2; for (let k = 0; k < 12; k++) chispas.emite(x, 0.9, ob.z, rnd(-4, 4), rnd(1, 5), rnd(-3, 1), 0.7); suelta(ob); S.obs.splice(i, 1); }
+      if (S.turbo > 0 || S.escu > 0) { ob.golpe = 2; S.bonus += 25; sonGolpe(); S.shake = reducido ? 0 : 0.2; for (let k = 0; k < 12; k++) chispas.emite(x, 0.9, ob.z, rnd(-4, 4), rnd(1, 5), rnd(-3, 1), 0.7); suelta(ob); S.obs.splice(i, 1); }
       else if (S.inv <= 0) golpea(ob);
     }
     if (S.fase === "corre") {
@@ -773,10 +900,7 @@ export function abrir(api, raiz) {
       else if (Math.floor(S.dist / 500) > S.hito) { S.hito = Math.floor(S.dist / 500); aviso("¡" + Math.floor(S.dist / 100) * 100 + " m!", "bien", 1000); }
       const tramo = Math.floor(S.dist / TRAMO);
       if (tramo > S.tema) { S.tema = tramo; aviso(ESC[tramo % ESC.length].nombre, "oro", 2000); S.hito = Math.floor(S.dist / 500); }
-      if (S.aviT < 1 && S.tc >= 65) { S.aviT = 1; aviso("¡Los obstáculos se aceleran!", "mal", 2400); }
-      else if (S.aviT < 2 && S.tc >= 120) { S.aviT = 2; aviso("¡Cada vez más rápido!", "mal", 2400); }
-      else if (S.aviT < 3 && S.tc >= 150) { S.aviT = 3; aviso("¡Modo infernal! Aguanta como puedas", "mal", 3000); }
-      if (S.nuevo < NUEVOS.length && S.dist >= NUEVOS[S.nuevo][0]) { aviso(NUEVOS[S.nuevo][1], "mal", 2600); S.nuevo++; }
+      const nv = nivelDe(S.tc); if (nv > S.nivel) { S.nivel = nv; cartelNivel(nv); }
       if (Math.floor(S.dist / 1000) > S.vidaHito) { S.vidaHito = Math.floor(S.dist / 1000); if (S.vidas < VIDAS) { S.vidas++; pintaVidas(); aviso("¡Vida recuperada!", "bien", 1500); } }
       pintaHud();
     }
@@ -807,6 +931,7 @@ export function abrir(api, raiz) {
     luces.forEach((l) => { l.g.position.z += dz; if (l.g.position.z > 20) l.g.position.z -= 252; });
     /* tema */
     const et = Math.floor(S.dist / TRAMO), u = S.dist / TRAMO - et; aplicaEsc(et, clamp((u - 0.55) / 0.45, 0, 1));
+    ambienteInf(dt, dz);
     /* jugador */
     const r = jug.raiz, vx = (LX[S.lane] - S.x);
     r.position.set(S.x, 0, 0); r.rotation.y = Math.PI - clamp(vx * 0.22, -0.45, 0.45); r.rotation.x = 0;
@@ -838,10 +963,18 @@ export function abrir(api, raiz) {
       else if (ob.tipo === "tarjeta") { m.position.set(ob.x === undefined ? 0 : ob.x, ob.y, ob.z); m.userData.c.rotation.y = Math.sin(T * 2.4 + ob.ph) * 0.9; m.userData.c.rotation.z = Math.sin(T * 2 + ob.ph) * 0.25; }
       else if (ob.tipo === "cortacesped") { m.position.set(ob.x === undefined ? 0 : ob.x, 0, ob.z); m.rotation.y = Math.cos(ob.fa * 1.5 + ob.ph) > 0 ? -0.5 : 0.5; m.position.y = Math.sin(T * 40) * 0.015; }
       else if (ob.tipo === "caja") { m.position.set(LX[ob.lane], 1.0 + Math.sin(T * 3) * 0.12, ob.z); m.rotation.y = T * 2.2; const k = 2.4 + Math.sin(T * 6) * 0.3; m.userData.sp.scale.set(k, k, 1); }
-      else if (ob.tipo === "moneda") { m.position.set(LX[ob.lane], ob.y + Math.sin(T * 4 + ob.ph) * 0.08, ob.z); m.rotation.y = T * 4.5 + ob.ph; }
+      else if (ob.tipo === "ultra") { colocaObj(ob); const f = m.userData.f; POSES.carrera(f, 0.95, T * 13 + ob.ph); f.brD.s.rotation.x = -2.8; f.brD.e.rotation.x = -0.2; f.raiz.rotation.y = Math.PI + Math.cos(ob.fa * 3.4 + ob.ph) * 0.5; const k = 1.1 + Math.sin(T * 24 + ob.ph) * 0.18; m.userData.fu.scale.set(k, k * 1.5, 1); }
+      else if (ob.tipo === "steward") { colocaObj(ob); const f = m.userData.f; POSES.carrera(f, 0.55, T * 9 + ob.ph); f.brI.s.rotation.z = 1.2; f.brD.s.rotation.z = -1.2; f.brI.e.rotation.x = -0.2; f.brD.e.rotation.x = -0.2; f.raiz.rotation.y = Math.PI + Math.cos(ob.fa * 2.0 + ob.ph) * 0.4; }
+      else if (ob.tipo === "bengala") { m.position.set(LX[ob.lane], 0, ob.z); const u = m.userData; const k1 = 1.5 + Math.sin(T * 22 + ob.ph) * 0.3, k2 = 1.0 + Math.sin(T * 31 + ob.ph) * 0.25; u.f1.scale.set(k1, k1 * 1.5, 1); u.f2.scale.set(k2, k2 * 1.4, 1); }
+      else if (ob.tipo.indexOf("pw_") === 0) { m.position.set(LX[ob.lane], 1.15 + Math.sin(T * 3 + ob.ph) * 0.12, ob.z); const u = m.userData, h = (T * 0.7 + ob.ph * 0.15) % 1; u.ico.rotation.y = T * 2.4; u.au.material.color.setHSL(h, 1, 0.55); const k = 3.3 + Math.sin(T * 5) * 0.35; u.au.scale.set(k, k, 1); u.an.material.color.setHSL((h + 0.5) % 1, 1, 0.6); u.an.rotation.x = T * 2.2; u.an.rotation.y = T * 1.5; }
+      else if (ob.tipo === "moneda") { m.position.set(ob.x !== undefined ? ob.x : LX[ob.lane], ob.y + Math.sin(T * 4 + ob.ph) * 0.08, ob.z); m.rotation.y = T * 4.5 + ob.ph; }
       else if (ob.tipo === "bota") { m.position.set(LX[ob.lane], 1.1 + Math.sin(T * 5) * 0.15, ob.z); const k = 1.4 + Math.sin(T * 8) * 0.15; m.userData.sp.scale.set(k, k, 1); }
       else { m.position.set(ob.lane < 0 ? 0 : LX[ob.lane], 0, ob.z); }
     });
+    /* esfera de protección (rayo y escudo) y anillo del imán */
+    { const pr = Math.max(S.turbo, S.escu), ey = S.y + (S.desl > 0 ? 0.65 : 0.95);
+      mundo.esfera.visible = pr > 0 && S.fase !== "fin"; if (mundo.esfera.visible) { mundo.esfera.position.set(S.x, ey, 0.1); const pul = 1 + Math.sin(T * 6) * 0.03; mundo.esfera.scale.setScalar(pul); mundo.esfera.userData.m.opacity = (pr < 1 ? (Math.floor(T * 12) % 2 ? 0.1 : 0.3) : 0.3); mundo.esfera.rotation.y = T; }
+      mundo.imanR.visible = S.iman > 0 && S.fase !== "fin"; if (mundo.imanR.visible) { mundo.imanR.position.set(S.x, ey, 0.1); mundo.imanR.rotation.x = Math.PI / 2 + Math.sin(T * 3) * 0.2; const k = 1.5 + Math.sin(T * 7) * 0.12; mundo.imanR.scale.setScalar(k); mundo.imanR.material.opacity = S.iman < 1 && Math.floor(T * 12) % 2 ? 0.2 : 0.85; } }
     /* partículas y líneas de velocidad */
     chispas.paso(dt, dz); polvo.paso(dt, dz); Object.keys(estSis).forEach((k) => estSis[k].paso(dt, dz)); pasoClima(dt, dz);
     const vel = clamp((S.v - 15) / 12, 0, 1) + (S.turbo > 0 ? 0.6 : 0);
@@ -916,5 +1049,5 @@ export function abrir(api, raiz) {
   pintaRecord(); pintaVidas(); pintaHud(); pintaSaldo();
   if (E) raf = requestAnimationFrame(function (n) { ultimo = n; bucle(n); });
   /* Solo para las pruebas automáticas */
-  return { ESC: ESC, vBase: vBase, NUEVOS: NUEVOS, velMov: velMov, espaciado: espaciado, filasExtra: filasExtra, regalo: regalo, VEST: VEST, aplicaEsc: aplicaEsc, mats: () => mundo.matMon, clima: () => clima, cerrar: cerrar, S: S, E: E, empezar: empezar, mover: mover, saltar: saltar, deslizar: deslizar, logica: logica, fila: fila, pon: pon, limpia: limpiaObs, LX: LX, regalo: regalo, KIT_J: KIT_J, elegirKit: elegirKit, pintaKits: pintaKits };
+  return { nivelDe: nivelDe, cartelNivel: cartelNivel, PODERES: PODERES, INFERNAL: INFERNAL, ESC: ESC, vBase: vBase, NUEVOS: NUEVOS, velMov: velMov, espaciado: espaciado, filasExtra: filasExtra, regalo: regalo, VEST: VEST, aplicaEsc: aplicaEsc, mats: () => mundo.matMon, clima: () => clima, cerrar: cerrar, S: S, E: E, empezar: empezar, mover: mover, saltar: saltar, deslizar: deslizar, logica: logica, fila: fila, pon: pon, limpia: limpiaObs, LX: LX, regalo: regalo, KIT_J: KIT_J, elegirKit: elegirKit, pintaKits: pintaKits };
 }

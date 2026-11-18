@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-6haigsWMCgqiSacR95d/JyHeO9IsRKs8aWLtV8kSLWk=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-amkoopc9ueszKgj7gp+rnvFlyRQHkJ6jaYaMoOOzEyA=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-6haigsWMCgqiSacR95d/JyHeO9IsRKs8aWLtV8kSLWk=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' 'sha256-qGta2nq0K+dAAPkGK7DUvq32cbhrCKtEpB6FkieiExU=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>
 <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WN89TQCM"></script>
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -2405,6 +2405,16 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
     <div class="vj-grupo" id="grupoLetras" role="tabpanel" aria-labelledby="tabLetras" data-grupo="letras">
     <h2 class="inicio__juegos" id="tituloJuegos">Juegos de letras</h2>
     <p class="inicio__descripcion">Seis intentos para descubrir el jugador oculto. Cada letra te dice si está en la posición correcta, si aparece en otro sitio o si no forma parte del nombre.</p>
+    <button type="button" class="nd-card" data-navidad id="ndCard" hidden>
+      <span class="nd-card__dib" aria-hidden="true"><i class="nd-arbol">🎄</i><i class="nd-muneco">⛄</i><i class="nd-estrella">⭐</i></span>
+      <span class="nd-card__cuerpo">
+        <span class="nd-card__sello">⏳ MODO DE TIEMPO LIMITADO</span>
+        <span class="nd-card__titulo">Linterna de Navidad</span>
+        <span class="nd-card__desc">Entra a oscuras en el bosque nevado: encuentra con tu linterna las letras de una leyenda antes de que se acabe la pila.</span>
+        <span class="nd-card__cuenta" id="ndCuenta" data-no-t></span>
+        <span class="nd-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </button>
     <button type="button" class="tarjeta" data-modo="diario">
       <span class="tarjeta__icono" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -2498,16 +2508,17 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
     <div class="vj-grupo" id="grupoDinamicos" role="tabpanel" aria-labelledby="tabDin" data-grupo="dinamicos" hidden>
     <h2 class="inicio__juegos" id="tituloDinamicos">Juegos dinámicos</h2>
     <p class="inicio__descripcion">Sin teclado: tú decides cuándo y cómo. Partidas rápidas con física, reflejos y estilos que desbloqueas jugando.</p>
-    <button type="button" class="nd-card" data-navidad id="ndCard" hidden>
-      <span class="nd-card__dib" aria-hidden="true"><i class="nd-arbol">🎄</i><i class="nd-muneco">⛄</i><i class="nd-estrella">⭐</i></span>
-      <span class="nd-card__cuerpo">
-        <span class="nd-card__sello">⏳ MODO DE TIEMPO LIMITADO</span>
-        <span class="nd-card__titulo">Linterna de Navidad</span>
-        <span class="nd-card__desc">Entra a oscuras en el bosque nevado: encuentra con tu linterna las letras de una leyenda antes de que se acabe la pila.</span>
-        <span class="nd-card__cuenta" id="ndCuenta" data-no-t></span>
-        <span class="nd-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+
+    <button type="button" class="ch-card sl-card" data-slalom>
+      <span class="ch-card__dib" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><linearGradient id="slc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a3d"/><stop offset=".45" stop-color="#7b2cbf"/><stop offset="1" stop-color="#0b2a6b"/></linearGradient><linearGradient id="slr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3f4d"/><stop offset="1" stop-color="#1c1f29"/></linearGradient><radialGradient id="slm" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#fff3a0"/><stop offset="1" stop-color="#f2b705"/></radialGradient></defs><rect x="6" y="6" width="108" height="108" rx="14" fill="url(#slc)" stroke="#ffe94a" stroke-width="3"/><circle cx="60" cy="40" r="15" fill="#ffd76a" opacity=".85"/><path d="M6 44h108" stroke="#0a1530" stroke-width="2" opacity=".5"/><path d="M6 44L24 30l8 8 10-12 9 12 9-14 10 14 9-10 14 12 21-8v14H6z" fill="#14204a" opacity=".85"/><path d="M52 44h16l40 70H12z" fill="url(#slr)"/><path d="M56 44L36 114M64 44l20 70" stroke="#fff" stroke-width="1.6" stroke-dasharray="5 4" opacity=".7"/><path d="M12 114L52 44M108 114L68 44" stroke="#ffe94a" stroke-width="2"/><g class="sl-ico-mon"><ellipse cx="60" cy="62" rx="3.4" ry="4" fill="url(#slm)" stroke="#b07d00" stroke-width=".8"/><ellipse cx="59" cy="74" rx="4.4" ry="5" fill="url(#slm)" stroke="#b07d00" stroke-width=".9"/><ellipse cx="57.6" cy="88" rx="5.6" ry="6.4" fill="url(#slm)" stroke="#b07d00" stroke-width="1"/></g><g><rect x="30" y="58" width="18" height="9" rx="1.5" fill="#e9eef5" stroke="#1d5fd6" stroke-width="1.2"/><path d="M30 58l-3 9M48 58l3 9M33 58v9M39 58v9M45 58v9" stroke="#1d5fd6" stroke-width=".7"/></g><g><circle cx="82" cy="94" r="8" fill="#fff" stroke="#171a20" stroke-width="1.6"/><path d="M82 89l4 3-1.5 4.5h-5L78 92z" fill="#171a20"/></g><g transform="translate(56 100)"><ellipse cx="3" cy="13" rx="13" ry="3.2" fill="#000" opacity=".35"/><path d="M-5 5L-12 14" stroke="#f0c8a0" stroke-width="4.2" stroke-linecap="round"/><path d="M6 6L14 -1" stroke="#f0c8a0" stroke-width="4.2" stroke-linecap="round"/><path d="M-1 8L-6 22M4 8L12 17" stroke="#f0c8a0" stroke-width="4.6" stroke-linecap="round"/><path d="M-6 22l-5 1M12 17l5 2" stroke="#171a20" stroke-width="3.6" stroke-linecap="round"/><path d="M-3 -2h14l2 11H-5z" fill="#fff"/><path d="M-5 -14c0-4 4-6 8-6h5c4 0 7 2 7 6l2 14H-6z" fill="#e5484d" stroke="#fff" stroke-width=".8"/><path d="M-5 -14c0-4 4-6 8-6h5" fill="none" stroke="#fff" stroke-width="1.2"/><path d="M-6 -6h14" stroke="#fff" stroke-width="1" opacity=".8"/><circle cx="4" cy="-25" r="6.4" fill="#f0c8a0"/><path d="M-2.5 -26c0-5 4-7.5 8-6.5 3 .6 5 3 4.6 6.5-2-3-5-4-12.6 0z" fill="#2a1a10"/></g><path d="M16 56l12 4M14 68l10 3M100 60l-10 3M104 76l-12 3" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".55"/></svg></span>
+      <span>
+        <span class="ah-card__sello">EL MÁS COMPLETO · 3D</span>
+        <span class="ch-card__titulo">TIKI RUSH</span>
+        <span class="ah-card__desc">Corre sin parar en 3D: cambia de carril, salta y deslízate. Esquiva obstáculos, recoge monedas y poderes, y sobrevive al modo infernal.</span>
+        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </span>
     </button>
+
 
     <button type="button" class="ch-card" data-chapas>
       <span class="ch-card__dib" aria-hidden="true"><svg viewBox="0 0 120 120"><rect x="6" y="6" width="108" height="108" rx="14" fill="#1f8f45" stroke="#fff" stroke-width="3"/><path d="M6 60h108" stroke="rgba(255,255,255,.8)" stroke-width="3"/><circle cx="60" cy="60" r="16" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="3"/><circle cx="38" cy="86" r="14" fill="#3b8bff" stroke="#fff" stroke-width="3"/><circle cx="38" cy="86" r="7" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2.5"/><circle cx="82" cy="34" r="14" fill="#ff5a6a" stroke="#fff" stroke-width="3"/><circle cx="82" cy="34" r="7" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2.5"/><circle cx="64" cy="66" r="7" fill="#fff" stroke="#10131f" stroke-width="2"/></svg></span>
@@ -2549,15 +2560,7 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
       </span>
     </button>
 
-    <button type="button" class="ch-card sl-card" data-slalom>
-      <span class="ch-card__dib" aria-hidden="true"><svg viewBox="0 0 120 120"><rect x="6" y="6" width="108" height="108" rx="14" fill="#0b2a6b" stroke="#ffe94a" stroke-width="3"/><path d="M6 40L40 6M6 70L70 6M6 100L100 6M26 114L114 26M56 114L114 56" stroke="rgba(255,255,255,.14)" stroke-width="3"/><path d="M34 114L52 40h16l18 74z" fill="#1f8f45"/><path d="M60 114V40" stroke="rgba(255,255,255,.55)" stroke-width="2" stroke-dasharray="6 7"/><g fill="#d62839" stroke="#10131f" stroke-width="1.5"><rect x="46" y="62" width="9" height="22" rx="4"/><circle cx="50.5" cy="57" r="6"/></g><g fill="#1d5fd6" stroke="#10131f" stroke-width="1.5"><rect x="70" y="80" width="11" height="26" rx="5"/><circle cx="75.5" cy="74" r="7"/></g><circle cx="86" cy="52" r="6" fill="#ffc824" stroke="#8a5a00" stroke-width="1.5"/><circle cx="34" cy="76" r="6" fill="#ffc824" stroke="#8a5a00" stroke-width="1.5"/></svg></span>
-      <span>
-        <span class="ah-card__sello">NUEVO · 3D</span>
-        <span class="ch-card__titulo">TIKI RUSH</span>
-        <span class="ah-card__desc">Corredor de Tikitexto en 3D: esquiva defensas y obstáculos que se mueven, gasta las monedas en equipaciones y busca la caja sorpresa con tikitextos de regalo.</span>
-        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-      </span>
-    </button>
+
 
     <button type="button" class="ch-card to-card" data-toques>
       <span class="ch-card__dib" aria-hidden="true"><svg viewBox="0 0 120 120"><rect x="6" y="6" width="108" height="108" rx="14" fill="#123a5c" stroke="#52ff9c" stroke-width="3"/><circle cx="60" cy="38" r="15" fill="#f6f7f9" stroke="#171a20" stroke-width="2.5"/><path d="M60 29l7 5-3 8h-8l-3-8z" fill="#171a20"/><circle cx="60" cy="38" r="15" fill="none" stroke="#fff" stroke-width="1" opacity=".4"/><ellipse cx="60" cy="108" rx="22" ry="4" fill="rgba(0,0,0,.35)"/><path d="M50 108 L60 76 L70 80" stroke="#e8b78d" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M62 78 L88 92" stroke="#e8b78d" stroke-width="11" stroke-linecap="round"/><ellipse cx="91" cy="94" rx="9" ry="5" transform="rotate(30 91 94)" fill="#171a20"/><path d="M48 76 L72 76 L70 56 L50 56z" fill="#1d5fd6"/></svg></span>
@@ -9073,8 +9076,8 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     let g = "letras";
     try { g = sessionStorage.getItem("tikitexto:grupo") || "letras"; } catch (e) { /* sin almacenamiento */ }
     const m = new URLSearchParams(location.search).get("modo");
-    if (m && ["chapas", "navidad", "tarjetas", "fichajes", "penaltis", "pinball", "tirolibre", "slalom", "toques"].indexOf(m) >= 0) g = "dinamicos";
-    if (m === "serpiente" || m === "cuartetos" || m === "pertenece" || m === "pasapalabra") g = "letras";
+    if (m && ["chapas", "tarjetas", "fichajes", "penaltis", "pinball", "tirolibre", "slalom", "toques"].indexOf(m) >= 0) g = "dinamicos";
+    if (m === "navidad" || m === "serpiente" || m === "cuartetos" || m === "pertenece" || m === "pasapalabra") g = "letras";
     poner(g === "dinamicos" ? "dinamicos" : "letras", false);
   })();
 

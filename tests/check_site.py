@@ -1024,6 +1024,22 @@ with sync_playwright() as p:
               rs(); S.vidas=1; const v0=S.vidas; j.regalo(0,1); out.reg=S.cajasRec===1;
               j.limpia(); return out; })()""")
             check("slalom: obstáculos nuevos (árbitro, portero, barrera, tarjeta, cortacésped), el tiempo acelera y satura la pista sin cerrar los tres carriles, y los regalos dan premios", r["arbitro"] and r["portero"] and r["barrera"] and r["tarjeta"] and r["tarjetaGolpea"] and r["cortacesped"] and r["rapido"] and r["infernal"] and r["reg"] and r["vm"][0] == 1 and r["vm"][4] > 2 and r["sp"][2] < 0.6 and r["ex"][3] == 2, str(r))
+            r = psl.evaluate("""(()=>{ const j=TIKI.slalom.juego(), S=j.S; const out={}; const paso=(n)=>{ for(let i=0;i<n;i++){ S.t+=0.02; j.logica(0.02); } };
+              const rs=()=>{ j.empezar(); j.limpia(); S.fase='corre'; S.vidas=2; S.inv=0; S.y=0; S.x=0; S.lane=1; S.v=14; S.sig=9999; S.cajaD=1e9; S.podSig=1e9; };
+              out.niv=[0,16,17,100,148,149,400].map(j.nivelDe);
+              rs(); S.dist=3000; S.filas=10; S.tc=0; const seen=[]; for(let k=0;k<300;k++){ j.limpia(); const antes=Object.keys(S.vistos).length; j.fila(); const des=Object.keys(S.vistos).length; if(des>antes) seen.push(Object.keys(S.vistos)[des-1]); }
+              out.orden=seen.join(','); const ord=j.NUEVOS.map(q=>q[2]).filter(t=>seen.includes(t)); out.coherente=seen.join(',')===ord.join(',') && seen.length===j.NUEVOS.filter(q=>q[0]<3000).length;
+              rs(); S.dist=3000; S.filas=10; S.tc=200; const s2=[]; for(let k=0;k<400;k++){ j.limpia(); const a=Object.keys(S.vistos).length; j.fila(); if(Object.keys(S.vistos).length>a) s2.push(1); } out.infernal=S.vistos.ultra&&S.vistos.bengala&&S.vistos.steward;
+              rs(); S.iman=0; j.pon('pw_iman',1,-1,1.1); paso(5); out.iman=S.iman>4.5;
+              rs(); j.pon('pw_rayo',1,-1,1.1); paso(5); out.rayo=S.turbo>3.5 && S.turbo<=4;
+              rs(); j.pon('pw_escudo',1,-1,1.1); paso(5); out.escudo=S.escu>3.5 && S.escu<=4 && S.turbo<=0;
+              rs(); S.escu=3; j.pon('def',1,-2); paso(10); out.escudoDerriba=S.vidas===2;
+              rs(); S.iman=5; const mo=j.pon('moneda',2,-8,1.0); const x0=mo.x===undefined?2.4:mo.x; paso(40); out.imanAtrae=S.monedas>=1 || (mo.x!==undefined && Math.abs(mo.x)<2.3);
+              rs(); S.dist=1000; S.podSig=0; S.poderes=0; j.fila(); out.poder=S.obs.some(o=>o.tipo.indexOf('pw_')===0) && S.poderes===1;
+              rs(); S.poderes=20; S.podSig=0; S.dist=5000; j.limpia(); j.fila(); out.tope=!S.obs.some(o=>o.tipo.indexOf('pw_')===0);
+              rs(); const b=j.pon('barrera',-1,-6); b.ph=0; S.t=0; S.x=2.4; b.x=0; paso(1); out.barreraEstrecha=S.vidas===2;
+              j.limpia(); return out; })()""")
+            check("slalom: dificultad 1-10, avisos de obstáculos en orden y solo al aparecer, modo infernal, poderes (imán, rayo, escudo) y barrera más estrecha", r["niv"]==[1,1,2,7,9,10,10] and r["coherente"] and r["infernal"] and r["iman"] and r["rayo"] and r["escudo"] and r["escudoDerriba"] and r["imanAtrae"] and r["poder"] and r["tope"] and r["barreraEstrecha"], str(r))
             r = psl.evaluate("""(()=>{ const j=TIKI.slalom.juego(), S=j.S; j.empezar(); S.monedas=200; S.sig=9999; S.obs.length=0; S.inv=0; S.vidas=1; j.pon('def',1,-5);
               for(let i=0;i<400;i++) j.logica(0.02); return {fase:S.fase, vidas:S.vidas}; })()""")
             psl.wait_for_timeout(300)
