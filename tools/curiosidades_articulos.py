@@ -19,12 +19,14 @@ from articulos_i import ARTICULOS_I
 from articulos_j import ARTICULOS_J
 from articulos_k import ARTICULOS_K
 from articulos_l import ARTICULOS_L
+from articulos_m import ARTICULOS_M
 from articulos_meta import ORO
 
-ARTICULOS = ARTICULOS_A + ARTICULOS_B + ARTICULOS_C + ARTICULOS_D + ARTICULOS_E + ARTICULOS_F + ARTICULOS_G + ARTICULOS_H + ARTICULOS_I + ARTICULOS_J + ARTICULOS_K + ARTICULOS_L
+ARTICULOS = ARTICULOS_A + ARTICULOS_B + ARTICULOS_C + ARTICULOS_D + ARTICULOS_E + ARTICULOS_F + ARTICULOS_G + ARTICULOS_H + ARTICULOS_I + ARTICULOS_J + ARTICULOS_K + ARTICULOS_L + ARTICULOS_M
 SLUGS = {a["slug"] for a in ARTICULOS}
 FECHA = "Artículo de TIKITEXTO · 3 de noviembre de 2026"
 FECHA_L = "Artículo de TIKITEXTO · 15 de noviembre de 2026"
+FECHA_M = "Artículo de TIKITEXTO · 18 de noviembre de 2026"
 HUB = "articulos"
 HUB_T = "Artículos de fútbol: análisis, reglas e historia explicados"
 HUB_D = "Artículos largos y originales sobre fútbol: reglas, posiciones, tácticas, Balón de Oro, penaltis, fuera de juego, xG, fichajes y dorsales."
@@ -55,7 +57,7 @@ def pagina(L, a):
     ruta = "articulos/" + a["slug"] + "/"
     m = meta(a["slug"])
     h = cabecera(L, a["titulo"] + " | TIKITEXTO", a["desc"], ruta, a["titulo"], LIBRO)
-    h = solo_es(h, m["c"]).replace(L.ui["checked"], (FECHA_L if a in ARTICULOS_L else FECHA) + f" · {mins(a)} min de lectura")
+    h = solo_es(h, m["c"]).replace(L.ui["checked"], (FECHA_M if a in ARTICULOS_M else FECHA_L if a in ARTICULOS_L else FECHA) + f" · {mins(a)} min de lectura")
     if a["slug"] in ORO:
         h = C.inyecta_css(h, HERO_ORO)
         h += '<a class="oro-cab" href="/articulos/balon-de-oro/">🏆 BALÓN DE ORO · toda la categoría</a>\n'

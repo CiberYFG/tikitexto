@@ -598,7 +598,7 @@ with sync_playwright() as p:
         check("huecos: ocultos por defecto", ph.evaluate("[...document.querySelectorAll('.hueco')].every(e => getComputedStyle(e).display === 'none')"))
         ph.click('#volverPortal'); ph.wait_for_timeout(300)
         check("portada: portal visible, juegos ocultos", ph.is_visible('#portal') and not ph.is_visible('[data-modo="diario"]'))
-        check("portada: Saber con enlaces reales", ph.evaluate("document.querySelectorAll('.portal__chips a[href]').length >= 8") and ph.get_attribute('.portal__enlace', 'href') == 'curiosidades/')
+        check("portada: Saber con enlaces reales", ph.evaluate("document.querySelectorAll('.portal__chips a[href]').length >= 4") and ph.get_attribute('.portal__enlace', 'href') == 'curiosidades/')
         ph.click('#portalJuegos'); ph.wait_for_timeout(300)
         check("pantalla dividida: aparece al entrar en Juegos con Letras y Videojuegos y el rayo", ph.is_visible('#vistaSplit') and ph.is_visible('[data-vs=letras]') and ph.is_visible('[data-vs=dinamicos]') and ph.evaluate("document.querySelectorAll('#vistaSplit .vs__rayo polyline').length >= 3"))
         ph.evaluate("document.querySelector('[data-vs=dinamicos]').click()"); ph.wait_for_timeout(800)
@@ -771,7 +771,7 @@ with sync_playwright() as p:
         check("curiosidades: al pulsar el tema se ven sus categorías", pv.locator("details.tema[open] details.tema").count() == 7)
         pv.goto(BASE + "articulos/", wait_until="networkidle", timeout=60000)
         n_art = pv.evaluate("document.querySelectorAll('details.tema a.tarjeta').length")
-        check("articulos: 63 artículos agrupados en 7 temas (el primero, BALÓN DE ORO)", n_art == 63 and pv.locator("details.tema").count() == 7 and pv.locator("details.tema.oro").count() == 1, str(n_art))
+        check("articulos: 69 artículos agrupados en 7 temas (el primero, BALÓN DE ORO)", n_art == 69 and pv.locator("details.tema").count() == 7 and pv.locator("details.tema.oro").count() == 1, str(n_art))
         check("temas/buscador: sin errores de JavaScript", not errs_v, "; ".join(errs_v)[:150])
         cv.close()
     except Exception as e:

@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 """Color y emoji de cada artículo (sin dependencias). c = (acento claro, acento oscuro)."""
 META = {
+    "glosario-del-futbol-terminos-y-jerga-explicados": dict(c=("#0f766e", "#2dd4bf"), e="📖"),
+    "cambios-de-reglas-que-transformaron-el-futbol-penalti-tarjetas-pase-atras": dict(c=("#4338ca", "#818cf8"), e="📜"),
+    "grandes-ideas-tacticas-de-la-historia-del-futbol-y-los-entrenadores-que-las-crearon": dict(c=("#6d28d9", "#a78bfa"), e="♟️"),
+    "lesiones-mas-comunes-en-el-futbol-y-como-prevenirlas": dict(c=("#dc2626", "#f87171"), e="🩹"),
+    "el-terreno-de-juego-medidas-cesped-natural-hibrido-y-artificial": dict(c=("#15803d", "#4ade80"), e="🌱"),
+    "datos-en-el-futbol-de-las-libretas-de-charles-reep-al-gps-y-la-analitica": dict(c=("#0369a1", "#38bdf8"), e="📊"),
     "letras-mas-frecuentes-nombres-futbolistas": dict(c=("#7c3aed", "#b79bff"), e="🔤"),
     "trucos-adivinar-futbolista-6-intentos": dict(c=("#0f9d58", "#4ade80"), e="🎯"),
     "como-se-elige-el-balon-de-oro": dict(c=("#c98a00", "#ffd84d"), e="🏆"),
@@ -89,6 +95,9 @@ CATS = [
         'como-se-decide-quien-gana-la-liga-desempates',
         'mundial-fase-de-grupos-desempates-y-formato-2026',
         'futbol-sala-futbol-7-y-futbol-playa-diferencias-con-el-futbol-11',
+        'glosario-del-futbol-terminos-y-jerga-explicados',
+        'cambios-de-reglas-que-transformaron-el-futbol-penalti-tarjetas-pase-atras',
+        'el-terreno-de-juego-medidas-cesped-natural-hibrido-y-artificial',
     ]),
     ('tactica', '🧠', 'Tácticas, técnica y estadísticas', 'Posiciones, formaciones, estilos de juego, fundamentos técnicos, xG y cómo leer un partido.', '#6d28d9', [
         'posiciones-del-futbol-que-hace-cada-jugador',
@@ -103,6 +112,9 @@ CATS = [
         'que-son-los-goles-esperados-xg',
         'historia-y-evolucion-del-portero',
         'preparacion-fisica-del-futbolista-entrenamiento-alimentacion-y-descanso',
+        'grandes-ideas-tacticas-de-la-historia-del-futbol-y-los-entrenadores-que-las-crearon',
+        'lesiones-mas-comunes-en-el-futbol-y-como-prevenirlas',
+        'datos-en-el-futbol-de-las-libretas-de-charles-reep-al-gps-y-la-analitica',
     ]),
     ('premios', '🏆', 'Premios y trofeos', 'Balón de Oro, Bota de Oro, trofeos, países con más premios y Messi frente a Cristiano.', '#c98a00', [
         'como-funciona-la-bota-de-oro',
@@ -149,5 +161,5 @@ CATS = [
 
 def todos():
     """Todos los artículos (dicts) en orden de publicación."""
-    import articulos_a, articulos_b, articulos_c, articulos_d, articulos_e, articulos_f, articulos_g, articulos_h, articulos_i, articulos_j, articulos_k, articulos_l
-    return (articulos_a.ARTICULOS_A + articulos_b.ARTICULOS_B + articulos_c.ARTICULOS_C + articulos_d.ARTICULOS_D + articulos_e.ARTICULOS_E + articulos_f.ARTICULOS_F + articulos_g.ARTICULOS_G + articulos_h.ARTICULOS_H + articulos_i.ARTICULOS_I + articulos_j.ARTICULOS_J + articulos_k.ARTICULOS_K + articulos_l.ARTICULOS_L)
+    import articulos_a, articulos_b, articulos_c, articulos_d, articulos_e, articulos_f, articulos_g, articulos_h, articulos_i, articulos_j, articulos_k, articulos_l, articulos_m
+    return (articulos_a.ARTICULOS_A + articulos_b.ARTICULOS_B + articulos_c.ARTICULOS_C + articulos_d.ARTICULOS_D + articulos_e.ARTICULOS_E + articulos_f.ARTICULOS_F + articulos_g.ARTICULOS_G + articulos_h.ARTICULOS_H + articulos_i.ARTICULOS_I + articulos_j.ARTICULOS_J + articulos_k.ARTICULOS_K + articulos_l.ARTICULOS_L + articulos_m.ARTICULOS_M)
