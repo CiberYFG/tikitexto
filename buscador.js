@@ -62,10 +62,11 @@
   function montar(c) {
     var lang = idioma(), t = T[lang];
     c.setAttribute("data-no-t", "");
-    c.innerHTML = '<form class="bus__f" role="search" onsubmit="return false"><span class="bus__lupa" aria-hidden="true">🔍</span>' +
+    c.innerHTML = '<form class="bus__f" role="search"><span class="bus__lupa" aria-hidden="true">🔍</span>' +
       '<input class="bus__in" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-label="' + esc(t.lbl) + '" placeholder="' + esc(t.ph) + '">' +
       '</form><div class="bus__res" role="region" aria-live="polite" hidden></div>';
     var inp = c.querySelector(".bus__in"), res = c.querySelector(".bus__res"), tm;
+    c.querySelector(".bus__f").addEventListener("submit", function (e) { e.preventDefault(); });
     function pintar() {
       var q = inp.value.trim();
       if (q.length < 2) { res.hidden = true; res.innerHTML = ""; return; }
