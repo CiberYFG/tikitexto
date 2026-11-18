@@ -2,7 +2,7 @@
    - La página se pide SIEMPRE a la red primero: así nadie se queda con una versión antigua.
    - Si no hay conexión, se usa la última copia guardada.
    - Sube VERSION solo si cambias la lista SHELL o quieres vaciar la caché. */
-const VERSION = "v7";
+const VERSION = "v8";
 const CACHE = "tikitexto-" + VERSION;
 const BASE = self.registration.scope; /* termina en "/", incluye el nombre del repositorio */
 const INDEX = new URL("index.html", BASE).href;
