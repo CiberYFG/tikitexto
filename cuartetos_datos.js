@@ -1,14 +1,14 @@
 /* CUARTETOS TIKITEXTO · datos (15-nov-2026)
    Cada jugador: «Nombre|selección|posición|clubes|marcas». Clubes: lista CERRADA de 13 (hay que anotar TODOS por los que pasó en el primer equipo).
    Marcas: b = ganó el Balón de Oro · w = campeón del mundo con su selección.
-   Se excluyeron a propósito los jugadores en activo de España (plantilla 2026 por confirmar) y los premios recientes dudosos.
+   21-nov-2026: añadidos los campeones del mundo de España 2026 con club entre los 13 (convocatoria oficial de 26), el Balón de Oro 2025 (Dembélé, 2026 Kane, Rodri 2024) y 4 selecciones nuevas (NO, PL, SN, MA).
    Revisar cada verano (fichajes y retiradas). Sin escudos, fotos ni logos: solo texto. */
 
 export const CLUBES = {
   RM: "Real Madrid", FCB: "Barcelona", ATM: "Atlético", BAY: "Bayern", JUV: "Juventus", MIL: "Milan", INT: "Inter",
   MUN: "Manchester United", LIV: "Liverpool", CHE: "Chelsea", ARS: "Arsenal", MCI: "Manchester City", PSG: "PSG",
 };
-export const SELECCIONES = { ES: "España", FR: "Francia", DE: "Alemania", IT: "Italia", EN: "Inglaterra", BR: "Brasil", AR: "Argentina", PT: "Portugal", NL: "Países Bajos", UY: "Uruguay", HR: "Croacia", BE: "Bélgica" };
+export const SELECCIONES = { ES: "España", FR: "Francia", DE: "Alemania", IT: "Italia", EN: "Inglaterra", BR: "Brasil", AR: "Argentina", PT: "Portugal", NL: "Países Bajos", UY: "Uruguay", HR: "Croacia", BE: "Bélgica", NO: "Noruega", PL: "Polonia", SN: "Senegal", MA: "Marruecos" };
 export const POSICIONES = { P: "Porteros", D: "Defensas", M: "Centrocampistas", F: "Delanteros" };
 
 const J = `
@@ -214,6 +214,101 @@ Witsel|BE|M|ATM|
 Carrasco|BE|F|ATM|
 Doku|BE|F|MCI|
 Origi|BE|F|LIV,MIL|
+Rodri|ES|M|ATM,MCI|bw
+Pedri|ES|M|FCB|w
+Lamine Yamal|ES|F|FCB|w
+Gavi|ES|M|FCB|w
+Dani Olmo|ES|M|FCB|w
+Ferran Torres|ES|F|MCI,FCB|w
+Cubarsí|ES|D|FCB|w
+Eric García|ES|D|MCI,FCB|w
+Joan García|ES|P|FCB|w
+David Raya|ES|P|ARS|w
+Zubimendi|ES|M|ARS|w
+Mikel Merino|ES|M|ARS|w
+Cucurella|ES|D|CHE|w
+Marcos Llorente|ES|D|RM,ATM|w
+Álex Baena|ES|M|ATM|w
+Pubill|ES|D|ATM|w
+Fabián Ruiz|ES|M|PSG|w
+Laporte|ES|D|MCI|w
+Carvajal|ES|D|RM|
+Morata|ES|F|RM,ATM,JUV,CHE,MIL|
+Dembélé|FR|F|FCB,PSG|bw
+Pavard|FR|D|BAY,INT|w
+Lucas Hernández|FR|D|ATM,BAY,PSG|w
+Matuidi|FR|M|PSG,JUV|w
+Tolisso|FR|M|BAY|w
+Umtiti|FR|D|FCB|w
+Kimpembe|FR|D|PSG|w
+Tchouaméni|FR|M|RM|
+Camavinga|FR|M|RM|
+Saliba|FR|D|ARS|
+Maignan|FR|P|MIL|
+Theo Hernández|FR|D|RM,MIL|
+Kane|EN|F|BAY|b
+Trent Alexander-Arnold|EN|D|LIV,RM|
+Henderson|EN|M|LIV|
+Grealish|EN|M|MCI|
+Cole Palmer|EN|M|MCI,CHE|
+Rashford|EN|F|MUN,FCB|
+Rüdiger|DE|D|CHE,RM|
+Musiala|DE|M|BAY|
+Wirtz|DE|M|LIV|
+Ter Stegen|DE|P|FCB|
+Gnabry|DE|F|ARS,BAY|
+Werner|DE|F|CHE|
+Goretzka|DE|M|BAY|
+Donnarumma|IT|P|MIL,PSG,MCI|
+Barella|IT|M|INT|
+Chiesa|IT|F|JUV,LIV|
+Jorginho|IT|M|CHE,ARS|
+Verratti|IT|M|PSG|
+Tonali|IT|M|MIL|
+Rodrygo|BR|F|RM|
+Raphinha|BR|F|FCB|
+Endrick|BR|F|RM|
+Militão|BR|D|RM|
+Marquinhos|BR|D|PSG|
+Fabinho|BR|M|LIV|
+Paquetá|BR|M|MIL|
+Firmino|BR|F|LIV|
+Willian|BR|F|CHE,ARS|
+Gabriel Magalhães|BR|D|ARS|
+Otamendi|AR|D|MCI|w
+Lisandro Martínez|AR|D|MUN|w
+Paredes|AR|M|PSG,JUV|w
+Nahuel Molina|AR|D|ATM|w
+Mastantuono|AR|F|RM|
+Leão|PT|F|MIL|
+Vitinha|PT|M|PSG|
+Nuno Mendes|PT|D|PSG|
+João Neves|PT|M|PSG|
+Renato Sanches|PT|M|BAY,PSG|
+Gakpo|NL|F|LIV|
+Dumfries|NL|D|INT|
+Reijnders|NL|M|MIL,MCI|
+Wijnaldum|NL|M|LIV,PSG|
+De Vrij|NL|D|INT|
+Xavi Simons|NL|M|PSG|
+Darwin Núñez|UY|F|LIV|
+Bentancur|UY|M|JUV|
+Haaland|NO|F|MCI|
+Ødegaard|NO|M|RM,ARS|
+Solskjær|NO|F|MUN|
+Riise|NO|D|LIV|
+Lewandowski|PL|F|BAY,FCB|
+Szczęsny|PL|P|ARS,JUV,FCB|
+Zieliński|PL|M|INT|
+Boniek|PL|F|JUV|
+Mané|SN|F|LIV,BAY|
+Koulibaly|SN|D|CHE|
+Édouard Mendy|SN|P|CHE|
+El Hadji Diouf|SN|F|LIV|
+Hakimi|MA|D|RM,INT,PSG|
+Ziyech|MA|F|CHE|
+Mazraoui|MA|D|BAY,MUN|
+Amrabat|MA|M|MUN|
 `.trim().split("\n").map((l) => { const q = l.split("|"); return { n: q[0], s: q[1], p: q[2], c: q[3] ? q[3].split(",") : [], b: q[4].indexOf("b") >= 0, w: q[4].indexOf("w") >= 0 }; });
 export const JUGADORES = J;
 

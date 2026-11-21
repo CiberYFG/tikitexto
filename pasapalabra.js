@@ -12,7 +12,7 @@ const PARTICULAS = ["de", "del", "van", "von", "da", "di", "jr", "la", "le"];
 const irnd = (n) => Math.floor(Math.random() * n);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const barajar = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = irnd(i + 1), x = a[i]; a[i] = a[j]; a[j] = x; } return a; };
-export const norm = (s) => String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/ı/g, "i").replace(/ø/g, "o").replace(/ß/g, "ss").replace(/[^a-z0-9]/g, "");
+export const norm = (s) => String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/ı/g, "i").replace(/ø/g, "o").replace(/æ/g, "ae").replace(/œ/g, "oe").replace(/ł/g, "l").replace(/đ/g, "d").replace(/ß/g, "ss").replace(/[^a-z0-9]/g, "");
 const esLetra = (c) => /[a-z]/.test(norm(c));
 
 /* ── Reserva de respuestas ── */
