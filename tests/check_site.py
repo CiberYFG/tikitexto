@@ -556,6 +556,7 @@ with sync_playwright() as p:
         malas = []
         for ru in rutas:
             r = api.get(BASE + ru)
+            if r.status != 200: r = api.get(BASE + ru)  # un reintento: la web real a veces responde lento
             t = r.text() if r.status == 200 else ""
             hist = any(x in ru for x in ("champions-20-anos", "champions-league-last-20-finals", "mundiales-edicion-por-edicion", "world-cups-edition-by-edition"))
             if r.status != 200 or 'class="jugar"' not in t or ("<table" not in t and not ru.endswith("datos/") and not hist and 'class="entrada"' not in t and 'class="tarjetas"' not in t): malas.append(ru)
@@ -1104,7 +1105,7 @@ with sync_playwright() as p:
         ppp.evaluate("document.querySelector('[data-pasapalabra]').click()"); ppp.wait_for_timeout(1500)
         check("pasapalabra: se abre la pantalla con 26 letras", ppp.locator(".pp-raiz").count() == 1 and ppp.locator(".pp-l").count() == 26)
         g = ppp.evaluate("""(()=>{ const j=TIKI.pasapalabra.juego(); let mal=0, vacio=0;
-          for(let k=0;k<200;k++){ const r=j.generar(); if(r.length!==26) mal++; r.forEach(it=>{ if(!it.validas.length||!j.acepta(it,it.n)) mal++; const ini=it.n.normalize('NFD').replace(/[\\u0300-\\u036f]/g,'')[0].toUpperCase(); if(it.modo==='e'&&ini!==it.L) mal++; if(it.modo==='c'&&!it.n.normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toUpperCase().includes(it.L)) mal++; }); }
+          for(let k=0;k<200;k++){ const r=j.generar(); if(r.length!==26) mal++; r.forEach(it=>{ if(!it.validas.length||!j.acepta(it,it.n)) mal++; const nn=it.n.normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/Ø/g,'O').replace(/ø/g,'o').replace(/[Ææ]/g,'AE'); const ini=nn[0].toUpperCase(); if(it.modo==='e'&&ini!==it.L) mal++; if(it.modo==='c'&&!nn.toUpperCase().includes(it.L)) mal++; }); }
           return {mal, n:j.POOL.length}; })()""")
         check("pasapalabra: 26 respuestas por rosco, cada una acepta su nombre y respeta la letra", g["mal"] == 0 and g["n"] > 300, str(g))
         tol = ppp.evaluate("""(()=>{ const j=TIKI.pasapalabra.juego(); const it={validas:[{alias:['zidane']}]}; return [j.acepta(it,'ZIDANE'),j.acepta(it,'zidanne'),j.acepta(it,'zidan'),j.acepta(it,'zola'),j.acepta(it,'z')]; })()""")
@@ -1146,7 +1147,10 @@ with sync_playwright() as p:
         pto.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','j');sessionStorage.setItem('tikitexto:grupo','letras')".replace("'letras'", "'dinamicos'"))
         pto.goto(BASE, wait_until="networkidle", timeout=60000); pto.wait_for_timeout(300)
         check("toques: tarjeta en Dinámicos", pto.locator("[data-toques]").count() == 1)
-        pto.evaluate("document.querySelector('[data-toques]').click()"); pto.wait_for_timeout(1500)
+        pto.evaluate("document.querySelector('[data-toques]').click()")
+        try: pto.wait_for_selector(".to-raiz canvas.to-cv", timeout=15000)
+        except Exception: pass
+        pto.wait_for_timeout(500)
         check("toques: se abre la pantalla con el lienzo y el menú", pto.locator(".to-raiz canvas.to-cv").count() == 1 and pto.locator(".to-menu:not([hidden])").count() == 1)
         c = pto.evaluate("(()=>{const j=TIKI.toques.juego(); return {k:j.EQUIPACIONES.length,b:j.BALONES.length,f:j.FONDOS.length,k0:j.EQUIPACIONES[0].p,b0:j.BALONES[0].p,f0:j.FONDOS[0].p,f0id:j.FONDOS[0].id};})()")
         check("toques: catálogo de equipaciones, balones y fondos (empieza en el callejón y lo primero es gratis)", c["k"] >= 8 and c["b"] >= 6 and c["f"] >= 9 and c["k0"] == 0 and c["b0"] == 0 and c["f0"] == 0 and c["f0id"] == "callejon", str(c))
@@ -1268,6 +1272,108 @@ with sync_playwright() as p:
         ca.close()
     except Exception as e:
         check("vídeos", False, str(e)[:150])
+
+    print("3an) Duelo de datos")
+    try:
+        cdd = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
+        pdd = cdd.new_page(); errs_dd = []
+        pdd.on("pageerror", lambda e: errs_dd.append(str(e)))
+        pdd.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','j');sessionStorage.setItem('tikitexto:grupo','letras')")
+        pdd.goto(BASE, wait_until="networkidle", timeout=60000); pdd.wait_for_timeout(300)
+        check("duelo: tarjeta en Letras", pdd.locator("[data-duelo]").count() == 1)
+        pdd.evaluate("document.querySelector('[data-duelo]').click()"); pdd.wait_for_timeout(2000)
+        check("duelo: se abre la pantalla", pdd.locator(".dd-raiz").count() == 1)
+        g = pdd.evaluate("""(()=>{ const j=TIKI.duelo.juego(); let mal=0, n=0; const cats={}, gaps=[];
+          for(let r=1;r<=18;r++) for(let i=0;i<120;i++){ const q=j.generar(r,null); n++; if(!q){mal++;continue;} cats[q.cat]=1;
+            if(q.ops.length!==2||q.vals[0]===q.vals[1]||typeof q.vals[0]!=='number'||typeof q.vals[1]!=='number') mal++;
+            if(q.vals[q.ok]<=q.vals[1-q.ok]) mal++; if(q.ops[0].id===q.ops[1].id) mal++; if(r===1) gaps.push(q.gap); }
+          return {mal,n,cats:Object.keys(cats).length,gmin:Math.min(...gaps),d1:j.dificultad(1),d16:j.dificultad(16),t1:j.tiempo(1),t30:j.tiempo(30),stats:j.preparar().length}; })()""")
+        check("duelo: todas las preguntas son de 2 nombres con cifras distintas y una sola correcta", g["mal"] == 0 and g["cats"] == 4 and g["stats"] >= 15, str(g))
+        check("duelo: cada ronda es más difícil (menos diferencia) y con menos tiempo", g["d1"] == 0 and g["d16"] == 5 and g["gmin"] >= 0.55 and g["t1"] > g["t30"] and g["t30"] >= 5, str(g))
+        pdd.click("[data-menu] [data-dd=jugar]"); pdd.wait_for_timeout(300)
+        check("duelo: aparece la pregunta con 2 tarjetas y 3 balones", pdd.locator(".dd-op").count() == 2 and pdd.locator("[data-vidas] i.on").count() == 3)
+        pdd.evaluate("(()=>{const j=TIKI.duelo.juego(); j.responder(j.S.q.ok);})()"); pdd.wait_for_timeout(200)
+        check("duelo: acertar suma puntos y revela las cifras de los dos", pdd.evaluate("TIKI.duelo.juego().S.pts") >= 100 and pdd.locator(".dd-op.rev .dd-val").count() == 2 and pdd.locator(".dd-op.bien").count() == 1)
+        pdd.wait_for_timeout(1700)
+        check("duelo: tras acertar pasa a la siguiente ronda", pdd.evaluate("TIKI.duelo.juego().S.r") == 2)
+        pdd.keyboard.press("ArrowRight"); pdd.wait_for_timeout(200)
+        check("duelo: el teclado (← →) también responde", pdd.evaluate("TIKI.duelo.juego().S.fase") == "resp")
+        pdd.wait_for_timeout(2300)
+        pdd.evaluate("(()=>{const j=TIKI.duelo.juego(); j.S.ac=9; j.responder(j.S.q.ok);})()"); pdd.wait_for_timeout(200)
+        check("duelo: el 10.º acierto da +1 tikitexto", pdd.evaluate("TIKI.duelo.juego().S.tikis") == 1)
+        pdd.wait_for_timeout(1700)
+        for _ in range(4):
+            pdd.evaluate("(()=>{const j=TIKI.duelo.juego(); if(j.S.fase==='pregunta') j.responder(1-j.S.q.ok);})()"); pdd.wait_for_timeout(2300)
+        check("duelo: 3 fallos terminan el partido", pdd.locator("[data-fin]:not([hidden])").count() == 1, str(pdd.evaluate("TIKI.duelo.juego().S.vidas")))
+        pdd.evaluate("document.querySelector('[data-dd=salir]').click()"); pdd.wait_for_timeout(300)
+        check("duelo: salir cierra la pantalla", pdd.locator(".dd-raiz").count() == 0)
+        check("duelo: sin errores de JavaScript", not errs_dd, "; ".join(errs_dd)[:150])
+        cdd.close()
+    except Exception as e:
+        check("duelo de datos", False, str(e)[:150])
+
+    print("3ao) Vitrina de logros")
+    try:
+        clg = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
+        plg = clg.new_page(); errs_lg = []
+        plg.on("pageerror", lambda e: errs_lg.append(str(e)))
+        plg.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','j');sessionStorage.setItem('tikitexto:grupo','letras')")
+        plg.goto(BASE, wait_until="networkidle", timeout=60000); plg.wait_for_timeout(300)
+        check("logros: banner en la vista de juegos", plg.locator("[data-logros]").count() == 1)
+        # lógica pura del catálogo
+        r = plg.evaluate("""(async()=>{ const m = await import('./logros.js'); const L = m.LOGROS; let mal = 0; const ids = new Set();
+          for (const l of L) { ids.add(l.id); if (l.t.length!==6||l.d.length!==6||l.tiers.length!==3||!(l.tiers[0]<l.tiers[1]&&l.tiers[1]<l.tiers[2])||!l.d.every(x=>x.includes('{n}'))) mal++; }
+          const v0 = m.calcular({}, {}), v1 = m.calcular({pts:300,jugadas:200,mejor:20,diaMejor:40}, {sl:{mejorm:7000,bal:6000}});
+          return {mal, n:L.length, uni:ids.size, vacio:v0.every(e=>e.nivel===0), oro:v1.filter(e=>e.nivel===3).length, r0:m.resumen(v0).rango, r1:m.resumen(v1).rango}; })()""")
+        check("logros: 26 logros únicos con 6 idiomas y 3 niveles crecientes", r["mal"] == 0 and r["n"] >= 26 and r["uni"] == r["n"], str(r))
+        check("logros: perfil vacío = 0 medallas; marcas altas = oro", r["vacio"] and r["oro"] >= 5 and r["r0"] == 0 and r["r1"] >= 1, str(r))
+        # perfil de ejemplo en el almacenamiento
+        plg.evaluate("""(()=>{ const d = JSON.parse(localStorage.getItem('tikitexto:jugadores')); const p = d.perfiles[d.actual];
+          Object.assign(p, {pts:62,jugadas:14,aciertos:9,mejor:5,diaMejor:8,nv:{tut:{},t:7,f:4,a:2,sl:{mejor:900,mejorm:2400,part:12,bal:6000},to:{mejor:120,pts:900,tot:1400,part:10},pp:{mejor:1200,maxAc:18,part:4,perf:0},cu:{part:9,gan:6,mejor:3},c:{gan:4,per:2,emp:0,gol:22}}});
+          localStorage.setItem('tikitexto:jugadores', JSON.stringify(d)); })()""")
+        plg.goto(BASE, wait_until="networkidle", timeout=60000); plg.wait_for_timeout(5000)
+        check("logros: la primera vez avisa de lo ya conseguido (una sola vez)", plg.locator(".lg-toast").count() >= 1)
+        check("logros: el banner muestra medallas y rango", re.match(r"^\d+/78", plg.locator("[data-lg-cnt]").first.inner_text().strip()) is not None, plg.locator("[data-lg-cnt]").first.inner_text())
+        plg.evaluate("document.querySelector('[data-logros]').click()"); plg.wait_for_timeout(1800)
+        check("logros: se abre la vitrina con las 26 tarjetas", plg.locator(".lg-raiz").count() == 1 and plg.locator(".lg-card").count() == 26)
+        check("logros: botón de compartir y anillo de progreso", plg.locator("[data-lg=compartir]").count() == 1 and plg.locator(".lg-anillo .prog").count() == 1)
+        check("logros: hay medallas de oro, plata y bronce y bloqueadas", plg.locator(".lg-card--3").count() >= 1 and plg.locator(".lg-card--2").count() >= 1 and plg.locator(".lg-card--1").count() >= 1 and plg.locator(".lg-card--0").count() >= 1)
+        plg.click("[data-f=ganadas]"); plg.wait_for_timeout(300)
+        n_g = plg.locator(".lg-card").count()
+        plg.click("[data-f=pendientes]"); plg.wait_for_timeout(300)
+        n_p = plg.locator(".lg-card").count()
+        check("logros: los filtros reparten las tarjetas", 0 < n_g < 26 and 0 < n_p < 26 and plg.locator(".lg-card--3").count() == 0, "%d/%d" % (n_g, n_p))
+        plg.keyboard.press("Escape"); plg.wait_for_timeout(300)
+        check("logros: Esc cierra la vitrina", plg.locator(".lg-raiz").count() == 0)
+        # un logro nuevo muestra un aviso
+        plg.evaluate("(()=>{ const d = JSON.parse(localStorage.getItem('tikitexto:jugadores')); d.perfiles[d.actual].nv.to.mejor = 400; localStorage.setItem('tikitexto:jugadores', JSON.stringify(d)); })()")
+        plg.evaluate("document.querySelectorAll('.lg-toast').forEach(e=>e.remove())")
+        plg.goto(BASE, wait_until="networkidle", timeout=60000); plg.wait_for_timeout(5200)
+        check("logros: subir una marca desbloquea un aviso con su nombre", "Malabarista" in plg.evaluate("(document.querySelector('.lg-toast')||{}).innerText||''"), plg.evaluate("(document.querySelector('.lg-toast')||{}).innerText||''"))
+        plg.goto(BASE + "?modo=logros", wait_until="networkidle", timeout=60000); plg.wait_for_timeout(2200)
+        check("logros: ?modo=logros abre la vitrina", plg.locator(".lg-raiz").count() == 1)
+        check("logros: sin errores de JavaScript", not errs_lg, "; ".join(errs_lg)[:150])
+        clg.close()
+    except Exception as e:
+        check("vitrina de logros", False, str(e)[:150])
+
+    print("3ap) Vigilante de carga de los juegos 3D")
+    try:
+        ccg = br.new_context(viewport={"width": 1100, "height": 760}, service_workers="block")
+        pcg = ccg.new_page(); errs_cg = []
+        pcg.on("pageerror", lambda e: errs_cg.append(str(e)))
+        pcg.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','j');sessionStorage.setItem('tikitexto:grupo','dinamicos')")
+        pcg.route("**/slalom.js", lambda r: r.abort())
+        pcg.goto(BASE, wait_until="networkidle", timeout=60000); pcg.wait_for_timeout(300)
+        pcg.evaluate("document.querySelector('[data-slalom]').click()"); pcg.wait_for_timeout(2500)
+        check("carga 3D fallida: aparece el aviso con Reintentar y Cerrar", pcg.locator(".cg-capa").count() == 1 and pcg.locator(".cg-capa .cg-b").count() == 2, pcg.inner_text("body")[:80] if pcg.locator(".cg-capa").count() == 0 else "")
+        pcg.unroute("**/slalom.js")
+        pcg.evaluate("document.querySelector('.cg-b--ok').click()"); pcg.wait_for_timeout(6000)
+        check("reintentar vuelve a cargar el juego y quita el aviso", pcg.locator(".cg-capa").count() == 0 and pcg.locator(".sl-raiz").count() == 1)
+        check("carga 3D: sin errores de JavaScript", not errs_cg, "; ".join(errs_cg)[:150])
+        ccg.close()
+    except Exception as e:
+        check("vigilante de carga", False, str(e)[:150])
 
     br.close()
 

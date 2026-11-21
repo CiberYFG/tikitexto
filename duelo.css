@@ -1,0 +1,93 @@
+/* DUELO DE DATOS · estilos (se carga al abrir el modo) */
+.dd-raiz { position: fixed; inset: 0; z-index: 2000; color: #fff; font-family: var(--fuente, system-ui, sans-serif); overflow-y: auto; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
+  display: flex; flex-direction: column; align-items: center; background: radial-gradient(ellipse at 50% 0%, #1d1a5c 0%, #0b0e2c 55%, #04050f 100%); }
+.dd-raiz * { box-sizing: border-box; }
+.dd-raiz [hidden] { display: none !important; }
+.dd-fondo { position: fixed; inset: 0; pointer-events: none; opacity: .5; background:
+  repeating-linear-gradient(115deg, transparent 0 46px, rgba(25,230,255,.05) 46px 48px), radial-gradient(circle at 85% 12%, rgba(255,61,203,.16), transparent 40%), radial-gradient(circle at 10% 90%, rgba(65,255,138,.1), transparent 42%); }
+.dd-cab { position: relative; width: min(560px, 100%); display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: calc(10px + env(safe-area-inset-top)) 12px 0; }
+.dd-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255,255,255,.25); background: rgba(8,12,24,.7); backdrop-filter: blur(8px); color: #fff; font: 800 1rem/1 inherit; cursor: pointer; display: grid; place-items: center; }
+.dd-btn:hover { background: rgba(30,40,70,.85); }
+.dd-sec { border: 1px solid rgba(255,255,255,.28); background: rgba(255,255,255,.08); color: #fff; border-radius: 999px; padding: 11px 16px; font: 800 .82rem/1 var(--fuente, system-ui); cursor: pointer; }
+.dd-sec:hover:not(:disabled) { background: rgba(255,255,255,.18); }
+
+.dd-menu, .dd-fin { position: fixed; inset: 0; display: grid; place-items: center; padding: 16px; background: rgba(3,6,15,.82); backdrop-filter: blur(6px); overflow-y: auto; z-index: 3; }
+.dd-caja { width: min(390px, 100%); display: grid; justify-items: center; gap: 10px; text-align: center; padding: 22px 20px 20px; border-radius: 22px; background: linear-gradient(160deg, rgba(34,20,78,.96), rgba(8,10,34,.96)); border: 1px solid rgba(255,210,58,.5); box-shadow: 0 0 40px rgba(255,210,58,.22); }
+.dd-caja--s { max-width: 330px; }
+.dd-kicker { margin: 0; font: 800 .68rem/1 var(--fuente, system-ui); letter-spacing: .26em; text-transform: uppercase; color: #19e6ff; }
+.dd-titulo { margin: 0; display: grid; font: 900 clamp(2rem, 10vw, 2.9rem)/.95 var(--fuente-titulo, system-ui); font-style: italic; }
+.dd-titulo span:first-child { color: #fff; text-shadow: 0 0 22px rgba(255,210,58,.7); }
+.dd-titulo span:last-child { background: linear-gradient(90deg, #ffd23a, #41ff8a, #4aa8ff, #c77dff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.dd-sub { margin: 0; font: 700 .86rem/1.3 var(--fuente, system-ui); color: #d6e4ff; }
+.dd-jugar, .dd-libre { width: 100%; border: 0; border-radius: 14px; padding: 13px 18px; font: 900 1rem/1.1 var(--fuente-titulo, system-ui); letter-spacing: .08em; text-transform: uppercase; cursor: pointer; display: grid; gap: 3px; justify-items: center; }
+.dd-jugar { background: linear-gradient(135deg, #ff3dcb, #ffd23a); color: #06121c; box-shadow: 0 8px 26px rgba(255,61,203,.4); }
+.dd-jugar small { font: 800 .68rem/1 ui-monospace, monospace; opacity: .7; letter-spacing: .1em; }
+.dd-jugar:hover { filter: brightness(1.08); }
+.dd-stats { margin: 0; font: 700 .76rem/1.4 var(--fuente, system-ui); opacity: .9; } .dd-stats b { font-family: ui-monospace, monospace; color: #ffd23a; }
+.dd-como { list-style: none; margin: 2px 0 0; padding: 0; display: grid; gap: 8px; text-align: left; width: 100%; }
+.dd-como li { display: flex; gap: 10px; align-items: flex-start; font: 600 .8rem/1.3 var(--fuente, system-ui); color: #d6e4ff; }
+.dd-como b { flex: none; width: 22px; height: 22px; border-radius: 50%; background: #ffd23a; color: #1a1000; display: grid; place-items: center; font: 900 .75rem/1 system-ui; }
+.dd-caja h3 { margin: 0; font: 900 1.5rem/1.15 var(--fuente-titulo, system-ui); color: #ffd23a; }
+.dd-tikis { margin: 0; font: 900 .95rem/1 var(--fuente, system-ui); color: #41ff8a; }
+
+
+.dd-marc { display: grid; justify-items: center; gap: 4px; padding: 7px 22px 8px; border-radius: 16px; background: linear-gradient(rgba(6,10,22,.86), rgba(10,16,34,.76)); border: 1px solid rgba(255,210,58,.5); box-shadow: 0 0 22px rgba(255,210,58,.2); }
+.dd-marc small { font: 800 .66rem/1 var(--fuente, system-ui); letter-spacing: .2em; text-transform: uppercase; color: #19e6ff; }
+.dd-marc b { font: 900 1.55rem/1 ui-monospace, "Courier New", monospace; color: #ffd23a; text-shadow: 0 0 10px rgba(255,160,0,.5); }
+.dd-vidas { display: flex; gap: 4px; min-width: 44px; justify-content: flex-end; }
+.dd-vidas i { font-style: normal; font-size: 1.15rem; filter: grayscale(1) opacity(.35); transition: filter .25s, transform .25s; }
+.dd-vidas i.on { filter: none; }
+.dd-tiempo { position: relative; width: min(560px, calc(100% - 24px)); height: 9px; margin: 12px 12px 0; border-radius: 6px; background: rgba(255,255,255,.14); overflow: hidden; }
+.dd-tiempo i { display: block; height: 100%; width: 100%; transform-origin: left; background: linear-gradient(90deg, #41ff8a, #19e6ff); box-shadow: 0 0 10px rgba(25,230,255,.7); }
+.dd-tiempo i.ambar { background: linear-gradient(90deg, #ffd23a, #ff9a1f); box-shadow: 0 0 10px rgba(255,170,30,.7); }
+.dd-tiempo i.rojo { background: linear-gradient(90deg, #ff4d63, #ff9a1f); box-shadow: 0 0 10px rgba(255,77,99,.8); }
+.dd-info { position: relative; width: min(560px, 100%); min-height: 30px; margin: 8px 0 0; padding: 0 14px; text-align: center; font: 800 .95rem/30px var(--fuente, system-ui); color: #aab8dd; }
+.dd-info.bien { color: #41ff8a; } .dd-info.mal { color: #ff6b7c; } .dd-info.aviso { color: #ffd23a; }
+.dd-carta { position: relative; width: min(560px, calc(100% - 24px)); margin: 6px 12px 0; padding: 22px 16px 24px; flex: 1 1 auto; max-height: 340px; align-content: center; border-radius: 22px; text-align: center; display: grid; gap: 10px; background: linear-gradient(160deg, rgba(40,52,112,.95), rgba(12,18,48,.97)); border: 1px solid rgba(25,230,255,.4); box-shadow: 0 10px 34px rgba(0,0,0,.45); animation: peEntra .35s cubic-bezier(.2,1.3,.4,1); }
+.dd-carta.ok { border-color: #41ff8a; box-shadow: 0 0 30px rgba(65,255,138,.45); } .dd-carta.ko { border-color: #ff4d63; box-shadow: 0 0 30px rgba(255,77,99,.45); }
+@keyframes peEntra { from { transform: translateY(12px) scale(.96); opacity: 0; } }
+.dd-enun { margin: 0; font: 800 .82rem/1.25 var(--fuente, system-ui); letter-spacing: .1em; text-transform: uppercase; color: #19e6ff; }
+.dd-sujeto { margin: 0; font: 900 clamp(1.7rem, 7.5vw, 2.6rem)/1.05 var(--fuente-titulo, system-ui); color: #fff; text-shadow: 0 0 22px rgba(255,210,58,.5); overflow-wrap: anywhere; }
+.dd-ops { position: relative; width: min(560px, 100%); margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px 12px calc(20px + env(safe-area-inset-bottom)); }
+.dd-op { display: flex; align-items: center; gap: 10px; min-height: 84px; padding: 10px 12px; border-radius: 16px; border: 1px solid rgba(255,255,255,.25); background: linear-gradient(160deg, rgba(30,42,96,.92), rgba(12,18,48,.95)); color: #fff; font: 800 1rem/1.15 var(--fuente, system-ui); text-align: left; cursor: pointer; transition: transform .12s, border-color .15s, background .15s; overflow-wrap: anywhere; }
+.dd-op kbd { flex: none; width: 24px; height: 24px; border-radius: 8px; display: grid; place-items: center; background: rgba(255,255,255,.14); font: 900 .75rem/1 ui-monospace, monospace; color: #ffd23a; }
+.dd-op:hover:not(:disabled) { border-color: #19e6ff; transform: translateY(-2px); }
+.dd-op:disabled { cursor: default; }
+.dd-op.bien { background: linear-gradient(160deg, #1a8f4f, #0e5a33); border-color: #41ff8a; box-shadow: 0 0 20px rgba(65,255,138,.55); }
+.dd-op.mal { background: linear-gradient(160deg, #a3263b, #5a1424); border-color: #ff4d63; animation: ddSacude .38s; }
+@keyframes ddSacude { 20%, 60% { transform: translateX(-7px); } 40%, 80% { transform: translateX(7px); } }
+.dd-res { margin: 0; font: 800 1rem/1.2 var(--fuente, system-ui); color: #ffd23a; }
+.dd-tikis { margin: 0; font: 900 .95rem/1 var(--fuente, system-ui); color: #41ff8a; }
+.dd-jugar { width: 100%; border: 0; border-radius: 14px; padding: 13px 18px; font: 900 1rem/1.1 var(--fuente-titulo, system-ui); letter-spacing: .08em; text-transform: uppercase; cursor: pointer; background: linear-gradient(135deg, #ff3dcb, #ffd23a); color: #06121c; box-shadow: 0 8px 26px rgba(255,61,203,.4); }
+.dd-sec { width: 100%; border: 1px solid rgba(255,255,255,.28); background: rgba(255,255,255,.08); color: #fff; border-radius: 999px; padding: 11px 16px; font: 800 .82rem/1 var(--fuente, system-ui); cursor: pointer; }
+@media (max-width: 420px) { .dd-op { min-height: 62px; font-size: .9rem; } }
+@media (max-height: 560px) { .dd-carta { padding: 10px; gap: 4px; } .dd-op { min-height: 52px; } .dd-ops { padding-top: 8px; } .dd-sujeto { font-size: 1.5rem; } }
+@media (prefers-reduced-motion: reduce) { .dd-carta, .dd-op.mal { animation: none; } }
+
+/* Duelo: dos tarjetas enfrentadas */
+.dd-ops { grid-template-columns: 1fr 1fr; align-items: stretch; margin-top: 10px; }
+.dd-lado { flex-direction: column; justify-content: center; text-align: center; gap: 8px; min-height: 0; padding: 16px 10px; position: relative; overflow: hidden; background: linear-gradient(165deg, color-mix(in srgb, var(--c1, #234) 40%, #0c1230), #0a0e28 70%); }
+.dd-lado kbd { position: absolute; top: 8px; left: 8px; }
+.dd-orbe { width: 78px; height: 78px; border-radius: 50%; display: grid; place-items: center; font: 900 1.7rem/1 var(--fuente-titulo, system-ui); color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.6); background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), transparent 38%), linear-gradient(145deg, var(--c1, #4aa8ff), var(--c2, #19e6ff)); box-shadow: 0 0 22px color-mix(in srgb, var(--c1, #4aa8ff) 65%, transparent), inset 0 -8px 14px rgba(0,0,0,.35); }
+.dd-nom { font: 900 1.12rem/1.1 var(--fuente-titulo, system-ui); overflow-wrap: anywhere; }
+.dd-sb { font: 700 .72rem/1.2 var(--fuente, system-ui); opacity: .75; }
+.dd-val { font: 900 2.1rem/1 ui-monospace, monospace; color: #ffd23a; min-height: 2.1rem; opacity: 0; transform: scale(.6); transition: opacity .3s, transform .3s; }
+.dd-lado.rev .dd-val { opacity: 1; transform: scale(1); }
+.dd-lado.rev:not(.bien) .dd-val { color: #ffb3bd; }
+.dd-enun { font-size: clamp(.86rem, 3.8vw, 1.1rem); letter-spacing: .06em; }
+@media (max-width: 420px) { .dd-lado { min-height: 190px; } .dd-orbe { width: 62px; height: 62px; font-size: 1.35rem; } .dd-nom { font-size: .98rem; } }
+@media (max-height: 560px) { .dd-lado { min-height: 120px; flex-direction: row; flex-wrap: wrap; } .dd-orbe { width: 46px; height: 46px; font-size: 1rem; } .dd-val { font-size: 1.4rem; } }
+
+.dd-cat { display: inline-block; font: 800 .62rem/1 var(--fuente, system-ui); letter-spacing: .18em; text-transform: uppercase; color: #0a1020; background: #ffd23a; padding: 4px 10px; border-radius: 999px; margin-bottom: 8px; }
+.dd-carta { flex: 0 0 auto; min-height: 0; max-height: none; padding: 14px 14px 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.dd-vs { position: relative; z-index: 3; width: 46px; height: 46px; margin: -4px auto -30px; border-radius: 50%; display: grid; place-items: center; font: 900 .95rem/1 var(--fuente-titulo, system-ui); color: #0a1020; background: linear-gradient(145deg, #ffd23a, #ff6a3d); box-shadow: 0 0 0 4px #0b0e2c, 0 0 22px rgba(255,160,60,.6); }
+.dd-ops { position: relative; flex: 1 1 auto; margin-top: 0; padding-top: 6px; align-content: start; }
+.dd-ops > .dd-lado { min-height: clamp(150px, 32vh, 270px); }
+.dd-lado { transition: transform .2s, box-shadow .2s, border-color .2s; }
+@media (hover: hover) { .dd-lado:not(:disabled):hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,.5), 0 0 22px color-mix(in srgb, var(--c1, #4aa8ff) 55%, transparent); } }
+.dd-lado.bien { animation: ddPop .45s ease-out; }
+@keyframes ddPop { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .dd-lado.bien, .dd-lado.mal { animation: none; } .dd-lado { transition: none; } }
+@media (max-height: 560px) { .dd-vs { display: none; } }
+.dd-lado:nth-child(2) kbd { left: auto; right: 8px; }
+@media (min-width: 900px) { .dd-carta { width: min(720px, calc(100% - 24px)); } .dd-ops { width: min(720px, 100%); } .dd-orbe { width: 92px; height: 92px; font-size: 2rem; } .dd-val { font-size: 2.6rem; } }
