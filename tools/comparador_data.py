@@ -8,7 +8,7 @@ import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import hist_data as H
 
-FECHA = ("Datos a 16 de noviembre de 2026", "Data as of 16 November 2026")
+FECHA = ("Datos a 21 de noviembre de 2026", "Data as of 21 November 2026")
 
 # ───────────────────────── estadísticas por modo ─────────────────────────
 # (clave, español, inglés, unidad, ganador: 1 = más es mejor · 0 = solo informativo)
@@ -64,13 +64,13 @@ RADAR = {
 P = lambda **k: k
 JUGADORES = [
  ("messi", "Lionel Messi", ("Delantero", "Forward"), ("Argentina", "Argentina"), "#6cc0ff", "#ffffff",
-  P(nac=1987, alt=170, peso=72, bdo=8, ucl_t=4, mundial=1, cont=2, botas=6, ucl_g=129, ucl_p=163, sel_g=125, sel_p=207, wc_g=21)),
+  P(nac=1987, alt=170, peso=72, bdo=8, ucl_t=4, mundial=1, cont=2, botas=6, ucl_g=129, ucl_p=163, sel_g=126, sel_p=208, wc_g=21)),
  ("cristiano", "Cristiano Ronaldo", ("Delantero", "Forward"), ("Portugal", "Portugal"), "#ff3d4d", "#17c964",
-  P(nac=1985, alt=187, peso=83, bdo=5, ucl_t=5, mundial=0, cont=1, botas=4, ucl_g=140, ucl_p=183, sel_g=146, sel_p=233, wc_g=11)),
+  P(nac=1985, alt=187, peso=83, bdo=5, ucl_t=5, mundial=0, cont=1, botas=4, ucl_g=140, ucl_p=183, sel_g=146, sel_p=234, wc_g=11)),
  ("mbappe", "Kylian Mbappé", ("Delantero", "Forward"), ("Francia", "France"), "#2f6bff", "#ff3d4d",
-  P(nac=1998, alt=178, peso=73, bdo=0, ucl_t=0, mundial=1, cont=0, botas=1, ucl_g=73, ucl_p=101, sel_g=None, sel_p=None, wc_g=22)),
+  P(nac=1998, alt=178, peso=73, bdo=0, ucl_t=0, mundial=1, cont=0, botas=1, ucl_g=74, ucl_p=102, sel_g=None, sel_p=None, wc_g=22)),
  ("haaland", "Erling Haaland", ("Delantero", "Forward"), ("Noruega", "Norway"), "#6cd3ff", "#ff3d4d",
-  P(nac=2000, alt=195, peso=88, bdo=0, ucl_t=1, mundial=0, cont=0, botas=1, ucl_g=61, ucl_p=60, sel_g=None, sel_p=None, wc_g=None)),
+  P(nac=2000, alt=195, peso=88, bdo=0, ucl_t=1, mundial=0, cont=0, botas=1, ucl_g=62, ucl_p=61, sel_g=None, sel_p=None, wc_g=7)),
  ("yamal", "Lamine Yamal", ("Delantero", "Forward"), ("España", "Spain"), "#ff3d4d", "#ffd23a",
   P(nac=2007, alt=180, peso=None, bdo=0, ucl_t=0, mundial=1, cont=1, botas=0, ucl_g=None, ucl_p=None, sel_g=None, sel_p=None, wc_g=None)),
  ("lewandowski", "Robert Lewandowski", ("Delantero", "Forward"), ("Polonia", "Poland"), "#ff3d4d", "#ffffff",
@@ -78,7 +78,7 @@ JUGADORES = [
  ("benzema", "Karim Benzema", ("Delantero", "Forward"), ("Francia", "France"), "#2f6bff", "#ffffff",
   P(nac=1987, alt=185, peso=81, bdo=1, ucl_t=5, mundial=0, cont=0, botas=0, ucl_g=90, ucl_p=152, sel_g=37, sel_p=97, wc_g=3)),
  ("modric", "Luka Modrić", ("Centrocampista", "Midfielder"), ("Croacia", "Croatia"), "#ff3d4d", "#ffffff",
-  P(nac=1985, alt=172, peso=66, bdo=1, ucl_t=6, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=None, sel_p=202, wc_g=None)),
+  P(nac=1985, alt=172, peso=66, bdo=1, ucl_t=6, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=None, sel_p=208, wc_g=None)),
  ("kane", "Harry Kane", ("Delantero", "Forward"), ("Inglaterra", "England"), "#ffffff", "#ff3d4d",
   P(nac=1993, alt=188, peso=86, bdo=1, ucl_t=0, mundial=0, cont=0, botas=2, ucl_g=58, ucl_p=73, sel_g=85, sel_p=121, wc_g=14)),
  ("salah", "Mohamed Salah", ("Delantero", "Forward"), ("Egipto", "Egypt"), "#ff3d4d", "#ffd23a",
@@ -86,9 +86,9 @@ JUGADORES = [
  ("neymar", "Neymar", ("Delantero", "Forward"), ("Brasil", "Brazil"), "#ffdf00", "#17c964",
   P(nac=1992, alt=175, peso=68, bdo=0, ucl_t=1, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=80, sel_p=130, wc_g=8)),
  ("vinicius", "Vinícius Júnior", ("Delantero", "Forward"), ("Brasil", "Brazil"), "#ffdf00", "#17c964",
-  P(nac=2000, alt=176, peso=73, bdo=0, ucl_t=2, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=None, sel_p=None, wc_g=None)),
+  P(nac=2000, alt=176, peso=73, bdo=0, ucl_t=2, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=None, sel_p=None, wc_g=5)),
  ("bellingham", "Jude Bellingham", ("Centrocampista", "Midfielder"), ("Inglaterra", "England"), "#ffffff", "#ff3d4d",
-  P(nac=2003, alt=186, peso=None, bdo=0, ucl_t=1, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=None, sel_p=None, wc_g=None)),
+  P(nac=2003, alt=186, peso=None, bdo=0, ucl_t=1, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=None, sel_p=None, wc_g=8)),
  ("rodri", "Rodri", ("Centrocampista", "Midfielder"), ("España", "Spain"), "#ff3d4d", "#ffd23a",
   P(nac=1996, alt=191, peso=82, bdo=1, ucl_t=1, mundial=1, cont=1, botas=0, ucl_g=None, ucl_p=None, sel_g=None, sel_p=None, wc_g=None)),
  ("pedri", "Pedri", ("Centrocampista", "Midfielder"), ("España", "Spain"), "#ff3d4d", "#ffd23a",
@@ -148,7 +148,7 @@ EQUIPOS = [
 # ───────────────────────── selecciones ─────────────────────────
 # id, nombre es, nombre en, color1, color2, nombres en hist_data, datos fijos, (goleador histórico)
 SELECCIONES = [
- ("argentina", "Argentina", "Argentina", "#6cc0ff", "#ffffff", ("Argentina",), dict(cont=16, bdo=8, gol=125), "Lionel Messi"),
+ ("argentina", "Argentina", "Argentina", "#6cc0ff", "#ffffff", ("Argentina",), dict(cont=16, bdo=8, gol=126), "Lionel Messi"),
  ("brasil", "Brasil", "Brazil", "#ffdf00", "#17c964", ("Brasil",), dict(cont=9, bdo=5, gol=80), "Neymar"),
  ("francia", "Francia", "France", "#2f6bff", "#ff3d4d", ("Francia",), dict(cont=2, bdo=8, gol=None), ""),
  ("alemania", "Alemania", "Germany", "#f4f4ff", "#ffd23a", ("Alemania", "Alemania Occidental"), dict(cont=3, bdo=7, gol=71), "Miroslav Klose"),

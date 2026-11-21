@@ -143,8 +143,8 @@ MESSI_CRISTIANO = dict(
             "La media goleadora es favorable a Messi: 0,79 goles por partido frente a 0,77 de Cristiano, una diferencia muy pequeña. Cristiano también tiene el récord de goles en una sola edición, con 17 en 2013-14.",
         ]),
         ("Con sus selecciones", [
-            "Cristiano es el máximo goleador de la historia de las selecciones, con 146 goles en 233 partidos, y el jugador con más internacionalidades. Messi es segundo en ambos apartados: 125 goles en 207 partidos.",
-            "En el Mundial, Messi ganó la edición de 2022 en Catar, tras una final contra Francia que acabó 3-3 y se decidió en los penaltis. Cristiano no ha ganado el Mundial; su mejor resultado fue el cuarto puesto en 2006. Messi tiene 21 goles en Mundiales y Cristiano, 11. Cristiano marcó en cinco Mundiales distintos, un récord.",
+            "Cristiano es el máximo goleador de la historia de las selecciones, con 146 goles en 234 partidos, y el jugador con más internacionalidades; se retiró de Portugal en noviembre de 2026. Messi es segundo en goles y partidos: 126 goles en 208 encuentros hasta su despedida de Argentina, en octubre de 2026 ante Benín.",
+            "En el Mundial, Messi ganó la edición de 2022 en Catar, tras una final contra Francia que acabó 3-3 y se decidió en los penaltis. Cristiano no ha ganado el Mundial; su mejor resultado fue el cuarto puesto en 2006. Messi tiene 21 goles en Mundiales y Cristiano, 11. Cristiano marcó en seis Mundiales distintos (2006, 2010, 2014, 2018, 2022 y 2026), un récord.",
             "En los torneos continentales, Cristiano ganó la Eurocopa de 2016, la Liga de Naciones de 2019 y 2025, y es el máximo goleador de la historia de la Eurocopa con 14 goles. Messi ganó la Copa América en 2021 y 2024, la Finalissima de 2022 y el oro olímpico de 2008.",
         ]),
         ("Con sus clubes", [

@@ -27,13 +27,13 @@ T = {
             stat="Estadística", gana="Gana", empate="Empate", info="Dato informativo", tab="Tabla comparativa", ver="Resumen del duelo",
             anim="Ver el duelo animado", otros="Otros duelos", com="Comparador de fútbol", cur="Curiosidades", jugar="⚽ Jugar",
             pt="puntos", leg="Datos de uso informativo: revisados con UEFA, FIFA y France Football; altura y peso son valores aproximados de perfil. Sin escudos ni fotos.",
-            sobre="Sobre TIKITEXTO", fuentes="Fuentes", faqt="Preguntas frecuentes"),
+            sobre="Sobre TIKITEXTO", fuentes="Fuentes", faqt="Preguntas frecuentes", areas="Quién lidera en cada área", perfiles="Perfiles", leer="Cómo leer esta comparativa"),
  "en": dict(vs="vs", h="Head to head", full="{a} vs {b}: who has more trophies and records", t="{a} vs {b}: trophies and records compared | TIKITEXTO",
             d="{a} vs {b} head to head: {res} Full table with UEFA, FIFA and France Football data.",
             stat="Statistic", gana="Wins", empate="Tie", info="Informational", tab="Comparison table", ver="Duel summary",
             anim="See the animated duel", otros="More duels", com="Football comparator", cur="Trivia", jugar="⚽ Play",
             pt="points", leg="For information only: checked against UEFA, FIFA and France Football; height and weight are approximate profile values. No crests or photos.",
-            sobre="About TIKITEXTO", fuentes="Fuentes", faqt="Frequently asked questions"),
+            sobre="About TIKITEXTO", fuentes="Fuentes", faqt="Frequently asked questions", areas="Who leads in each area", perfiles="Profiles", leer="How to read this comparison"),
 }
 T["en"]["fuentes"] = "Sources"
 
@@ -78,6 +78,90 @@ def frases(lg, A, B, filas):
             w, l, vw, vl = (na, nb, va, vb) if g == "a" else (nb, na, vb, va)
             out.append((f"{et}: {w} ({vw}) supera a {l} ({vl}).", f"{et}: {w} ({vw}) ahead of {l} ({vl}).")[k])
     return out
+
+AREAS = {
+ "jugadores": [("prem", ("Premios individuales", "Individual awards"), ("bdo", "botas")),
+               ("tit", ("Títulos colectivos", "Team trophies"), ("ucl_t", "mundial", "cont")),
+               ("rend", ("Goles y partidos", "Goals and appearances"), ("ucl_g", "ucl_p", "sel_g", "sel_p", "wc_g"))],
+ "equipos": [("tit", ("Títulos", "Trophies"), ("ucl", "liga_t", "mcl")), ("fin", ("Finales de Champions", "Champions League finals"), ("fin", "fin_g"))],
+ "selecciones": [("wc", ("Mundiales", "World Cups"), ("wc", "wc_f")), ("cont", ("Torneos continentales", "Continental tournaments"), ("cont",)), ("ind", ("Figuras individuales", "Individual stars"), ("bdo", "gol"))],
+ "entrenadores": [("tit", ("Grandes títulos", "Major trophies"), ("ucl", "mundial", "cont")), ("lig", ("Ligas nacionales", "Domestic leagues"), ("ligas",))],
+}
+EXPL = {
+ "prem": ("Los premios individuales reconocen una temporada concreta y dependen de la votación y de los títulos del equipo, así que miden el nivel máximo más que la regularidad.",
+          "Individual awards recognise one specific season and depend on voting and on the team's trophies, so they measure peak level more than consistency."),
+ "tit": ("Los títulos son colectivos: dependen también de los compañeros, del club o la selección y de la época, por eso conviene leerlos junto al rendimiento individual.",
+         "Trophies are collective: they also depend on teammates, the club or national team and the era, so they are best read alongside individual output."),
+ "rend": ("Los goles y los partidos miden la regularidad a lo largo de los años: quien juega más partidos tiene más oportunidades, de modo que la media por partido cuenta tanto como el total.",
+          "Goals and appearances measure consistency over the years: whoever plays more games has more chances, so the per-game average matters as much as the total."),
+ "fin": ("Llegar a la final de la Champions League es la señal más clara de regularidad en la élite europea, y ganarla marca la diferencia entre un buen ciclo y uno histórico.",
+         "Reaching a Champions League final is the clearest sign of consistency at the top of European football, and winning it separates a good cycle from a historic one."),
+ "wc": ("El Mundial se juega cada cuatro años, así que cada título pesa mucho en la historia de una selección; las finales perdidas se muestran como contexto y no puntúan.",
+        "The World Cup is played every four years, so every title weighs heavily in a national team's history; lost finals are shown as context and do not score."),
+ "cont": ("Los torneos continentales (Eurocopa y Copa América) tienen más ediciones y más historia en unos países que en otros, por lo que las cifras no siempre son comparables en igualdad de condiciones.",
+          "Continental tournaments (the Euros and the Copa América) have more editions and more history in some countries than in others, so figures are not always like-for-like."),
+ "ind": ("Los Balones de Oro y el máximo goleador de cada selección cuentan la historia de sus mejores figuras, no la del conjunto.",
+         "Ballons d'Or and each national team's top scorer tell the story of its best individuals, not of the squad as a whole."),
+ "lig": ("Las ligas se ganan a lo largo de una temporada entera, por lo que premian la regularidad, aunque cada país tenga un nivel de competencia distinto.",
+         "Leagues are won over a whole season, so they reward consistency, although each country has a different level of competition."),
+}
+CLAVES_FINAL = {"fin", "fin_g"}
+
+def _et(s, k): return s["es"] if k == 0 else s["en"]
+
+def areas_html(lg, m, bl, A, B, filas):
+    k = 0 if lg == "es" else 1; na, nb = nom(A, k), nom(B, k); por = {s["k"]: (s, va, vb, g) for s, va, vb, g in filas}; out = ""
+    for clave, titulo, ks in AREAS.get(m, []):
+        fs = [por[x] for x in ks if x in por and (por[x][1] is not None or por[x][2] is not None)]
+        if not fs: continue
+        wa = sum(1 for f in fs if f[3] == "a"); wb = sum(1 for f in fs if f[3] == "b"); ct = sum(1 for f in fs if f[3] in ("a", "b", "="))
+        det = "; ".join(f"{_et(f[0], k)}: {na} {fmt(f[1])}, {nb} {fmt(f[2])}" for f in fs)
+        if ct == 0: veredicto = ("Son datos de contexto: no puntúan en el marcador.", "These are context figures: they do not count towards the score.")[k]
+        elif wa > wb: veredicto = (f"{na} lidera esta área ({wa} de {ct} apartados comparables).", f"{na} leads this area ({wa} of {ct} comparable items).")[k]
+        elif wb > wa: veredicto = (f"{nb} lidera esta área ({wb} de {ct} apartados comparables).", f"{nb} leads this area ({wb} of {ct} comparable items).")[k]
+        else: veredicto = (f"El área está igualada entre {na} y {nb}.", f"The area is level between {na} and {nb}.")[k]
+        out += f"<h3>{e(titulo[k])}</h3><p>{e(det)}. {e(veredicto)} {e(EXPL[clave][k])}</p>\n"
+    return out
+
+def destacados(lg, bl, X, n=5):
+    k = 0 if lg == "es" else 1; out = []
+    for s in bl["stats"]:
+        v = X["v"].get(s["k"])
+        if s.get("g") and v: out.append(f"{_et(s, k)}: {v}")
+        if len(out) >= n: break
+    return "; ".join(out)
+
+def perfil_txt(lg, m, bl, X):
+    k = 0 if lg == "es" else 1; n = nom(X, k); v = X["v"]; pos = X["p"][k]; pais = X["pa"][k]; partes = []
+    if m == "jugadores":
+        partes.append((f"{n}: {pos.lower()} de {pais}, nacido en {v.get('nac')}.", f"{n}: {pos.lower()} from {pais}, born in {v.get('nac')}.")[k])
+        if v.get("alt"): partes.append((f"Altura aproximada: {v['alt']} cm.", f"Approximate height: {v['alt']} cm.")[k])
+    elif m == "equipos":
+        partes.append((f"{n}: club de {pais} fundado en {v.get('fund')}.", f"{n}: {pais} club founded in {v.get('fund')}.")[k])
+    elif m == "selecciones":
+        if v.get("_anios"): partes.append((f"Mundiales ganados en: {', '.join(str(a) for a in v['_anios'])}.", f"World Cups won in: {', '.join(str(a) for a in v['_anios'])}.")[k])
+        if v.get("_gol"): partes.append((f"Máximo goleador de la selección: {v['_gol']} ({v.get('gol')} goles).", f"National team top scorer: {v['_gol']} ({v.get('gol')} goals).")[k])
+    else:
+        partes.append((f"{n}: entrenador de {pais}, nacido en {v.get('nac')}.", f"{n}: manager from {pais}, born in {v.get('nac')}.")[k])
+    d = destacados(lg, bl, X)
+    if d: partes.append((f"Cifras principales: {d}.", f"Key figures: {d}.")[k])
+    return " ".join(partes)
+
+def perfiles_html(lg, m, bl, A, B):
+    k = 0 if lg == "es" else 1; out = ""
+    for X in (A, B): out += f"<h3>{e(nom(X, k))}</h3><p>{e(perfil_txt(lg, m, bl, X))}</p>\n"
+    na, nb = A["v"].get("nac"), B["v"].get("nac")
+    if m in ("jugadores", "entrenadores") and na and nb:
+        dif = abs(na - nb); a_, b_ = nom(A, k), nom(B, k)
+        if dif == 0: t = (f"{a_} y {b_} nacieron el mismo año ({na}), así que compartieron generación.", f"{a_} and {b_} were born in the same year ({na}), so they belong to the same generation.")[k]
+        elif dif <= 3: t = (f"{a_} nació en {na} y {b_} en {nb}: solo {dif} años de diferencia, así que sus carreras coincidieron casi por completo.", f"{a_} was born in {na} and {b_} in {nb}: only {dif} years apart, so their careers overlapped almost entirely.")[k]
+        elif dif <= 9: t = (f"{a_} nació en {na} y {b_} en {nb}: {dif} años de diferencia, por lo que sus carreras coincidieron durante buena parte del tiempo.", f"{a_} was born in {na} and {b_} in {nb}: {dif} years apart, so their careers overlapped for a good part of the time.")[k]
+        else: t = (f"{a_} nació en {na} y {b_} en {nb}: {dif} años de diferencia, por lo que pertenecen a épocas distintas y sus cifras no se consiguieron en las mismas condiciones.", f"{a_} was born in {na} and {b_} in {nb}: {dif} years apart, so they belong to different eras and their figures were not achieved under the same conditions.")[k]
+        out += f"<p>{e(t)}</p>\n"
+    return out
+
+LEER = (("Las filas con ganador puntúan: gana quien tiene la cifra más alta y el marcador de arriba cuenta cuántas filas gana cada uno. Las filas informativas (altura, peso, año de nacimiento o fundación, finales perdidas) se muestran como contexto y no puntúan. Un guion (—) significa que la cifra no se ha podido contrastar con fuentes oficiales, y no cuenta para nadie. Los datos se revisan después de cada temporada y de cada gran torneo; la fecha figura al final de la página.",
+         "Rows with a winner score: whoever has the higher figure wins, and the score above counts how many rows each side wins. Informational rows (height, weight, year of birth or founding, lost finals) are shown for context and do not score. A dash (—) means the figure could not be checked against official sources and counts for nobody. The data is reviewed after every season and every major tournament; the date appears at the bottom of the page."),)
 
 def faq(lg, A, B, filas, pa, pb, bl):
     k = 0 if lg == "es" else 1; na, nb = nom(A, k), nom(B, k); qa = []
@@ -151,9 +235,14 @@ def pagina(lg, d, m, a, b, todos):
 <p><a class="cp-btn" href="{enlace}">{e(t['anim'])} →</a></p></section>
 <div class="cp-texto">
 <section><h2>{e(t['ver'])}</h2><ul>{lis}</ul></section>
+<section><h2>{e(t['areas'])}</h2>
+{areas_html(lg, m, bl, A, B, filas)}</section>
+<section><h2>{e(t['perfiles'])}</h2>
+{perfiles_html(lg, m, bl, A, B)}</section>
 <section><h2>{e(t['tab'])}</h2>
 <table><thead><tr><th>{e(t['stat'])}</th><th>{e(na)}</th><th>{e(nb)}</th></tr></thead><tbody>
 {trs}</tbody></table></section>
+<section><h2>{e(t['leer'])}</h2><p>{e(LEER[0][k])}</p></section>
 <section>{fq}</section>
 <section><h2>{e(t['otros'])}</h2><ul>{ol}</ul></section>
 <section><h2>{e(t['fuentes'])}</h2><ul>{fu}</ul><p>{e(d['fecha'][k])}</p></section>
