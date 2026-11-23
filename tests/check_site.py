@@ -1447,6 +1447,63 @@ with sync_playwright() as p:
     except Exception as e:
         check("sopa de letras", False, str(e)[:150])
 
+    print("3at) Memoria de parejas")
+    try:
+        cmp_ = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
+        pmp = cmp_.new_page(); errs_mp = []
+        pmp.on("pageerror", lambda e: errs_mp.append(str(e)))
+        pmp.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','j');sessionStorage.setItem('tikitexto:grupo','letras')")
+        pmp.goto(BASE, wait_until="networkidle", timeout=60000); pmp.wait_for_timeout(300)
+        check("parejas: tarjeta en Letras", pmp.locator("[data-parejas]").count() == 1)
+        pmp.evaluate("document.querySelector('[data-parejas]').click()"); pmp.wait_for_timeout(2000)
+        check("parejas: se abre la pantalla", pmp.locator(".mp-raiz").count() == 1)
+        r = pmp.evaluate("""(()=>{ const j=TIKI.parejas.juego(); let mal=0, n=0, nulos=0; const tam=[], modos=[];
+          for(let nv=0; nv<10; nv++){ for(let k=0;k<40;k++){ const tab=j.generar(nv); n++; if(!tab){nulos++; continue;}
+            const p=j.parejasDe(nv); if(tab.length!==2*p) mal++;
+            const ids={}; tab.forEach(c=>{ids[c.par]=(ids[c.par]||0)+1;}); if(Object.keys(ids).length!==p||Object.values(ids).some(v=>v!==2)) mal++;
+            if(new Set(tab.map(c=>c.txt)).size!==tab.length) mal++;
+            if(j.relaciones(tab)!==p) mal++;
+            for(let i=0;i<p;i++){ const par=tab.filter(c=>c.par===i); if(!j.rel(par[0],par[1])) mal++; } }
+            if(nv<8){ tam.push(2*j.parejasDe(nv)); modos.push(j.modoDe(nv)); } }
+          return {mal,n,nulos,tam:tam.join(','),modos:modos.join(','), mem:[0,5,9].map(x=>j.memorizaDe(x).toFixed(2)).join(','), bono:j.bonoDe(0,6)+','+j.bonoDe(3,12)+','+j.bonoDe(30,12)}; })()""")
+        check("parejas: 400 tableros válidos (cada pareja única, sin relaciones extra) en 10 niveles", r["mal"] == 0 and r["nulos"] == 0 and r["n"] == 400, str(r))
+        check("parejas: tamaños 12→24 cartas, modos alternos, memorizar menos y bono acotado", r["tam"] == "12,12,16,16,20,20,24,24" and r["modos"] == "sel,est,sel,est,sel,est,sel,est" and r["mem"] == "3.20,1.95,1.30" and r["bono"] == "34,46,18", str(r))
+        pmp.click("[data-menu] [data-mp=jugar]"); pmp.wait_for_timeout(300)
+        check("parejas: al empezar se enseñan todas las cartas (memoriza)", pmp.locator(".mp-c").count() == 12 and pmp.locator(".mp-c.up").count() == 12 and pmp.evaluate("TIKI.parejas.juego().S.fase") == "preview" and "jugador" in pmp.inner_text(".mp-raiz [data-mpmodo]").lower())
+        pmp.evaluate("TIKI.parejas.juego().voltear(0)"); pmp.wait_for_timeout(100)
+        check("parejas: durante la memorización no se puede girar", pmp.evaluate("TIKI.parejas.juego().S.a") == -1)
+        pmp.evaluate("TIKI.parejas.juego().saltaPreview()"); pmp.wait_for_timeout(500)
+        check("parejas: después se giran boca abajo y empieza el reloj", pmp.locator(".mp-c.up").count() == 0 and pmp.evaluate("TIKI.parejas.juego().S.fase") == "juego")
+        ix = pmp.evaluate("""(()=>{ const S=TIKI.parejas.juego().S; const p0=S.cartas.map((c,i)=>i).filter(i=>S.cartas[i].par===0); const q=S.cartas.map((c,i)=>i).filter(i=>S.cartas[i].par===1); return {ok:p0, mal:[p0[0], q[0]]}; })()""")
+        t_a = pmp.evaluate("TIKI.parejas.juego().S.rest")
+        pmp.click('.mp-c[data-i="%d"]' % ix["mal"][0]); pmp.click('.mp-c[data-i="%d"]' % ix["mal"][1]); pmp.wait_for_timeout(150)
+        check("parejas: un fallo muestra las dos cartas, resta 3 s y bloquea un momento", pmp.locator(".mp-c.up").count() == 2 and pmp.evaluate("TIKI.parejas.juego().S.bloq") is True and (t_a - pmp.evaluate("TIKI.parejas.juego().S.rest")) > 2.5)
+        pmp.wait_for_timeout(1200)
+        check("parejas: tras el fallo se vuelven a girar y se rompe la racha", pmp.locator(".mp-c.up").count() == 0 and pmp.evaluate("TIKI.parejas.juego().S.bloq") is False and pmp.evaluate("TIKI.parejas.juego().S.combo") == 0)
+        pmp.click('.mp-c[data-i="%d"]' % ix["ok"][0]); pmp.click('.mp-c[data-i="%d"]' % ix["ok"][1]); pmp.wait_for_timeout(150)
+        check("parejas: acertar deja las cartas descubiertas y suma 100 puntos", pmp.locator(".mp-c.hecho").count() == 2 and pmp.evaluate("TIKI.parejas.juego().S.pts") == 100)
+        pmp.evaluate("TIKI.parejas.juego().ojo()"); pmp.wait_for_timeout(150)
+        check("parejas: el ojo enseña las cartas que quedan una vez por partida", pmp.locator(".mp-c.up").count() == 12 and pmp.locator("[data-mp=ojo]:disabled").count() == 1)
+        pmp.wait_for_timeout(1700)
+        check("parejas: el ojo vuelve a ocultarlas", pmp.locator(".mp-c.up").count() == 2 and pmp.locator(".mp-c.hecho").count() == 2)
+        pmp.evaluate("TIKI.parejas.juego().resolverTodo()"); pmp.wait_for_timeout(300)
+        check("parejas: completar el tablero suma tiempo y puntos", pmp.evaluate("TIKI.parejas.juego().S.tab") == 1 and pmp.evaluate("TIKI.parejas.juego().S.fase") == "pausa" and pmp.evaluate("TIKI.parejas.juego().S.pts") > 600)
+        pmp.wait_for_timeout(2000)
+        check("parejas: el siguiente tablero es de clubes y estadios (12 cartas)", pmp.locator(".mp-c").count() == 12 and "clubes" in pmp.inner_text(".mp-raiz [data-mpmodo]").lower() and pmp.evaluate("TIKI.parejas.juego().S.n") == 1)
+        pmp.evaluate("TIKI.parejas.juego().saltaPreview()"); pmp.wait_for_timeout(300)
+        pmp.evaluate("TIKI.parejas.juego().resolverTodo()"); pmp.wait_for_timeout(300)
+        check("parejas: el 2.º tablero da +1 tikitexto", pmp.evaluate("TIKI.parejas.juego().S.tikis") == 1 and pmp.evaluate("TIKI.parejas.juego().S.tab") == 2)
+        pmp.wait_for_timeout(2000)
+        check("parejas: el 3.er tablero es de 16 cartas", pmp.locator(".mp-c").count() == 16)
+        pmp.evaluate("(()=>{const j=TIKI.parejas.juego(); j.saltaPreview(); j.S.rest=0.2; j.S.t0=performance.now();})()"); pmp.wait_for_timeout(1000)
+        check("parejas: al acabarse el tiempo sale el resultado", pmp.locator("[data-fin]:not([hidden])").count() == 1 and "tableros" in pmp.inner_text("[data-fin-m]"), pmp.inner_text("[data-fin-m]"))
+        pmp.evaluate("document.querySelector('[data-mp=salir]').click()"); pmp.wait_for_timeout(300)
+        check("parejas: salir cierra la pantalla", pmp.locator(".mp-raiz").count() == 0)
+        check("parejas: sin errores de JavaScript", not errs_mp, "; ".join(errs_mp)[:150])
+        cmp_.close()
+    except Exception as e:
+        check("memoria de parejas", False, str(e)[:150])
+
     print("3ao) Vitrina de logros")
     try:
         clg = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")

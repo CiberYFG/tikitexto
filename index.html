@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-6VQkucHI4eBNoKilrmzoY7qcWYemF5wAzyZgibMi6ww=' 'sha256-6haigsWMCgqiSacR95d/JyHeO9IsRKs8aWLtV8kSLWk=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-6haigsWMCgqiSacR95d/JyHeO9IsRKs8aWLtV8kSLWk=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-dd5wtO8iA54nPURVW4FyF0IJ6Dilm4d8mcOaLKHwHp0=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>
 <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WN89TQCM"></script>
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -1623,6 +1623,7 @@ button.ir-juegos { border: 0; cursor: pointer; }
 .pe-card { background: linear-gradient(150deg, #3a1060, #1b2a78 58%, #0d5d6b); }
 .to-card { background: linear-gradient(160deg, #0b3a66, #1a6b4a 60%, #0e4d27); }
 .dd-card { background: linear-gradient(150deg, #0e2b6b, #20196b 55%, #6b1d57); }
+.mp-card { background: linear-gradient(150deg, #0e3a6b, #1a2a7a 55%, #3b1d6b); }
 .so-card { background: linear-gradient(150deg, #0a4a30, #0b3a5c 58%, #1a5a2a); }
 .lt-card { background: linear-gradient(150deg, #2a1668, #1b1b78 55%, #5b1a60); }
 .tv-card { background: linear-gradient(150deg, #0a4a5c, #0b2a6b 55%, #134a2a); }
@@ -2543,6 +2544,16 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
         <span class="ah-card__sello">NUEVO · LETRAS</span>
         <span class="ch-card__titulo">SOPA DE LETRAS</span>
         <span class="ah-card__desc">Encuentra equipos, estadios y leyendas escondidos en la cuadrícula contrarreloj. Cada cuadrícula suma tiempo y sube de nivel: diagonales, nombres al revés y listas con pistas.</span>
+        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </button>
+
+    <button type="button" class="ch-card mp-card" data-parejas>
+      <span class="ch-card__dib" aria-hidden="true"><svg viewBox="0 0 120 120"><rect x="5" y="5" width="110" height="110" rx="16" fill="#0b1a44" stroke="#19e6ff" stroke-width="3"/><rect x="10" y="8" width="44" height="50" rx="8" fill="#10234f" stroke="#19e6ff" stroke-width="3"/><text x="29" y="36" font-family="system-ui,Arial" font-weight="900" font-size="10" text-anchor="middle" fill="#fff">MESSI</text><rect x="54" y="8" width="44" height="50" rx="8" fill="#233a8a" stroke="#6f86e6" stroke-width="2"/><text x="73" y="38" font-size="17" text-anchor="middle">⚽</text><rect x="10" y="62" width="44" height="50" rx="8" fill="#233a8a" stroke="#6f86e6" stroke-width="2"/><text x="29" y="92" font-size="17" text-anchor="middle">⚽</text><rect x="54" y="62" width="44" height="50" rx="8" fill="#10234f" stroke="#41ff8a" stroke-width="3"/><text x="73" y="90" font-family="system-ui,Arial" font-weight="900" font-size="10" text-anchor="middle" fill="#fff">ARG</text><rect x="1000" y="30" width="14" height="60" rx="5" fill="#ffd23a" opacity=".0"/></svg></span>
+      <span>
+        <span class="ah-card__sello">NUEVO · LETRAS</span>
+        <span class="ch-card__titulo">MEMORIA DE PAREJAS</span>
+        <span class="ah-card__desc">Memoriza las cartas y descubre las parejas: jugador con su selección, club con su estadio y estadios con su país. Contrarreloj con tableros cada vez mayores.</span>
         <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </span>
     </button>
@@ -9096,6 +9107,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (o.closest("[data-pertenece]")) { abrirPertenece(); return; }
     if (o.closest("[data-pasapalabra]")) { abrirPasapalabra(); return; }
     if (o.closest("[data-duelo]")) { abrirDuelo(); return; }
+    if (o.closest("[data-parejas]")) { abrirParejas(); return; }
     if (o.closest("[data-sopa]")) { abrirSopa(); return; }
     if (o.closest("[data-lineatiempo]")) { abrirLineaTiempo(); return; }
     if (o.closest("[data-trivia]")) { abrirTrivia(); return; }
@@ -9123,6 +9135,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   TIKI.pertenece = { juego: function () { return peActivo; } };
   TIKI.pasapalabra = { juego: function () { return ppActivo; } };
   TIKI.duelo = { juego: function () { return ddActivo; } };
+  TIKI.parejas = { juego: function () { return mpActivo; } };
   TIKI.sopa = { juego: function () { return soActivo; } };
   TIKI.lineatiempo = { juego: function () { return ltActivo; } };
   TIKI.trivia = { juego: function () { return tvActivo; } };
@@ -9148,7 +9161,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     try { g = sessionStorage.getItem("tikitexto:grupo") || "letras"; } catch (e) { /* sin almacenamiento */ }
     const m = new URLSearchParams(location.search).get("modo");
     if (m && ["chapas", "tarjetas", "fichajes", "penaltis", "pinball", "tirolibre", "slalom", "toques"].indexOf(m) >= 0) g = "dinamicos";
-    if (m === "navidad" || m === "serpiente" || m === "cuartetos" || m === "pertenece" || m === "pasapalabra" || m === "duelo" || m === "trivia" || m === "lineatiempo" || m === "sopa") g = "letras";
+    if (m === "navidad" || m === "serpiente" || m === "cuartetos" || m === "pertenece" || m === "pasapalabra" || m === "duelo" || m === "trivia" || m === "lineatiempo" || m === "sopa" || m === "parejas") g = "letras";
     poner(g === "dinamicos" ? "dinamicos" : "letras", false);
   })();
 
@@ -9372,7 +9385,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   }
 
   /* ===================== CUARTETOS TIKITEXTO · lanzador (el juego vive en cuartetos.js + cuartetos_datos.js) ===================== */
-  let cuCargando = false, cuActivo = null, peCargando = false, peActivo = null, ppCargando = false, ppActivo = null, toCargando = false, toActivo = null, ddCargando = false, ddActivo = null, tvCargando = false, tvActivo = null, ltCargando = false, ltActivo = null, soCargando = false, soActivo = null;
+  let cuCargando = false, cuActivo = null, peCargando = false, peActivo = null, ppCargando = false, ppActivo = null, toCargando = false, toActivo = null, ddCargando = false, ddActivo = null, tvCargando = false, tvActivo = null, ltCargando = false, ltActivo = null, soCargando = false, soActivo = null, mpCargando = false, mpActivo = null;
   function abrirCuartetos() {
     if (cuActivo || cuCargando) return;
     if (!tieneCuenta()) { mostrarCuenta(); return; }
@@ -9515,6 +9528,30 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       soActivo = r[0].abrir(api, raiz); soCargando = false;
       document.title = "TIKITEXTO · Sopa de letras";
     }).catch(function (err) { try { console.error("sopa: no se pudo cargar", err); } catch (e) { /* sin consola */ } raiz.remove(); soCargando = false; });
+  }
+
+  function abrirParejas() {
+    if (mpActivo || mpCargando) return;
+    if (!tieneCuenta()) { mostrarCuenta(); return; }
+    mpCargando = true;
+    const raiz = document.createElement("div"); raiz.className = "mp-raiz"; raiz.id = "mpRaiz";
+    document.body.appendChild(raiz);
+    const css = new Promise(function (ok) {
+      if (document.getElementById("mpCss")) { ok(); return; }
+      const l = document.createElement("link"); l.rel = "stylesheet"; l.id = "mpCss"; l.href = "memoria.css"; l.onload = ok; l.onerror = ok; document.head.appendChild(l);
+    });
+    Promise.all([import("./memoria.js"), css]).then(function (r) {
+      const api = {
+        t: function (s) { return TIKI.t ? TIKI.t(s) : s; },
+        locale: TIKI.locale,
+        sonido: function () { return TIKI.ajustes.sonido(); },
+        datos: function () { const n = nvDatos(); if (!n.mp) n.mp = {}; return n.mp; },
+        guardar: guardarJ, tiki: nvSumarTikitexto, victoria: sonidoVictoria,
+        salir: function () { raiz.remove(); mpActivo = null; document.title = "TIKITEXTO · Adivina el nombre del día"; },
+      };
+      mpActivo = r[0].abrir(api, raiz); mpCargando = false;
+      document.title = "TIKITEXTO · Memoria de parejas";
+    }).catch(function (err) { try { console.error("parejas: no se pudo cargar", err); } catch (e) { /* sin consola */ } raiz.remove(); mpCargando = false; });
   }
 
   /* ───── VITRINA DE LOGROS (logros.js / logros.css, carga perezosa) ───── */
@@ -9661,6 +9698,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (m === "pertenece" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirPertenece(); return; }
     if (m === "toques" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirToques(); return; }
     if (m === "duelo" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirDuelo(); return; }
+    if (m === "parejas" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirParejas(); return; }
     if (m === "sopa" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirSopa(); return; }
     if (m === "lineatiempo" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirLineaTiempo(); return; }
     if (m === "trivia" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirTrivia(); return; }
