@@ -250,3 +250,6 @@ _EXTRA = {
  ],
 }
 for _t in TEMAS: _t["hechos"] = list(_t["hechos"]) + _EXTRA.get(_t["es"], [])
+# Temas añadidos el 23-nov-2026 (Bayern, Juventus, AC Milan, selección de Brasil)
+from temas_nuevos import TEMAS_NUEVOS, FAQ_NUEVOS
+TEMAS.extend(TEMAS_NUEVOS)

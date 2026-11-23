@@ -578,7 +578,7 @@ with sync_playwright() as p:
             for pre, sl in (("", tm["es"]), ("en/", tm["en"])):
                 r = api.get(BASE + pre + "curiosidades/" + sl + "/"); tt = r.text() if r.status == 200 else ""
                 if r.status != 200 or tt.count('class="entrada"') < 7 or 'class="jugar"' not in tt: malas_t.append(pre + sl)
-        check("temas: 12 páginas es/en con ≥7 curiosidades", not malas_t and len(_td.TEMAS) == 12, ", ".join(malas_t)[:150])
+        check("temas: 16 páginas es/en con ≥7 curiosidades", not malas_t and len(_td.TEMAS) == 16, ", ".join(malas_t)[:150])
         check("temas: índice enlazado desde curiosidades", "curiosidades-por-temas" in api.get(BASE + "curiosidades/").text())
         pv = api.get(BASE + "privacidad.html").text()
         check("privacidad: menores coherente (14 años para crear cuenta)", "14 años o más" in pv and "no está dirigido a menores de 14" not in pv.lower())

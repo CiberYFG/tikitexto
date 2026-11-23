@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Curiosidades por tema (clubes, competiciones, jugadores): 12 páginas es/en + índice «más curiosidades».
+"""Curiosidades por tema (clubes, competiciones, jugadores): 16 páginas es/en + índice «más curiosidades».
 Orden: curiosidades.py -> curiosidades_datos.py -> curiosidades_historia.py -> curiosidades_temas.py -> seo.py"""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -15,8 +15,8 @@ INTERNAS = {"PICHICHI": ("pichichi-historia", "pichichi-trophy-history"), "BALON
 FECHA = ("Datos a 2 de noviembre de 2026", "Data as of 2 November 2026")
 HUB = ("curiosidades-por-temas", "football-trivia-by-topic")
 HUB_T = ("Curiosidades del fútbol por equipos, competiciones y jugadores", "Football curiosities by club, competition and player")
-HUB_D = ("Datos curiosos del Real Madrid, Barça, Messi, Cristiano, Champions, Mundial, Premier League, LaLiga, Eurocopa y más, con fuentes.",
-         "Curiosities about Real Madrid, Barça, Messi, Cristiano, the Champions League, the World Cup, the Premier League, La Liga, the Euros and more, with sources.")
+HUB_D = ("Datos curiosos del Real Madrid, Barça, Bayern, Juventus, Milan, Brasil, Messi, Cristiano, Champions, Mundial, Premier League, LaLiga, Eurocopa y más, con fuentes.",
+         "Curiosities about Real Madrid, Barça, Bayern, Juventus, Milan, Brazil, Messi, Cristiano, the Champions League, the World Cup, the Premier League, La Liga, the Euros and more, with sources.")
 for t in T.TEMAS: D.todas_slugs[t["es"]] = D.todas_slugs[t["en"]] = (t["es"], t["en"])
 D.todas_slugs[HUB[0]] = D.todas_slugs[HUB[1]] = HUB
 
@@ -63,6 +63,7 @@ FAQ_TEMAS = {
   ("¿Quiénes fueron los Invencibles?", "Who were the Invincibles?", "El Arsenal de Arsène Wenger, que ganó la Premier de 2003-04 sin perder ningún partido de los 38.", "Arsène Wenger's Arsenal, who won the 2003–04 Premier League without losing any of their 38 games."),
   ("¿Quién es el máximo goleador de la Premier League?", "Who is the Premier League's all-time top scorer?", "Alan Shearer, con 260 goles.", "Alan Shearer, with 260 goals.")],
 }
+FAQ_TEMAS.update(T.FAQ_NUEVOS)
 
 def pagina(L, t):
     es = L.lang == "es"; k = 0 if es else 1
