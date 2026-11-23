@@ -317,7 +317,7 @@ def cabecera(L, titulo, desc, ruta, h1, icono=None):
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@type": "Article", "headline": h1, "description": desc, "inLanguage": HREFLANG[L.lang], "mainEntityOfPage": DOM + L.prefix + ruta, "image": "https://tikitexto.com/icons/og-image.png", "author": {"@type": "Organization", "name": "Equipo editorial de TIKITEXTO", "url": DOM + "sobre-tikitexto.html"}, "publisher": {"@type": "Organization", "name": "TIKITEXTO", "url": DOM}}, ensure_ascii=False)}</script>
+<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@type": "Article", "headline": h1, "description": desc, "inLanguage": HREFLANG[L.lang], "mainEntityOfPage": DOM + L.prefix + ruta, "image": "https://tikitexto.com/icons/og-image.png", "author": {"@type": "Person", "name": "Yago Fernández Galán", "url": DOM + "sobre-tikitexto.html"}, "publisher": {"@type": "Organization", "name": "TIKITEXTO", "url": DOM}}, ensure_ascii=False)}</script>
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png">
 <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96.png">

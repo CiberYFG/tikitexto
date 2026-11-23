@@ -75,7 +75,7 @@ def pagina_coleccion(L, c):
     for i, (t, ps, dato) in enumerate(c["items"]):
         h += entrada(L, emo(c["emoji"]), str(i + 1), e(t), [e(x) for x in ps], e(dato), f"h{i}")
     fu = " · ".join(f'<a href="{u}" rel="noopener" target="_blank">{e(n)}</a>' for n, u in c["fuentes"])
-    h += f'<p class="fecha fuentes">Fuentes y notas: {fu}. Texto redactado por el equipo de TIKITEXTO a partir de información pública de las organizaciones citadas. Si ves un error, escríbenos desde la página de contacto.</p>\n'
+    h += f'<p class="fecha fuentes">Fuentes y notas: {fu}. Texto elaborado con asistencia de inteligencia artificial, bajo la dirección del editor de TIKITEXTO, a partir de información pública de las organizaciones citadas. Si ves un error, escríbenos desde la página de contacto.</p>\n'
     h += f'<div class="gr" style="--c:{c["c"][0]}"><h2>Más historias</h2><a class="todo" href="/{HUB_H}/">Todas las historias →</a></div>\n<div class="tarjetas">\n'
     for o in [x for x in H.COLECCIONES if x is not c][:4]:
         h += tarjeta(f"/{HUB_H}/{o['slug']}/", o["emoji"], o["c"][0], o["titulo"], f"{len(o['items'])} historias")

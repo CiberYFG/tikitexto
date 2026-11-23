@@ -145,6 +145,7 @@ with sync_playwright() as p:
         if pg3.is_visible("#modalSalirNv"):
             pg3.click("#botonSalirNvSi")
             pg3.wait_for_timeout(200)
+        pg3.evaluate("document.querySelector('#abrirAyuda').click()")
         pg3.click("#abrirTutNv")
         pg3.click("[data-tutnv=tarjetas]")
         pg3.wait_for_timeout(300)
@@ -193,9 +194,10 @@ with sync_playwright() as p:
         pi.click("#botonAjustes")
         pi.wait_for_timeout(200)
         check("el botón de ajustes abre el panel con 6 idiomas y se puede cerrar", pi.is_visible(".ajustes") and pi.locator(".ajustes .idioma__op").count() == 6 and (pi.keyboard.press("Escape") or True) and not pi.is_visible(".ajustes"))
+        pi.evaluate("document.querySelector('#abrirAyuda').click()")
         pi.click("#abrirIdioma")
         pi.wait_for_timeout(200)
-        check("el enlace del pie sigue abriendo el selector de idioma", pi.is_visible(".idioma") and (pi.keyboard.press("Escape") or True) and not pi.is_visible(".idioma"))
+        check("el botón de ayuda del pie sigue abriendo el selector de idioma", pi.is_visible(".idioma") and (pi.keyboard.press("Escape") or True) and not pi.is_visible(".idioma"))
         pi.click("#botonAjustes")
         pi.wait_for_timeout(200)
         check("ajustes: sonido activado por defecto y sin interruptor de vibración", pi.get_attribute("#ajuste-sonido", "aria-checked") == "true" and pi.locator("#ajuste-vibracion").count() == 0)
@@ -1504,6 +1506,46 @@ with sync_playwright() as p:
     except Exception as e:
         check("memoria de parejas", False, str(e)[:150])
 
+    print("3au) Portada compacta y panel de tutorial y ayuda")
+    try:
+        cau = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
+        pau = cau.new_page(); errs_au = []
+        pau.on("pageerror", lambda e: errs_au.append(str(e)))
+        pau.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');")
+        pau.goto(BASE, wait_until="networkidle", timeout=60000); pau.wait_for_timeout(500)
+        alto = pau.evaluate("document.documentElement.scrollHeight")
+        check("portada: compacta (menos de 2.300 px de alto en móvil)", alto < 2300, str(alto))
+        check("portada: el bloque «¿Qué es TIKITEXTO?» son acordeones cerrados", pau.locator(".info--c details.info__acc").count() >= 4 and pau.locator(".info--c details.info__acc[open]").count() == 0)
+        check("portada: sin «Próximamente» ni lista legal larga", pau.locator(".vj-pronto").count() == 0 and pau.locator(".pie-legal").count() == 0)
+        pau.evaluate("document.querySelector('.info__acc summary').click()"); pau.wait_for_timeout(200)
+        check("portada: tocar un acordeón lo despliega y abrir otro cierra el anterior", pau.locator(".info--c details.info__acc[open]").count() == 1)
+        pau.evaluate("document.querySelectorAll('.info__acc summary')[1].click()"); pau.wait_for_timeout(200)
+        check("portada: acordeón exclusivo", pau.locator(".info--c details.info__acc[open]").count() == 1)
+        check("portada: el pie solo tiene el botón de tutorial y ayuda", pau.locator("#abrirAyuda").count() == 1 and pau.locator("footer a[href='aviso-legal.html']").count() == 0 and pau.locator(".ayuda-wrap a").count() == 0)
+        check("ayuda: el panel está cerrado al entrar", pau.evaluate("document.querySelector('#modalAyuda').hidden"))
+        pau.evaluate("document.querySelector('#abrirAyuda').click()"); pau.wait_for_timeout(300)
+        check("ayuda: se abre y reúne tutorial, novedades, idioma y enlaces legales", pau.is_visible("#modalAyuda") and pau.is_visible("#abrirTutorial") and pau.is_visible("#abrirTutNv") and pau.is_visible("#abrirIdioma") and pau.locator("#modalAyuda .ayuda__legal a").count() == 5 and pau.is_visible("#abrirCookies"))
+        pau.keyboard.press("Escape"); pau.wait_for_timeout(200)
+        check("ayuda: Esc la cierra", pau.evaluate("document.querySelector('#modalAyuda').hidden"))
+        pau.evaluate("document.querySelector('#abrirAyuda').click()"); pau.wait_for_timeout(200)
+        pau.click("#abrirTutorial"); pau.wait_for_timeout(300)
+        check("ayuda: el tutorial se abre y el panel se cierra", pau.is_visible("#modalTutorial") and pau.evaluate("document.querySelector('#modalAyuda').hidden"))
+        pau.keyboard.press("Escape"); pau.wait_for_timeout(200)
+        pau.evaluate("document.querySelector('#abrirAyuda').click()"); pau.wait_for_timeout(200)
+        pau.click("#abrirCookies"); pau.wait_for_timeout(400)
+        check("ayuda: «Configurar cookies» abre el aviso de cookies", pau.is_visible("#cmp") and pau.evaluate("document.querySelector('#modalAyuda').hidden"))
+        check("ayuda: sin errores de JavaScript", not errs_au, "; ".join(errs_au)[:150])
+        cau.close()
+        for idi, txt in (("en", "Tutorial and help"), ("de", "Tutorial und Hilfe"), ("fr", "Tutoriel et aide"), ("it", "Tutorial e aiuto"), ("pt", "Tutorial e ajuda")):
+            cl = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
+            pl = cl.new_page()
+            pl.add_init_script("localStorage.setItem('tikitexto:idioma','%s');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');" % idi)
+            pl.goto(BASE + "?lang=" + idi, wait_until="networkidle", timeout=60000); pl.wait_for_timeout(1200)
+            check("ayuda (%s): el botón del pie y el resumen están traducidos" % idi, txt in pl.inner_text("#abrirAyuda") and "TIKITEXTO" in pl.inner_text("#infoTitulo") and "De qué va" not in pl.inner_text(".info--c"), pl.inner_text("#abrirAyuda"))
+            cl.close()
+    except Exception as e:
+        check("portada compacta y ayuda", False, str(e)[:150])
+
     print("3ao) Vitrina de logros")
     try:
         clg = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
@@ -1612,7 +1654,7 @@ for _r in ("juegos/", "en/games/"):
     _hh = open(_os.path.join(_raiz, _r, "index.html"), encoding="utf-8").read()
     check("hub %s enlaza a las 10 guías" % _r, _hh.count('href="') > 10 and all(((_g["es"] if _r == "juegos/" else _g["en"]) + "/") in _hh for _g in _jd.J))
 _hh = open(_os.path.join(_raiz, "articulos", "reglas-basicas-del-futbol-para-principiantes", "index.html"), encoding="utf-8").read()
-check("artículos: llevan autoría editorial y enlace a «cómo elaboramos el contenido»", "equipo editorial de TIKITEXTO" in _hh and "sobre-tikitexto.html#editorial" in _hh and '"author"' in _hh)
+check("artículos: llevan autoría editorial y enlace a «cómo elaboramos el contenido»", "Yago Fernández Galán" in _hh and "sobre-tikitexto.html#editorial" in _hh and '"author"' in _hh)
 
 # 3ai) páginas de texto de las clases animadas (es/en)
 import json as _js

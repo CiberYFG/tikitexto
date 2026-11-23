@@ -6,6 +6,7 @@ Datos: fuentes oficiales enlazadas en cada página y Al Jazeera para el Balón d
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import curiosidades as C
+from datos_contexto import CTX as _CTX
 DOM = "https://tikitexto.com/"
 from curiosidades import e, tabla, cabecera, pie, Idioma, BALON, COPA, ESTADIO, LIGA
 C.LANGS = ["es", "en"]          # estas páginas solo existen en es/en (hreflang correcto)
@@ -310,6 +311,9 @@ def pagina(L, p, todas):
     for ex in p.get("extra", []):
         c2, c2en, f2, tt = ex
         h += f'<h2>{e(tt[k])}</h2>\n' + tabla(list(c2 if es else c2en), [[celda(L, c) for c in f] for f in f2])
+    _cx = _CTX.get(todas_slugs[p["slug"]][0])
+    if _cx:
+        h += f'<h2>{"Contexto y claves" if es else "Context and key points"}</h2>\n' + "".join(f"<p>{e(t)}</p>\n" for t in _cx[k])
     h += f'<p class="dato"><b>{e(L.ui["nutshell"])}</b> {e(p["dato"][k])}</p>\n'
     h += C.faq(L, p.get("faq", []))
     srcs = " · ".join(f'<a href="{u}" rel="noopener" target="_blank">{e(n)}</a>' for n, u in p["src"])

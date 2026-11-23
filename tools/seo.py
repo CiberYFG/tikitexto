@@ -268,7 +268,7 @@ _CLT = {"es": dict(base="clases/", hub="Clases de fútbol explicadas", hub_t="Cl
                    pasos=["Lee la explicación de esta página con calma.", "Pulsa el botón para abrir la clase animada en el reproductor.", "Elige idioma, vista de pizarra o de profe y repite las escenas que quieras."],
                    como="Cómo usar esta clase", faqt=("¿Qué se explica en esta clase?", "¿Se puede ver en otros idiomas?", "¿De dónde salen las reglas?"),
                    faqr=("Esta página reúne todo lo que dice el profe en la clase «%s», en el mismo orden, para que puedas leerlo sin necesidad de reproducir nada.", "Sí. La clase animada se puede ver en español, inglés, portugués, francés, italiano y alemán desde el propio reproductor.", "De las Reglas de Juego del IFAB y de la normativa de FIFA y UEFA. Se revisan cuando cambian las reglas, normalmente cada verano."),
-                   nota="Texto redactado por el equipo editorial de TIKITEXTO a partir de las Reglas de Juego del IFAB y la normativa de FIFA y UEFA."),
+                   nota="Texto elaborado con asistencia de inteligencia artificial, bajo la dirección del editor de TIKITEXTO, a partir de las Reglas de Juego del IFAB y la normativa de FIFA y UEFA."),
         "en": dict(base="en/classes/", hub="Football lessons explained", hub_t="Football lessons explained: rules, tactics and statistics | TIKITEXTO",
                    hub_d="18 football lessons explained step by step: offside, VAR, cards, penalties, tactics, xG, the Champions League format and more. The text of every animated TIKITEXTO lesson.",
                    hub_l="TIKITEXTO has 18 animated lessons with a teacher and a whiteboard. Here is the text of each one to read at your own pace, with the rules explained in a simple way. Pick any lesson and, if you prefer to watch it animated, open it in the player.",
@@ -276,7 +276,7 @@ _CLT = {"es": dict(base="clases/", hub="Clases de fútbol explicadas", hub_t="Cl
                    pasos=["Read the explanation on this page at your own pace.", "Press the button to open the animated lesson in the player.", "Choose language, whiteboard or teacher view and replay any scene you like."],
                    como="How to use this lesson", faqt=("What does this lesson explain?", "Can I watch it in other languages?", "Where do the rules come from?"),
                    faqr=("This page gathers everything the teacher says in the lesson “%s”, in the same order, so you can read it without playing anything.", "Yes. The animated lesson can be watched in Spanish, English, Portuguese, French, Italian and German from the player itself.", "From the IFAB Laws of the Game and FIFA and UEFA regulations. They are reviewed when the rules change, usually every summer."),
-                   nota="Text written by the TIKITEXTO editorial team from the IFAB Laws of the Game and FIFA and UEFA regulations.")}
+                   nota="Text produced with AI assistance, under the direction of TIKITEXTO's editor, from the IFAB Laws of the Game and FIFA and UEFA regulations.")}
 def _cl_ruta(l, g): return _CLT[l]["base"] + (g["id"] if l == "es" else _CL_EN[g["id"]]) + "/"
 def _cl_alts(g): return '<link rel="alternate" hreflang="es" href="%s%s">\n<link rel="alternate" hreflang="en" href="%s%s">\n<link rel="alternate" hreflang="x-default" href="%s%s">' % (DOM, _cl_ruta("es", g), DOM, _cl_ruta("en", g), DOM, _cl_ruta("es", g))
 for _l in ("es", "en"):
