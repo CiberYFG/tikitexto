@@ -35,7 +35,7 @@ const UI = {
   fuente: ["Datos a", "Data as of", "Dados de", "Données au", "Dati al", "Stand"],
 };
 /* etiquetas de cada estadística (clave = texto en español del Comparador) */
-const LAB = {
+export const LAB = {
   "Balones de Oro": ["Balones de Oro", "Ballons d'Or", "Bolas de Ouro", "Ballons d'Or", "Palloni d'Oro", "Ballons d'Or"],
   "Champions League ganadas": ["Champions League ganadas", "Champions League titles", "títulos de Champions League", "titres de Ligue des champions", "titoli di Champions League", "Champions-League-Titeln"],
   "Mundiales ganados": ["Mundiales ganados", "World Cups won", "Copas do Mundo ganhas", "Coupes du monde gagnées", "Mondiali vinti", "WM-Titeln"],

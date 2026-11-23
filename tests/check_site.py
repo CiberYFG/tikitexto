@@ -1312,6 +1312,56 @@ with sync_playwright() as p:
     except Exception as e:
         check("duelo de datos", False, str(e)[:150])
 
+    print("3aq) Trivia TIKITEXTO")
+    try:
+        ctv = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
+        ptv = ctv.new_page(); errs_tv = []
+        ptv.on("pageerror", lambda e: errs_tv.append(str(e)))
+        ptv.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','j');sessionStorage.setItem('tikitexto:grupo','letras')")
+        ptv.goto(BASE, wait_until="networkidle", timeout=60000); ptv.wait_for_timeout(300)
+        check("trivia: tarjeta en Letras", ptv.locator("[data-trivia]").count() == 1)
+        ptv.evaluate("document.querySelector('[data-trivia]').click()"); ptv.wait_for_timeout(2500)
+        check("trivia: se abre la pantalla", ptv.locator(".tv-raiz").count() == 1)
+        r = ptv.evaluate("""(()=>{ const j=TIKI.trivia.juego(); const B=j.banco(); let mal=0; const tipos={};
+          B.forEach(q=>{ const m=j.montar(q, Math.random); tipos[q.tipo]=1; if(m.ops.length!==4||m.iok<0||m.ops[m.iok]!==q.ok) mal++;
+            const k=m.ops.map(o=>o.t+':'+(Array.isArray(o.v)?o.v.join('|'):o.v)); if(new Set(k).size!==4) mal++; const e=j.enunciado(m); if(/[{}]/.test(e)||!e) mal++; m.ops.forEach(o=>{const s=j.rotulo(o); if(!s||s==='undefined') mal++;}); });
+          const tr = Object.values(j.Q).every(a=>a.length===6) && Object.values(j.UI).every(a=>Array.isArray(a)?a.length===6||a.length===5:true);
+          const pt=j.partida('todo'), ds=pt.map(q=>q.d).join(''); const cats={}; ['ch','mu','oro','rec'].forEach(c=>{ const x=j.partida(c); cats[c]=x.length===10&&x.every(q=>q.cat===c); });
+          return {n:B.length, mal, nt:Object.keys(tipos).length, tr, ds, cats, ids:new Set(pt.map(q=>q.id)).size}; })()""")
+        check("trivia: más de 500 preguntas, todas con 4 opciones distintas y una sola correcta", r["n"] >= 500 and r["mal"] == 0 and r["nt"] >= 15, str(r))
+        check("trivia: plantillas en 6 idiomas y rondas de 10 (4 fáciles, 4 medias, 2 difíciles) por categoría", r["tr"] and r["ds"] == "0000111122" and r["ids"] == 10 and all(r["cats"].values()), str(r))
+        same = ptv.evaluate("""(async()=>{ const m = await import('./trivia.js'); const j=TIKI.trivia.juego(); const a=j.partida('todo', m.mulberry(m.semillaDe('x'))), b=j.partida('todo', m.mulberry(m.semillaDe('x'))), c=j.partida('todo', m.mulberry(m.semillaDe('y')));
+          const f=(p)=>JSON.stringify(p.map(q=>[q.id,q.ops.map(o=>o.v)])); return {igual:f(a)===f(b), dist:f(a)!==f(c)}; })()""")
+        check("trivia: el reto de hoy es determinista (misma semilla = mismas preguntas)", same["igual"] and same["dist"], str(same))
+        ptv.click("[data-tv=dia]"); ptv.wait_for_timeout(400)
+        check("trivia: el reto muestra 4 respuestas y la barra de tiempo", ptv.locator(".tv-op").count() == 4 and ptv.locator("[data-barra]").count() == 1)
+        ptv.evaluate("(()=>{const j=TIKI.trivia.juego(); j.responder(j.S.q.iok);})()"); ptv.wait_for_timeout(200)
+        check("trivia: acertar suma puntos, marca la correcta y enseña «Siguiente»", ptv.evaluate("TIKI.trivia.juego().S.pts") >= 100 and ptv.locator(".tv-op.bien").count() == 1 and ptv.locator("[data-tv=sig]:not([hidden])").count() == 1)
+        ptv.keyboard.press("Enter"); ptv.wait_for_timeout(200)
+        check("trivia: Intro pasa a la pregunta siguiente", ptv.evaluate("TIKI.trivia.juego().S.i") == 1 and ptv.evaluate("TIKI.trivia.juego().S.fase") == "pregunta")
+        ptv.evaluate("(()=>{const j=TIKI.trivia.juego(); j.comodin();})()"); ptv.wait_for_timeout(100)
+        check("trivia: el comodín 50:50 quita dos respuestas incorrectas (solo una vez)", ptv.locator(".tv-op.fuera").count() == 2 and ptv.evaluate("TIKI.trivia.juego().S.usado5050") is True)
+        ptv.evaluate("(()=>{const j=TIKI.trivia.juego(); j.responder((j.S.q.iok+1)%4);})()"); ptv.wait_for_timeout(100)
+        check("trivia: fallar marca la respuesta y corta la racha", ptv.locator(".tv-op.mal").count() >= 0 and ptv.evaluate("TIKI.trivia.juego().S.racha") == 0)
+        for _ in range(8):
+            ptv.keyboard.press("Enter"); ptv.wait_for_timeout(100)
+            ptv.evaluate("(()=>{const j=TIKI.trivia.juego(); if(j.S.fase==='pregunta') j.responder(j.S.q.iok);})()"); ptv.wait_for_timeout(100)
+        ptv.keyboard.press("Enter"); ptv.wait_for_timeout(300)
+        check("trivia: al terminar salen rango, cuadrícula y +1 tikitexto con 7 o más aciertos", ptv.locator("[data-fin]:not([hidden])").count() == 1 and ptv.inner_text("[data-fin-grid]").count("🟩") == 9 and ptv.locator("[data-fin-tiki]:not([hidden])").count() == 1, ptv.inner_text("[data-fin-m]"))
+        ptv.click("[data-tv=menu]"); ptv.wait_for_timeout(200)
+        check("trivia: el reto de hoy solo se juega una vez (después enseña el resultado)", "✔" in ptv.inner_text("[data-dia-t]"))
+        ptv.click("[data-tv=dia]"); ptv.wait_for_timeout(300)
+        check("trivia: volver a pulsar el reto no empieza otra partida", ptv.locator("[data-fin]:not([hidden])").count() == 1 and ptv.locator("[data-tv=otra]:not([hidden])").count() == 0)
+        ptv.evaluate("document.querySelector('[data-tv=menu]').click()"); ptv.wait_for_timeout(100)
+        ptv.click("[data-tv=cat][data-c=oro]"); ptv.click("[data-tv=libre]"); ptv.wait_for_timeout(300)
+        check("trivia: el modo libre filtra por categoría (Balón de Oro)", ptv.evaluate("TIKI.trivia.juego().S.preg.every(q=>q.cat==='oro')") is True)
+        ptv.evaluate("document.querySelector('[data-tv=salir]').click()"); ptv.wait_for_timeout(300)
+        check("trivia: salir cierra la pantalla", ptv.locator(".tv-raiz").count() == 0)
+        check("trivia: sin errores de JavaScript", not errs_tv, "; ".join(errs_tv)[:150])
+        ctv.close()
+    except Exception as e:
+        check("trivia", False, str(e)[:150])
+
     print("3ao) Vitrina de logros")
     try:
         clg = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
