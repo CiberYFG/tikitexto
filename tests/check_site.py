@@ -1362,6 +1362,44 @@ with sync_playwright() as p:
     except Exception as e:
         check("trivia", False, str(e)[:150])
 
+    print("3ar) Línea del tiempo")
+    try:
+        clt = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
+        plt = clt.new_page(); errs_lt = []
+        plt.on("pageerror", lambda e: errs_lt.append(str(e)))
+        plt.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','j');sessionStorage.setItem('tikitexto:grupo','letras')")
+        plt.goto(BASE, wait_until="networkidle", timeout=60000); plt.wait_for_timeout(300)
+        check("línea del tiempo: tarjeta en Letras", plt.locator("[data-lineatiempo]").count() == 1)
+        plt.evaluate("document.querySelector('[data-lineatiempo]').click()"); plt.wait_for_timeout(2000)
+        check("línea del tiempo: se abre la pantalla", plt.locator(".lt-raiz").count() == 1)
+        r = plt.evaluate("""(()=>{ const j=TIKI.lineatiempo.juego(); const E=j.EV; const ids=new Set(E.map(e=>e.id)); let mal=0;
+          E.forEach(e=>{ const t=j.texto(e); if(!t||/undefined|[{}]/.test(t)||typeof e.y!=='number') mal++; });
+          const h=E.filter(e=>e.cat==='h'); const ok6=h.every(e=>Array.isArray(e.t)&&e.t.length===6&&e.t.every(x=>x&&x.length>8));
+          const L=[{y:1900},{y:1950},{y:2000}]; const v=(y)=>[0,1,2,3].filter(i=>j.huecoValido(L,{y},i));
+          return {n:E.length, uni:ids.size, mal, ok6, v1:v(1850).join(), v2:v(1975).join(), v3:v(2020).join(), c:j.huecoCorrecto(L,{y:1925}),
+            cats:[...new Set(E.map(e=>e.cat))].sort().join()}; })()""")
+        check("línea del tiempo: más de 100 hechos únicos, con texto y 6 idiomas en los hitos", r["n"] >= 100 and r["uni"] == r["n"] and r["mal"] == 0 and r["ok6"] and r["cats"] == "ch,h,mu,oro", str(r))
+        check("línea del tiempo: el hueco correcto es único (antes, entre y después)", r["v1"] == "0" and r["v2"] == "2" and r["v3"] == "3" and r["c"] == 1, str(r))
+        plt.click("[data-menu] [data-lt=jugar]"); plt.wait_for_timeout(400)
+        check("línea del tiempo: empieza con una carta en la línea, una en la mano y 3 balones", plt.locator(".lt-nodo").count() == 1 and plt.locator(".lt-hueco:not([disabled])").count() == 2 and plt.locator("[data-vidas] i.on").count() == 3)
+        g = plt.evaluate("""(()=>{ const j=TIKI.lineatiempo.juego(); let n=0; for(let k=0;k<25;k++){ const ev=j.S.mano; if(!ev) break; const i=j.huecoCorrecto(j.S.linea, ev); j.colocar(i); n++; j.avanza(); if(j.S.fase!=='pregunta') break; }
+          const ys=j.S.linea.map(e=>e.y); const ord=ys.every((y,i)=>i===0||ys[i-1]<y); return {n, ord, ok:j.S.ok, tik:j.S.tikis, len:ys.length}; })()""")
+        check("línea del tiempo: colocar bien mantiene la línea ordenada y suma puntos", g["ord"] and g["ok"] >= 20 and g["len"] == g["ok"] + 1, str(g))
+        check("línea del tiempo: a los 8 aciertos, +1 tikitexto y a los 18, otro", g["tik"] == 2, str(g))
+        plt.evaluate("(()=>{const j=TIKI.lineatiempo.juego(); const ev=j.S.mano; const n=j.S.linea.length; let mal=0; for(let i=0;i<=n;i++) if(!j.huecoValido(j.S.linea,ev,i)) {mal=i; break;} j.colocar(mal);})()"); plt.wait_for_timeout(150)
+        check("línea del tiempo: fallar enseña el hueco correcto en verde y quita un balón", plt.locator(".lt-hueco.bien").count() == 1 and plt.locator("[data-vidas] i.on").count() == 2, plt.inner_text("[data-info]"))
+        plt.keyboard.press("Enter"); plt.wait_for_timeout(200)
+        for _ in range(3):
+            plt.evaluate("(()=>{const j=TIKI.lineatiempo.juego(); if(j.S.fase==='pregunta'){ const ev=j.S.mano; for(let i=0;i<=j.S.linea.length;i++) if(!j.huecoValido(j.S.linea,ev,i)){ j.colocar(i); break; } }})()"); plt.wait_for_timeout(120)
+            plt.evaluate("TIKI.lineatiempo.juego().avanza()"); plt.wait_for_timeout(150)
+        check("línea del tiempo: 3 fallos terminan la partida", plt.locator("[data-fin]:not([hidden])").count() == 1, str(plt.evaluate("TIKI.lineatiempo.juego().S.vidas")))
+        plt.evaluate("document.querySelector('[data-lt=salir]').click()"); plt.wait_for_timeout(300)
+        check("línea del tiempo: salir cierra la pantalla", plt.locator(".lt-raiz").count() == 0)
+        check("línea del tiempo: sin errores de JavaScript", not errs_lt, "; ".join(errs_lt)[:150])
+        clt.close()
+    except Exception as e:
+        check("línea del tiempo", False, str(e)[:150])
+
     print("3ao) Vitrina de logros")
     try:
         clg = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
