@@ -69,7 +69,7 @@ def base(L, titulo, desc, ruta, col, fecha, icono=LIBRO):
 # ---------- historias ----------
 def pagina_coleccion(L, c):
     ruta = f"{HUB_H}/{c['slug']}/"
-    h = base(L, c["titulo"], c["desc"], ruta, c["c"], FECHA_H)
+    h = base(L, c["titulo"], c["desc"], ruta, c["c"], c.get("fecha", FECHA_H))
     h += f'<div class="caja">{c["emoji"]} {e(c["intro"])}</div>\n'
     h += '<p class="indice">' + "".join(f'<a href="#h{i}">{e(t)}</a>' for i, (t, _, _) in enumerate(c["items"])) + '</p>\n'
     for i, (t, ps, dato) in enumerate(c["items"]):
