@@ -45,11 +45,22 @@ h1{font-size:clamp(1.7rem,6vw,2.3rem);line-height:1.15;margin:22px 0 10px}h2{fon
 .cta:hover{filter:brightness(1.08)}ol,ul{padding-left:22px}li{margin:4px 0}
 .g{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}.g a{display:inline-block;padding:7px 14px;border-radius:999px;background:var(--as);font-weight:800;text-decoration:none}
 details{border-top:1px solid var(--b);padding:10px 0}summary{font-weight:800;cursor:pointer}details p{margin:8px 0 0;color:var(--ts)}
-footer{padding-top:26px;padding-bottom:36px;font-size:.85rem;color:var(--ts)}footer a{margin-right:12px}</style>
+footer{padding-top:26px;padding-bottom:36px;font-size:.85rem;color:var(--ts)}footer a{margin-right:12px;display:inline-block;padding:6px 0}
+.saltar { position: absolute; left: 12px; top: -60px; z-index: 100; padding: 10px 16px; font-weight: 800; color: #fff; background: #12203a; border-radius: 0 0 12px 12px; text-decoration: none; transition: top .15s; }
+.saltar:focus { top: 0; }
+.menu { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.menu::-webkit-scrollbar { display: none; }
+.menu a { flex: none; padding: 7px 12px; font-size: .86rem; font-weight: 700; line-height: 1.2; color: var(--ts); text-decoration: none; border: 1px solid transparent; border-radius: 999px; white-space: nowrap; }
+.menu a:hover { color: var(--t); background: var(--s); }
+.menu a:focus-visible { outline: 3px solid var(--a); outline-offset: 1px; }
+.menu a[aria-current] { color: var(--a); background: color-mix(in srgb, var(--a) 12%, var(--s)); border-color: color-mix(in srgb, var(--a) 38%, transparent); }
+.menu-pag { max-width: 760px; margin: 4px auto 0; padding: 0 12px 6px; }
+</style>
 </head>
 <body>
-<header><a class="m" href="../../?lang=en" translate="no">TIKI<span>TEXTO</span></a><nav class="l" aria-label="Language"><a href="../../" hreflang="es" lang="es">Español</a><a href="../../en/" aria-current="page" hreflang="en" lang="en">English</a><a href="../../pt/" hreflang="pt-BR" lang="pt">Português</a><a href="../../fr/" hreflang="fr" lang="fr">Français</a><a href="../../it/" hreflang="it" lang="it">Italiano</a><a href="../../de/" hreflang="de" lang="de">Deutsch</a></nav></header>
-<main>
+<a class="saltar" href="#contenido">Skip to content</a><header><a class="m" href="../../?lang=en" translate="no">TIKI<span>TEXTO</span></a><nav class="l" aria-label="Language"><a href="../../" hreflang="es" lang="es">Español</a><a href="../../en/" aria-current="page" hreflang="en" lang="en">English</a><a href="../../pt/" hreflang="pt-BR" lang="pt">Português</a><a href="../../fr/" hreflang="fr" lang="fr">Français</a><a href="../../it/" hreflang="it" lang="it">Italiano</a><a href="../../de/" hreflang="de" lang="de">Deutsch</a></nav></header>
+<nav class="menu menu-pag" aria-label="Main navigation"><a href="../../?lang=en">Home</a><a href="../../en/curiosidades/">Trivia</a><a href="../../en/curiosidades/datos/">Records</a><a href="../../en/football-comparator/">Comparator</a><a href="../../en/classes/">Classes</a><a href="../../en/games/">Guides</a></nav>
+<main id="contenido">
 <h1>Football hangman</h1>
 <p class="lead">The classic hangman with a football twist: a famous player is hidden and every square is a letter of his name. Tap letters on the keyboard; each mistake brings the stick figure closer to the end. You get 5 mistakes and no hints.</p>
 <p><a class="cta" href="../../?lang=en&modo=ahorcado">Play now →</a></p>

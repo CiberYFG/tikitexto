@@ -5,6 +5,7 @@ preguntas frecuentes salen de i18n/fuente.txt; el resto de textos está aquí.""
 import html, json, os, sys as _sys
 _sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__))))
 import seo_extra as XT
+import menu_sitio as MS
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOM = "https://tikitexto.com/"
 LANGS = ["es", "en", "pt", "fr", "it", "de"]
@@ -85,7 +86,7 @@ h1{font-size:clamp(1.7rem,6vw,2.3rem);line-height:1.15;margin:22px 0 10px}h2{fon
 .cta:hover{filter:brightness(1.08)}ol,ul{padding-left:22px}li{margin:4px 0}
 .g{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}.g a{display:inline-block;padding:7px 14px;border-radius:999px;background:var(--as);font-weight:800;text-decoration:none}
 details{border-top:1px solid var(--b);padding:10px 0}summary{font-weight:800;cursor:pointer}details p{margin:8px 0 0;color:var(--ts)}
-footer{padding-top:26px;padding-bottom:36px;font-size:.85rem;color:var(--ts)}footer a{margin-right:12px}"""
+footer{padding-top:26px;padding-bottom:36px;font-size:.85rem;color:var(--ts)}footer a{margin-right:12px;display:inline-block;padding:6px 0}""" + MS.CSS_SEO
 
 def esc(s): return html.escape(s, quote=True)
 
@@ -143,8 +144,9 @@ def pagina(lang, ruta, titulo, desc, h1, lead, modo_cta, bloques, faq, hreflang_
 <style>%(css)s</style>
 </head>
 <body>
-<header><a class="m" href="%(base)s?lang=%(lang)s" translate="no">TIKI<span>TEXTO</span></a><nav class="l" aria-label="Language">%(sel)s</nav></header>
-<main>
+%(saltar)s<header><a class="m" href="%(base)s?lang=%(lang)s" translate="no">TIKI<span>TEXTO</span></a><nav class="l" aria-label="Language">%(sel)s</nav></header>
+%(menu)s
+<main id="contenido">
 <h1>%(h1)s</h1>
 <p class="lead">%(lead)s</p>
 <p><a class="cta" href="%(cta)s">%(jugar)s →</a></p>
@@ -161,7 +163,7 @@ def pagina(lang, ruta, titulo, desc, h1, lead, modo_cta, bloques, faq, hreflang_
 </body>
 </html>
 """ % dict(lang=HREFLANG[lang] if lang != "es" else "es", titulo=esc(titulo), desc=esc(desc), canon=canon, alts=hreflang_html, loc=HREFLANG[lang].replace("-", "_") if lang != "es" else "es_ES",
-           base=base, ld=ldj, css=CSS, sel=selector, h1=esc(h1), lead=esc(lead), cta=cta, jugar=esc(u["jugar"]), como=esc(u["como"]),
+           base=base, ld=ldj, css=CSS, sel=selector, saltar=MS.saltar(lang), menu=MS.nav(lang, base, MS.clave_de_ruta(ruta, None), "menu-pag"), h1=esc(h1), lead=esc(lead), cta=cta, jugar=esc(u["jugar"]), como=esc(u["como"]),
            pasos="".join("<li>%s</li>" % esc(p) for p in u["pasos"]), bloques=bloques, faqt=esc(u["faq"]), faq=faq_html,
            clhref=base + ("clases/" if lang == "es" else "en/classes/"), cllabel=("Clases de fútbol" if lang == "es" else "Football lessons"), guiahref=base + ("juegos/" if lang == "es" else "en/games/"), guialabel=("Guías de los juegos" if lang == "es" else "Game guides"), curhref=base + ("" if lang == "es" else lang + "/") + "curiosidades/", curlabel=esc(CUR_LABEL[lang]), legal=esc(u["legal"]), priv=esc(u["priv"]), cook=esc(u["cook"]), acc=esc(u["acc"]), nota=esc(u["nota"]))
 

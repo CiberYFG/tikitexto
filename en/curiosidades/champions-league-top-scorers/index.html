@@ -91,7 +91,7 @@ tbody tr:first-child td { font-weight: 700; }
 .indice a:hover { border-color: var(--acento); background: color-mix(in srgb, var(--acento) 10%, var(--caja)); }
 .ilustra { display: block; width: 100%; height: auto; margin: 20px 0; border-radius: 18px; background: var(--caja); border: 1px solid var(--linea); color: var(--acento); box-shadow: var(--sombra); }
 .legal-nav { margin: 40px 0 0; padding-top: 18px; border-top: 1px solid var(--linea); font-size: .88rem; display: flex; flex-wrap: wrap; gap: 6px 16px; }
-.legal-nav a { color: var(--suave); }
+.legal-nav a { color: var(--suave); display: inline-block; padding: 6px 2px; }
 a:focus-visible, button:focus-visible { outline: 3px solid var(--acento2); outline-offset: 2px; }
 .jugar { display: inline-block; margin: 14px 0; padding: 15px 28px; background: linear-gradient(135deg, #2f7bff, #1448e0); color: #fff; font-weight: 800; border-radius: 16px; text-decoration: none; box-shadow: 0 8px 22px rgba(20,72,224,.4); transition: transform .15s; }
 .jugar:hover { transform: translateY(-2px); }
@@ -105,15 +105,26 @@ html.huecos .hueco--lat { display: none; }
 html.huecos .hueco--ancla { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; margin: 0; border-radius: 0; border-width: 2px 0 0; min-height: 60px; background: var(--fondo); }
 html.huecos .hueco--ancla button { position: absolute; right: 8px; top: 6px; border: 0; background: var(--caja); color: var(--texto); border-radius: 50%; width: 26px; height: 26px; cursor: pointer; }
 html.huecos body { padding-bottom: 64px; }
-.idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 14px; }
+
+.saltar { position: absolute; left: 12px; top: -60px; z-index: 100; padding: 10px 16px; font-weight: 800; color: #fff; background: #12203a; border-radius: 0 0 12px 12px; text-decoration: none; transition: top .15s; }
+.saltar:focus { top: 0; }
+.menu { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.menu::-webkit-scrollbar { display: none; }
+.menu a { flex: none; padding: 7px 12px; font-size: .86rem; font-weight: 700; line-height: 1.2; color: var(--suave); text-decoration: none; border: 1px solid transparent; border-radius: 999px; white-space: nowrap; }
+.menu a:hover { color: var(--texto); background: var(--caja); }
+.menu a:focus-visible { outline: 3px solid var(--acento); outline-offset: 1px; }
+.menu a[aria-current] { color: var(--acento); background: color-mix(in srgb, var(--acento) 12%, var(--caja)); border-color: color-mix(in srgb, var(--acento) 38%, transparent); }
+.menu-pag { max-width: 760px; margin: 6px auto 0; padding: 0 6px 4px; }
+.idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 8px; } .idiomas a { display: inline-block; padding: 5px 4px; }
 </style>
 </head>
 <body>
 <script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';var t=e.target.closest&&e.target.closest('[data-tema-btn]');if(t){var n=document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('tikitexto:tema',n);}catch(x){}}});})();</script>
-<header class="barra"><div><a class="marca" href="/?lang=en" aria-label="‹ Back to the game">TIKI<i>TEXTO</i></a><span class="miga"><a href="/en/curiosidades/">Football trivia</a></span><button type="button" class="tema" data-tema-btn aria-label="🌓" title="🌓">🌓</button><a class="cta" href="/?lang=en">⚽ Play</a></div></header>
+<a class="saltar" href="#contenido">Skip to content</a><header class="barra"><div><a class="marca" href="/?lang=en" aria-label="‹ Back to the game">TIKI<i>TEXTO</i></a><span class="miga"></span><button type="button" class="tema" data-tema-btn aria-label="🌓" title="🌓">🌓</button><a class="cta" href="/?lang=en">⚽ Play</a></div></header>
+<nav class="menu menu-pag" aria-label="Main navigation"><a href="/?lang=en">Home</a><a href="/en/curiosidades/" aria-current="page">Trivia</a><a href="/en/curiosidades/datos/">Records</a><a href="/en/football-comparator/">Comparator</a><a href="/en/classes/">Classes</a><a href="/en/games/">Guides</a></nav>
 <aside class="hueco hueco--lat hueco--izq" aria-label="Advertisement" data-hueco="lat izq">Advertisement</aside>
 <aside class="hueco hueco--lat hueco--der" aria-label="Advertisement" data-hueco="lat der">Advertisement</aside>
-<main>
+<main id="contenido">
 <p class="idiomas" translate="no">🌐 <a href="/curiosidades/maximos-goleadores-champions/" hreflang="es" lang="es">Español</a> · <b>English</b></p>
 <div class="hero"><div><p class="etiqueta">Football trivia</p><h1>Champions League all-time top scorers</h1><p class="fecha">As of 4 November 2026 (2026–27 league phase)</p></div><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="22"/><path d="M32 22l9 7-3 11H26l-3-11 9-7z"/><path d="M32 22V10M41 29l12-4M38 40l7 10M26 40l-7 10M23 29l-12-4"/></svg></div>
 <div class="caja">Cristiano Ronaldo leads the all-time scoring chart of Europe&#x27;s top club competition by a wide margin. Here are the top 15, with the appearances each needed.</div>

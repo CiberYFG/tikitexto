@@ -45,11 +45,22 @@ h1{font-size:clamp(1.7rem,6vw,2.3rem);line-height:1.15;margin:22px 0 10px}h2{fon
 .cta:hover{filter:brightness(1.08)}ol,ul{padding-left:22px}li{margin:4px 0}
 .g{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}.g a{display:inline-block;padding:7px 14px;border-radius:999px;background:var(--as);font-weight:800;text-decoration:none}
 details{border-top:1px solid var(--b);padding:10px 0}summary{font-weight:800;cursor:pointer}details p{margin:8px 0 0;color:var(--ts)}
-footer{padding-top:26px;padding-bottom:36px;font-size:.85rem;color:var(--ts)}footer a{margin-right:12px}</style>
+footer{padding-top:26px;padding-bottom:36px;font-size:.85rem;color:var(--ts)}footer a{margin-right:12px;display:inline-block;padding:6px 0}
+.saltar { position: absolute; left: 12px; top: -60px; z-index: 100; padding: 10px 16px; font-weight: 800; color: #fff; background: #12203a; border-radius: 0 0 12px 12px; text-decoration: none; transition: top .15s; }
+.saltar:focus { top: 0; }
+.menu { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.menu::-webkit-scrollbar { display: none; }
+.menu a { flex: none; padding: 7px 12px; font-size: .86rem; font-weight: 700; line-height: 1.2; color: var(--ts); text-decoration: none; border: 1px solid transparent; border-radius: 999px; white-space: nowrap; }
+.menu a:hover { color: var(--t); background: var(--s); }
+.menu a:focus-visible { outline: 3px solid var(--a); outline-offset: 1px; }
+.menu a[aria-current] { color: var(--a); background: color-mix(in srgb, var(--a) 12%, var(--s)); border-color: color-mix(in srgb, var(--a) 38%, transparent); }
+.menu-pag { max-width: 760px; margin: 4px auto 0; padding: 0 12px 6px; }
+</style>
 </head>
 <body>
-<header><a class="m" href="../../?lang=es" translate="no">TIKI<span>TEXTO</span></a><nav class="l" aria-label="Language"><a href="../../" hreflang="es" lang="es">Español</a><a href="../../en/" hreflang="en" lang="en">English</a><a href="../../pt/" hreflang="pt-BR" lang="pt">Português</a><a href="../../fr/" hreflang="fr" lang="fr">Français</a><a href="../../it/" hreflang="it" lang="it">Italiano</a><a href="../../de/" hreflang="de" lang="de">Deutsch</a></nav></header>
-<main>
+<a class="saltar" href="#contenido">Saltar al contenido</a><header><a class="m" href="../../?lang=es" translate="no">TIKI<span>TEXTO</span></a><nav class="l" aria-label="Language"><a href="../../" hreflang="es" lang="es">Español</a><a href="../../en/" hreflang="en" lang="en">English</a><a href="../../pt/" hreflang="pt-BR" lang="pt">Português</a><a href="../../fr/" hreflang="fr" lang="fr">Français</a><a href="../../it/" hreflang="it" lang="it">Italiano</a><a href="../../de/" hreflang="de" lang="de">Deutsch</a></nav></header>
+<nav class="menu menu-pag" aria-label="Navegación principal"><a href="../../">Inicio</a><a href="../../curiosidades/">Curiosidades</a><a href="../../articulos/">Artículos</a><a href="../../curiosidades/datos/">Récords</a><a href="../../comparador/">Comparador</a><a href="../../clases/">Clases</a><a href="../../juegos/" aria-current="page">Guías</a><a href="../../sobre-tikitexto.html">Sobre</a></nav>
+<main id="contenido">
 <h1>Trivia de fútbol: 10 preguntas sobre Champions, Mundiales y Balón de Oro</h1>
 <p class="lead">Trivia TIKITEXTO es un juego de preguntas y respuestas de fútbol pensado para quien disfruta recordando finales, campeones y premios. Cada ronda tiene diez preguntas con cuatro respuestas posibles y quince segundos para contestar, y la dificultad sube a medida que avanzas: cuatro preguntas fáciles, cuatro de nivel medio y dos realmente difíciles. Las preguntas no se escriben a mano al azar: se generan a partir de los datos que publicamos en la web, como los campeones de la Copa de Europa y la Champions League desde 1956, las ediciones de los Mundiales desde 1930, la lista completa del Balón de Oro y los récords del Comparador. Eso significa que cada respuesta se puede comprobar en nuestras páginas de historia y de datos, que citan fuentes como UEFA, FIFA y France Football.</p>
 <p><a class="cta" href="../../?lang=es&modo=trivia">Jugar ahora →</a></p>

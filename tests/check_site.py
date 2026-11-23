@@ -511,6 +511,8 @@ with sync_playwright() as p:
         check("intro: termina sola en pocos segundos", not pgi.is_visible("#intro"))
         check("invitado: no se pide nickname al entrar", not pgi.is_visible("#modalCuenta"))
         pgi.wait_for_timeout(500)
+        check("invitado: en la portada no se muestra el aviso gris (solo en la vista de juegos)", not pgi.is_visible("#chipInvitado"))
+        if pgi.is_visible("#portalJuegos"): pgi.click("#portalJuegos"); pgi.wait_for_timeout(300); pgi.evaluate("document.querySelector('[data-vs=letras]').click()"); pgi.wait_for_timeout(700)
         check("invitado: aviso gris «Estás jugando como invitado» arriba", pgi.is_visible("#chipInvitado"))
         pgi.click("#chipInvitado"); pgi.wait_for_timeout(300)
         check("invitado: el aviso lleva a Ajustes", pgi.is_visible("#ajusteCodigo") is False and pgi.locator(".ajustes").count() == 1)
@@ -1562,6 +1564,45 @@ with sync_playwright() as p:
             cl.close()
     except Exception as e:
         check("portada compacta y ayuda", False, str(e)[:150])
+
+    print("3av) Menú de navegación común, «Saltar al contenido», contraste y aviso de cookies compacto")
+    try:
+        cav = br.new_context(viewport={"width": 390, "height": 800}, service_workers="block")
+        pav = cav.new_page(); errs_av = []
+        pav.on("pageerror", lambda e: errs_av.append(str(e)))
+        pav.add_init_script("localStorage.setItem('tikitexto:idioma','es');sessionStorage.setItem('tikitexto:intro','1');")
+        paginas_av = [("curiosidades/", "Curiosidades"), ("articulos/", "Artículos"), ("curiosidades/datos/", "Récords"), ("clases/", "Clases"), ("juegos/", "Guías"), ("sobre-tikitexto.html", "Sobre"), ("aviso-legal.html", None), ("adivina-el-jugador/", None), ("404.html", None)]
+        for ruta, activo in paginas_av:
+            pav.goto(BASE + ruta, wait_until="domcontentloaded", timeout=60000); pav.wait_for_timeout(250)
+            d = pav.evaluate("""(()=>{const n=document.querySelector('nav.menu'); const a=n&&n.querySelector('a[aria-current=page]');
+              return {n:!!n, links:n?n.querySelectorAll('a').length:0, act:a?a.textContent.trim():null, aria:n?n.getAttribute('aria-label'):'', salto:!!document.querySelector('a.saltar[href="#contenido"]'), main:!!document.querySelector('main#contenido'), ancho:document.documentElement.scrollWidth<=window.innerWidth+1};})()""")
+            check("menú (%s): barra de navegación con 8 enlaces, saltar al contenido y sin desbordar" % ruta, d["n"] and d["links"] == 8 and d["salto"] and d["main"] and d["ancho"] and d["aria"] == "Navegación principal", str(d))
+            check("menú (%s): sección activa = %s" % (ruta, activo), d["act"] == activo, str(d["act"]))
+            pav.keyboard.press("Tab"); pav.wait_for_timeout(350)
+            top = pav.evaluate("(()=>{const e=document.activeElement; return e && e.classList.contains('saltar') ? e.getBoundingClientRect().top : null})()")
+            check("menú (%s): con Tab lo primero es «Saltar al contenido» y se ve" % ruta, top is not None and top >= 0, str(top))
+        pav.goto(BASE + "en/curiosidades/", wait_until="domcontentloaded", timeout=60000); pav.wait_for_timeout(250)
+        d = pav.evaluate("(()=>{const n=document.querySelector('nav.menu'); return {aria:n&&n.getAttribute('aria-label'), home:n&&n.querySelector('a').getAttribute('href'), txt:n&&n.querySelector('a').textContent.trim(), salto:document.querySelector('a.saltar').textContent.trim()};})()")
+        check("menú (en): etiquetas en inglés y portada con ?lang=en", d["aria"] == "Main navigation" and d["home"].endswith("?lang=en") and d["txt"] == "Home" and d["salto"] == "Skip to content", str(d))
+        pav.goto(BASE, wait_until="networkidle", timeout=60000); pav.wait_for_timeout(500)
+        d = pav.evaluate("""(()=>{const s=document.querySelector('a.saltar'); return {s:!!s, dest:s&&s.getAttribute('href'), main:!!document.querySelector('main#contenidoInicio'), chip:getComputedStyle(document.getElementById('chipInvitado')).display, grad:getComputedStyle(document.querySelector('.inicio__titulo span')).backgroundImage};})()""")
+        check("portada: enlace «Saltar al contenido» y destino", d["s"] and d["dest"] == "#contenidoInicio" and d["main"], str(d))
+        check("portada: el aviso de invitado no se muestra en la portada", d["chip"] == "none", d["chip"])
+        check("portada: el degradado del título es oscuro en tema claro (contraste)", "rgb(10, 122, 80)" in d["grad"] and "rgb(255, 200, 61)" not in d["grad"], d["grad"][:80])
+        pav.goto(BASE + "curiosidades/", wait_until="domcontentloaded", timeout=60000); pav.wait_for_selector(".cmp__caja", state="visible", timeout=8000)
+        alto = pav.evaluate("document.querySelector('.cmp__caja').getBoundingClientRect().height")
+        check("cookies: el aviso es compacto en móvil (menos de 250 px de alto)", alto < 250, str(alto))
+        cav.close()
+        clz = br.new_context(viewport={"width": 390, "height": 800}, service_workers="block", color_scheme="light")
+        plz = clz.new_page()
+        plz.add_init_script("localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');")
+        plz.goto(BASE + "aviso-legal.html", wait_until="domcontentloaded", timeout=60000)
+        col = plz.evaluate("getComputedStyle(document.querySelector('main a[href]')).color")
+        check("legales: los enlaces tienen contraste suficiente en tema claro", col == "rgb(7, 114, 74)", col)
+        clz.close()
+        check("menú y accesibilidad: sin errores de JavaScript", not errs_av, "; ".join(errs_av)[:150])
+    except Exception as e:
+        check("menú de navegación y accesibilidad", False, str(e)[:150])
 
     print("3ao) Vitrina de logros")
     try:

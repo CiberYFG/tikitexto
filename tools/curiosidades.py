@@ -2,6 +2,9 @@
 """Genera las páginas de «Curiosidades del fútbol» (curiosidades/, /campeones/, /ligas/, /trofeos/).
 Ilustraciones: SVG propios (sin fotos ni escudos). Ejecutar: python3 tools/curiosidades.py  y luego tools/seo.py (sitemap)."""
 import os, html, json
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import menu_sitio as MS
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOM = "https://tikitexto.com/"
 FECHA = "31 de octubre de 2026"
@@ -73,7 +76,7 @@ tbody tr:first-child td { font-weight: 700; }
 .indice a:hover { border-color: var(--acento); background: color-mix(in srgb, var(--acento) 10%, var(--caja)); }
 .ilustra { display: block; width: 100%; height: auto; margin: 20px 0; border-radius: 18px; background: var(--caja); border: 1px solid var(--linea); color: var(--acento); box-shadow: var(--sombra); }
 .legal-nav { margin: 40px 0 0; padding-top: 18px; border-top: 1px solid var(--linea); font-size: .88rem; display: flex; flex-wrap: wrap; gap: 6px 16px; }
-.legal-nav a { color: var(--suave); }
+.legal-nav a { color: var(--suave); display: inline-block; padding: 6px 2px; }
 a:focus-visible, button:focus-visible { outline: 3px solid var(--acento2); outline-offset: 2px; }
 .jugar { display: inline-block; margin: 14px 0; padding: 15px 28px; background: linear-gradient(135deg, #2f7bff, #1448e0); color: #fff; font-weight: 800; border-radius: 16px; text-decoration: none; box-shadow: 0 8px 22px rgba(20,72,224,.4); transition: transform .15s; }
 .jugar:hover { transform: translateY(-2px); }
@@ -324,12 +327,13 @@ def cabecera(L, titulo, desc, ruta, h1, icono=None):
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
 {TEMA_JS}
 <style>
-{CSS}.idiomas {{ font-size: .85rem; color: var(--suave); margin: 0 0 14px; }}
+{CSS}{MS.CSS}.idiomas {{ font-size: .85rem; color: var(--suave); margin: 0 0 8px; }} .idiomas a {{ display: inline-block; padding: 5px 4px; }}
 </style>
 </head>
 <body>
-{HUECOS_JS}<header class="barra"><div><a class="marca" href="{L.play()}" aria-label="{e(u['back'])}">TIKI<i>TEXTO</i></a><span class="miga"><a href="{L.url('curiosidades/')}">{e(u['crumb'])}</a></span><button type="button" class="tema" data-tema-btn aria-label="🌓" title="🌓">🌓</button><a class="cta" href="{L.play()}">{e(JUGAR[L.lang])}</a></div></header>
-{hueco(L, "lat izq").replace('hueco--lat izq', 'hueco--lat hueco--izq')}{hueco(L, "lat der").replace('hueco--lat der', 'hueco--lat hueco--der')}<main>
+{HUECOS_JS}{MS.saltar(L.lang)}<header class="barra"><div><a class="marca" href="{L.play()}" aria-label="{e(u['back'])}">TIKI<i>TEXTO</i></a><span class="miga"></span><button type="button" class="tema" data-tema-btn aria-label="🌓" title="🌓">🌓</button><a class="cta" href="{L.play()}">{e(JUGAR[L.lang])}</a></div></header>
+{MS.nav(L.lang, "/", MS.clave_de_ruta(ruta), "menu-pag")}
+{hueco(L, "lat izq").replace('hueco--lat izq', 'hueco--lat hueco--izq')}{hueco(L, "lat der").replace('hueco--lat der', 'hueco--lat hueco--der')}<main id="contenido">
 <p class="idiomas" translate="no">🌐 {sel}</p>
 <div class="hero"><div><p class="etiqueta">{e(u['crumb'])}</p><h1>{e(h1)}</h1><p class="fecha">{e(u['checked'])}</p></div>{icono or globals().get(ICONO_RUTA.get(ruta, "BALON"), BALON)}</div>
 """
@@ -337,14 +341,14 @@ def cabecera(L, titulo, desc, ruta, h1, icono=None):
 CSS_TC = """
 .gr { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 38px 0 6px; padding: 12px 18px; border-radius: 18px; background: color-mix(in srgb, var(--c) 14%, var(--caja)); border: 1px solid color-mix(in srgb, var(--c) 35%, transparent); border-left: 9px solid var(--c); }
 .gr h2 { margin: 0; padding: 0; border: 0; font-size: 1.28rem; flex: 1 1 auto; }
-.gr a.todo { font-weight: 800; font-size: .88rem; color: var(--c); text-decoration: none; white-space: nowrap; }
+.gr a.todo { font-weight: 800; font-size: .88rem; color: color-mix(in srgb, var(--c) 55%, var(--texto)); text-decoration: none; white-space: nowrap; }
 .gr a.todo:hover { text-decoration: underline; }
 .gr-d { margin: 0 2px 4px; color: var(--suave); font-size: .95rem; }
 .tc { position: relative; border-top: 6px solid var(--c) !important; }
 .tc .emo { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; font-size: 28px; background: color-mix(in srgb, var(--c) 16%, var(--caja)); }
 .tc svg { color: var(--c) !important; }
 .tc:hover, .tc:focus-visible { border-color: var(--c) !important; box-shadow: 0 14px 30px color-mix(in srgb, var(--c) 32%, transparent) !important; }
-.tc .min { display: inline-block; margin-top: 8px; padding: 2px 10px; border-radius: 999px; font-size: .76rem; font-weight: 800; color: var(--c); background: color-mix(in srgb, var(--c) 13%, transparent); }
+.tc .min { display: inline-block; margin-top: 8px; padding: 2px 10px; border-radius: 999px; font-size: .76rem; font-weight: 800; color: color-mix(in srgb, var(--c) 55%, var(--texto)); background: color-mix(in srgb, var(--c) 13%, transparent); }
 .tema { margin: 14px 0; border-radius: 22px; border: 1px solid color-mix(in srgb, var(--c) 42%, transparent); background: color-mix(in srgb, var(--c) 7%, var(--caja)); overflow: hidden; }
 .tema > summary, a.tema { list-style: none; cursor: pointer; display: grid; grid-template-columns: 3.4rem 1fr auto 1.4rem; gap: 14px; align-items: center; padding: 16px 18px; text-decoration: none; color: inherit; }
 .tema > summary::-webkit-details-marker { display: none; }
@@ -353,7 +357,7 @@ CSS_TC = """
 .tema .t-emo { display: grid; place-items: center; width: 3.4rem; height: 3.4rem; border-radius: 18px; font-size: 1.9rem; background: color-mix(in srgb, var(--c) 20%, var(--caja)); }
 .tema .t-t b { display: block; font-size: 1.18rem; line-height: 1.2; }
 .tema .t-t span { display: block; margin-top: 3px; font-size: .9rem; line-height: 1.4; color: var(--suave); font-weight: 500; }
-.tema .t-n { font-size: .78rem; font-weight: 800; padding: 4px 11px; border-radius: 999px; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); white-space: nowrap; }
+.tema .t-n { font-size: .78rem; font-weight: 800; padding: 4px 11px; border-radius: 999px; color: color-mix(in srgb, var(--c) 55%, var(--texto)); background: color-mix(in srgb, var(--c) 14%, transparent); white-space: nowrap; }
 .tema .t-f::before { content: "›"; display: block; font-size: 1.9rem; font-weight: 800; line-height: 1; color: var(--c); transition: transform .2s; }
 .tema[open] > summary .t-f::before { transform: rotate(90deg); }
 .tema[open] > summary { background: color-mix(in srgb, var(--c) 16%, var(--caja)); }

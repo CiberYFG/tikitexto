@@ -1291,6 +1291,7 @@ body {
   background-size: 200% 100%; -webkit-background-clip: text; background-clip: text;
   color: transparent; -webkit-text-fill-color: transparent; animation: brillo 6s linear infinite;
 }
+:root:not([data-tema="oscuro"]) .marca__titulo span, :root:not([data-tema="oscuro"]) .inicio__titulo span { background-image: linear-gradient(90deg, #0a7a50, #2456d6, #b36b00, #0a7a50); }
 .inicio__contenido > * { animation: entradaInicio .55s cubic-bezier(.2, .8, .2, 1) backwards; }
 /* sin opacidad: si la animación se pausa (fuera de pantalla/bajo un aviso) el contenido sigue visible para Google */
 @keyframes entradaInicio { from { transform: translateY(14px); } to { transform: none; } }
@@ -1412,9 +1413,13 @@ button.marca:active .marca__icono { transform: scale(.9); }
 .cuenta__error { color: #ff6b6b; font-size: .85rem; min-height: 1.2em; margin: 0; }
 
 /* ---------- Intro ---------- */
-.chip-invitado { position: absolute; z-index: 150; top: calc(env(safe-area-inset-top, 0px) + 64px); right: 10px; padding: 3px 10px; font: inherit; font-size: .68rem; font-weight: 600; color: var(--texto-suave); background: transparent; border: 0; border-radius: 99px; opacity: .75; cursor: pointer; }
+.chip-invitado { position: absolute; z-index: 150; top: calc(env(safe-area-inset-top, 0px) + 64px); right: 10px; padding: 6px 10px; font: inherit; font-size: .68rem; font-weight: 600; color: var(--texto-suave); background: transparent; border: 0; border-radius: 99px; opacity: .75; cursor: pointer; }
 .chip-invitado:hover, .chip-invitado:focus-visible { opacity: 1; text-decoration: underline; }
+.saltar { position: absolute; left: 12px; top: -64px; z-index: 2000; padding: 10px 16px; font-weight: 800; color: #fff; background: #12203a; border-radius: 0 0 12px 12px; text-decoration: none; transition: top .15s; }
+.saltar:focus { top: 0; }
+#contenidoInicio:focus { outline: none; }
 .chip-invitado[hidden] { display: none; }
+html:not(.vista-j) .chip-invitado { display: none; }
 .intro { position: fixed; inset: 0; z-index: 500; display: grid; place-items: center; overflow: hidden; cursor: pointer; color: #fff; background: radial-gradient(900px 620px at 50% 42%, #0f4a37, #070d14 72%); transition: opacity .25s; }
 .intro[hidden] { display: none; }
 .intro--salir { opacity: 0; pointer-events: none; }
@@ -1756,7 +1761,7 @@ html.vs-abierto { overflow: hidden; }
 .vs__txt { position: relative; display: grid; gap: 6px; max-width: 34%; transition: transform .25s; text-shadow: 0 3px 18px rgba(0,0,0,.45); }
 .vs__txt i { font: 900 clamp(2.4rem, 7vw, 4.6rem)/1 var(--fuente-titulo); font-style: normal; }
 .vs__txt b { font: 900 clamp(1.3rem, 3.6vw, 2.5rem)/1.05 var(--fuente-titulo); }
-.vs__txt small { font: 700 clamp(.78rem, 1.6vw, 1.05rem)/1.3 var(--fuente, system-ui); opacity: .85; }
+.vs__txt small { font: 800 clamp(.82rem, 1.6vw, 1.05rem)/1.3 var(--fuente, system-ui); text-shadow: 0 2px 10px rgba(0,0,0,.6), 0 0 3px rgba(0,0,0,.45); }
 .vs__titulo { position: absolute; z-index: 5; left: 0; right: 0; top: calc(14px + env(safe-area-inset-top)); margin: 0; text-align: center; font: 900 clamp(1rem, 2.6vw, 1.5rem)/1.1 var(--fuente-titulo); color: #fff; text-shadow: 0 2px 14px rgba(0,0,0,.6); pointer-events: none; }
 .vs__volver { position: absolute; z-index: 6; left: calc(12px + env(safe-area-inset-left)); top: calc(10px + env(safe-area-inset-top)); height: 40px; padding: 0 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,.35); background: rgba(5,6,15,.55); color: #fff; font: 800 .85rem/1 var(--fuente, system-ui); cursor: pointer; backdrop-filter: blur(4px); }
 .vs__titulo { top: calc(64px + env(safe-area-inset-top)); }
@@ -1768,7 +1773,7 @@ html.vs-abierto { overflow: hidden; }
 .vs--fuera .vs__rayo, .vs--fuera .vs__titulo, .vs--fuera .vs__volver { opacity: 0; transition: opacity .25s; }
 @media (max-aspect-ratio: 1/1) {
   .vs__lado { padding: 0 5%; } .vs__txt { max-width: 34%; }
-  .vs__lado--l { align-items: flex-end; padding-bottom: 30%; } .vs__lado--r { align-items: flex-start; padding-top: 30%; }
+  .vs__lado--l { align-items: flex-end; padding-bottom: 52%; } .vs__lado--r { align-items: flex-start; padding-top: 30%; }
   .vs__txt b { font-size: clamp(1.1rem, 5vw, 1.5rem); }
 }
 @media (prefers-reduced-motion: reduce) { .vs__lado, .vs__rayo { animation: none; } .vs__lado, .vs__txt { transition: none; } }
@@ -2316,6 +2321,7 @@ html:has(.modal:not([hidden]), .idioma) :is(.curio,.info,.novedad,.ah-card,.modo
 .info__modos { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0 0 10px; padding: 0; list-style: none; }
 .info__modos a.chip-oro-info { color: #4a3200; background: linear-gradient(105deg,#ffe27a,#fff6cf,#f7c948,#fff1ad,#ffe27a); background-size: 260% 100%; animation: chipOro 5s linear infinite; }
 .info__modos a { display: inline-block; padding: 6px 12px; font-size: .84rem; font-weight: 800; color: var(--acento); text-decoration: none; background: var(--acento-suave); border-radius: 999px; }
+:root:not([data-tema="oscuro"]) .info__modos a:not(.chip-oro-info) { color: #07724a; }
 .info details { border-top: 1px solid var(--borde, rgba(127, 127, 127, .25)); padding: 9px 0; }
 .info summary { font-size: .9rem; font-weight: 800; cursor: pointer; color: var(--texto); }
 .info details p { margin: 8px 0 0; }
@@ -2340,6 +2346,7 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
 </style>
 </head>
 <body>
+<a class="saltar" href="#contenidoInicio">Saltar al contenido</a>
 <!-- ============ PANTALLA DE INICIO ============ -->
 <div class="inicio" id="pantallaInicio">
 
@@ -2369,7 +2376,7 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
     </div>
   </div>
 
-  <main class="inicio__contenido">
+  <main class="inicio__contenido" id="contenidoInicio" tabindex="-1">
     <p class="vp inicio__etiqueta">Datos y curiosidades del fútbol</p>
     <h1 class="vp inicio__titulo">Historia, datos y curiosidades<br><span>del fútbol</span></h1>
     <div class="vp bus" data-buscador></div>

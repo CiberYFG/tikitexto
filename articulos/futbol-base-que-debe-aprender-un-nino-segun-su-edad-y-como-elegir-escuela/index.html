@@ -90,7 +90,7 @@ tbody tr:first-child td { font-weight: 700; }
 .indice a:hover { border-color: var(--acento); background: color-mix(in srgb, var(--acento) 10%, var(--caja)); }
 .ilustra { display: block; width: 100%; height: auto; margin: 20px 0; border-radius: 18px; background: var(--caja); border: 1px solid var(--linea); color: var(--acento); box-shadow: var(--sombra); }
 .legal-nav { margin: 40px 0 0; padding-top: 18px; border-top: 1px solid var(--linea); font-size: .88rem; display: flex; flex-wrap: wrap; gap: 6px 16px; }
-.legal-nav a { color: var(--suave); }
+.legal-nav a { color: var(--suave); display: inline-block; padding: 6px 2px; }
 a:focus-visible, button:focus-visible { outline: 3px solid var(--acento2); outline-offset: 2px; }
 .jugar { display: inline-block; margin: 14px 0; padding: 15px 28px; background: linear-gradient(135deg, #2f7bff, #1448e0); color: #fff; font-weight: 800; border-radius: 16px; text-decoration: none; box-shadow: 0 8px 22px rgba(20,72,224,.4); transition: transform .15s; }
 .jugar:hover { transform: translateY(-2px); }
@@ -104,18 +104,28 @@ html.huecos .hueco--lat { display: none; }
 html.huecos .hueco--ancla { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; margin: 0; border-radius: 0; border-width: 2px 0 0; min-height: 60px; background: var(--fondo); }
 html.huecos .hueco--ancla button { position: absolute; right: 8px; top: 6px; border: 0; background: var(--caja); color: var(--texto); border-radius: 50%; width: 26px; height: 26px; cursor: pointer; }
 html.huecos body { padding-bottom: 64px; }
-.idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 14px; }
+
+.saltar { position: absolute; left: 12px; top: -60px; z-index: 100; padding: 10px 16px; font-weight: 800; color: #fff; background: #12203a; border-radius: 0 0 12px 12px; text-decoration: none; transition: top .15s; }
+.saltar:focus { top: 0; }
+.menu { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.menu::-webkit-scrollbar { display: none; }
+.menu a { flex: none; padding: 7px 12px; font-size: .86rem; font-weight: 700; line-height: 1.2; color: var(--suave); text-decoration: none; border: 1px solid transparent; border-radius: 999px; white-space: nowrap; }
+.menu a:hover { color: var(--texto); background: var(--caja); }
+.menu a:focus-visible { outline: 3px solid var(--acento); outline-offset: 1px; }
+.menu a[aria-current] { color: var(--acento); background: color-mix(in srgb, var(--acento) 12%, var(--caja)); border-color: color-mix(in srgb, var(--acento) 38%, transparent); }
+.menu-pag { max-width: 760px; margin: 6px auto 0; padding: 0 6px 4px; }
+.idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 8px; } .idiomas a { display: inline-block; padding: 5px 4px; }
 .articulo p { font-size: 1.06rem; line-height: 1.78; margin: 0 0 17px; max-width: 72ch; } .articulo h2 { margin-top: 34px; } .articulo .fuentes { font-size: .92rem; color: var(--suave); }
 .gr { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 38px 0 6px; padding: 12px 18px; border-radius: 18px; background: color-mix(in srgb, var(--c) 14%, var(--caja)); border: 1px solid color-mix(in srgb, var(--c) 35%, transparent); border-left: 9px solid var(--c); }
 .gr h2 { margin: 0; padding: 0; border: 0; font-size: 1.28rem; flex: 1 1 auto; }
-.gr a.todo { font-weight: 800; font-size: .88rem; color: var(--c); text-decoration: none; white-space: nowrap; }
+.gr a.todo { font-weight: 800; font-size: .88rem; color: color-mix(in srgb, var(--c) 55%, var(--texto)); text-decoration: none; white-space: nowrap; }
 .gr a.todo:hover { text-decoration: underline; }
 .gr-d { margin: 0 2px 4px; color: var(--suave); font-size: .95rem; }
 .tc { position: relative; border-top: 6px solid var(--c) !important; }
 .tc .emo { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; font-size: 28px; background: color-mix(in srgb, var(--c) 16%, var(--caja)); }
 .tc svg { color: var(--c) !important; }
 .tc:hover, .tc:focus-visible { border-color: var(--c) !important; box-shadow: 0 14px 30px color-mix(in srgb, var(--c) 32%, transparent) !important; }
-.tc .min { display: inline-block; margin-top: 8px; padding: 2px 10px; border-radius: 999px; font-size: .76rem; font-weight: 800; color: var(--c); background: color-mix(in srgb, var(--c) 13%, transparent); }
+.tc .min { display: inline-block; margin-top: 8px; padding: 2px 10px; border-radius: 999px; font-size: .76rem; font-weight: 800; color: color-mix(in srgb, var(--c) 55%, var(--texto)); background: color-mix(in srgb, var(--c) 13%, transparent); }
 .tema { margin: 14px 0; border-radius: 22px; border: 1px solid color-mix(in srgb, var(--c) 42%, transparent); background: color-mix(in srgb, var(--c) 7%, var(--caja)); overflow: hidden; }
 .tema > summary, a.tema { list-style: none; cursor: pointer; display: grid; grid-template-columns: 3.4rem 1fr auto 1.4rem; gap: 14px; align-items: center; padding: 16px 18px; text-decoration: none; color: inherit; }
 .tema > summary::-webkit-details-marker { display: none; }
@@ -124,7 +134,7 @@ html.huecos body { padding-bottom: 64px; }
 .tema .t-emo { display: grid; place-items: center; width: 3.4rem; height: 3.4rem; border-radius: 18px; font-size: 1.9rem; background: color-mix(in srgb, var(--c) 20%, var(--caja)); }
 .tema .t-t b { display: block; font-size: 1.18rem; line-height: 1.2; }
 .tema .t-t span { display: block; margin-top: 3px; font-size: .9rem; line-height: 1.4; color: var(--suave); font-weight: 500; }
-.tema .t-n { font-size: .78rem; font-weight: 800; padding: 4px 11px; border-radius: 999px; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); white-space: nowrap; }
+.tema .t-n { font-size: .78rem; font-weight: 800; padding: 4px 11px; border-radius: 999px; color: color-mix(in srgb, var(--c) 55%, var(--texto)); background: color-mix(in srgb, var(--c) 14%, transparent); white-space: nowrap; }
 .tema .t-f::before { content: "›"; display: block; font-size: 1.9rem; font-weight: 800; line-height: 1; color: var(--c); transition: transform .2s; }
 .tema[open] > summary .t-f::before { transform: rotate(90deg); }
 .tema[open] > summary { background: color-mix(in srgb, var(--c) 16%, var(--caja)); }
@@ -162,10 +172,11 @@ html.huecos body { padding-bottom: 64px; }
 </head>
 <body>
 <script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';var t=e.target.closest&&e.target.closest('[data-tema-btn]');if(t){var n=document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('tikitexto:tema',n);}catch(x){}}});})();</script>
-<header class="barra"><div><a class="marca" href="/" aria-label="‹ Volver al juego">TIKI<i>TEXTO</i></a><span class="miga"><a href="/curiosidades/">Curiosidades del fútbol</a></span><button type="button" class="tema" data-tema-btn aria-label="🌓" title="🌓">🌓</button><a class="cta" href="/">⚽ Jugar</a></div></header>
+<a class="saltar" href="#contenido">Saltar al contenido</a><header class="barra"><div><a class="marca" href="/" aria-label="‹ Volver al juego">TIKI<i>TEXTO</i></a><span class="miga"></span><button type="button" class="tema" data-tema-btn aria-label="🌓" title="🌓">🌓</button><a class="cta" href="/">⚽ Jugar</a></div></header>
+<nav class="menu menu-pag" aria-label="Navegación principal"><a href="/">Inicio</a><a href="/curiosidades/">Curiosidades</a><a href="/articulos/" aria-current="page">Artículos</a><a href="/curiosidades/datos/">Récords</a><a href="/comparador/">Comparador</a><a href="/clases/">Clases</a><a href="/juegos/">Guías</a><a href="/sobre-tikitexto.html">Sobre</a></nav>
 <aside class="hueco hueco--lat hueco--izq" aria-label="Publicidad" data-hueco="lat izq">Publicidad</aside>
 <aside class="hueco hueco--lat hueco--der" aria-label="Publicidad" data-hueco="lat der">Publicidad</aside>
-<main>
+<main id="contenido">
 <div class="hero"><div><p class="etiqueta">Curiosidades del fútbol</p><h1>Fútbol base: qué debe aprender un niño según su edad y cómo elegir escuela</h1><p class="fecha">Artículo de TIKITEXTO · 3 de noviembre de 2026 · 5 min de lectura</p></div><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14c8-3 16-3 22 2 6-5 14-5 22-2v36c-8-3-16-3-22 2-6-5-14-5-22-2V14z"/><path d="M32 16v36"/></svg></div>
 <p class="fecha">Edita <a href="/sobre-tikitexto.html">Yago Fernández Galán</a> · texto elaborado con asistencia de IA y contrastado con fuentes · <a href="/sobre-tikitexto.html#editorial">cómo elaboramos el contenido</a> · <a href="/contacto.html">¿Algún error? Escríbenos</a></p>
 <div class="caja">🧒 Que un niño empiece a jugar al fútbol es una decisión sencilla, pero elegir bien dónde y cómo hacerlo importa mucho. Esta guía explica las categorías, qué se aprende en cada etapa y en qué fijarse al escoger una escuela o un club.</div>

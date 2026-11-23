@@ -73,13 +73,13 @@
   function estilo() {
     if (document.getElementById("cmpEstilo")) return;
     var st = document.createElement("style"); st.id = "cmpEstilo";
-    st.textContent = ".cmp{position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;justify-content:center;padding:8px;pointer-events:none;font:15px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}" +
+    st.textContent = ".cmp{position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;justify-content:center;padding:6px;pointer-events:none;font:14px/1.4 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}" +
       ".cmp[hidden]{display:none}" +
-      ".cmp__caja{pointer-events:auto;width:min(620px,100%);max-height:90vh;overflow:auto;background:#10203a;color:#fff;border:1px solid #3a5380;border-radius:14px;padding:14px 16px;box-shadow:0 10px 34px rgba(0,0,0,.4)}" +
-      ".cmp__caja h2{margin:0 0 6px;font-size:1rem}.cmp__caja p{margin:0 0 10px}.cmp__caja a{color:#8fd0ff;text-decoration:underline}" +
-      ".cmp__fila{display:flex;flex-wrap:wrap;gap:8px}" +
-      ".cmp__fila button{flex:1 1 140px;min-height:44px;padding:10px 14px;font:inherit;font-weight:700;color:#10203a;background:#fff;border:2px solid #fff;border-radius:10px;cursor:pointer}" +
-      "#cmpPrincipal .cmp__fila button{flex:1 1 calc(50% - 4px)}#cmpPrincipal #cmpConfig{flex:1 1 100%;order:3;min-height:36px;background:transparent;color:#fff;border-color:#3a5380;font-weight:600}" +
+      ".cmp__caja{pointer-events:auto;width:min(620px,100%);max-height:90vh;overflow:auto;background:#10203a;color:#fff;border:1px solid #3a5380;border-radius:14px;padding:11px 14px;box-shadow:0 10px 34px rgba(0,0,0,.4)}" +
+      ".cmp__caja h2{margin:0 0 6px;font-size:1rem}.cmp__caja p{margin:0 0 8px}.cmp__caja a{color:#8fd0ff;text-decoration:underline}" +
+      ".cmp__fila{display:flex;flex-wrap:wrap;gap:6px}" +
+      ".cmp__fila button{flex:1 1 140px;min-height:42px;padding:8px 12px;font:inherit;font-weight:700;color:#10203a;background:#fff;border:2px solid #fff;border-radius:10px;cursor:pointer}" +
+      "#cmpPrincipal .cmp__fila button{flex:1 1 calc(50% - 3px)}#cmpPrincipal #cmpConfig{flex:1 1 100%;order:3;min-height:34px;padding:4px 12px;background:transparent;color:#fff;border-color:#3a5380;font-weight:600}" +
       ".cmp__fila button:hover{background:#dfeaff;border-color:#dfeaff;color:#10203a}.cmp__fila button:focus-visible{outline:3px solid #ffd54a;outline-offset:2px}" +
       ".cmp__opcion{display:flex;gap:10px;align-items:flex-start;margin:8px 0;padding:10px;background:#1a2f52;border:1px solid #3a5380;border-radius:10px}" +
       ".cmp__opcion input{margin-top:3px;width:18px;height:18px;accent-color:#4fc3f7}.cmp__opcion small{display:block;color:#c3d3ee;font-size:.82rem}";

@@ -16,8 +16,8 @@
 <link rel="icon" type="image/png" sizes="96x96" href="icons/favicon-96.png">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <style>
-:root { --fondo: #f2f5fa; --texto: #14202e; --suave: #55657a; --acento: #0c9b66; --caja: #fff; }
-@media (prefers-color-scheme: dark) { :root { --fondo: #0d131a; --texto: #e8eef5; --suave: #9fb0c3; --acento: #3ee0a4; --caja: #131d29; } }
+:root { --fondo: #f2f5fa; --texto: #14202e; --suave: #55657a; --acento: #07724a; --sobre-acento: #fff; --caja: #fff; }
+@media (prefers-color-scheme: dark) { :root { --fondo: #0d131a; --texto: #e8eef5; --suave: #9fb0c3; --acento: #3ee0a4; --sobre-acento: #04150e; --caja: #131d29; } }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--fondo); color: var(--texto); font: 16px/1.65 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 main { max-width: 760px; margin: 0 auto; padding: 24px 18px 60px; }
@@ -30,18 +30,34 @@ li { margin: 4px 0; }
 table { width: 100%; border-collapse: collapse; background: var(--caja); border-radius: 14px; overflow: hidden; font-size: .92rem; }
 th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid rgba(128,140,160,.25); vertical-align: top; }
 th { color: var(--suave); font-weight: 600; }
-button { font: inherit; cursor: pointer; border: 0; border-radius: 10px; padding: 10px 16px; background: var(--acento); color: #04150e; font-weight: 600; }
+button { font: inherit; cursor: pointer; border: 0; border-radius: 10px; padding: 10px 16px; background: var(--acento); color: var(--sobre-acento); font-weight: 600; }
 button:focus-visible, a:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
 .legal-nav { margin: 40px 0 0; padding-top: 18px; border-top: 1px solid rgba(128,140,160,.3); font-size: .9rem; display: flex; flex-wrap: wrap; gap: 6px 16px; }
-.legal-nav a { color: var(--suave); }
+.legal-nav a { color: var(--suave); display: inline-block; padding: 6px 2px; }
+
+.saltar { position: absolute; left: 12px; top: -60px; z-index: 100; padding: 10px 16px; font-weight: 800; color: #fff; background: #12203a; border-radius: 0 0 12px 12px; text-decoration: none; transition: top .15s; }
+.saltar:focus { top: 0; }
+.menu { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.menu::-webkit-scrollbar { display: none; }
+.menu a { flex: none; padding: 7px 12px; font-size: .86rem; font-weight: 700; line-height: 1.2; color: var(--suave); text-decoration: none; border: 1px solid transparent; border-radius: 999px; white-space: nowrap; }
+.menu a:hover { color: var(--texto); background: var(--caja); }
+.menu a:focus-visible { outline: 3px solid var(--acento); outline-offset: 1px; }
+.menu a[aria-current] { color: var(--acento); background: color-mix(in srgb, var(--acento) 12%, var(--caja)); border-color: color-mix(in srgb, var(--acento) 38%, transparent); }
+
+
+.cab-leg { max-width: 760px; margin: 0 auto; padding: 14px 18px 0; }
+.marca-leg { font-weight: 900; font-size: 1.25rem; letter-spacing: .02em; text-decoration: none; color: var(--texto); }
+.marca-leg span { color: var(--acento); }
+.menu-pag { max-width: 760px; margin: 6px auto 0; padding: 0 6px 6px; }
 </style>
 </head>
 <body>
-<main>
-<p class="nota-idioma" translate="no" style="margin:0 0 14px;padding:10px 12px;border-radius:10px;background:rgba(127,127,127,.12);font-size:.85rem">🌐 Esta página está solo en español (versión oficial). · This page is only available in Spanish (official version): use your browser's translate feature. · Cette page n'existe qu'en espagnol. · Esta página só está em espanhol. · Questa pagina è disponibile solo in spagnolo. · Diese Seite gibt es nur auf Spanisch.</p>
-  <p><a href="./">‹ Volver al juego</a></p>
+<a class="saltar" href="#contenido">Saltar al contenido</a><header class="cab-leg"><a class="marca-leg" href="/" translate="no">TIKI<span>TEXTO</span></a></header>
+<nav class="menu menu-pag" aria-label="Navegación principal"><a href="/">Inicio</a><a href="/curiosidades/">Curiosidades</a><a href="/articulos/">Artículos</a><a href="/curiosidades/datos/">Récords</a><a href="/comparador/">Comparador</a><a href="/clases/">Clases</a><a href="/juegos/">Guías</a><a href="/sobre-tikitexto.html">Sobre</a></nav>
+<main id="contenido">
+<p class="nota-idioma" translate="no" style="margin:0 0 14px;padding:8px 12px;border-radius:10px;background:rgba(127,127,127,.12);font-size:.8rem">🌐 Solo en español (versión oficial) · Spanish only: use your browser's translate feature · Seulement en espagnol · Só em espanhol · Solo in spagnolo · Nur auf Spanisch.</p>
   <h1>Accesibilidad</h1>
-  <p class="fecha">Última actualización: 31 de octubre de 2026</p>
+  <p class="fecha">Última actualización: 23 de noviembre de 2026</p>
 
   <div class="caja">Queremos que TIKITEXTO pueda usarlo cuanta más gente mejor. Esta declaración describe lo que se ha hecho y lo que todavía puede mejorar.</div>
 
@@ -56,6 +72,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--acento); outlin
     <li>Etiquetas accesibles (<code>aria-label</code>) en botones y controles, y avisos dinámicos para lectores de pantalla en los mensajes del juego.</li>
     <li>Se puede jugar con teclado físico (escribir, borrar con retroceso y confirmar con Intro) y con el teclado en pantalla.</li>
     <li>Respeto de la preferencia del sistema «reducir movimiento» en las animaciones.</li>
+    <li>Enlace «Saltar al contenido» al empezar a tabular y menú de navegación común en las páginas de lectura, con la sección actual indicada para lectores de pantalla.</li>
+    <li>Contraste de texto comprobado con una herramienta automática (nivel AA, 4,5:1) en la portada, las páginas de lectura y las páginas legales, en tema claro y oscuro; las pantallas de juego con fondos de colores aún no se han medido una a una.</li>
     <li>No hace falta escribir tildes, y el juego no depende solo del sonido: el sonido de la intro es opcional y puede saltarse.</li>
   </ul>
 

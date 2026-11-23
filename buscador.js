@@ -1,8 +1,8 @@
 /* Buscador de TIKITEXTO: busca en todas las páginas (índice buscador.json), sin tildes, sin servidor. */
 (function () {
   var T = {
-    es: { ph: "Buscar en todo: artículos, datos, juegos…", vacio: "No hay resultados. Prueba con otra palabra (por ejemplo «Messi», «fuera de juego» o «Mundial»).", n: "resultados", lbl: "Buscar", art: "Artículo", his: "Historia", peq: "Peques", dat: "Récords", cur: "Curiosidad", jue: "Juego", sob: "Sobre nosotros" },
-    en: { ph: "Search everything: articles, records, games…", vacio: "No results. Try another word (for example “Messi”, “offside” or “World Cup”).", n: "results", lbl: "Search", art: "Article", his: "Story", peq: "Kids", dat: "Records", cur: "Trivia", jue: "Game", sob: "About" }
+    es: { ph: "Buscar artículos, datos, juegos…", vacio: "No hay resultados. Prueba con otra palabra (por ejemplo «Messi», «fuera de juego» o «Mundial»).", n: "resultados", lbl: "Buscar", art: "Artículo", his: "Historia", peq: "Peques", dat: "Récords", cur: "Curiosidad", jue: "Juego", sob: "Sobre nosotros" },
+    en: { ph: "Search articles, records, games…", vacio: "No results. Try another word (for example “Messi”, “offside” or “World Cup”).", n: "results", lbl: "Search", art: "Article", his: "Story", peq: "Kids", dat: "Records", cur: "Trivia", jue: "Game", sob: "About" }
   };
   T.pt = { ph: "Buscar em tudo…", vacio: "Sem resultados.", n: "resultados", lbl: "Buscar", art: "Artigo", his: "História", peq: "Crianças", dat: "Recordes", cur: "Curiosidade", jue: "Jogo", sob: "Sobre" };
   T.fr = { ph: "Tout rechercher…", vacio: "Aucun résultat.", n: "résultats", lbl: "Rechercher", art: "Article", his: "Histoire", peq: "Enfants", dat: "Records", cur: "Anecdote", jue: "Jeu", sob: "À propos" };
