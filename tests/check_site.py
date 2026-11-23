@@ -1672,7 +1672,7 @@ for _r in ("comparador/", "en/football-comparator/"):
         _wc = len(_re3al.sub(r"<[^>]+>", " ", _h).split())
         if _wc < 250 or "FAQPage" not in _h or "<table>" not in _h or 'hreflang="x-default"' not in _h or ("https://tikitexto.com/" + _r + _s + "/") not in _sm3:
             _mal3.append(_r + _s)
-check("duelos del comparador: >=120 páginas con tabla, FAQ, hreflang y sitemap", _n3 >= 120 and not _mal3, str(_mal3[:3]) + " n=" + str(_n3))
+check("duelos del comparador: >=40 páginas con tabla, FAQ, hreflang y sitemap", _n3 >= 40 and not _mal3, str(_mal3[:3]) + " n=" + str(_n3))
 
 # 3am) modo admin oculto (la secuencia secreta NO está en el repo: variables de entorno TIKI_ADMIN_TECLAS="Code,Code,..."; en móvil se prueba dibujando una W en el selector de idioma; sin la variable se omite)
 _SEQ = [k for k in os.environ.get("TIKI_ADMIN_TECLAS", "").split(",") if k]

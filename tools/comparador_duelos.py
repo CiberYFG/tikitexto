@@ -9,8 +9,12 @@ from curiosidades import e, DOM, RAIZ
 import comparador as CP
 import comparador_data as CD
 
-# Duelos extra a los de DATOS[modo]["duelos"] (pares famosos y muy buscados). Solo ids existentes.
-EXTRA = {
+# 23-nov-2026: AdSense rechazó la web por «contenido de poco valor». Las ~45 páginas de duelo extra (misma plantilla,
+# ~45 % de texto compartido) se retiraron; solo se generan los duelos destacados de DATOS[modo]["duelos"] (21 pares).
+# EXTRA queda vacío a propósito; la lista anterior se conserva en EXTRA_RETIRADOS por si se quiere recuperar alguno
+# con texto editorial propio (no volver a generar páginas de duelo en masa).
+EXTRA = {}
+EXTRA_RETIRADOS = {
  "jugadores": [("messi","maradona"),("messi","pele"),("cristiano","pele"),("cristiano","mbappe"),("messi","mbappe"),("haaland","kane"),
                ("benzema","lewandowski"),("modric","iniesta"),("rodri","pedri"),("vinicius","mbappe"),("bellingham","yamal"),("ronaldo9","henry"),
                ("zidane","iniesta"),("neymar","messi"),("cruyff","pele"),("casillas","ramos"),("salah","kane"),("ronaldinho","messi")],
