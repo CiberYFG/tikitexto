@@ -64,7 +64,7 @@ def pagina(L, a):
     if a["slug"] in ORO:
         h = C.inyecta_css(h, HERO_ORO)
         h += '<a class="oro-cab" href="/articulos/balon-de-oro/">🏆 BALÓN DE ORO · toda la categoría</a>\n'
-    h += '<p class="fecha">Edita <a href="/sobre-tikitexto.html">Yago Fernández Galán</a> · texto elaborado con asistencia de IA y contrastado con fuentes · <a href="/sobre-tikitexto.html#editorial">cómo elaboramos el contenido</a> · <a href="/contacto.html">¿Algún error? Escríbenos</a></p>\n'
+    h += '<p class="fecha">Edita el titular del sitio (<a href="/aviso-legal.html">aviso legal</a>) · texto elaborado con asistencia de IA y contrastado con fuentes · <a href="/sobre-tikitexto.html#editorial">cómo elaboramos el contenido</a> · <a href="/contacto.html">¿Algún error? Escríbenos</a></p>\n'
     h += f'<div class="caja">{m["e"]} {e(a["resumen"])}</div>\n'
     h += '<p class="indice">' + "".join(f'<a href="#s{i}">{e(t)}</a>' for i, (t, _) in enumerate(a["secciones"])) + '</p>\n<div class="articulo">\n'
     for i, (t, ps) in enumerate(a["secciones"]):

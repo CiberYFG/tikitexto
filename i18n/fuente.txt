@@ -58,7 +58,6 @@ Lo he guardado, ¡a jugar! ||| I've saved it, let's play! ||| Já guardei, vamos
 Modo estadios ||| Stadiums mode ||| Modo estádios ||| Mode stades ||| Modalità stadi ||| Stadion-Modus
 Mostrar respuesta ||| Show answer ||| Mostrar resposta ||| Voir la réponse ||| Mostra risposta ||| Antwort zeigen
 No hace falta escribir tildes ||| No need to type accents ||| Não precisa digitar acentos ||| Pas besoin de saisir les accents ||| Non serve scrivere gli accenti ||| Akzente müssen nicht eingegeben werden
-· No hace falta escribir tildes ||| · No need to type accents ||| · Não precisa digitar acentos ||| · Pas besoin de saisir les accents ||| · Non serve scrivere gli accenti ||| · Akzente müssen nicht eingegeben werden
 No, seguir jugando ||| No, keep playing ||| Não, continuar jogando ||| Non, continuer à jouer ||| No, continua a giocare ||| Nein, weiterspielen
 Novedad ||| New ||| Novidade ||| Nouveauté ||| Novità ||| Neu
 Partida terminada ||| Game over ||| Partida encerrada ||| Partie terminée ||| Partita terminata ||| Spiel beendet

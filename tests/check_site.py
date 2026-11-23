@@ -1712,7 +1712,27 @@ for _r in ("juegos/", "en/games/"):
     _hh = open(_os.path.join(_raiz, _r, "index.html"), encoding="utf-8").read()
     check("hub %s enlaza a las 10 guías" % _r, _hh.count('href="') > 10 and all(((_g["es"] if _r == "juegos/" else _g["en"]) + "/") in _hh for _g in _jd.J))
 _hh = open(_os.path.join(_raiz, "articulos", "reglas-basicas-del-futbol-para-principiantes", "index.html"), encoding="utf-8").read()
-check("artículos: llevan autoría editorial y enlace a «cómo elaboramos el contenido»", "Yago Fernández Galán" in _hh and "sobre-tikitexto.html#editorial" in _hh and '"author"' in _hh)
+check("artículos: llevan autoría editorial (sin nombre propio) y enlace a «cómo elaboramos el contenido»", "Edita el titular del sitio" in _hh and "/aviso-legal.html" in _hh and "sobre-tikitexto.html#editorial" in _hh and '"author"' in _hh)
+
+# 3aw) El nombre del titular solo puede aparecer en aviso-legal.html
+print("3aw) Nombre del titular solo en el aviso legal")
+_NOMBRE = re.compile("Yago|Fern[aá]ndez\\s+Gal[aá]n", re.I)
+_fuera = []; _n_f = 0
+for _d, _ds, _fs in _os.walk(_raiz):
+    if any(x in _d for x in ("/.git", "/node_modules", "/tests", "/__pycache__")): continue
+    for _f in _fs:
+        if not _f.endswith((".html", ".js", ".json", ".xml", ".txt", ".md", ".py", ".css", ".webmanifest", ".mjs", ".yml", ".sh")) and _f not in ("LICENSE", "CNAME"): continue
+        _p = _os.path.join(_d, _f)
+        if _os.path.relpath(_p, _raiz) == "aviso-legal.html": continue
+        _n_f += 1
+        try: _t = open(_p, encoding="utf-8").read()
+        except Exception: continue
+        if _NOMBRE.search(_t): _fuera.append(_os.path.relpath(_p, _raiz))
+check("nombre del titular: no aparece en ningún archivo salvo aviso-legal.html (%d archivos revisados)" % _n_f, not _fuera, "; ".join(_fuera[:6]))
+_al = open(_os.path.join(_raiz, "aviso-legal.html"), encoding="utf-8").read()
+check("nombre del titular: sí figura en el aviso legal (Titularidad del sitio)", "Titularidad del sitio" in _al and "Yago" in _al)
+_pv = open(_os.path.join(_raiz, "privacidad.html"), encoding="utf-8").read()
+check("privacidad: identifica al responsable remitiendo al aviso legal", "aviso-legal.html" in _pv and "Responsable:" in _pv)
 
 # 3ai) páginas de texto de las clases animadas (es/en)
 import json as _js
