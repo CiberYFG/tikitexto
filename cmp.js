@@ -144,8 +144,7 @@
     aplicar(); // la medición sin cookies funciona salvo rechazo; Google solo con aceptación expresa
     var sinElegir = leer(K) === null && leer("tikitexto:sin-medicion") !== "1";
     var preguntar = sinElegir || (GTM_ID && leer(KG) === null);
-    var esJuego = !!document.getElementById("botonAjustes"), idioma = !!leer("tikitexto:idioma");
-    if (preguntar && !/bot|crawl|spider|lighthouse/i.test(navigator.userAgent || "") && (!esJuego || idioma)) c.hidden = false;
+    if (preguntar && !/bot|crawl|spider|lighthouse/i.test(navigator.userAgent || "")) c.hidden = false;
     if (location.hash === "#configurar-cookies") mostrar(true);
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", iniciar); else iniciar();

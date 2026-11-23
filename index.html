@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-6haigsWMCgqiSacR95d/JyHeO9IsRKs8aWLtV8kSLWk=' 'sha256-Dtee3TJe+GFU+ExsKT/LJSePM4kc9cF3iaf9cy4c8GY=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Dtee3TJe+GFU+ExsKT/LJSePM4kc9cF3iaf9cy4c8GY=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-Hh7AAfX3Yp/x7pTDr4V5becjXTit8YHHDq0YZJCFmvA=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>
 <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WN89TQCM"></script>
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -2298,6 +2298,11 @@ html:has(.modal:not([hidden]), .idioma) :is(.curio,.info,.novedad,.ah-card,.modo
 }
 .idioma__cerrar:hover { background: rgba(127, 127, 127, .15); }
 .sin-desplazamiento { overflow: hidden; }
+.idi-sug { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 10px; padding: calc(env(safe-area-inset-top) + 8px) 12px 8px; font-size: .84rem; line-height: 1.3; color: var(--texto, #11201a); background: var(--superficie, #fff); border-bottom: 1px solid var(--borde, rgba(127, 127, 127, .25)); }
+.idi-sug__txt { flex: 1 1 100%; margin: 0; text-align: center; }
+.idi-sug button { padding: 5px 12px; font: inherit; font-weight: 800; color: inherit; cursor: pointer; background: none; border: 1.5px solid rgba(127, 127, 127, .4); border-radius: 999px; }
+.idi-sug .idi-sug__si { color: #fff; background: var(--acento, #2e9e6b); border-color: var(--acento, #2e9e6b); }
+.idi-sug button:focus-visible { outline: 3px solid var(--acento, #2e9e6b); outline-offset: 2px; }
 .idioma__caja { animation: idioma-entra .22s ease-out; }
 .idioma__op--sel::after { content: "✓"; margin-left: auto; font-weight: 900; color: var(--acento, #2e9e6b); }
 @keyframes idioma-entra { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
@@ -3372,6 +3377,37 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
   }
   TIKI.abrirSelector = abrirSelector;
 
+  /* ---------- Sugerencia de idioma (primera visita, sin bloquear nada) ----------
+     La web arranca en español. Si el navegador está en otro idioma, una franja fina arriba ofrece cambiar
+     con un toque; «🌐» abre el selector completo y «✕» la cierra para siempre (clave tikitexto:idioma-aviso). */
+  var SUG = {
+    en: ["This site is also available in English.", "Switch to English"],
+    pt: ["Este site também está disponível em português.", "Mudar para português"],
+    fr: ["Ce site est aussi disponible en français.", "Passer en français"],
+    it: ["Questo sito è disponibile anche in italiano.", "Passa all'italiano"],
+    de: ["Diese Seite gibt es auch auf Deutsch.", "Auf Deutsch wechseln"]
+  };
+  function sugerirIdioma() {
+    try { if (localStorage.getItem("tikitexto:idioma-aviso") === "1") return; } catch (e) { /* sin almacenamiento */ }
+    var d = detectar();                       /* idioma del navegador; si no está entre los 6, inglés */
+    if (d === "es" || !SUG[d] || document.querySelector(".idi-sug")) return;
+    var f = document.createElement("div");
+    f.className = "idi-sug"; f.setAttribute("data-no-t", ""); f.setAttribute("translate", "no"); f.setAttribute("role", "region"); f.lang = d;
+    f.setAttribute("aria-label", "Language · Idioma");
+    var p = document.createElement("p"); p.className = "idi-sug__txt"; p.textContent = SUG[d][0];
+    var si = document.createElement("button"); si.type = "button"; si.className = "idi-sug__si"; si.textContent = SUG[d][1];
+    var mas = document.createElement("button"); mas.type = "button"; mas.className = "idi-sug__mas"; mas.textContent = "🌐";
+    mas.setAttribute("aria-label", "Languages · Idiomas"); mas.title = "Languages · Idiomas";
+    var x = document.createElement("button"); x.type = "button"; x.className = "idi-sug__x"; x.textContent = "✕";
+    x.setAttribute("aria-label", "Español · ✕"); x.title = "Español";
+    function quitar() { try { localStorage.setItem("tikitexto:idioma-aviso", "1"); } catch (e) { /* sin almacenamiento */ } f.remove(); }
+    si.addEventListener("click", function () { quitar(); elegir(d); });
+    mas.addEventListener("click", function () { abrirSelector(false); });
+    x.addEventListener("click", quitar);
+    f.appendChild(p); f.appendChild(si); f.appendChild(mas); f.appendChild(x);
+    document.body.insertBefore(f, document.body.firstChild);
+  }
+
 
   /* ---------- Ajustes (sonido) ---------- */
   var AJ_CLAVE = "tikitexto:ajustes";
@@ -3505,7 +3541,7 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
     });
     if (col >= 0 && !observador) iniciarTraductor();
     document.documentElement.classList.remove("t-espera");
-    if (!guardado && !/bot|crawl|spider|slurp|lighthouse|pagespeed/i.test(navigator.userAgent)) abrirSelector(true);
+    if (!guardado && !/bot|crawl|spider|slurp|lighthouse|pagespeed|google|mediapartners/i.test(navigator.userAgent)) sugerirIdioma();
   }
   /* El HTML visible ya está analizado en este punto: se traduce ya (antes del primer pintado) y el
      observador traduce lo que llegue después. Así no hay parpadeo en español ni salto de diseño. */
