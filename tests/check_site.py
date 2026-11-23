@@ -1400,6 +1400,53 @@ with sync_playwright() as p:
     except Exception as e:
         check("línea del tiempo", False, str(e)[:150])
 
+    print("3as) Sopa de letras")
+    try:
+        cso = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
+        pso = cso.new_page(); errs_so = []
+        pso.on("pageerror", lambda e: errs_so.append(str(e)))
+        pso.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','j');sessionStorage.setItem('tikitexto:grupo','letras')")
+        pso.goto(BASE, wait_until="networkidle", timeout=60000); pso.wait_for_timeout(300)
+        check("sopa: tarjeta en Letras", pso.locator("[data-sopa]").count() == 1)
+        pso.evaluate("document.querySelector('[data-sopa]').click()"); pso.wait_for_timeout(2000)
+        check("sopa: se abre la pantalla", pso.locator(".so-raiz").count() == 1)
+        r = pso.evaluate("""(()=>{ const j=TIKI.sopa.juego(); let mal=0, n=0; const tam=[];
+          for(let nv=0; nv<7; nv++) for(let k=0;k<40;k++){ const G=j.generar(nv, null); n++; if(!G){mal++;continue;}
+            const cfg=j.NIVELES[Math.min(nv,j.NIVELES.length-1)]; if(G.n!==cfg.n||G.palabras.length!==cfg.pal) mal++; if(nv<7&&k===0) tam.push(G.n);
+            G.palabras.forEach(p=>{ const s=p.cells.map(c=>G.g[c[0]][c[1]]).join(''); if(s!==p.w) mal++; if(!p.cells.every(c=>c[0]>=0&&c[0]<G.n&&c[1]>=0&&c[1]<G.n)) mal++; });
+            if(!G.g.every(f=>f.every(x=>/^[A-Z]$/.test(x)))) mal++; if(nv===0 && !G.palabras.every(p=>p.d[0]>=0&&p.d[1]>=0)) mal++; }
+          const rev=j.generar(4,null).palabras.some(p=>p.d[0]<0||p.d[1]<0) || j.generar(4,null).palabras.some(p=>p.d[0]<0||p.d[1]<0) || j.generar(4,null).palabras.some(p=>p.d[0]<0||p.d[1]<0);
+          return {mal,n,tam:tam.join(','),rev,temas:j.TEMAS.length,aj:JSON.stringify(j.ajusta([2,2],[2,6],10).map(x=>x.join(''))), aj2:j.ajusta([0,0],[3,3],10).length, aj3:j.ajusta([5,5],[1,1],10).length}; })()""")
+        check("sopa: las cuadrículas tienen todas sus palabras bien colocadas por nivel", r["mal"] == 0 and r["tam"] == "8,9,10,10,11,11,11" and r["temas"] >= 25 and r["rev"], str(r))
+        check("sopa: la selección se ajusta a líneas rectas (horizontal, diagonal y al revés)", r["aj"] == '["22","23","24","25","26"]' and r["aj2"] == 4 and r["aj3"] == 5, str(r))
+        pso.click("[data-menu] [data-so=jugar]"); pso.wait_for_timeout(400)
+        check("sopa: empieza con cuadrícula 8×8, 5 nombres y reloj", pso.locator(".so-c").count() == 64 and pso.locator(".so-pal").count() == 5 and "2:" in pso.inner_text("[data-reloj]"))
+        pso.evaluate("(()=>{const j=TIKI.sopa.juego(); j.resolver(j.S.G.palabras[0].w);})()"); pso.wait_for_timeout(150)
+        check("sopa: marcar un nombre lo colorea, lo tacha y suma puntos", pso.locator(".so-c.enc").count() >= 4 and pso.locator(".so-pal.hecho").count() == 1 and pso.evaluate("TIKI.sopa.juego().S.pts") >= 100)
+        pso.evaluate("(()=>{const j=TIKI.sopa.juego(); j.evalua([[0,0],[0,1]]);})()"); pso.wait_for_timeout(100)
+        check("sopa: una selección sin nombre se rechaza", pso.locator(".so-pal.hecho").count() == 1 and "no" in pso.inner_text("[data-info]").lower())
+        # arrastre real con el ratón sobre la primera palabra pendiente
+        box = pso.evaluate("""(()=>{ const j=TIKI.sopa.juego(); const p=j.S.G.palabras.filter(x=>!j.S.hechas[x.w])[0]; const g=document.querySelector('[data-grid]').getBoundingClientRect(); const n=j.S.G.n; const f=(c)=>({x:g.left+(c[1]+.5)/n*g.width, y:g.top+(c[0]+.5)/n*g.height});
+          return {a:f(p.cells[0]), b:f(p.cells[p.cells.length-1]), w:p.w}; })()""")
+        pso.mouse.move(box["a"]["x"], box["a"]["y"]); pso.mouse.down(); pso.mouse.move(box["b"]["x"], box["b"]["y"], steps=6); pso.mouse.up(); pso.wait_for_timeout(200)
+        check("sopa: deslizar el ratón sobre las letras marca el nombre", pso.locator(".so-pal.hecho").count() == 2, box["w"])
+        pso.evaluate("(()=>{const j=TIKI.sopa.juego(); j.pista();})()"); pso.wait_for_timeout(100)
+        check("sopa: la pista marca una letra inicial y resta tiempo", pso.locator(".so-c.pista").count() == 1 and pso.evaluate("TIKI.sopa.juego().S.resto") < 146)
+        pso.evaluate("(()=>{const j=TIKI.sopa.juego(); j.S.G.palabras.forEach(p=>{ if(!j.S.hechas[p.w]) j.resolver(p.w); });})()"); pso.wait_for_timeout(300)
+        check("sopa: completar la cuadrícula suma tiempo y pasa al nivel 2", pso.evaluate("TIKI.sopa.juego().S.cuad") == 1 and pso.evaluate("TIKI.sopa.juego().S.fase") == "pausa")
+        pso.wait_for_timeout(1800)
+        check("sopa: la cuadrícula siguiente es 9×9 con 6 nombres", pso.locator(".so-c").count() == 81 and pso.locator(".so-pal").count() == 6)
+        pso.evaluate("(()=>{const j=TIKI.sopa.juego(); j.S.G.palabras.forEach(p=>{ if(!j.S.hechas[p.w]) j.resolver(p.w); });})()"); pso.wait_for_timeout(300)
+        check("sopa: la 2.ª cuadrícula da +1 tikitexto", pso.evaluate("TIKI.sopa.juego().S.tikis") == 1)
+        pso.evaluate("(()=>{const j=TIKI.sopa.juego(); j.S.t=0.2; j.S.t0=performance.now();})()"); pso.wait_for_timeout(1900)
+        check("sopa: al acabarse el tiempo sale el resultado", pso.locator("[data-fin]:not([hidden])").count() == 1, pso.inner_text("[data-fin-m]"))
+        pso.evaluate("document.querySelector('[data-so=salir]').click()"); pso.wait_for_timeout(300)
+        check("sopa: salir cierra la pantalla", pso.locator(".so-raiz").count() == 0)
+        check("sopa: sin errores de JavaScript", not errs_so, "; ".join(errs_so)[:150])
+        cso.close()
+    except Exception as e:
+        check("sopa de letras", False, str(e)[:150])
+
     print("3ao) Vitrina de logros")
     try:
         clg = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")

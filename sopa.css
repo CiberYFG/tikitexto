@@ -1,0 +1,57 @@
+/* SOPA DE LETRAS · estilos (se carga al abrir el modo) */
+.so-raiz { position: fixed; inset: 0; z-index: 2000; color: #fff; font-family: var(--fuente, system-ui, sans-serif); overflow-y: auto; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
+  display: flex; flex-direction: column; align-items: center; background: radial-gradient(ellipse at 50% 0%, #0f5a3a 0%, #073321 55%, #020f09 100%); }
+.so-raiz * { box-sizing: border-box; }
+.so-raiz [hidden] { display: none !important; }
+.so-fondo { position: fixed; inset: 0; pointer-events: none; opacity: .55; background: repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 60px, transparent 60px 120px), radial-gradient(circle at 90% 6%, rgba(255,210,58,.14), transparent 40%), radial-gradient(circle at 8% 96%, rgba(25,230,255,.1), transparent 45%); }
+.so-cab { position: relative; width: min(600px, 100%); display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: calc(10px + env(safe-area-inset-top)) 12px 0; }
+.so-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255,255,255,.25); background: rgba(8,12,24,.7); backdrop-filter: blur(8px); color: #fff; font: 800 1rem/1 inherit; cursor: pointer; display: grid; place-items: center; }
+.so-btn:hover { background: rgba(30,40,70,.85); }
+.so-sec { width: 100%; border: 1px solid rgba(255,255,255,.28); background: rgba(255,255,255,.08); color: #fff; border-radius: 999px; padding: 11px 16px; font: 800 .82rem/1 var(--fuente, system-ui); cursor: pointer; }
+.so-sec:hover { background: rgba(255,255,255,.18); }
+.so-marc { display: grid; justify-items: center; gap: 4px; padding: 6px 22px 7px; border-radius: 16px; background: linear-gradient(rgba(4,16,10,.88), rgba(6,24,14,.78)); border: 1px solid rgba(65,255,138,.5); }
+.so-marc small { font: 800 .62rem/1 var(--fuente, system-ui); letter-spacing: .2em; text-transform: uppercase; color: #ffd23a; }
+.so-marc b { font: 900 1.5rem/1 ui-monospace, "Courier New", monospace; color: #41ff8a; text-shadow: 0 0 10px rgba(65,255,138,.5); }
+.so-reloj { min-width: 62px; text-align: right; font: 900 1.35rem/1 ui-monospace, "Courier New", monospace; color: #fff; }
+.so-reloj.urge { color: #ff6b7c; animation: soLate .6s ease-in-out infinite alternate; }
+@keyframes soLate { to { transform: scale(1.12); } }
+.so-tiempo { position: relative; width: min(600px, calc(100% - 24px)); height: 8px; margin: 10px 12px 0; border-radius: 6px; background: rgba(255,255,255,.14); overflow: hidden; }
+.so-tiempo i { display: block; height: 100%; width: 100%; transform-origin: left; background: linear-gradient(90deg, #41ff8a, #19e6ff); box-shadow: 0 0 10px rgba(25,230,255,.7); }
+.so-tiempo i.ambar { background: linear-gradient(90deg, #ffd23a, #ff9a1f); } .so-tiempo i.rojo { background: linear-gradient(90deg, #ff4d63, #ff9a1f); }
+.so-tema { margin: 10px 14px 0; text-align: center; font: 900 clamp(1rem, 4.4vw, 1.25rem)/1.15 var(--fuente-titulo, system-ui); color: #ffd23a; text-shadow: 0 0 14px rgba(255,210,58,.35); }
+.so-info { min-height: 24px; margin: 4px 14px 0; text-align: center; font: 800 .88rem/1.25 var(--fuente, system-ui); color: #b8dcc8; }
+.so-info.bien { color: #41ff8a; } .so-info.mal { color: #ff6b7c; }
+.so-tablero { position: relative; margin: 6px 12px 0; padding: 8px; border-radius: 18px; background: linear-gradient(160deg, rgba(4,20,12,.86), rgba(2,12,8,.9)); border: 1px solid rgba(65,255,138,.4); box-shadow: 0 10px 34px rgba(0,0,0,.5), inset 0 0 40px rgba(65,255,138,.06); }
+.so-grid { --tam: min(calc(100vw - 54px), 56vh, 520px); width: var(--tam); height: var(--tam); display: grid; grid-template-columns: repeat(var(--n, 8), 1fr); grid-template-rows: repeat(var(--n, 8), 1fr); gap: 2px; touch-action: none; cursor: crosshair; }
+.so-c { display: grid; place-items: center; border-radius: 8px; background: rgba(255,255,255,.07); font: 900 clamp(13px, calc(var(--tam) / var(--n, 8) * .5), 28px)/1 var(--fuente-titulo, system-ui); color: #eaffef; transition: background .1s, transform .1s; }
+.so-c.sel { background: #19e6ff; color: #04141a; transform: scale(1.08); box-shadow: 0 0 14px rgba(25,230,255,.8); }
+.so-c.enc { background: var(--c, #41ff8a); color: #04141a; box-shadow: 0 0 10px color-mix(in srgb, var(--c, #41ff8a) 70%, transparent); }
+.so-c.pista { outline: 3px solid #ffd23a; outline-offset: -2px; animation: soPista .8s ease-in-out infinite alternate; }
+@keyframes soPista { to { background: rgba(255,210,58,.45); } }
+.so-c.mal { background: #ff4d63; color: #fff; animation: soSacude .36s; }
+@keyframes soSacude { 20%, 60% { transform: translateX(-4px); } 40%, 80% { transform: translateX(4px); } }
+.so-lista { width: min(600px, 100%); display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding: 12px 12px 6px; }
+.so-pal { padding: 5px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,.28); background: rgba(255,255,255,.08); font: 800 .78rem/1 var(--fuente, system-ui); letter-spacing: .06em; color: #eaffef; }
+.so-pal.hecho { background: var(--c, #41ff8a); color: #04141a; border-color: transparent; text-decoration: line-through; text-decoration-thickness: 2px; }
+.so-pie { width: min(600px, 100%); padding: 6px 12px calc(18px + env(safe-area-inset-bottom)); display: grid; justify-items: center; }
+.so-pista { border: 1px solid rgba(255,210,58,.6); border-radius: 999px; padding: 11px 20px; background: rgba(255,210,58,.12); color: #ffd23a; font: 800 .85rem/1 var(--fuente, system-ui); cursor: pointer; }
+.so-pista:hover { background: rgba(255,210,58,.25); }
+.so-menu, .so-fin { position: fixed; inset: 0; display: grid; place-items: center; padding: 16px; background: rgba(2,10,6,.88); backdrop-filter: blur(6px); overflow-y: auto; z-index: 8; }
+.so-caja { width: min(400px, 100%); display: grid; justify-items: center; gap: 10px; text-align: center; padding: 22px 20px 20px; border-radius: 22px; background: linear-gradient(160deg, rgba(10,70,44,.97), rgba(3,16,10,.97)); border: 1px solid rgba(65,255,138,.5); box-shadow: 0 0 40px rgba(65,255,138,.16), 0 20px 60px rgba(0,0,0,.6); }
+.so-caja--s { max-width: 330px; }
+.so-kicker { margin: 0; font: 800 .68rem/1 var(--fuente, system-ui); letter-spacing: .26em; text-transform: uppercase; color: #ffd23a; }
+.so-titulo { margin: 0; display: grid; font: 900 clamp(2rem, 10vw, 2.8rem)/.95 var(--fuente-titulo, system-ui); font-style: italic; }
+.so-titulo span:first-child { color: #fff; text-shadow: 0 0 22px rgba(65,255,138,.7); }
+.so-titulo span:last-child { background: linear-gradient(90deg, #ffd23a, #41ff8a, #19e6ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.so-sub { margin: 0; font: 700 .86rem/1.3 var(--fuente, system-ui); color: #d4f5e2; }
+.so-como { list-style: none; margin: 2px 0 0; padding: 0; display: grid; gap: 8px; text-align: left; width: 100%; }
+.so-como li { display: flex; gap: 10px; align-items: flex-start; font: 600 .8rem/1.3 var(--fuente, system-ui); color: #d4f5e2; }
+.so-como b { flex: none; width: 22px; height: 22px; border-radius: 50%; background: #41ff8a; color: #03180c; display: grid; place-items: center; font: 900 .75rem/1 system-ui; }
+.so-stats { margin: 0; font: 700 .76rem/1.4 var(--fuente, system-ui); opacity: .9; color: #b8dcc8; }
+.so-jugar { width: 100%; border: 0; border-radius: 14px; padding: 13px 18px; font: 900 1rem/1.1 var(--fuente-titulo, system-ui); letter-spacing: .08em; text-transform: uppercase; cursor: pointer; background: linear-gradient(135deg, #41ff8a, #ffd23a); color: #04180d; box-shadow: 0 8px 26px rgba(65,255,138,.35); }
+.so-jugar:hover { filter: brightness(1.08); }
+.so-caja h3 { margin: 0; font: 900 1.5rem/1.15 var(--fuente-titulo, system-ui); color: #ffd23a; }
+.so-res { margin: 0; font: 800 .98rem/1.25 var(--fuente, system-ui); color: #41ff8a; }
+.so-tikis { margin: 0; font: 900 .95rem/1 var(--fuente, system-ui); color: #ffd23a; }
+@media (max-height: 700px) { .so-tablero { padding: 6px; } .so-lista { padding-top: 8px; } .so-tema { margin-top: 6px; } }
+@media (prefers-reduced-motion: reduce) { .so-reloj.urge, .so-c.pista, .so-c.mal { animation: none; } .so-c { transition: none; } }

@@ -8,7 +8,7 @@ const TIEMPO = 180, TIEMPO_MAX = 240, BONUS_T = 45, COSTE_PISTA = 5, COSTE_PISTA
 const COLS = ["#19e6ff", "#ff3dcb", "#ffe94a", "#41ff8a", "#ff9a1f", "#c77dff", "#ff6b7c", "#7dd3fc"];
 
 /* Nombres sin tildes ni espacios (A-Z), de 3 a 9 letras. Equipos, estadios y leyendas MUY conocidos. Cada tema tiene 10+ para poder combinar. */
-const TEMAS = [
+export const TEMAS = [
   /* Equipos */
   { t: "Equipos de LaLiga", n: "MADRID BARCA ATLETI SEVILLA VALENCIA BETIS ATHLETIC GETAFE OSASUNA CELTA ESPANYOL MALLORCA GIRONA RAYO ALAVES" },
   { t: "Equipos de la Premier League", n: "LIVERPOOL ARSENAL CHELSEA TOTTENHAM EVERTON WESTHAM UNITED CITY NEWCASTLE LEICESTER FULHAM BRIGHTON WOLVES LEEDS" },
