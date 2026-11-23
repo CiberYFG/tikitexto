@@ -1517,7 +1517,7 @@ with sync_playwright() as p:
           for (const l of L) { ids.add(l.id); if (l.t.length!==6||l.d.length!==6||l.tiers.length!==3||!(l.tiers[0]<l.tiers[1]&&l.tiers[1]<l.tiers[2])||!l.d.every(x=>x.includes('{n}'))) mal++; }
           const v0 = m.calcular({}, {}), v1 = m.calcular({pts:300,jugadas:200,mejor:20,diaMejor:40}, {sl:{mejorm:7000,bal:6000}});
           return {mal, n:L.length, uni:ids.size, vacio:v0.every(e=>e.nivel===0), oro:v1.filter(e=>e.nivel===3).length, r0:m.resumen(v0).rango, r1:m.resumen(v1).rango}; })()""")
-        check("logros: 26 logros únicos con 6 idiomas y 3 niveles crecientes", r["mal"] == 0 and r["n"] >= 26 and r["uni"] == r["n"], str(r))
+        check("logros: 34 logros únicos con 6 idiomas y 3 niveles crecientes", r["mal"] == 0 and r["n"] >= 34 and r["uni"] == r["n"], str(r))
         check("logros: perfil vacío = 0 medallas; marcas altas = oro", r["vacio"] and r["oro"] >= 5 and r["r0"] == 0 and r["r1"] >= 1, str(r))
         # perfil de ejemplo en el almacenamiento
         plg.evaluate("""(()=>{ const d = JSON.parse(localStorage.getItem('tikitexto:jugadores')); const p = d.perfiles[d.actual];
@@ -1525,16 +1525,16 @@ with sync_playwright() as p:
           localStorage.setItem('tikitexto:jugadores', JSON.stringify(d)); })()""")
         plg.goto(BASE, wait_until="networkidle", timeout=60000); plg.wait_for_timeout(5000)
         check("logros: la primera vez avisa de lo ya conseguido (una sola vez)", plg.locator(".lg-toast").count() >= 1)
-        check("logros: el banner muestra medallas y rango", re.match(r"^\d+/78", plg.locator("[data-lg-cnt]").first.inner_text().strip()) is not None, plg.locator("[data-lg-cnt]").first.inner_text())
+        check("logros: el banner muestra medallas y rango", re.match(r"^\d+/102", plg.locator("[data-lg-cnt]").first.inner_text().strip()) is not None, plg.locator("[data-lg-cnt]").first.inner_text())
         plg.evaluate("document.querySelector('[data-logros]').click()"); plg.wait_for_timeout(1800)
-        check("logros: se abre la vitrina con las 26 tarjetas", plg.locator(".lg-raiz").count() == 1 and plg.locator(".lg-card").count() == 26)
+        check("logros: se abre la vitrina con las 34 tarjetas", plg.locator(".lg-raiz").count() == 1 and plg.locator(".lg-card").count() == 34)
         check("logros: botón de compartir y anillo de progreso", plg.locator("[data-lg=compartir]").count() == 1 and plg.locator(".lg-anillo .prog").count() == 1)
         check("logros: hay medallas de oro, plata y bronce y bloqueadas", plg.locator(".lg-card--3").count() >= 1 and plg.locator(".lg-card--2").count() >= 1 and plg.locator(".lg-card--1").count() >= 1 and plg.locator(".lg-card--0").count() >= 1)
         plg.click("[data-f=ganadas]"); plg.wait_for_timeout(300)
         n_g = plg.locator(".lg-card").count()
         plg.click("[data-f=pendientes]"); plg.wait_for_timeout(300)
         n_p = plg.locator(".lg-card").count()
-        check("logros: los filtros reparten las tarjetas", 0 < n_g < 26 and 0 < n_p < 26 and plg.locator(".lg-card--3").count() == 0, "%d/%d" % (n_g, n_p))
+        check("logros: los filtros reparten las tarjetas", 0 < n_g < 34 and 0 < n_p < 34 and plg.locator(".lg-card--3").count() == 0, "%d/%d" % (n_g, n_p))
         plg.keyboard.press("Escape"); plg.wait_for_timeout(300)
         check("logros: Esc cierra la vitrina", plg.locator(".lg-raiz").count() == 0)
         # un logro nuevo muestra un aviso
