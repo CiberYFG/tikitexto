@@ -772,7 +772,7 @@ with sync_playwright() as p:
         check("curiosidades: al pulsar el tema se ven sus categorías", pv.locator("details.tema[open] details.tema").count() == 7)
         pv.goto(BASE + "articulos/", wait_until="networkidle", timeout=60000)
         n_art = pv.evaluate("document.querySelectorAll('details.tema a.tarjeta').length")
-        check("articulos: 69 artículos agrupados en 7 temas (el primero, BALÓN DE ORO)", n_art == 69 and pv.locator("details.tema").count() == 7 and pv.locator("details.tema.oro").count() == 1, str(n_art))
+        check("articulos: 81 artículos agrupados en 7 temas (el primero, BALÓN DE ORO)", n_art == 81 and pv.locator("details.tema").count() == 7 and pv.locator("details.tema.oro").count() == 1, str(n_art))
         check("temas/buscador: sin errores de JavaScript", not errs_v, "; ".join(errs_v)[:150])
         cv.close()
     except Exception as e:

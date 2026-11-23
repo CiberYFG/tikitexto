@@ -1,6 +1,18 @@
 # -*- coding: utf-8 -*-
 """Color y emoji de cada artículo (sin dependencias). c = (acento claro, acento oscuro)."""
 META = {
+    "las-mejores-selecciones-de-la-historia-hungria-brasil-paises-bajos-espana-francia": dict(c=('#b91c1c', '#f87171'), e="🌟"),
+    "mundial-de-clubes-y-copa-intercontinental-historia-y-formato": dict(c=('#0e7490', '#22d3ee'), e="🌐"),
+    "copas-nacionales-fa-cup-copa-del-rey-pokal-coppa-italia-y-coupe-de-france": dict(c=('#a16207', '#facc15'), e="🏆"),
+    "historia-de-la-premier-league-de-1992-a-hoy-invencibles-leicester-y-globalizacion": dict(c=('#6d28d9', '#c4b5fd'), e="🦁"),
+    "el-trofeo-de-la-copa-del-mundo-jules-rimet-robo-y-la-copa-actual": dict(c=('#a16207', '#fbbf24'), e="🏆"),
+    "como-se-elige-la-sede-de-un-mundial-de-futbol-candidaturas-votaciones-y-2026-2030-2034": dict(c=('#047857', '#34d399'), e="🗺️"),
+    "los-clubes-de-futbol-mas-antiguos-del-mundo-sheffield-notts-county-y-los-pioneros": dict(c=('#78350f', '#fbbf24'), e="🕰️"),
+    "apodos-de-clubes-y-selecciones-de-futbol-origen-de-merengues-colchoneros-gunners-y-azzurri": dict(c=('#be185d', '#f9a8d4'), e="🏷️"),
+    "quien-es-el-dueno-de-un-club-de-futbol-socios-regla-50-1-sad-y-multipropiedad": dict(c=('#1e40af', '#93c5fd'), e="🔑"),
+    "evolucion-del-lateral-en-el-futbol-de-defensor-a-carrilero-y-lateral-interior": dict(c=('#0f766e', '#5eead4'), e="↔️"),
+    "historia-de-la-serie-a-y-el-calcio-del-catenaccio-al-calciopoli-y-la-actualidad": dict(c=('#1d4ed8', '#60a5fa'), e="🇮🇹"),
+    "historia-de-la-copa-libertadores-campeones-finales-y-el-fenomeno-brasileno": dict(c=('#15803d', '#86efac'), e="🌎"),
     "glosario-del-futbol-terminos-y-jerga-explicados": dict(c=("#0f766e", "#2dd4bf"), e="📖"),
     "cambios-de-reglas-que-transformaron-el-futbol-penalti-tarjetas-pase-atras": dict(c=("#4338ca", "#818cf8"), e="📜"),
     "grandes-ideas-tacticas-de-la-historia-del-futbol-y-los-entrenadores-que-las-crearon": dict(c=("#6d28d9", "#a78bfa"), e="♟️"),
@@ -115,11 +127,13 @@ CATS = [
         'grandes-ideas-tacticas-de-la-historia-del-futbol-y-los-entrenadores-que-las-crearon',
         'lesiones-mas-comunes-en-el-futbol-y-como-prevenirlas',
         'datos-en-el-futbol-de-las-libretas-de-charles-reep-al-gps-y-la-analitica',
+        'evolucion-del-lateral-en-el-futbol-de-defensor-a-carrilero-y-lateral-interior',
     ]),
     ('premios', '🏆', 'Premios y trofeos', 'Balón de Oro, Bota de Oro, trofeos, países con más premios y Messi frente a Cristiano.', '#c98a00', [
         'como-funciona-la-bota-de-oro',
         'premios-individuales-futbol-diferencias',
         'trofeos-mas-importantes-del-futbol',
+        'el-trofeo-de-la-copa-del-mundo-jules-rimet-robo-y-la-copa-actual',
     ]),
     ('historia', '📜', 'Historia y competiciones', 'Orígenes del fútbol, el balón, los dorsales, las camisetas, las ligas, la Champions, los derbis y el fútbol femenino.', '#dc2626', [
         'origenes-del-futbol-moderno-de-1863-a-hoy',
@@ -136,6 +150,13 @@ CATS = [
         'historia-de-la-eurocopa-de-1960-a-hoy-formato-y-campeones',
         'torneos-continentales-de-selecciones-copa-america-copa-africana-y-copa-asiatica',
         'historia-del-futbol-en-espana-de-los-primeros-clubes-a-laliga',
+        'las-mejores-selecciones-de-la-historia-hungria-brasil-paises-bajos-espana-francia',
+        'mundial-de-clubes-y-copa-intercontinental-historia-y-formato',
+        'copas-nacionales-fa-cup-copa-del-rey-pokal-coppa-italia-y-coupe-de-france',
+        'historia-de-la-premier-league-de-1992-a-hoy-invencibles-leicester-y-globalizacion',
+        'como-se-elige-la-sede-de-un-mundial-de-futbol-candidaturas-votaciones-y-2026-2030-2034',
+        'historia-de-la-serie-a-y-el-calcio-del-catenaccio-al-calciopoli-y-la-actualidad',
+        'historia-de-la-copa-libertadores-campeones-finales-y-el-fenomeno-brasileno',
     ]),
     ('clubes', '🏟️', 'Clubes, fichajes y estadios', 'Cómo funciona un club, los traspasos, la cantera, el control económico, los estadios y la afición.', '#ea580c', [
         'sentencia-bosman-clausulas-de-rescision-y-traspasos',
@@ -152,6 +173,9 @@ CATS = [
         'de-donde-sale-el-dinero-de-un-club-de-futbol-ingresos-y-gastos',
         'como-trabaja-un-ojeador-de-futbol-scouting-y-seguimiento-de-jugadores',
         'calendario-del-futbol-temporadas-ventanas-de-fichajes-y-fechas-fifa',
+        'los-clubes-de-futbol-mas-antiguos-del-mundo-sheffield-notts-county-y-los-pioneros',
+        'apodos-de-clubes-y-selecciones-de-futbol-origen-de-merengues-colchoneros-gunners-y-azzurri',
+        'quien-es-el-dueno-de-un-club-de-futbol-socios-regla-50-1-sad-y-multipropiedad',
     ]),
     ('juego', '🎮', 'Juega mejor a TIKITEXTO', 'Estadística propia de las letras y trucos para adivinar el futbolista en 6 intentos.', '#16a34a', [
         'letras-mas-frecuentes-nombres-futbolistas',
@@ -161,5 +185,5 @@ CATS = [
 
 def todos():
     """Todos los artículos (dicts) en orden de publicación."""
-    import articulos_a, articulos_b, articulos_c, articulos_d, articulos_e, articulos_f, articulos_g, articulos_h, articulos_i, articulos_j, articulos_k, articulos_l, articulos_m
-    return (articulos_a.ARTICULOS_A + articulos_b.ARTICULOS_B + articulos_c.ARTICULOS_C + articulos_d.ARTICULOS_D + articulos_e.ARTICULOS_E + articulos_f.ARTICULOS_F + articulos_g.ARTICULOS_G + articulos_h.ARTICULOS_H + articulos_i.ARTICULOS_I + articulos_j.ARTICULOS_J + articulos_k.ARTICULOS_K + articulos_l.ARTICULOS_L + articulos_m.ARTICULOS_M)
+    import articulos_a, articulos_b, articulos_c, articulos_d, articulos_e, articulos_f, articulos_g, articulos_h, articulos_i, articulos_j, articulos_k, articulos_l, articulos_m, articulos_n, articulos_o
+    return (articulos_a.ARTICULOS_A + articulos_b.ARTICULOS_B + articulos_c.ARTICULOS_C + articulos_d.ARTICULOS_D + articulos_e.ARTICULOS_E + articulos_f.ARTICULOS_F + articulos_g.ARTICULOS_G + articulos_h.ARTICULOS_H + articulos_i.ARTICULOS_I + articulos_j.ARTICULOS_J + articulos_k.ARTICULOS_K + articulos_l.ARTICULOS_L + articulos_m.ARTICULOS_M + articulos_n.ARTICULOS_N + articulos_o.ARTICULOS_O)
