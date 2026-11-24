@@ -117,6 +117,7 @@ html.huecos body { padding-bottom: 64px; }
 .menu-pag { max-width: 760px; margin: 6px auto 0; padding: 0 6px 4px; }
 .idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 8px; } .idiomas a { display: inline-block; padding: 5px 4px; }
 </style>
+<link rel="stylesheet" href="/estudio.css">
 </head>
 <body>
 <script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';var t=e.target.closest&&e.target.closest('[data-tema-btn]');if(t){var n=document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('tikitexto:tema',n);}catch(x){}}});})();</script>
@@ -146,6 +147,7 @@ html.huecos body { padding-bottom: 64px; }
 <p class="indice"><a href="/curiosidades/maximos-goleadores-champions/">Máximos goleadores de la historia de la Champions League</a><a href="/curiosidades/maximos-goleadores-selecciones/">Máximos goleadores de selecciones de la historia</a><a href="/curiosidades/mas-partidos-con-la-seleccion/">Jugadores con más partidos con su selección</a><a href="/curiosidades/balon-de-oro-ganadores/">Balón de Oro: ganadores, récords y países con más premios</a></p>
 <p><a class="jugar" href="/">⚽ Pon a prueba tu memoria mundialista: juega</a></p>
 
+<div class="est-fin"></div>
 <p><a class="jugar" href="/">⚽ Juega a los juegos de fútbol de TIKITEXTO</a></p>
 <aside class="hueco" aria-label="Publicidad" data-hueco="medio">Publicidad</aside>
 <aside class="hueco hueco--ancla" aria-label="Publicidad" data-hueco="ancla">Publicidad<button type="button" data-cerrar-hueco aria-label="✕">✕</button></aside>
@@ -153,8 +155,10 @@ html.huecos body { padding-bottom: 64px; }
 <nav class="legal-nav" aria-label="Info">
 <a href="/curiosidades/">Curiosidades</a><a href="/sobre-tikitexto.html">Sobre TIKITEXTO</a><a href="/aviso-legal.html">Aviso legal</a><a href="/privacidad.html">Privacidad</a><a href="/cookies.html">Cookies</a><a href="/accesibilidad.html">Accesibilidad</a><a href="/contacto.html">Contacto</a>
 </nav>
+<p class="fecha"><time datetime="2026-11-24">Sitio actualizado el 24 de noviembre de 2026</time></p>
 <p class="fecha">TIKITEXTO no está afiliado a clubes, jugadores, federaciones ni competiciones. Los nombres se usan solo como referencia informativa. Ilustraciones propias.</p>
 </main>
+<script src="/estudio.js" defer></script>
 <script src="/cmp.js" defer></script>
 </body>
 </html>

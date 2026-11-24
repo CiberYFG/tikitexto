@@ -5,6 +5,7 @@ import os, html, json
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import menu_sitio as MS
+import fecha_sitio as _FS
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOM = "https://tikitexto.com/"
 FECHA = "31 de octubre de 2026"
@@ -329,6 +330,7 @@ def cabecera(L, titulo, desc, ruta, h1, icono=None):
 <style>
 {CSS}{MS.CSS}.idiomas {{ font-size: .85rem; color: var(--suave); margin: 0 0 8px; }} .idiomas a {{ display: inline-block; padding: 5px 4px; }}
 </style>
+<link rel="stylesheet" href="/estudio.css">
 </head>
 <body>
 {HUECOS_JS}{MS.saltar(L.lang)}<header class="barra"><div><a class="marca" href="{L.play()}" aria-label="{e(u['back'])}">TIKI<i>TEXTO</i></a><span class="miga"></span><button type="button" class="tema" data-tema-btn aria-label="🌓" title="🌓">🌓</button><a class="cta" href="{L.play()}">{e(JUGAR[L.lang])}</a></div></header>
@@ -406,13 +408,16 @@ def seguir(L):
 def pie(L, extra="", con_seguir=False):
     u = L.ui; n = u["nav"]
     return f"""{extra}
+<div class="est-fin"></div>
 <p><a class="jugar" href="{L.play()}">{e(u['play'])}</a></p>
 {hueco(L)}{seguir(L) if con_seguir else ""}{hueco(L, "ancla")}
 <nav class="legal-nav" aria-label="Info">
 <a href="{L.url('curiosidades/')}">{e(n[0])}</a><a href="/sobre-tikitexto.html">{e(SOBRE[L.lang])}</a><a href="/aviso-legal.html">{e(n[1])}</a><a href="/privacidad.html">{e(n[2])}</a><a href="/cookies.html">{e(n[3])}</a><a href="/accesibilidad.html">{e(n[4])}</a><a href="/contacto.html">{e(n[5])}</a>
 </nav>
+<p class="fecha"><time datetime="{_FS.iso()}">{e(_FS.texto(L.lang))}</time></p>
 <p class="fecha">{e(u['disc'])}</p>
 </main>
+<script src="/estudio.js" defer></script>
 </body>
 </html>
 """
@@ -648,6 +653,52 @@ def cats_articulos(name="art"):
         out += tema(c, em, t, d, f"{len(sl)} artículos", cuerpo, name, clase="oro" if cid == "balon-de-oro" else "")
     return out
 
+def _barras_lab(datos, color):
+    """mini-gráfico de barras en SVG (datos = [(etiqueta, valor)])"""
+    n = len(datos); mx = max(v for _, v in datos) or 1; w = 220; ancho = w / n; sv = f'<svg class="lab-svg" viewBox="0 0 {w} 76" role="img" aria-hidden="true" focusable="false">'
+    for k, (et, v) in enumerate(datos):
+        h = max(3, 52 * v / mx); x = k * ancho + 4
+        sv += (f'<rect x="{x:.1f}" y="{58 - h:.1f}" width="{ancho - 8:.1f}" height="{h:.1f}" rx="3" style="animation-delay:{k * 70}ms"/>'
+               f'<text x="{x + (ancho - 8) / 2:.1f}" y="{54 - h:.1f}" text-anchor="middle">{v}</text>'
+               f'<text x="{x + (ancho - 8) / 2:.1f}" y="70" text-anchor="middle">{e(et[:7])}</text>')
+    return sv + '</svg>'
+
+def lab_panel(L):
+    """Panel estrella «Laboratorio de datos»: 4 estudios propios con su cifra clave y un mini-gráfico calculado."""
+    import curiosidades_estadisticas as S
+    es = L.lang == "es"
+    ch = S.calc_champions(); cp = S.calc_copa(); eu = S.calc_euro(); mu = S.calc_mundiales()
+    unif = {"Alemania Occidental": "Alemania", "West Germany": "Alemania"}
+    mt = {}
+    for k, v in mu["tit"]: mt[unif.get(k, k)] = mt.get(unif.get(k, k), 0) + v
+    mt = sorted(mt.items(), key=lambda kv: (-kv[1], kv[0]))
+    def top(l, n=6): return list(l)[:n]
+    if es:
+        nom = {"Bayern de Múnich": "Bayern", "París Saint-Germain": "PSG", "Manchester United": "M. United", "Manchester City": "M. City"}
+        R = {"Real Madrid": "R. Madrid"}
+    else:
+        nom = {"Bayern de Múnich": "Bayern", "París Saint-Germain": "PSG", "Manchester United": "Man Utd", "Manchester City": "Man City"}
+        R = {"Real Madrid": "R. Madrid"}
+    ab = lambda l: [(R.get(nom.get(c, c), nom.get(c, c)), v) for c, v in l]
+    _tr = lambda x: x if es else {"España": "Spain", "Alemania": "Germany", "Francia": "France", "Italia": "Italy", "Brasil": "Brazil", "Argentina": "Argent.", "Uruguay": "Uruguay", "Inglaterra": "England", "Checoslovaquia": "Czechosl.", "Países Bajos": "Neth.", "Grecia": "Greece", "Dinamarca": "Denmark", "Portugal": "Portugal"}.get(x, x)
+    tr = lambda l: [(_tr(c), v) for c, v in l]
+    tarjetas = [
+      ("estadisticas-copa-de-europa-champions-1956-2026", "european-cup-champions-league-winners-statistics", "#43a0ff" , "Copa de Europa 1956-2026", "European Cup 1956–2026", cp["n"], "campeones analizados", "champions analysed",
+       "Quién ha ganado más, cuánto duran las rachas y qué clubes solo ganaron una vez.", "Who has won most, how long streaks last and which clubs won only once.", ab(top(cp["tit"]))),
+      ("estadisticas-finales-champions", "champions-league-finals-statistics", "#ffc83d", "Finales de la Champions 2007-2026", "Champions League finals 2007–2026", ch["n"], "finales con sede y asistencia", "finals with venue and attendance",
+       "Penaltis, prórrogas, goles por final y los estadios con más finales.", "Penalties, extra time, goals per final and the venues with most finals.", ab(top(ch["tit"]))),
+      ("estadisticas-mundiales", "world-cup-statistics", "#4ade80", "Mundiales 1930-2026", "World Cups 1930–2026", len(mu["tit"]) and sum(v for _, v in mu["tit"]), "ediciones", "editions",
+       "Títulos por selección, anfitriones campeones y cómo ha crecido el torneo.", "Titles by team, host champions and how the tournament has grown.", tr(top(mt))),
+      ("estadisticas-eurocopa-1960-2024", "european-championship-statistics-1960-2024", "#ff6fd8", "Eurocopa 1960-2024", "European Championship 1960–2024", eu["n"], "finales", "finals",
+       "Campeones, anfitriones, finales y el crecimiento del torneo hasta 24 equipos.", "Champions, hosts, finals and the growth to 24 teams.", tr(top(eu["tit"], 5)))]
+    h = '<div class="lab">\n'
+    for k, (tes, ten, col, tt_es, tt_en, n, ue, un, de, dn, datos) in enumerate(tarjetas, 1):
+        slug = tes if es else ten
+        h += (f'<a class="lab-c k{k}" href="{L.url("curiosidades/" + slug + "/")}"><span class="lab-k">{"Estudio propio" if es else "Own study"}</span>'
+              f'<h3>{e(tt_es if es else tt_en)}</h3><span class="lab-n" data-cuenta="{n}">{n}<small>{e(ue if es else un)}</small></span>'
+              f'{_barras_lab(datos, col)}<p>{e(de if es else dn)}</p><span class="lab-go">{"Abrir el estudio →" if es else "Open the study →"}</span></a>\n')
+    return h + '</div>\n'
+
 def pagina_indice(L):
     u = L.ui; ruta = "curiosidades/"
     es = L.lang == "es"
@@ -673,6 +724,8 @@ def pagina_indice(L):
         return f'<div class="gr"{_col(col)}><h2>{e(titulo)}</h2>{a}</div>\n<p class="gr-d">{e(desc)}</p>\n'
     h += '<div class="bus" data-buscador></div><script src="/buscador.js" defer></script>\n'
     h += f'<h2 class="tema-h">{"Elige un tema" if es else "Pick a topic"}</h2>\n'
+    # 0) laboratorio de datos (panel estrella, primero)
+    h += tema("#ffc83d", "🧪", "Laboratorio de datos · estudios propios" if es else "Data lab · our own studies", "Cifras que calculamos nosotros con gráficos y tablas interactivas que puedes filtrar, ordenar y descargar." if es else "Figures we compute ourselves, with charts and interactive tables you can filter, sort and download.", "4 " + ("estudios" if es else "studies"), lab_panel(L), clase="lab")
     # 1) artículos (solo español): categorías dentro del tema
     if es:
         h += tema("#7c3aed", "✍️", "Artículos de análisis", "63 textos largos y originales: reglas, tácticas, premios, historia y cómo funciona el fútbol por dentro.", "57 artículos", cats_articulos(), "cur")
@@ -686,10 +739,6 @@ def pagina_indice(L):
         cu += f'<a class="tarjeta tc" href="{L.url("curiosidades/" + sl + "/")}"{_col("#dc2626")}>{globals()[ic]}<b>{e(t)}</b><span>{e(f)}</span></a>\n'
     cu += '</div>\n'
     h += tema("#dc2626", "🏟️", "Historia: Champions y Mundiales" if es else "History: Champions League and World Cups", "Las últimas 20 finales de la Champions y los 23 Mundiales, con marcador, sede y curiosidades." if es else "The last 20 Champions League finals and all 23 World Cups, with scores, venues and trivia.", f"{len(hs)} " + ("páginas" if es else "pages"), cu)
-    # 3b) estadísticas propias (es/en)
-    _ES = (("estadisticas-finales-champions", "Estadísticas de las finales de la Champions", "Clubes, países, penaltis, goles y asistencia · tabla filtrable", "COPA"), ("estadisticas-mundiales", "Estadísticas de los Mundiales", "Títulos, anfitriones, goleadores y crecimiento · tabla filtrable", "BALON"), ("estadisticas-copa-de-europa-champions-1956-2026", "Copa de Europa y Champions 1956-2026", "Campeones por club, país y década, rachas y sequías · tabla filtrable", "COPA"), ("estadisticas-eurocopa-1960-2024", "Estadísticas de la Eurocopa", "Campeones, anfitriones, finales y crecimiento · tabla filtrable", "BALON")) if es else (("champions-league-finals-statistics", "Champions League final statistics", "Clubs, countries, penalties, goals and attendance · filterable table", "COPA"), ("world-cup-statistics", "World Cup statistics", "Titles, hosts, scorers and growth · filterable table", "BALON"), ("european-cup-champions-league-winners-statistics", "European Cup and Champions League 1956–2026", "Winners by club, country and decade, streaks and droughts · filterable table", "COPA"), ("european-championship-statistics-1960-2024", "European Championship statistics", "Champions, hosts, finals and growth · filterable table", "BALON"))
-    cu = '<div class="tarjetas">\n' + "".join(f'<a class="tarjeta tc" href="{L.url("curiosidades/" + sl + "/")}"{_col("#2563eb")}>{globals()[ic]}<b>{e(t)}</b><span>{e(f)}</span></a>\n' for sl, t, f, ic in _ES) + '</div>\n'
-    h += tema("#2563eb", "📈", "Estudios y estadísticas propias" if es else "Our own studies and statistics", "Cifras que calculamos nosotros a partir de los datos oficiales, con gráficos y tablas que se pueden filtrar y ordenar." if es else "Figures we compute ourselves from official data, with charts and tables you can filter and sort.", "4 " + ("estudios" if es else "studies"), cu)
     # 4) temas
     hub_t = ("curiosidades-por-temas", "football-trivia-by-topic")[k]
     cu = f'<div class="chips"{_col("#ea580c")}>' + "".join(f'<a href="{L.url("curiosidades/" + t[L.lang] + "/")}">{e(t["t"][k])}</a>' for t in _T.TEMAS) + f'</div>\n<p><a href="{L.url("curiosidades/" + hub_t + "/")}">{"Ver todas las curiosidades por temas →" if es else "See all trivia by topic →"}</a></p>\n'

@@ -117,6 +117,7 @@ html.huecos body { padding-bottom: 64px; }
 .menu-pag { max-width: 760px; margin: 6px auto 0; padding: 0 6px 4px; }
 .idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 8px; } .idiomas a { display: inline-block; padding: 5px 4px; }
 </style>
+<link rel="stylesheet" href="/estudio.css">
 </head>
 <body>
 <script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';var t=e.target.closest&&e.target.closest('[data-tema-btn]');if(t){var n=document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('tikitexto:tema',n);}catch(x){}}});})();</script>
@@ -159,6 +160,7 @@ html.huecos body { padding-bottom: 64px; }
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "¿Cuántos anfitriones han ganado el Mundial?", "acceptedAnswer": {"@type": "Answer", "text": "6 de 23: Uruguay 1930, Italia 1934, Inglaterra 1966, Alemania Occidental 1974, Argentina 1978, Francia 1998."}}, {"@type": "Question", "name": "¿Qué continente ha ganado más Mundiales?", "acceptedAnswer": {"@type": "Answer", "text": "Europa, con 13 títulos frente a los 10 de Sudamérica. No ha ganado nunca una selección de otro continente."}}, {"@type": "Question", "name": "¿Cuántas finales del Mundial se han decidido en los penaltis?", "acceptedAnswer": {"@type": "Answer", "text": "3: 1994, 2006, 2022."}}, {"@type": "Question", "name": "¿Cuántas selecciones han ganado el Mundial?", "acceptedAnswer": {"@type": "Answer", "text": "9 selecciones, contando Alemania Occidental y Alemania como una: Brasil (5), Italia (4), Alemania Occidental (3), Argentina (3), España (2), Francia (2), Uruguay (2), Alemania (1), Inglaterra (1)."}}]}</script>
 <p class="fecha">Fuente de los datos: <a href="https://www.fifa.com/en/tournaments/mens/worldcup" rel="noopener" target="_blank">FIFA.com · Copa Mundial de la FIFA</a>. Datos a 19 de julio de 2026.</p>
 
+<div class="est-fin"></div>
 <p><a class="jugar" href="/">⚽ Juega a los juegos de fútbol de TIKITEXTO</a></p>
 <aside class="hueco" aria-label="Publicidad" data-hueco="medio">Publicidad</aside>
 <aside class="hueco hueco--ancla" aria-label="Publicidad" data-hueco="ancla">Publicidad<button type="button" data-cerrar-hueco aria-label="✕">✕</button></aside>
@@ -166,8 +168,10 @@ html.huecos body { padding-bottom: 64px; }
 <nav class="legal-nav" aria-label="Info">
 <a href="/curiosidades/">Curiosidades</a><a href="/sobre-tikitexto.html">Sobre TIKITEXTO</a><a href="/aviso-legal.html">Aviso legal</a><a href="/privacidad.html">Privacidad</a><a href="/cookies.html">Cookies</a><a href="/accesibilidad.html">Accesibilidad</a><a href="/contacto.html">Contacto</a>
 </nav>
+<p class="fecha"><time datetime="2026-11-24">Sitio actualizado el 24 de noviembre de 2026</time></p>
 <p class="fecha">TIKITEXTO no está afiliado a clubes, jugadores, federaciones ni competiciones. Los nombres se usan solo como referencia informativa. Ilustraciones propias.</p>
 </main>
+<script src="/estudio.js" defer></script>
 <script src="/cmp.js" defer></script>
 </body>
 </html>

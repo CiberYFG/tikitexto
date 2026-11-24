@@ -117,6 +117,7 @@ html.huecos body { padding-bottom: 64px; }
 .menu-pag { max-width: 760px; margin: 6px auto 0; padding: 0 6px 4px; }
 .idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 8px; } .idiomas a { display: inline-block; padding: 5px 4px; }
 </style>
+<link rel="stylesheet" href="/estudio.css">
 </head>
 <body>
 <script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';var t=e.target.closest&&e.target.closest('[data-tema-btn]');if(t){var n=document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('tikitexto:tema',n);}catch(x){}}});})();</script>
@@ -169,6 +170,7 @@ html.huecos body { padding-bottom: 64px; }
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Who won the 2026 World Cup?", "acceptedAnswer": {"@type": "Answer", "text": "Spain, who beat Argentina 1-0 after extra time in the final. The tournament was hosted by the United States, Mexico and Canada with 48 teams, and Kylian Mbappé was top scorer with 10 goals."}}, {"@type": "Question", "name": "Which national team has won the most World Cups?", "acceptedAnswer": {"@type": "Answer", "text": "Brazil, with five (1958, 1962, 1970, 1994 and 2002). Germany (four, including three as West Germany) and Italy (four) follow."}}, {"@type": "Question", "name": "How many World Cups have been played?", "acceptedAnswer": {"@type": "Answer", "text": "Twenty-three editions, from Uruguay 1930 to 2026. No tournament was played in 1942 or 1946 because of the Second World War."}}, {"@type": "Question", "name": "Who won the 2022 World Cup in Qatar?", "acceptedAnswer": {"@type": "Answer", "text": "Argentina, who beat France in the final (3-3, 4-2 on penalties). Mbappé was top scorer with 8 goals."}}]}</script>
 <p class="fecha">Source: <a href="https://www.fifa.com/en/tournaments/mens/worldcup" rel="noopener" target="_blank">FIFA.com · Copa Mundial de la FIFA</a>. Data as of 19 July 2026.</p>
 
+<div class="est-fin"></div>
 <p><a class="jugar" href="/?lang=en">⚽ Play the TIKITEXTO football games</a></p>
 <aside class="hueco" aria-label="Advertisement" data-hueco="medio">Advertisement</aside>
 <aside class="hueco hueco--ancla" aria-label="Advertisement" data-hueco="ancla">Advertisement<button type="button" data-cerrar-hueco aria-label="✕">✕</button></aside>
@@ -176,8 +178,10 @@ html.huecos body { padding-bottom: 64px; }
 <nav class="legal-nav" aria-label="Info">
 <a href="/en/curiosidades/">Trivia</a><a href="/sobre-tikitexto.html">About TIKITEXTO</a><a href="/aviso-legal.html">Legal notice</a><a href="/privacidad.html">Privacy</a><a href="/cookies.html">Cookies</a><a href="/accesibilidad.html">Accessibility</a><a href="/contacto.html">Contact</a>
 </nav>
+<p class="fecha"><time datetime="2026-11-24">Site updated on 24 November 2026</time></p>
 <p class="fecha">TIKITEXTO is not affiliated with clubs, players, federations or competitions. Names are used for information only. Original illustrations. Legal pages are available in Spanish only.</p>
 </main>
+<script src="/estudio.js" defer></script>
 <script src="/cmp.js" defer></script>
 </body>
 </html>

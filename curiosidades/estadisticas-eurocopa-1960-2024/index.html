@@ -117,6 +117,7 @@ html.huecos body { padding-bottom: 64px; }
 .menu-pag { max-width: 760px; margin: 6px auto 0; padding: 0 6px 4px; }
 .idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 8px; } .idiomas a { display: inline-block; padding: 5px 4px; }
 </style>
+<link rel="stylesheet" href="/estudio.css">
 </head>
 <body>
 <script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';var t=e.target.closest&&e.target.closest('[data-tema-btn]');if(t){var n=document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('tikitexto:tema',n);}catch(x){}}});})();</script>
@@ -159,8 +160,9 @@ html.huecos body { padding-bottom: 64px; }
 <details><summary>¿Qué selecciones han llegado a la final de la Eurocopa sin ganarla nunca?</summary><p>Inglaterra (2), Yugoslavia (2), Bélgica (1), República Checa (1).</p></details>
 </div>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "¿Qué selección ha ganado más Eurocopas?", "acceptedAnswer": {"@type": "Answer", "text": "España, con 4 títulos (1964, 2008, 2012 y 2024); le sigue Alemania con 3, contando los de Alemania Occidental."}}, {"@type": "Question", "name": "¿Cuántos anfitriones han ganado la Eurocopa?", "acceptedAnswer": {"@type": "Answer", "text": "3: 1964, 1968, 1984 (España, Italia y Francia)."}}, {"@type": "Question", "name": "¿Cuántas finales de la Eurocopa se han decidido en los penaltis?", "acceptedAnswer": {"@type": "Answer", "text": "2: la de 1976 (Checoslovaquia ante Alemania Occidental) y la de 2020 (Italia ante Inglaterra)."}}, {"@type": "Question", "name": "¿Cuántos equipos juegan la Eurocopa?", "acceptedAnswer": {"@type": "Answer", "text": "Desde 2016, 24. Antes fueron 16 (1996-2012), 8 (1980-1992) y 4 (1960-1976)."}}, {"@type": "Question", "name": "¿Qué selecciones han llegado a la final de la Eurocopa sin ganarla nunca?", "acceptedAnswer": {"@type": "Answer", "text": "Inglaterra (2), Yugoslavia (2), Bélgica (1), República Checa (1)."}}]}</script>
-<p class="fecha">Fuente de los datos: <a href="https://www.uefa.com/" rel="noopener" target="_blank">UEFA.com · historia de la Eurocopa</a>. Datos a 24 de noviembre de 2026.</p>
+<p class="fecha">Fuente de los datos: <a href="https://www.uefa.com/uefaeuro/history/news/0259-0e5e039dd8b6-ac24fc62a240-1000--all-the-euro-finals-scores-scorers-line-ups-and-venues/" rel="noopener" target="_blank">UEFA.com · todas las finales de la Eurocopa</a>. Datos a 24 de noviembre de 2026.</p>
 
+<div class="est-fin"></div>
 <p><a class="jugar" href="/">⚽ Juega a los juegos de fútbol de TIKITEXTO</a></p>
 <aside class="hueco" aria-label="Publicidad" data-hueco="medio">Publicidad</aside>
 <aside class="hueco hueco--ancla" aria-label="Publicidad" data-hueco="ancla">Publicidad<button type="button" data-cerrar-hueco aria-label="✕">✕</button></aside>
@@ -168,8 +170,10 @@ html.huecos body { padding-bottom: 64px; }
 <nav class="legal-nav" aria-label="Info">
 <a href="/curiosidades/">Curiosidades</a><a href="/sobre-tikitexto.html">Sobre TIKITEXTO</a><a href="/aviso-legal.html">Aviso legal</a><a href="/privacidad.html">Privacidad</a><a href="/cookies.html">Cookies</a><a href="/accesibilidad.html">Accesibilidad</a><a href="/contacto.html">Contacto</a>
 </nav>
+<p class="fecha"><time datetime="2026-11-24">Sitio actualizado el 24 de noviembre de 2026</time></p>
 <p class="fecha">TIKITEXTO no está afiliado a clubes, jugadores, federaciones ni competiciones. Los nombres se usan solo como referencia informativa. Ilustraciones propias.</p>
 </main>
+<script src="/estudio.js" defer></script>
 <script src="/cmp.js" defer></script>
 </body>
 </html>

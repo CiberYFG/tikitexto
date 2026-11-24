@@ -121,6 +121,7 @@ html.huecos body { padding-bottom: 64px; }
 .menu-pag { max-width: 760px; margin: 6px auto 0; padding: 0 6px 4px; }
 .idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 8px; } .idiomas a { display: inline-block; padding: 5px 4px; }
 </style>
+<link rel="stylesheet" href="/estudio.css">
 </head>
 <body>
 <script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';var t=e.target.closest&&e.target.closest('[data-tema-btn]');if(t){var n=document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('tikitexto:tema',n);}catch(x){}}});})();</script>
@@ -166,6 +167,7 @@ html.huecos body { padding-bottom: 64px; }
 </div>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Welche Pokale gibt es im Fußball und welcher ist der wichtigste?", "acceptedAnswer": {"@type": "Answer", "text": "Für Nationalmannschaften ist es die FIFA-Weltmeisterschaft, für Vereine die UEFA Champions League. Dazu kommen Kontinentalwettbewerbe, nationale Pokale und der Ballon d'Or."}}, {"@type": "Question", "name": "Was ist der Weltmeisterschaftspokal?", "acceptedAnswer": {"@type": "Answer", "text": "Seit 1974 wird der FIFA-Weltpokal aus 18-karätigem Gold vergeben. Zuvor gab es von 1930 bis 1970 den Jules-Rimet-Pokal. Die Weltmeister erhalten eine Nachbildung."}}, {"@type": "Question", "name": "Wer war der erste Weltmeister?", "acceptedAnswer": {"@type": "Answer", "text": "Uruguay, das 1930 im Finale Argentinien mit 4:2 besiegte."}}]}</script>
 <p class="fecha">Quellen: Verbände und Veranstalter der jeweiligen Wettbewerbe. Einige Pokale hatten mehrere Namen und Phasen; genannt wird das Jahr der ersten Austragung.</p>
+<div class="est-fin"></div>
 <p><a class="jugar" href="/?lang=de">⚽ Spiele die Fußballspiele von TIKITEXTO</a></p>
 <aside class="hueco" aria-label="Werbung" data-hueco="medio">Werbung</aside>
 <aside class="hueco hueco--ancla" aria-label="Werbung" data-hueco="ancla">Werbung<button type="button" data-cerrar-hueco aria-label="✕">✕</button></aside>
@@ -173,8 +175,10 @@ html.huecos body { padding-bottom: 64px; }
 <nav class="legal-nav" aria-label="Info">
 <a href="/de/curiosidades/">Wissenswertes</a><a href="/sobre-tikitexto.html">Über TIKITEXTO</a><a href="/aviso-legal.html">Impressum</a><a href="/privacidad.html">Datenschutz</a><a href="/cookies.html">Cookies</a><a href="/accesibilidad.html">Barrierefreiheit</a><a href="/contacto.html">Kontakt</a>
 </nav>
+<p class="fecha"><time datetime="2026-11-24">Website aktualisiert am 24. November 2026</time></p>
 <p class="fecha">TIKITEXTO ist nicht mit Vereinen, Spielern, Verbänden oder Wettbewerben verbunden. Namen werden nur zur Information verwendet. Eigene Illustrationen. Die Rechtstexte sind nur auf Spanisch verfügbar.</p>
 </main>
+<script src="/estudio.js" defer></script>
 <script src="/cmp.js" defer></script>
 </body>
 </html>

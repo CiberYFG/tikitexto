@@ -705,8 +705,8 @@ with sync_playwright() as p:
         pobres = []
         for hr in enlaces:
             pa.goto(BASE + hr.lstrip("/"), wait_until="domcontentloaded", timeout=60000)
-            palabras = pa.evaluate("document.querySelector('.articulo').innerText.split(/\\s+/).length")
-            h2 = pa.evaluate("document.querySelectorAll('.articulo h2').length")
+            palabras = pa.evaluate("(document.querySelector('.articulo')||document.querySelector('.est-cont')).innerText.split(/\\s+/).length")
+            h2 = pa.evaluate("document.querySelectorAll('main h2').length")
             hl = pa.evaluate("Array.from(document.querySelectorAll('link[rel=alternate]')).map(l => l.hreflang).join(',')")
             if palabras < 650 or h2 < 4 or hl != "es,x-default": pobres.append(f"{hr}: {palabras} palabras, {h2} h2, {hl}")
         check("articulos: cada uno tiene texto largo, secciones y solo hreflang es", not pobres, "; ".join(pobres)[:200])
@@ -787,13 +787,16 @@ with sync_playwright() as p:
         pv.fill(".bus__in", "xyzqw"); pv.wait_for_timeout(400)
         check("buscador: mensaje sin resultados", pv.is_visible(".bus__vacio"))
         pv.goto(BASE + "curiosidades/", wait_until="networkidle", timeout=60000); pv.wait_for_timeout(300)
-        check("curiosidades: temas cerrados al entrar", pv.locator("details.tema[open]").count() == 0 and pv.locator("details.tema").count() >= 6)
+        check("curiosidades: hub «estudio» con pestañas (laboratorio de datos primero y seleccionado)", pv.locator(".est-tab").count() >= 7 and pv.locator(".est-tab[aria-selected=true]").count() == 1 and pv.locator(".est-tab.lab[aria-selected=true]").count() == 1, str(pv.locator(".est-tab").count()))
         check("curiosidades: buscador presente", pv.locator(".bus__in").count() == 1)
-        pv.click("details.tema >> nth=0 >> summary"); pv.wait_for_timeout(200)
-        check("curiosidades: al pulsar el tema se ven sus categorías", pv.locator("details.tema[open] details.tema").count() == 7)
+        hubalto = pv.evaluate("(()=>{const h=document.querySelector('.est-hub').getBoundingClientRect(); return [Math.round(h.bottom), innerHeight]})()")
+        check("curiosidades: el hub cabe en una pantalla de móvil", hubalto[0] <= hubalto[1] + 2, str(hubalto))
+        check("curiosidades: laboratorio con 4 estudios propios enlazados", pv.locator(".est-panel:not([hidden]) a.lab-c").count() == 4)
+        pv.click(".est-tab >> nth=1"); pv.wait_for_timeout(200)
+        check("curiosidades: al pulsar la pestaña de artículos se ven sus 7 categorías", pv.locator(".est-panel:not([hidden]) details.tema").count() == 7, str(pv.locator(".est-panel:not([hidden]) details.tema").count()))
         pv.goto(BASE + "articulos/", wait_until="networkidle", timeout=60000)
-        n_art = pv.evaluate("document.querySelectorAll('details.tema a.tarjeta').length")
-        check("articulos: 81 artículos agrupados en 7 temas (el primero, BALÓN DE ORO)", n_art == 81 and pv.locator("details.tema").count() == 7 and pv.locator("details.tema.oro").count() == 1, str(n_art))
+        n_art = pv.evaluate("document.querySelectorAll('.est-panel a.tarjeta').length")
+        check("articulos: 81 artículos agrupados en 7 pestañas (la primera, BALÓN DE ORO)", n_art == 81 and pv.locator(".est-tab").count() == 7 and pv.locator(".est-tab.oro").count() == 1, str(n_art))
         check("temas/buscador: sin errores de JavaScript", not errs_v, "; ".join(errs_v)[:150])
         cv.close()
     except Exception as e:
@@ -1825,6 +1828,44 @@ for _r in ("comparador/", "en/football-comparator/"):
         if _wc < 250 or "FAQPage" not in _h or "<table>" not in _h or 'hreflang="x-default"' not in _h or ("https://tikitexto.com/" + _r + _s + "/") not in _sm3:
             _mal3.append(_r + _s)
 check("duelos del comparador: >=40 páginas con tabla, FAQ, hreflang y sitemap", _n3 >= 40 and not _mal3, str(_mal3[:3]) + " n=" + str(_n3))
+
+print("3ay) Saber como estudio: banco de trabajo, tablas interactivas, enfoque y laboratorio")
+try:
+  from playwright.sync_api import sync_playwright as _spw2
+  with _spw2() as _pw2:
+    _b2 = _pw2.chromium.launch(); _c2 = _b2.new_context(viewport={"width": 1366, "height": 800}, service_workers="block")
+    _c2.add_init_script("localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');")
+    _p2 = _c2.new_page(); _e2 = []; _p2.on("pageerror", lambda e: _e2.append(str(e)))
+    _p2.goto(BASE + "curiosidades/estadisticas-copa-de-europa-champions-1956-2026/", wait_until="networkidle", timeout=60000); _p2.wait_for_timeout(500)
+    check("estudio: panel lateral con índice y secciones plegables", _p2.locator(".est-rail .est-toc a").count() >= 6 and _p2.locator(".est-sec").count() >= 6)
+    _p2.click(".est-sec >> nth=0 >> h2"); _p2.wait_for_timeout(100)
+    check("estudio: pulsar el título de una sección la pliega", _p2.locator(".est-sec.cerrada").count() == 1)
+    _p2.click(".est-btns button >> nth=1"); _p2.wait_for_timeout(100)
+    check("estudio: modo enfoque oculta el índice", _p2.evaluate("document.documentElement.classList.contains('est-enfoque')") and not _p2.is_visible(".est-toc"))
+    _p2.click(".est-btns button >> nth=1")
+    _p2.locator(".est-tb").first.scroll_into_view_if_needed()
+    check("estudio: la tabla trae barra de herramientas (filtro, barras, CSV)", _p2.locator(".est-tb input").count() >= 1 and _p2.locator(".est-tb button", has_text="CSV").count() >= 1 and _p2.locator(".est-tb select").count() >= 1)
+    _n0 = _p2.evaluate("document.querySelector('.est-tabla').tBodies[0].rows.length")
+    _p2.fill(".est-tb input >> nth=0", "zzzz"); _p2.wait_for_timeout(150)
+    _ocultas = _p2.evaluate("[...document.querySelector('.est-tabla').tBodies[0].rows].filter(r=>r.hidden).length")
+    check("estudio: el filtro oculta las filas que no coinciden", _ocultas == _n0, str(_ocultas) + "/" + str(_n0))
+    _p2.fill(".est-tb input >> nth=0", ""); _p2.wait_for_timeout(100)
+    _p2.locator(".est-tabla tbody tr >> nth=1").click(); _p2.wait_for_timeout(100)
+    check("estudio: pulsar una fila la fija", _p2.locator(".est-tabla tr.est-pin").count() == 1 and _p2.locator(".est-tb button", has_text="Fijadas").first.is_visible())
+    _p2.locator(".est-tabla th >> nth=1").click(); _p2.wait_for_timeout(100)
+    _v = _p2.evaluate("[...document.querySelector('.est-tabla').tBodies[0].rows].map(r=>parseFloat(r.cells[1].textContent.replace(',','.')))")
+    check("estudio: ordenar por una columna numérica", _v == sorted(_v), str(_v[:8]))
+    check("estudio: barras de datos y resumen (suma, media, máx.)", _p2.locator(".est-tabla td.est-b").count() >= 3 and "Suma" in _p2.inner_text(".est-res >> nth=0"), _p2.inner_text(".est-res >> nth=0")[:80])
+    with _p2.expect_download(timeout=8000) as _dl: _p2.locator(".est-tb button", has_text="CSV").first.click()
+    check("estudio: exporta la tabla a CSV", _dl.value.suggested_filename.endswith(".csv"), _dl.value.suggested_filename)
+    check("estudio: sin errores de JavaScript", not _e2, "; ".join(_e2)[:150])
+    _b2.close()
+except Exception as _x2:
+    check("estudio (3ay)", False, str(_x2)[:200])
+for _r in ("curiosidades/", "articulos/", "curiosidades/datos/"):
+    _hh = open(_os.path.join(_raiz, _r, "index.html"), encoding="utf-8").read()
+    check("estudio %s: enlaza estudio.css y estudio.js y marca el final del contenido" % _r, '/estudio.css' in _hh and '/estudio.js' in _hh and 'class="est-fin"' in _hh)
+check("estudio.css y estudio.js existen y no cargan recursos externos", all(_os.path.exists(_os.path.join(_raiz, _f)) and "http" not in open(_os.path.join(_raiz, _f), encoding="utf-8").read() for _f in ("estudio.css", "estudio.js")))
 
 # 3am) modo admin oculto (la secuencia secreta NO está en el repo: variables de entorno TIKI_ADMIN_TECLAS="Code,Code,..."; en móvil se prueba dibujando una W en el selector de idioma; sin la variable se omite)
 _SEQ = [k for k in os.environ.get("TIKI_ADMIN_TECLAS", "").split(",") if k]

@@ -117,6 +117,7 @@ html.huecos body { padding-bottom: 64px; }
 .menu-pag { max-width: 760px; margin: 6px auto 0; padding: 0 6px 4px; }
 .idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 8px; } .idiomas a { display: inline-block; padding: 5px 4px; }
 </style>
+<link rel="stylesheet" href="/estudio.css">
 </head>
 <body>
 <script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';var t=e.target.closest&&e.target.closest('[data-tema-btn]');if(t){var n=document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('tikitexto:tema',n);}catch(x){}}});})();</script>
@@ -143,6 +144,7 @@ html.huecos body { padding-bottom: 64px; }
 <a class="tarjeta" href="/en/curiosidades/football-trivia-by-topic/"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="14" width="48" height="36" rx="4"/><path d="M32 14v36M8 32h48"/><circle cx="32" cy="32" r="7"/><path d="M8 24h6v16H8M56 24h-6v16h6"/></svg><b>Curiosities by club and player</b><span>Real Madrid, Barça, Messi, Cristiano…</span></a>
 </div>
 
+<div class="est-fin"></div>
 <p><a class="jugar" href="/?lang=en">⚽ Play the TIKITEXTO football games</a></p>
 <aside class="hueco" aria-label="Advertisement" data-hueco="medio">Advertisement</aside>
 <aside class="hueco hueco--ancla" aria-label="Advertisement" data-hueco="ancla">Advertisement<button type="button" data-cerrar-hueco aria-label="✕">✕</button></aside>
@@ -150,8 +152,10 @@ html.huecos body { padding-bottom: 64px; }
 <nav class="legal-nav" aria-label="Info">
 <a href="/en/curiosidades/">Trivia</a><a href="/sobre-tikitexto.html">About TIKITEXTO</a><a href="/aviso-legal.html">Legal notice</a><a href="/privacidad.html">Privacy</a><a href="/cookies.html">Cookies</a><a href="/accesibilidad.html">Accessibility</a><a href="/contacto.html">Contact</a>
 </nav>
+<p class="fecha"><time datetime="2026-11-24">Site updated on 24 November 2026</time></p>
 <p class="fecha">TIKITEXTO is not affiliated with clubs, players, federations or competitions. Names are used for information only. Original illustrations. Legal pages are available in Spanish only.</p>
 </main>
+<script src="/estudio.js" defer></script>
 <script src="/cmp.js" defer></script>
 </body>
 </html>

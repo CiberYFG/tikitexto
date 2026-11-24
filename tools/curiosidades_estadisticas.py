@@ -381,7 +381,7 @@ def copa_europa(L, p, k):
          f"{r['distintos']} clubes en {n} ediciones. De ellos, {len(uni)} han ganado una sola vez: {', '.join(cl(c) for c in uni)}.", f"{r['distintos']} clubs in {n} editions. Of them, {len(uni)} have won only once: {', '.join(cl(c) for c in uni)}."),
         ("¿Cuándo ganó por última vez un club de fuera de los cinco grandes países?", "When did a club from outside the big five countries last win?",
          f"En {r['fuera_ult'][0]}, con el {cl(r['fuera_ult'][1])}. Desde entonces todos los campeones han sido de España, Inglaterra, Italia, Alemania o Francia.", f"In {r['fuera_ult'][0]}, with {cl(r['fuera_ult'][1])}. Since then every champion has come from Spain, England, Italy, Germany or France.")])
-    src = '<a href="https://www.uefa.com/uefachampionsleague/history/" rel="noopener" target="_blank">UEFA.com · historia de la Champions League</a>'
+    src = f'<a href="https://www.uefa.com/uefachampionsleague/history/" rel="noopener" target="_blank">{"UEFA.com · historia de la Champions League" if es else "UEFA.com · Champions League history"}</a>'
     h += f'<p class="fecha">{"Fuente de los datos" if es else "Data source"}: {src}. {e(p["fecha"][k])}.</p>\n'
     return ruta, h + pie(L)
 
@@ -484,7 +484,7 @@ def eurocopa(L, p, k):
          "Desde 2016, 24. Antes fueron 16 (1996-2012), 8 (1980-1992) y 4 (1960-1976).", "Since 2016, 24. Before that there were 16 (1996–2012), 8 (1980–1992) and 4 (1960–1976)."),
         ("¿Qué selecciones han llegado a la final de la Eurocopa sin ganarla nunca?", "Which nations have reached a European Championship final without ever winning?",
          ", ".join(f"{sl(s)} ({t})" for s, t in perd) + ".", ", ".join(f"{sl(s)} ({t})" for s, t in perd) + ".")])
-    src = '<a href="https://www.uefa.com/" rel="noopener" target="_blank">UEFA.com · historia de la Eurocopa</a>'
+    src = f'<a href="https://www.uefa.com/uefaeuro/history/news/0259-0e5e039dd8b6-ac24fc62a240-1000--all-the-euro-finals-scores-scorers-line-ups-and-venues/" rel="noopener" target="_blank">{'UEFA.com · todas las finales de la Eurocopa' if es else 'UEFA.com · all the European Championship finals'}</a>'
     h += f'<p class="fecha">{"Fuente de los datos" if es else "Data source"}: {src}. {e(p["fecha"][k])}.</p>\n'
     return ruta, h + pie(L)
 

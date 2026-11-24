@@ -121,6 +121,7 @@ html.huecos body { padding-bottom: 64px; }
 .menu-pag { max-width: 760px; margin: 6px auto 0; padding: 0 6px 4px; }
 .idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 8px; } .idiomas a { display: inline-block; padding: 5px 4px; }
 </style>
+<link rel="stylesheet" href="/estudio.css">
 </head>
 <body>
 <script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';var t=e.target.closest&&e.target.closest('[data-tema-btn]');if(t){var n=document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('tikitexto:tema',n);}catch(x){}}});})();</script>
@@ -150,6 +151,7 @@ html.huecos body { padding-bottom: 64px; }
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Quelle équipe a gagné le plus de Ligues des champions ?", "acceptedAnswer": {"@type": "Answer", "text": "Le Real Madrid, avec 15 titres en Coupe d'Europe et en Ligue des champions."}}, {"@type": "Question", "name": "Qui a gagné la dernière Ligue des champions ?", "acceptedAnswer": {"@type": "Answer", "text": "Le Paris Saint-Germain, vainqueur de la finale 2026 aux tirs au but (4-3) après un 1-1 contre Arsenal à Budapest."}}, {"@type": "Question", "name": "Quelle sélection a gagné le plus de Coupes du monde ?", "acceptedAnswer": {"@type": "Answer", "text": "Le Brésil, avec 5 titres. L'Allemagne et l'Italie en ont quatre chacune, et l'Argentine trois."}}, {"@type": "Question", "name": "Qui a gagné la dernière Coupe du monde ?", "acceptedAnswer": {"@type": "Answer", "text": "L'Espagne, qui a battu l'Argentine 1-0 en finale 2026 après prolongation."}}]}</script>
 
 <p class="fecha">Sources : UEFA et FIFA (palmarès officiels). Les scores après prolongation ou tirs au but sont indiqués entre parenthèses.</p>
+<div class="est-fin"></div>
 <p><a class="jugar" href="/?lang=fr">⚽ Jouez aux jeux de football de TIKITEXTO</a></p>
 <aside class="hueco" aria-label="Publicité" data-hueco="medio">Publicité</aside>
 <aside class="hueco hueco--ancla" aria-label="Publicité" data-hueco="ancla">Publicité<button type="button" data-cerrar-hueco aria-label="✕">✕</button></aside>
@@ -157,8 +159,10 @@ html.huecos body { padding-bottom: 64px; }
 <nav class="legal-nav" aria-label="Info">
 <a href="/fr/curiosidades/">Curiosités</a><a href="/sobre-tikitexto.html">À propos de TIKITEXTO</a><a href="/aviso-legal.html">Mentions légales</a><a href="/privacidad.html">Confidentialité</a><a href="/cookies.html">Cookies</a><a href="/accesibilidad.html">Accessibilité</a><a href="/contacto.html">Contact</a>
 </nav>
+<p class="fecha"><time datetime="2026-11-24">Site mis à jour le 24 novembre 2026</time></p>
 <p class="fecha">TIKITEXTO n&#x27;est affilié à aucun club, joueur, fédération ni compétition. Les noms sont utilisés à titre informatif. Illustrations originales. Les pages légales ne sont disponibles qu&#x27;en espagnol.</p>
 </main>
+<script src="/estudio.js" defer></script>
 <script src="/cmp.js" defer></script>
 </body>
 </html>

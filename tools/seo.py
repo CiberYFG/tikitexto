@@ -2,6 +2,7 @@
 """Genera las páginas de búsqueda (una por modo en español y una por idioma) y el sitemap.xml.
 Uso: python3 tools/seo.py   (desde cualquier carpeta). Las traducciones de los modos y de las
 preguntas frecuentes salen de i18n/fuente.txt; el resto de textos está aquí."""
+import fecha_sitio as _FS
 import html, json, os, sys as _sys
 _sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__))))
 import seo_extra as XT
@@ -159,11 +160,12 @@ def pagina(lang, ruta, titulo, desc, h1, lead, modo_cta, bloques, faq, hreflang_
 <footer>
 <p><a href="%(curhref)s">%(curlabel)s</a><a href="%(guiahref)s">%(guialabel)s</a><a href="%(clhref)s">%(cllabel)s</a><a href="%(base)saviso-legal.html">%(legal)s</a><a href="%(base)sprivacidad.html">%(priv)s</a><a href="%(base)scookies.html">%(cook)s</a><a href="%(base)saccesibilidad.html">%(acc)s</a></p>
 <p>%(nota)s</p>
+<p><time datetime="%(fsiso)s">%(fstxt)s</time></p>
 </footer>
 </body>
 </html>
 """ % dict(lang=HREFLANG[lang] if lang != "es" else "es", titulo=esc(titulo), desc=esc(desc), canon=canon, alts=hreflang_html, loc=HREFLANG[lang].replace("-", "_") if lang != "es" else "es_ES",
-           base=base, ld=ldj, css=CSS, sel=selector, saltar=MS.saltar(lang), menu=MS.nav(lang, base, MS.clave_de_ruta(ruta, None), "menu-pag"), h1=esc(h1), lead=esc(lead), cta=cta, jugar=esc(u["jugar"]), como=esc(u["como"]),
+           base=base, fsiso=_FS.iso(), fstxt=_FS.texto(lang), ld=ldj, css=CSS, sel=selector, saltar=MS.saltar(lang), menu=MS.nav(lang, base, MS.clave_de_ruta(ruta, None), "menu-pag"), h1=esc(h1), lead=esc(lead), cta=cta, jugar=esc(u["jugar"]), como=esc(u["como"]),
            pasos="".join("<li>%s</li>" % esc(p) for p in u["pasos"]), bloques=bloques, faqt=esc(u["faq"]), faq=faq_html,
            clhref=base + ("clases/" if lang == "es" else "en/classes/"), cllabel=("Clases de fútbol" if lang == "es" else "Football lessons"), guiahref=base + ("juegos/" if lang == "es" else "en/games/"), guialabel=("Guías de los juegos" if lang == "es" else "Game guides"), curhref=base + ("" if lang == "es" else lang + "/") + "curiosidades/", curlabel=esc(CUR_LABEL[lang]), legal=esc(u["legal"]), priv=esc(u["priv"]), cook=esc(u["cook"]), acc=esc(u["acc"]), nota=esc(u["nota"]))
 

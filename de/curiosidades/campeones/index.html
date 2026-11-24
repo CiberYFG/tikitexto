@@ -121,6 +121,7 @@ html.huecos body { padding-bottom: 64px; }
 .menu-pag { max-width: 760px; margin: 6px auto 0; padding: 0 6px 4px; }
 .idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 8px; } .idiomas a { display: inline-block; padding: 5px 4px; }
 </style>
+<link rel="stylesheet" href="/estudio.css">
 </head>
 <body>
 <script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';var t=e.target.closest&&e.target.closest('[data-tema-btn]');if(t){var n=document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('tikitexto:tema',n);}catch(x){}}});})();</script>
@@ -150,6 +151,7 @@ html.huecos body { padding-bottom: 64px; }
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Welches Team hat die meisten Champions-League-Titel?", "acceptedAnswer": {"@type": "Answer", "text": "Real Madrid mit 15 Titeln im Europapokal der Landesmeister und in der Champions League."}}, {"@type": "Question", "name": "Wer hat die letzte Champions League gewonnen?", "acceptedAnswer": {"@type": "Answer", "text": "Paris Saint-Germain, das das Finale 2026 im Elfmeterschießen (4:3) nach einem 1:1 gegen den FC Arsenal in Budapest gewann."}}, {"@type": "Question", "name": "Welche Nationalmannschaft hat die meisten Weltmeistertitel?", "acceptedAnswer": {"@type": "Answer", "text": "Brasilien mit 5 Titeln. Deutschland und Italien haben je vier, Argentinien drei."}}, {"@type": "Question", "name": "Wer ist der aktuelle Weltmeister?", "acceptedAnswer": {"@type": "Answer", "text": "Spanien, das im Finale 2026 nach Verlängerung 1:0 gegen Argentinien gewann."}}]}</script>
 
 <p class="fecha">Quellen: UEFA und FIFA (offizielle Siegerlisten). Ergebnisse nach Verlängerung oder Elfmeterschießen stehen in Klammern.</p>
+<div class="est-fin"></div>
 <p><a class="jugar" href="/?lang=de">⚽ Spiele die Fußballspiele von TIKITEXTO</a></p>
 <aside class="hueco" aria-label="Werbung" data-hueco="medio">Werbung</aside>
 <aside class="hueco hueco--ancla" aria-label="Werbung" data-hueco="ancla">Werbung<button type="button" data-cerrar-hueco aria-label="✕">✕</button></aside>
@@ -157,8 +159,10 @@ html.huecos body { padding-bottom: 64px; }
 <nav class="legal-nav" aria-label="Info">
 <a href="/de/curiosidades/">Wissenswertes</a><a href="/sobre-tikitexto.html">Über TIKITEXTO</a><a href="/aviso-legal.html">Impressum</a><a href="/privacidad.html">Datenschutz</a><a href="/cookies.html">Cookies</a><a href="/accesibilidad.html">Barrierefreiheit</a><a href="/contacto.html">Kontakt</a>
 </nav>
+<p class="fecha"><time datetime="2026-11-24">Website aktualisiert am 24. November 2026</time></p>
 <p class="fecha">TIKITEXTO ist nicht mit Vereinen, Spielern, Verbänden oder Wettbewerben verbunden. Namen werden nur zur Information verwendet. Eigene Illustrationen. Die Rechtstexte sind nur auf Spanisch verfügbar.</p>
 </main>
+<script src="/estudio.js" defer></script>
 <script src="/cmp.js" defer></script>
 </body>
 </html>

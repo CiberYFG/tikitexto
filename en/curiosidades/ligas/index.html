@@ -121,6 +121,7 @@ html.huecos body { padding-bottom: 64px; }
 .menu-pag { max-width: 760px; margin: 6px auto 0; padding: 0 6px 4px; }
 .idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 8px; } .idiomas a { display: inline-block; padding: 5px 4px; }
 </style>
+<link rel="stylesheet" href="/estudio.css">
 </head>
 <body>
 <script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';var t=e.target.closest&&e.target.closest('[data-tema-btn]');if(t){var n=document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('tikitexto:tema',n);}catch(x){}}});})();</script>
@@ -160,6 +161,7 @@ html.huecos body { padding-bottom: 64px; }
 </div>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the oldest football league in the world?", "acceptedAnswer": {"@type": "Answer", "text": "The English Football League, founded on 17 April 1888 in Manchester with 12 clubs. Its first champions were Preston North End. It is the first professional league in history, and the Premier League is its evolution since 1992."}}, {"@type": "Question", "name": "What was the first football league in the world?", "acceptedAnswer": {"@type": "Answer", "text": "The Football League of England, in the 1888–89 season. Preston North End won it."}}, {"@type": "Question", "name": "When was La Liga founded?", "acceptedAnswer": {"@type": "Answer", "text": "La Liga's first season was played in 1929 with ten teams in the top flight, and the first champions were FC Barcelona."}}, {"@type": "Question", "name": "When were Serie A, the Bundesliga and Ligue 1 founded?", "acceptedAnswer": {"@type": "Answer", "text": "Serie A as a single league began in 1929–30 (the first Italian championship was in 1898), the Bundesliga in 1963 and the French professional league in 1932; the name Ligue 1 has been used since 2002."}}, {"@type": "Question", "name": "What is the oldest league in South America?", "acceptedAnswer": {"@type": "Answer", "text": "Argentina's: its first championship was played in 1891 and won by Old Caledonians. It turned professional in 1931."}}]}</script>
 <p class="fecha">Sources: federations and organisers of each competition. When a league went through several stages, the date of its current format is given.</p>
+<div class="est-fin"></div>
 <p><a class="jugar" href="/?lang=en">⚽ Play the TIKITEXTO football games</a></p>
 <aside class="hueco" aria-label="Advertisement" data-hueco="medio">Advertisement</aside>
 <aside class="hueco hueco--ancla" aria-label="Advertisement" data-hueco="ancla">Advertisement<button type="button" data-cerrar-hueco aria-label="✕">✕</button></aside>
@@ -167,8 +169,10 @@ html.huecos body { padding-bottom: 64px; }
 <nav class="legal-nav" aria-label="Info">
 <a href="/en/curiosidades/">Trivia</a><a href="/sobre-tikitexto.html">About TIKITEXTO</a><a href="/aviso-legal.html">Legal notice</a><a href="/privacidad.html">Privacy</a><a href="/cookies.html">Cookies</a><a href="/accesibilidad.html">Accessibility</a><a href="/contacto.html">Contact</a>
 </nav>
+<p class="fecha"><time datetime="2026-11-24">Site updated on 24 November 2026</time></p>
 <p class="fecha">TIKITEXTO is not affiliated with clubs, players, federations or competitions. Names are used for information only. Original illustrations. Legal pages are available in Spanish only.</p>
 </main>
+<script src="/estudio.js" defer></script>
 <script src="/cmp.js" defer></script>
 </body>
 </html>

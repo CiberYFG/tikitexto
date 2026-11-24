@@ -2,6 +2,7 @@
 """Páginas estáticas de duelos del COMPARADOR (es/en) para SEO: «X vs Y».
 Datos: comparador_data.py. Rutas: comparador/<a>-vs-<b>/ y en/football-comparator/<a>-vs-<b>/.
 Orden: ... -> comparador.py -> comparador_duelos.py -> seo.py -> csp.py -> buscador.py"""
+import fecha_sitio as _FS
 import os, sys, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import curiosidades as C
@@ -252,7 +253,7 @@ def pagina(lg, d, m, a, b, todos):
 <section><h2>{e(t['fuentes'])}</h2><ul>{fu}</ul><p>{e(d['fecha'][k])}</p></section>
 </div>
 </main>
-<p class="cp-legal">{e(t['leg'])}<br><a href="/sobre-tikitexto.html">{e(t['sobre'])}</a><a href="/aviso-legal.html">Legal</a><a href="/privacidad.html">{'Privacidad' if lg == 'es' else 'Privacy'}</a><a href="/cookies.html">Cookies</a></p>
+<p class="cp-legal">{e(t['leg'])}<br>{e(_FS.texto(lg))}<br><a href="/sobre-tikitexto.html">{e(t['sobre'])}</a><a href="/aviso-legal.html">Legal</a><a href="/privacidad.html">{'Privacidad' if lg == 'es' else 'Privacy'}</a><a href="/cookies.html">Cookies</a></p>
 </body>
 </html>
 """

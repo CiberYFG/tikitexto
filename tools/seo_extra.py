@@ -123,6 +123,63 @@ EN = {
    ("Cristiano Ronaldo facts", "cristiano-ronaldo-facts/")]),
 }
 
+
+# Contexto propio de cada modo (h2 + párrafos), antes de los consejos. Solo datos estables y verificables.
+CONTEXTO = {
+ "es": {
+  "jugadores": ("De dónde salen los nombres de este modo", [
+   "Los futbolistas son la categoría con más variedad de nombres de todo el juego. Muchos se conocen por un apodo o por una forma abreviada de su nombre completo: Pelé nació como Edson Arantes do Nascimento, Xavi es Xavier Hernández Creus, Kaká se llama Ricardo Izecson dos Santos Leite y Neymar es la forma corta de Neymar da Silva Santos Júnior. Por eso, antes de pensar en el apellido, conviene pensar en cómo anuncian al jugador por megafonía o cómo aparece en su camiseta.",
+   "El tablero acepta el nombre escrito sin tildes ni espacios, y la longitud cambia mucho de un jugador a otro: de nombres de cuatro letras a otros de más de diez. Ese rango es parte de la gracia, y la primera pista casi siempre es el propio número de casillas.",
+   "El modo mezcla leyendas históricas y estrellas actuales, así que no hace falta seguir una liga concreta: con conocer los grandes premios, las finales de Mundial y Champions y algunas plantillas de selecciones tienes una buena base. Las lecturas de más abajo sirven justo para refrescar esa memoria."]),
+  "equipos": ("Lo que esconde el nombre de un club", [
+   "Los nombres de los clubes guardan pistas de su historia. «Real» es un título que concede la corona española: el Real Madrid lo recibió del rey Alfonso XIII en 1920. Manchester United adoptó su nombre actual en 1902, cuando el antiguo Newton Heath se refundó. Juventus significa «juventud» en latín, y el Inter se llama así porque nació en 1908 como Football Club Internazionale, abierto a jugadores de cualquier país.",
+   "Hay patrones por países: en España e Italia abundan los nombres de ciudad (Valencia, Sevilla, Napoli), en Inglaterra son habituales los sufijos como City, United, Town, Rovers o Wanderers y en Alemania se repiten palabras como Borussia, Eintracht o Bayer. Como el tablero se escribe sin espacios ni tildes, esas partículas ocupan casillas y cambian la longitud, así que reconocerlas te ahorra intentos.",
+   "Con este mapa mental dejas de adivinar a ciegas y empiezas a deducir: primero decide en qué liga puede estar el club y después ajusta por el número de casillas."]),
+  "selecciones": ("Selecciones: nombres, apodos e historia", [
+   "Las selecciones son el único modo cuyos nombres cambian de verdad con el tiempo. Alemania Occidental, la Unión Soviética, Yugoslavia o Checoslovaquia dejaron de existir como equipos, y un nombre compuesto como Costa Rica se escribe junto en el tablero. Si algo no encaja, piensa en la forma más corta y común del país.",
+   "El fútbol de selecciones es más antiguo que las grandes ligas actuales: el primer partido internacional oficial lo jugaron Escocia e Inglaterra en Glasgow en 1872 y terminó 0-0. Desde entonces cada selección ha ido acumulando apodos que las pistas aprovechan: La Roja (España), Les Bleus (Francia), La Albiceleste (Argentina), La Celeste (Uruguay), los Azzurri (Italia) o Die Mannschaft (Alemania).",
+   "Conocer esos apodos y recordar quién ganó cada torneo es la mejor preparación para este modo."]),
+  "entrenadores": ("Entrenadores y «managers»: dos formas de dirigir", [
+   "En Inglaterra se habla de manager para el responsable del primer equipo, que suele intervenir también en fichajes y cantera; en España o Italia es más habitual el entrenador, con un director deportivo que se ocupa del mercado. Las pistas de este modo hablan de títulos, estilo y trayectoria, así que ayuda saber de qué clubes y países proceden.",
+   "Las carreras largas son la excepción: Alex Ferguson dirigió al Manchester United casi veintiséis años, de 1986 a 2013, y hoy lo normal es que un técnico cambie de banquillo cada pocas temporadas. Por eso conviene asociar a cada entrenador con una etapa concreta de un club y no solo con un nombre.",
+   "Como los apellidos de los técnicos suelen ser más largos y menos repetidos que los de los jugadores, la longitud del tablero descarta mucho más de lo que parece."]),
+  "estadios_es": ("Estadios: nombres con historia", [
+   "El nombre de un estadio casi siempre cuenta algo. El Santiago Bernabéu se inauguró en 1947 como Nuevo Estadio de Chamartín y desde 1955 lleva el nombre del presidente que impulsó el club. Anfield abrió en 1884 como campo del Everton; el Liverpool nació en 1892, cuando el Everton se mudó a Goodison Park, y se quedó con el campo. El Maracanã se construyó en Río de Janeiro para el Mundial de 1950.",
+   "En las últimas décadas, además, muchos campos han cambiado de nombre por acuerdos de patrocinio, así que un mismo estadio puede tener varios nombres a lo largo del tiempo. El modo usa el nombre más conocido, y las pistas recuerdan la ciudad, la competición o algún partido célebre que se jugó allí.",
+   "Si dudas, piensa primero en la competición y la ciudad y luego en el número de casillas: nombres cortos como Anfield o Mestalla descartan de golpe a los de nombre largo."]),
+  "ahorcado": ("Un clásico de lápiz y papel", [
+   "El ahorcado es un juego de papel y lápiz que se conoce al menos desde finales del siglo XIX y que se ha jugado en las aulas y en los viajes de medio mundo. La versión de TIKITEXTO lo traslada al fútbol: la palabra oculta es el nombre de un futbolista, con espacios que separan nombre y apellido.",
+   "Una buena estrategia sale de la frecuencia de las letras: en español las más habituales son la E, la A y la O, seguidas de la S, la R y la N. Empieza por ahí y deja para el final las raras, como K, W o Z. Cada fallo cuenta, así que conviene elegir letras que se repitan en muchos nombres antes de arriesgarte con una concreta.",
+   "Cuando ya tengas un par de huecos, deja de pensar en letras sueltas y empieza a pensar en jugadores: el patrón de huecos suele bastar para reconocer al futbolista."]),
+ },
+ "en": {
+  "jugadores": ("Where this mode's names come from", [
+   "Footballers are the category with the most variety of names in the game. Many are known by a nickname or a shortened version of their full name: Pelé was born Edson Arantes do Nascimento, Xavi is Xavier Hernández Creus, Kaká is Ricardo Izecson dos Santos Leite and Neymar is the short form of Neymar da Silva Santos Júnior. So before thinking of a surname, think about how the player is announced over the speakers or what appears on his shirt.",
+   "The board accepts the name written without accents or spaces, and the length varies a lot from one player to another: from four-letter names to others of more than ten. That range is part of the fun, and the first clue is almost always the number of squares itself.",
+   "The mode mixes historic legends and current stars, so you do not need to follow one particular league: knowing the major awards, the World Cup and Champions League finals and some national squads gives you a good base. The reading links below are there to refresh exactly that memory."]),
+  "equipos": ("What a club's name gives away", [
+   "Club names hold clues about their history. “Real” is a title granted by the Spanish crown: Real Madrid received it from King Alfonso XIII in 1920. Manchester United took its current name in 1902, when the old Newton Heath was refounded. Juventus means “youth” in Latin, and Inter is so called because it was born in 1908 as Football Club Internazionale, open to players of any nationality.",
+   "There are patterns by country: in Spain and Italy city names are common (Valencia, Sevilla, Napoli), in England suffixes such as City, United, Town, Rovers or Wanderers are frequent, and in Germany words like Borussia, Eintracht or Bayer keep appearing. Because the board is written without spaces or accents, those words take up squares and change the length, so recognising them saves you attempts.",
+   "With this mental map you stop guessing blindly and start deducing: first decide which league the club might belong to, then narrow it down by the number of squares."]),
+  "selecciones": ("National teams: names, nicknames and history", [
+   "National teams are the one mode whose names genuinely change over time. West Germany, the Soviet Union, Yugoslavia and Czechoslovakia no longer exist as teams, and a compound name such as Costa Rica is written as one word on the board. If something does not fit, think of the shortest, most common form of the country's name.",
+   "National-team football is older than today's big leagues: the first official international match was played by Scotland and England in Glasgow in 1872 and finished 0-0. Since then each team has collected nicknames that the clues make use of: La Roja (Spain), Les Bleus (France), La Albiceleste (Argentina), La Celeste (Uruguay), the Azzurri (Italy) or Die Mannschaft (Germany).",
+   "Knowing those nicknames and remembering who won each tournament is the best preparation for this mode."]),
+  "entrenadores": ("Managers and head coaches: two ways of leading a team", [
+   "In England the person in charge of the first team is called the manager and usually has a say in transfers and youth development; in Spain or Italy the word is more often coach, with a sporting director who deals with the market. The clues in this mode talk about titles, style and career, so it helps to know which clubs and countries each manager comes from.",
+   "Long careers are the exception: Alex Ferguson managed Manchester United for almost twenty-six years, from 1986 to 2013, and today it is normal for a coach to change dugout every few seasons. That is why it pays to link each manager to a specific stage at a club and not just a name.",
+   "Because managers' surnames tend to be longer and less repeated than players', the length of the board rules out far more than it seems."]),
+  "estadios_es": ("Stadiums: names with history", [
+   "A stadium's name almost always tells a story. The Santiago Bernabéu opened in 1947 as the Nuevo Estadio de Chamartín and has carried the name of the club president who drove its construction since 1955. Anfield opened in 1884 as Everton's ground; Liverpool were founded in 1892, when Everton moved to Goodison Park, and kept the ground. The Maracanã was built in Rio de Janeiro for the 1950 World Cup.",
+   "In recent decades many grounds have also changed names through sponsorship deals, so one stadium can have several names over time. The mode uses the best-known name, and the clues mention the city, the competition or a famous match played there.",
+   "If you are unsure, think first of the competition and the city and then of the number of squares: short names such as Anfield or Mestalla instantly rule out long ones."]),
+  "ahorcado": ("A pencil-and-paper classic", [
+   "Hangman is a pencil-and-paper game known since at least the late nineteenth century and played in classrooms and on journeys around the world. TIKITEXTO's version brings it to football: the hidden word is a footballer's name, with spaces separating first name and surname.",
+   "A good strategy comes from letter frequency: in Spanish the most common letters are E, A and O, followed by S, R and N. Start there and leave rare ones such as K, W or Z for the end. Every miss counts, so pick letters that appear in many names before gambling on a specific one.",
+   "Once you have a couple of gaps filled, stop thinking in single letters and start thinking in players: the pattern of blanks is often enough to recognise the footballer."]),
+ },
+}
+
 TITULOS = {
  "es": ("Consejos para jugar mejor", "Para leer mientras tanto"),
  "en": ("Tips to play better", "Read while you wait"),
@@ -137,5 +194,7 @@ def bloque(lang, modo, raiz):
     # es: las rutas ya son relativas a la raíz; en: relativas a en/curiosidades/
     pre = raiz if lang == "es" else raiz + "en/curiosidades/"
     li = "".join('<li><a href="%s">%s</a></li>' % (pre + r, _e(t)) for t, r in enlaces)
-    return ('<h2>%s</h2><ul>%s</ul>' % (t1, "".join("<li>%s</li>" % _e(c) for c in consejos))
+    ctx = CONTEXTO.get(lang, {}).get(modo)
+    pre_ctx = ('<h2>%s</h2>%s' % (_e(ctx[0]), "".join("<p>%s</p>" % _e(x) for x in ctx[1]))) if ctx else ""
+    return (pre_ctx + '<h2>%s</h2><ul>%s</ul>' % (t1, "".join("<li>%s</li>" % _e(c) for c in consejos))
             + '<h2>%s</h2><ul class="g">%s</ul>' % (t2, li))

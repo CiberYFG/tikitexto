@@ -2,6 +2,7 @@
 """COMPARADOR futurista (es/en): jugadores, equipos, selecciones y entrenadores.
 Datos: tools/comparador_data.py (única fuente) -> /comparador_datos.js. Motor: /comparador.js + /comparador.css.
 Páginas: comparador/ (es) y en/football-comparator/ (en). Orden: ... -> curiosidades_estadisticas.py -> comparador.py -> ... -> seo.py -> csp.py -> buscador.py"""
+import fecha_sitio as _FS
 import os, sys, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import curiosidades as C
@@ -100,7 +101,7 @@ def pagina(lg, d):
 <section><h2>{e(t['fuentes'])}</h2><ul>{fu}</ul><p>{e(d['fecha'][k])}</p></section>
 </div>
 </main>
-<p class="cp-legal">{e(t['leg'])}<br><a href="/sobre-tikitexto.html">{e(t['sobre'])}</a><a href="/aviso-legal.html">Legal</a><a href="/privacidad.html">{'Privacidad' if lg == 'es' else 'Privacy'}</a><a href="/cookies.html">Cookies</a></p>
+<p class="cp-legal">{e(t['leg'])}<br>{e(_FS.texto(lg))}<br><a href="/sobre-tikitexto.html">{e(t['sobre'])}</a><a href="/aviso-legal.html">Legal</a><a href="/privacidad.html">{'Privacidad' if lg == 'es' else 'Privacy'}</a><a href="/cookies.html">Cookies</a></p>
 <script src="/comparador_datos.js" defer></script>
 <script src="/comparador.js" defer></script>
 </body>

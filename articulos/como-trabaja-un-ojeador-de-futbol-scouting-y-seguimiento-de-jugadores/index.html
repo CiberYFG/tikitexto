@@ -169,6 +169,7 @@ html.huecos body { padding-bottom: 64px; }
 @media (prefers-reduced-motion: reduce) { .tema.oro, .tema.oro > summary::before, .tema.oro .t-emo, .oro-cab { animation: none; } }
 :root { --c: #0f766e; } :root[data-tema="oscuro"] { --c: #5eead4; } .hero, :root[data-tema="oscuro"] .hero { background: radial-gradient(120% 100% at 50% 0%, color-mix(in srgb, var(--c) 78%, #fff) 0%, color-mix(in srgb, var(--c) 78%, #000) 55%, color-mix(in srgb, var(--c) 35%, #000) 100%); } .articulo { counter-reset: sec; } .articulo h2 { counter-increment: sec; display: flex; align-items: center; gap: 12px; border-left: 0; padding-left: 0; } .articulo h2::before { content: counter(sec); flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--c); color: #fff; font-size: .95rem; } .indice a { border-color: color-mix(in srgb, var(--c) 40%, transparent); } .indice a:hover { border-color: var(--c); background: color-mix(in srgb, var(--c) 12%, var(--caja)); } .caja { border-left: 8px solid var(--c); }
 </style>
+<link rel="stylesheet" href="/estudio.css">
 </head>
 <body>
 <script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';var t=e.target.closest&&e.target.closest('[data-tema-btn]');if(t){var n=document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('tikitexto:tema',n);}catch(x){}}});})();</script>
@@ -240,6 +241,7 @@ html.huecos body { padding-bottom: 64px; }
 <li><a href="/articulos/quien-es-el-dueno-de-un-club-de-futbol-socios-regla-50-1-sad-y-multipropiedad/">¿Quién es el dueño de un club de fútbol? Socios, regla 50+1, sociedades anónimas y multipropiedad</a></li>
 </ul>
 
+<div class="est-fin"></div>
 <p><a class="jugar" href="/">⚽ Juega a los juegos de fútbol de TIKITEXTO</a></p>
 <aside class="hueco" aria-label="Publicidad" data-hueco="medio">Publicidad</aside>
 <aside class="hueco hueco--ancla" aria-label="Publicidad" data-hueco="ancla">Publicidad<button type="button" data-cerrar-hueco aria-label="✕">✕</button></aside>
@@ -247,8 +249,10 @@ html.huecos body { padding-bottom: 64px; }
 <nav class="legal-nav" aria-label="Info">
 <a href="/curiosidades/">Curiosidades</a><a href="/sobre-tikitexto.html">Sobre TIKITEXTO</a><a href="/aviso-legal.html">Aviso legal</a><a href="/privacidad.html">Privacidad</a><a href="/cookies.html">Cookies</a><a href="/accesibilidad.html">Accesibilidad</a><a href="/contacto.html">Contacto</a>
 </nav>
+<p class="fecha"><time datetime="2026-11-24">Sitio actualizado el 24 de noviembre de 2026</time></p>
 <p class="fecha">TIKITEXTO no está afiliado a clubes, jugadores, federaciones ni competiciones. Los nombres se usan solo como referencia informativa. Ilustraciones propias.</p>
 </main>
+<script src="/estudio.js" defer></script>
 <script src="/cmp.js" defer></script>
 </body>
 </html>

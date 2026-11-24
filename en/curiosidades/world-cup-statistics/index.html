@@ -117,6 +117,7 @@ html.huecos body { padding-bottom: 64px; }
 .menu-pag { max-width: 760px; margin: 6px auto 0; padding: 0 6px 4px; }
 .idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 8px; } .idiomas a { display: inline-block; padding: 5px 4px; }
 </style>
+<link rel="stylesheet" href="/estudio.css">
 </head>
 <body>
 <script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';var t=e.target.closest&&e.target.closest('[data-tema-btn]');if(t){var n=document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('tikitexto:tema',n);}catch(x){}}});})();</script>
@@ -159,6 +160,7 @@ html.huecos body { padding-bottom: 64px; }
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How many hosts have won the World Cup?", "acceptedAnswer": {"@type": "Answer", "text": "6 of 23: Uruguay 1930, Italy 1934, England 1966, West Germany 1974, Argentina 1978, France 1998."}}, {"@type": "Question", "name": "Which continent has won the most World Cups?", "acceptedAnswer": {"@type": "Answer", "text": "Europe, with 13 titles against South America's 10. No team from any other continent has ever won."}}, {"@type": "Question", "name": "How many World Cup finals have gone to penalties?", "acceptedAnswer": {"@type": "Answer", "text": "3: 1994, 2006, 2022."}}, {"@type": "Question", "name": "How many nations have won the World Cup?", "acceptedAnswer": {"@type": "Answer", "text": "9 nations, counting West Germany and Germany as one: Brazil (5), Italy (4), West Germany (3), Argentina (3), Spain (2), France (2), Uruguay (2), Germany (1), England (1)."}}]}</script>
 <p class="fecha">Data source: <a href="https://www.fifa.com/en/tournaments/mens/worldcup" rel="noopener" target="_blank">FIFA.com · Copa Mundial de la FIFA</a>. Data as of 19 July 2026.</p>
 
+<div class="est-fin"></div>
 <p><a class="jugar" href="/?lang=en">⚽ Play the TIKITEXTO football games</a></p>
 <aside class="hueco" aria-label="Advertisement" data-hueco="medio">Advertisement</aside>
 <aside class="hueco hueco--ancla" aria-label="Advertisement" data-hueco="ancla">Advertisement<button type="button" data-cerrar-hueco aria-label="✕">✕</button></aside>
@@ -166,8 +168,10 @@ html.huecos body { padding-bottom: 64px; }
 <nav class="legal-nav" aria-label="Info">
 <a href="/en/curiosidades/">Trivia</a><a href="/sobre-tikitexto.html">About TIKITEXTO</a><a href="/aviso-legal.html">Legal notice</a><a href="/privacidad.html">Privacy</a><a href="/cookies.html">Cookies</a><a href="/accesibilidad.html">Accessibility</a><a href="/contacto.html">Contact</a>
 </nav>
+<p class="fecha"><time datetime="2026-11-24">Site updated on 24 November 2026</time></p>
 <p class="fecha">TIKITEXTO is not affiliated with clubs, players, federations or competitions. Names are used for information only. Original illustrations. Legal pages are available in Spanish only.</p>
 </main>
+<script src="/estudio.js" defer></script>
 <script src="/cmp.js" defer></script>
 </body>
 </html>

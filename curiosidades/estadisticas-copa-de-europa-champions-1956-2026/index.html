@@ -117,6 +117,7 @@ html.huecos body { padding-bottom: 64px; }
 .menu-pag { max-width: 760px; margin: 6px auto 0; padding: 0 6px 4px; }
 .idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 8px; } .idiomas a { display: inline-block; padding: 5px 4px; }
 </style>
+<link rel="stylesheet" href="/estudio.css">
 </head>
 <body>
 <script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';var t=e.target.closest&&e.target.closest('[data-tema-btn]');if(t){var n=document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('tikitexto:tema',n);}catch(x){}}});})();</script>
@@ -167,6 +168,7 @@ html.huecos body { padding-bottom: 64px; }
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "¿Quién ha ganado más Copas de Europa y Champions League?", "acceptedAnswer": {"@type": "Answer", "text": "El Real Madrid, con 15 títulos en 71 ediciones; le siguen Milan (7) y, con 6 cada uno, Bayern de Múnich y Liverpool."}}, {"@type": "Question", "name": "¿Qué país tiene más Champions League?", "acceptedAnswer": {"@type": "Answer", "text": "España, con 20 títulos, seguida de Inglaterra (15) e Italia (12)."}}, {"@type": "Question", "name": "¿Cuál es la mayor racha de títulos consecutivos?", "acceptedAnswer": {"@type": "Answer", "text": "Cinco: el Real Madrid ganó las cinco primeras ediciones (1956-1960). Después han ganado tres seguidas el Ajax (1971-1973), el Bayern (1974-1976) y el Real Madrid (2016-2018)."}}, {"@type": "Question", "name": "¿Cuántos clubes distintos han sido campeones de Europa?", "acceptedAnswer": {"@type": "Answer", "text": "24 clubes en 71 ediciones. De ellos, 10 han ganado una sola vez: Celtic, Feyenoord, Aston Villa, Hamburgo, Steaua de Bucarest, PSV Eindhoven, Estrella Roja, Olympique de Marsella, Borussia Dortmund, Manchester City."}}, {"@type": "Question", "name": "¿Cuándo ganó por última vez un club de fuera de los cinco grandes países?", "acceptedAnswer": {"@type": "Answer", "text": "En 2004, con el Oporto. Desde entonces todos los campeones han sido de España, Inglaterra, Italia, Alemania o Francia."}}]}</script>
 <p class="fecha">Fuente de los datos: <a href="https://www.uefa.com/uefachampionsleague/history/" rel="noopener" target="_blank">UEFA.com · historia de la Champions League</a>. Datos a 24 de noviembre de 2026.</p>
 
+<div class="est-fin"></div>
 <p><a class="jugar" href="/">⚽ Juega a los juegos de fútbol de TIKITEXTO</a></p>
 <aside class="hueco" aria-label="Publicidad" data-hueco="medio">Publicidad</aside>
 <aside class="hueco hueco--ancla" aria-label="Publicidad" data-hueco="ancla">Publicidad<button type="button" data-cerrar-hueco aria-label="✕">✕</button></aside>
@@ -174,8 +176,10 @@ html.huecos body { padding-bottom: 64px; }
 <nav class="legal-nav" aria-label="Info">
 <a href="/curiosidades/">Curiosidades</a><a href="/sobre-tikitexto.html">Sobre TIKITEXTO</a><a href="/aviso-legal.html">Aviso legal</a><a href="/privacidad.html">Privacidad</a><a href="/cookies.html">Cookies</a><a href="/accesibilidad.html">Accesibilidad</a><a href="/contacto.html">Contacto</a>
 </nav>
+<p class="fecha"><time datetime="2026-11-24">Sitio actualizado el 24 de noviembre de 2026</time></p>
 <p class="fecha">TIKITEXTO no está afiliado a clubes, jugadores, federaciones ni competiciones. Los nombres se usan solo como referencia informativa. Ilustraciones propias.</p>
 </main>
+<script src="/estudio.js" defer></script>
 <script src="/cmp.js" defer></script>
 </body>
 </html>

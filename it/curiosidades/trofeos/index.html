@@ -121,6 +121,7 @@ html.huecos body { padding-bottom: 64px; }
 .menu-pag { max-width: 760px; margin: 6px auto 0; padding: 0 6px 4px; }
 .idiomas { font-size: .85rem; color: var(--suave); margin: 0 0 8px; } .idiomas a { display: inline-block; padding: 5px 4px; }
 </style>
+<link rel="stylesheet" href="/estudio.css">
 </head>
 <body>
 <script>(function(){try{var q=new URLSearchParams(location.search).get('huecos');if(q==='1')localStorage.setItem('tikitexto:huecos','1');if(q==='0')localStorage.removeItem('tikitexto:huecos');if(localStorage.getItem('tikitexto:huecos')==='1')document.documentElement.classList.add('huecos');}catch(e){}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cerrar-hueco]');if(b)b.parentNode.style.display='none';var t=e.target.closest&&e.target.closest('[data-tema-btn]');if(t){var n=document.documentElement.dataset.tema==='oscuro'?'claro':'oscuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('tikitexto:tema',n);}catch(x){}}});})();</script>
@@ -166,6 +167,7 @@ html.huecos body { padding-bottom: 64px; }
 </div>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Qual è il trofeo più importante del calcio?", "acceptedAnswer": {"@type": "Answer", "text": "Per le nazionali, la Coppa del Mondo FIFA. Per i club, la UEFA Champions League."}}, {"@type": "Question", "name": "Qual è la coppa più antica del mondo?", "acceptedAnswer": {"@type": "Answer", "text": "La FA Cup inglese: la prima finale si giocò il 16 marzo 1872."}}, {"@type": "Question", "name": "Chi ha vinto il primo Mondiale?", "acceptedAnswer": {"@type": "Answer", "text": "L'Uruguay, che batté l'Argentina 4-2 nella finale del 1930."}}]}</script>
 <p class="fecha">Fonti: federazioni e organizzatori di ogni competizione. Alcuni trofei hanno avuto più nomi e fasi; si indica l&#x27;anno della prima edizione.</p>
+<div class="est-fin"></div>
 <p><a class="jugar" href="/?lang=it">⚽ Gioca ai giochi di calcio di TIKITEXTO</a></p>
 <aside class="hueco" aria-label="Pubblicità" data-hueco="medio">Pubblicità</aside>
 <aside class="hueco hueco--ancla" aria-label="Pubblicità" data-hueco="ancla">Pubblicità<button type="button" data-cerrar-hueco aria-label="✕">✕</button></aside>
@@ -173,8 +175,10 @@ html.huecos body { padding-bottom: 64px; }
 <nav class="legal-nav" aria-label="Info">
 <a href="/it/curiosidades/">Curiosità</a><a href="/sobre-tikitexto.html">Chi siamo</a><a href="/aviso-legal.html">Note legali</a><a href="/privacidad.html">Privacy</a><a href="/cookies.html">Cookie</a><a href="/accesibilidad.html">Accessibilità</a><a href="/contacto.html">Contatti</a>
 </nav>
+<p class="fecha"><time datetime="2026-11-24">Sito aggiornato il 24 novembre 2026</time></p>
 <p class="fecha">TIKITEXTO non è affiliato a club, giocatori, federazioni né competizioni. I nomi sono usati solo a scopo informativo. Illustrazioni originali. Le pagine legali sono disponibili solo in spagnolo.</p>
 </main>
+<script src="/estudio.js" defer></script>
 <script src="/cmp.js" defer></script>
 </body>
 </html>
