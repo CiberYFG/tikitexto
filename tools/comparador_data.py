@@ -8,7 +8,7 @@ import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import hist_data as H
 
-FECHA = ("Datos a 21 de noviembre de 2026", "Data as of 21 November 2026")
+FECHA = ("Datos a 24 de noviembre de 2026", "Data as of 24 November 2026")
 
 # ───────────────────────── estadísticas por modo ─────────────────────────
 # (clave, español, inglés, unidad, ganador: 1 = más es mejor · 0 = solo informativo)
@@ -62,6 +62,7 @@ RADAR = {
 # ───────────────────────── jugadores ─────────────────────────
 # id, nombre, (posición es, en), (país es, en), color1, color2, datos
 P = lambda **k: k
+DEL = ("Delantero", "Forward"); MED = ("Centrocampista", "Midfielder"); DEF = ("Defensa", "Defender"); POR = ("Portero", "Goalkeeper")
 JUGADORES = [
  ("messi", "Lionel Messi", ("Delantero", "Forward"), ("Argentina", "Argentina"), "#6cc0ff", "#ffffff",
   P(nac=1987, alt=170, peso=72, bdo=8, ucl_t=4, mundial=1, cont=2, botas=6, ucl_g=129, ucl_p=163, sel_g=126, sel_p=208, wc_g=21)),
@@ -115,6 +116,55 @@ JUGADORES = [
   P(nac=1976, alt=183, peso=82, bdo=2, ucl_t=0, mundial=2, cont=1, botas=1, ucl_g=None, ucl_p=None, sel_g=62, sel_p=98, wc_g=15)),
  ("henry", "Thierry Henry", ("Delantero", "Forward"), ("Francia", "France"), "#2f6bff", "#ff3d4d",
   P(nac=1977, alt=188, peso=83, bdo=0, ucl_t=1, mundial=1, cont=1, botas=2, ucl_g=50, ucl_p=112, sel_g=51, sel_p=123, wc_g=None)),
+ # ── ampliación 24-nov-2026: leyendas con carrera cerrada (cifras fijas) y varios en activo o recién retirados (lo cambiante, a None) ──
+ ("platini", "Michel Platini", MED, ("Francia", "France"), "#2f6bff", "#ffffff",
+  P(nac=1955, alt=178, peso=72, bdo=3, ucl_t=1, mundial=0, cont=1, botas=0, ucl_g=None, ucl_p=None, sel_g=41, sel_p=72, wc_g=5)),
+ ("beckenbauer", "Franz Beckenbauer", DEF, ("Alemania", "Germany"), "#f4f4ff", "#ff3d4d",
+  P(nac=1945, alt=181, peso=None, bdo=2, ucl_t=3, mundial=1, cont=1, botas=0, ucl_g=None, ucl_p=None, sel_g=14, sel_p=103, wc_g=5)),
+ ("gerd-muller", "Gerd Müller", DEL, ("Alemania", "Germany"), "#f4f4ff", "#ff3d4d",
+  P(nac=1945, alt=176, peso=None, bdo=1, ucl_t=3, mundial=1, cont=1, botas=2, ucl_g=None, ucl_p=None, sel_g=68, sel_p=62, wc_g=14)),
+ ("van-basten", "Marco van Basten", DEL, ("Países Bajos", "Netherlands"), "#ff8a1f", "#ffffff",
+  P(nac=1964, alt=188, peso=None, bdo=3, ucl_t=2, mundial=0, cont=1, botas=1, ucl_g=None, ucl_p=None, sel_g=24, sel_p=58, wc_g=0)),
+ ("maldini", "Paolo Maldini", DEF, ("Italia", "Italy"), "#2f8cff", "#ffffff",
+  P(nac=1968, alt=186, peso=83, bdo=0, ucl_t=5, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=7, sel_p=126, wc_g=0)),
+ ("baggio", "Roberto Baggio", DEL, ("Italia", "Italy"), "#2f8cff", "#ffffff",
+  P(nac=1967, alt=174, peso=73, bdo=1, ucl_t=0, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=27, sel_p=56, wc_g=9)),
+ ("ibrahimovic", "Zlatan Ibrahimović", DEL, ("Suecia", "Sweden"), "#ffd23a", "#2f6bff",
+  P(nac=1981, alt=195, peso=95, bdo=0, ucl_t=0, mundial=0, cont=0, botas=0, ucl_g=48, ucl_p=None, sel_g=62, sel_p=122, wc_g=0)),
+ ("figo", "Luís Figo", MED, ("Portugal", "Portugal"), "#ff3d4d", "#17c964",
+  P(nac=1972, alt=180, peso=75, bdo=1, ucl_t=1, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=32, sel_p=127, wc_g=None)),
+ ("kaka", "Kaká", MED, ("Brasil", "Brazil"), "#ffdf00", "#17c964",
+  P(nac=1982, alt=186, peso=82, bdo=1, ucl_t=1, mundial=1, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=29, sel_p=92, wc_g=None)),
+ ("raul", "Raúl González", DEL, ("España", "Spain"), "#f4f4ff", "#ffd23a",
+  P(nac=1977, alt=180, peso=75, bdo=0, ucl_t=3, mundial=0, cont=0, botas=0, ucl_g=71, ucl_p=142, sel_g=44, sel_p=102, wc_g=None)),
+ ("suarez", "Luis Suárez", DEL, ("Uruguay", "Uruguay"), "#6cc0ff", "#ffffff",
+  P(nac=1987, alt=182, peso=86, bdo=0, ucl_t=1, mundial=0, cont=1, botas=2, ucl_g=None, ucl_p=None, sel_g=None, sel_p=None, wc_g=7)),
+ ("rooney", "Wayne Rooney", DEL, ("Inglaterra", "England"), "#ffffff", "#ff3d4d",
+  P(nac=1985, alt=176, peso=83, bdo=0, ucl_t=1, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=53, sel_p=120, wc_g=1)),
+ ("gerrard", "Steven Gerrard", MED, ("Inglaterra", "England"), "#ffffff", "#ff3d4d",
+  P(nac=1980, alt=183, peso=83, bdo=0, ucl_t=1, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=21, sel_p=114, wc_g=None)),
+ ("lampard", "Frank Lampard", MED, ("Inglaterra", "England"), "#ffffff", "#ff3d4d",
+  P(nac=1978, alt=184, peso=80, bdo=0, ucl_t=1, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=29, sel_p=106, wc_g=0)),
+ ("pirlo", "Andrea Pirlo", MED, ("Italia", "Italy"), "#2f8cff", "#ffffff",
+  P(nac=1979, alt=177, peso=68, bdo=0, ucl_t=2, mundial=1, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=13, sel_p=116, wc_g=None)),
+ ("buffon", "Gianluigi Buffon", POR, ("Italia", "Italy"), "#2f8cff", "#ffffff",
+  P(nac=1978, alt=192, peso=92, bdo=0, ucl_t=0, mundial=1, cont=0, botas=0, ucl_g=0, ucl_p=None, sel_g=0, sel_p=176, wc_g=0)),
+ ("drogba", "Didier Drogba", DEL, ("Costa de Marfil", "Ivory Coast"), "#ff8a1f", "#17c964",
+  P(nac=1978, alt=189, peso=91, bdo=0, ucl_t=1, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=65, sel_p=105, wc_g=None)),
+ ("bale", "Gareth Bale", DEL, ("Gales", "Wales"), "#ff3d4d", "#17c964",
+  P(nac=1989, alt=185, peso=82, bdo=0, ucl_t=5, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=41, sel_p=111, wc_g=0)),
+ ("puskas", "Ferenc Puskás", DEL, ("Hungría", "Hungary"), "#ff3d4d", "#17c964",
+  P(nac=1927, alt=172, peso=None, bdo=0, ucl_t=3, mundial=0, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=84, sel_p=85, wc_g=4)),
+ ("cafu", "Cafu", DEF, ("Brasil", "Brazil"), "#ffdf00", "#17c964",
+  P(nac=1970, alt=176, peso=74, bdo=0, ucl_t=1, mundial=2, cont=2, botas=0, ucl_g=None, ucl_p=None, sel_g=5, sel_p=142, wc_g=None)),
+ ("neuer", "Manuel Neuer", POR, ("Alemania", "Germany"), "#f4f4ff", "#ff3d4d",
+  P(nac=1986, alt=193, peso=92, bdo=0, ucl_t=2, mundial=1, cont=0, botas=0, ucl_g=0, ucl_p=None, sel_g=0, sel_p=124, wc_g=0)),
+ ("griezmann", "Antoine Griezmann", DEL, ("Francia", "France"), "#2f6bff", "#ff3d4d",
+  P(nac=1991, alt=176, peso=73, bdo=0, ucl_t=0, mundial=1, cont=0, botas=0, ucl_g=None, ucl_p=None, sel_g=44, sel_p=137, wc_g=4)),
+ ("di-stefano", "Alfredo Di Stéfano", DEL, ("Argentina", "Argentina"), "#6cc0ff", "#ffffff",
+  P(nac=1926, alt=178, peso=None, bdo=2, ucl_t=5, mundial=0, cont=1, botas=0, ucl_g=None, ucl_p=None, sel_g=None, sel_p=None, wc_g=0)),
+ ("yashin", "Lev Yashin", POR, ("Unión Soviética", "Soviet Union"), "#ff3d4d", "#ffd23a",
+  P(nac=1929, alt=189, peso=None, bdo=1, ucl_t=0, mundial=0, cont=1, botas=0, ucl_g=0, ucl_p=None, sel_g=0, sel_p=None, wc_g=0)),
 ]
 
 # ───────────────────────── equipos ─────────────────────────
@@ -143,6 +193,23 @@ EQUIPOS = [
  ("inter", "Inter de Milán", ("Italia", "Italy"), "#2f8cff", "#ffffff", "Inter", dict(liga_t=21, mcl=1, fund=1908)),
  ("juventus", "Juventus", ("Italia", "Italy"), "#f4f4ff", "#8a8aa0", "Juventus", dict(liga_t=36, mcl=0, fund=1897)),
  ("psg", "París Saint-Germain", ("Francia", "France"), "#2a6bd6", "#ff3d4d", "París Saint-Germain", dict(liga_t=14, mcl=0, fund=1970)),
+ # ── ampliación 24-nov-2026: ligas nacionales a cierre de 2025-26 (Oporto 31, PSV 27 y Celtic 56 tras ganar 2025-26) ──
+ ("benfica", "SL Benfica", ("Portugal", "Portugal"), "#e8202a", "#ffffff", "Benfica", dict(liga_t=38, mcl=0, fund=1904)),
+ ("oporto", "FC Porto", ("Portugal", "Portugal"), "#2a6bd6", "#ffffff", "Oporto", dict(liga_t=31, mcl=0, fund=1893)),
+ ("sporting", "Sporting CP", ("Portugal", "Portugal"), "#17a05a", "#ffffff", "Sporting CP", dict(liga_t=21, mcl=0, fund=1906)),
+ ("ajax", "Ajax", ("Países Bajos", "Netherlands"), "#ff3d4d", "#ffffff", "Ajax", dict(liga_t=36, mcl=0, fund=1900)),
+ ("psv", "PSV Eindhoven", ("Países Bajos", "Netherlands"), "#e8202a", "#ffffff", "PSV Eindhoven", dict(liga_t=27, mcl=0, fund=1913)),
+ ("feyenoord", "Feyenoord", ("Países Bajos", "Netherlands"), "#e8202a", "#ffffff", "Feyenoord", dict(liga_t=16, mcl=0, fund=1908)),
+ ("celtic", "Celtic", ("Escocia", "Scotland"), "#17a05a", "#ffffff", "Celtic", dict(liga_t=56, mcl=0, fund=1887)),
+ ("aston-villa", "Aston Villa", ("Inglaterra", "England"), "#8a1e41", "#8cc8ff", "Aston Villa", dict(liga_t=7, mcl=0, fund=1874)),
+ ("nottingham-forest", "Nottingham Forest", ("Inglaterra", "England"), "#e0203a", "#ffffff", "Nottingham Forest", dict(liga_t=1, mcl=0, fund=1865)),
+ ("tottenham", "Tottenham Hotspur", ("Inglaterra", "England"), "#f4f4ff", "#2a3a8f", "Tottenham", dict(liga_t=2, mcl=0, fund=1882)),
+ ("marsella", "Olympique de Marsella", ("Francia", "France"), "#4cc9ff", "#ffffff", "Olympique de Marsella", dict(liga_t=9, mcl=0, fund=1899)),
+ ("napoli", "SSC Napoli", ("Italia", "Italy"), "#4cc9ff", "#ffffff", "Napoli", dict(liga_t=4, mcl=0, fund=1926)),
+ ("roma", "AS Roma", ("Italia", "Italy"), "#a50044", "#ffd23a", "Roma", dict(liga_t=3, mcl=0, fund=1927)),
+ ("sevilla", "Sevilla FC", ("España", "Spain"), "#f4f4ff", "#e8202a", "Sevilla", dict(liga_t=1, mcl=0, fund=1890)),
+ ("valencia", "Valencia CF", ("España", "Spain"), "#f4f4ff", "#ff8a1f", "Valencia", dict(liga_t=6, mcl=0, fund=1919)),
+ ("leverkusen", "Bayer Leverkusen", ("Alemania", "Germany"), "#e8202a", "#17171f", "Bayer Leverkusen", dict(liga_t=1, mcl=0, fund=1904)),
 ]
 
 # ───────────────────────── selecciones ─────────────────────────
@@ -160,6 +227,15 @@ SELECCIONES = [
  ("uruguay", "Uruguay", "Uruguay", "#6cc0ff", "#ffffff", ("Uruguay",), dict(cont=15, bdo=0, gol=None), ""),
  ("croacia", "Croacia", "Croatia", "#ff3d4d", "#ffffff", ("Croacia",), dict(cont=0, bdo=1, gol=45), "Davor Šuker"),
  ("belgica", "Bélgica", "Belgium", "#ff3d4d", "#ffd23a", ("Bélgica",), dict(cont=0, bdo=0, gol=93), "Romelu Lukaku"),
+ # ── ampliación 24-nov-2026 (goleador a None donde la cifra aún puede cambiar o no está clara) ──
+ ("colombia", "Colombia", "Colombia", "#ffd23a", "#2f6bff", ("Colombia",), dict(cont=1, bdo=0, gol=None), ""),
+ ("chile", "Chile", "Chile", "#ff3d4d", "#2f6bff", ("Chile",), dict(cont=2, bdo=0, gol=None), ""),
+ ("paraguay", "Paraguay", "Paraguay", "#ff3d4d", "#2f6bff", ("Paraguay",), dict(cont=2, bdo=0, gol=32), "Roque Santa Cruz"),
+ ("dinamarca", "Dinamarca", "Denmark", "#ff3d4d", "#ffffff", ("Dinamarca",), dict(cont=1, bdo=1, gol=52), "Poul Nielsen y Jon Dahl Tomasson"),
+ ("grecia", "Grecia", "Greece", "#2f8cff", "#ffffff", ("Grecia",), dict(cont=1, bdo=0, gol=29), "Nikos Anastopoulos"),
+ ("suecia", "Suecia", "Sweden", "#ffd23a", "#2f6bff", ("Suecia",), dict(cont=0, bdo=0, gol=62), "Zlatan Ibrahimović"),
+ ("polonia", "Polonia", "Poland", "#ff3d4d", "#ffffff", ("Polonia",), dict(cont=0, bdo=0, gol=89), "Robert Lewandowski"),
+ ("suiza", "Suiza", "Switzerland", "#ff3d4d", "#ffffff", ("Suiza",), dict(cont=0, bdo=0, gol=42), "Alexander Frei"),
 ]
 
 # ───────────────────────── entrenadores ─────────────────────────
@@ -180,6 +256,17 @@ ENTRENADORES = [
  ("deschamps", "Didier Deschamps", ("Francia", "France"), "#2f6bff", "#ff3d4d", dict(nac=1968, ucl=0, mundial=1, cont=0, ligas=1)),
  ("scaloni", "Lionel Scaloni", ("Argentina", "Argentina"), "#6cc0ff", "#ffffff", dict(nac=1978, ucl=0, mundial=1, cont=2, ligas=None)),
  ("de-la-fuente", "Luis de la Fuente", ("España", "Spain"), "#ff3d4d", "#ffd23a", dict(nac=1961, ucl=0, mundial=1, cont=1, ligas=0)),
+ # ── ampliación 24-nov-2026: ligas = títulos de liga nacionales de entrenador en total (Lippi: 5 en Italia y 3 en China) ──
+ ("sacchi", "Arrigo Sacchi", ("Italia", "Italy"), "#fb2d2d", "#17171f", dict(nac=1946, ucl=2, mundial=0, cont=0, ligas=1)),
+ ("cruyff-entrenador", "Johan Cruyff", ("Países Bajos", "Netherlands"), "#a50044", "#2e6bd6", dict(nac=1947, ucl=1, mundial=0, cont=0, ligas=4)),
+ ("van-gaal", "Louis van Gaal", ("Países Bajos", "Netherlands"), "#ff8a1f", "#ffffff", dict(nac=1951, ucl=1, mundial=0, cont=0, ligas=7)),
+ ("heynckes", "Jupp Heynckes", ("Alemania", "Germany"), "#dc052d", "#ffffff", dict(nac=1945, ucl=2, mundial=0, cont=0, ligas=4)),
+ ("lippi", "Marcello Lippi", ("Italia", "Italy"), "#2f8cff", "#ffffff", dict(nac=1948, ucl=1, mundial=1, cont=0, ligas=8)),
+ ("conte", "Antonio Conte", ("Italia", "Italy"), "#2f8cff", "#17c964", dict(nac=1969, ucl=0, mundial=0, cont=0, ligas=6)),
+ ("tuchel", "Thomas Tuchel", ("Alemania", "Germany"), "#2f6bff", "#ffffff", dict(nac=1973, ucl=1, mundial=0, cont=0, ligas=3)),
+ ("low", "Joachim Löw", ("Alemania", "Germany"), "#f4f4ff", "#ffd23a", dict(nac=1960, ucl=0, mundial=1, cont=0, ligas=1)),
+ ("paisley", "Bob Paisley", ("Inglaterra", "England"), "#e0203a", "#ffd23a", dict(nac=1919, ucl=3, mundial=0, cont=0, ligas=6)),
+ ("clough", "Brian Clough", ("Inglaterra", "England"), "#e0203a", "#ffffff", dict(nac=1935, ucl=2, mundial=0, cont=0, ligas=2)),
 ]
 
 # duelos sugeridos (a, b) por modo
