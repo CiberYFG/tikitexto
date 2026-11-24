@@ -1739,7 +1739,7 @@ for _r in ("juegos/", "en/games/"):
     _hh = open(_os.path.join(_raiz, _r, "index.html"), encoding="utf-8").read()
     check("hub %s enlaza a las 10 guías" % _r, _hh.count('href="') > 10 and all(((_g["es"] if _r == "juegos/" else _g["en"]) + "/") in _hh for _g in _jd.J))
 _hh = open(_os.path.join(_raiz, "articulos", "reglas-basicas-del-futbol-para-principiantes", "index.html"), encoding="utf-8").read()
-check("artículos: llevan autoría editorial (sin nombre propio) y enlace a «cómo elaboramos el contenido»", "Edita el titular del sitio" in _hh and "/aviso-legal.html" in _hh and "sobre-tikitexto.html#editorial" in _hh and '"author"' in _hh)
+check("artículos: llevan autoría editorial (sin nombre propio) y enlace a «cómo elaboramos el contenido»", "Edita y revisa el titular del sitio" in _hh and "/aviso-legal.html" in _hh and not re.search(r"asistencia de|inteligencia artificial", _hh, re.I) and "sobre-tikitexto.html#editorial" in _hh and '"author"' in _hh)
 
 # 3aw) El nombre del titular solo puede aparecer en aviso-legal.html
 print("3aw) Nombre del titular solo en el aviso legal")
@@ -1768,7 +1768,8 @@ _smx = open(_os.path.join(_raiz, "sitemap.xml"), encoding="utf-8").read()
 for _r, _lg in (("clases/", "es"), ("en/classes/", "en")):
     _fp = _os.path.join(_raiz, _r, "index.html"); _hh = open(_fp, encoding="utf-8").read() if _os.path.exists(_fp) else ""
     _pal = len(re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[\s\S]*?</\1>", "", _hh)).split())
-    _tit = sum(1 for _g in _cl if _g[_lg]["titulo"] in _hh)
+    import html as _ht
+    _tit = sum(1 for _g in _cl if _ht.escape(_g[_lg]["titulo"]) in _hh)
     check("clases hub %s: +900 palabras, las 18 clases resumidas, FAQ y enlace al reproductor (%d palabras, %d clases)" % (_lg, _pal, _tit), _pal > 900 and _tit == 18 and "FAQPage" in _hh and "modo=clases" in _hh, "")
 check("clases: sin páginas de texto por lección (solo hubs) y hubs en el sitemap", len(_cl) == 18 and _os.listdir(_os.path.join(_raiz, "en", "classes")) == ["index.html"] and _os.listdir(_os.path.join(_raiz, "clases")) == ["index.html"] and "https://tikitexto.com/en/classes/</loc>" in _smx and "https://tikitexto.com/clases/</loc>" in _smx and "/clases/fuera-de-juego/" not in _smx)
 
