@@ -88,7 +88,7 @@ AREAS = {
  "jugadores": [("prem", ("Premios individuales", "Individual awards"), ("bdo", "botas")),
                ("tit", ("Títulos colectivos", "Team trophies"), ("ucl_t", "mundial", "cont")),
                ("rend", ("Goles y partidos", "Goals and appearances"), ("ucl_g", "ucl_p", "sel_g", "sel_p", "wc_g"))],
- "equipos": [("tit", ("Títulos", "Trophies"), ("ucl", "liga_t", "mcl")), ("fin", ("Finales de Champions", "Champions League finals"), ("fin", "fin_g"))],
+ "equipos": [("tit", ("Títulos", "Trophies"), ("ucl", "liga_t", "mcl", "uel", "usc")), ("fin", ("Finales de Champions", "Champions League finals"), ("fin", "fin_g"))],
  "selecciones": [("wc", ("Mundiales", "World Cups"), ("wc", "wc_f")), ("cont", ("Torneos continentales", "Continental tournaments"), ("cont",)), ("ind", ("Figuras individuales", "Individual stars"), ("bdo", "gol"))],
  "entrenadores": [("tit", ("Grandes títulos", "Major trophies"), ("ucl", "mundial", "cont")), ("lig", ("Ligas nacionales", "Domestic leagues"), ("ligas",))],
 }
