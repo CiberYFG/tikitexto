@@ -65,6 +65,50 @@ FAQ_TEMAS = {
 }
 FAQ_TEMAS.update(T.FAQ_NUEVOS)
 
+CLUBES_EU = {"curiosidades-real-madrid": "Real Madrid", "curiosidades-barcelona": "Barcelona", "curiosidades-manchester-united": "Manchester United",
+             "curiosidades-liverpool": "Liverpool", "curiosidades-bayern-munich": "Bayern de Múnich", "curiosidades-juventus": "Juventus", "curiosidades-ac-milan": "Milan"}
+NOM_EN = {"Bayern de Múnich": "Bayern Munich", "Milan": "AC Milan"}
+
+def _pl(n, uno, varios): return uno if n == 1 else varios
+
+def bloque_calculado(L, t):
+    """Sección con datos calculados desde las listas del propio sitio (campeones de la Copa de Europa / finales de la Eurocopa)."""
+    es = L.lang == "es"; slug = t["es"]; h = ""
+    if slug in CLUBES_EU:
+        club = CLUBES_EU[slug]; nom = club if es else NOM_EN.get(club, club)
+        ys = [y for y, c in C.CHAMPIONS if c == club]; n = len(ys)
+        gaps = [(b - a, a, b) for a, b in zip(ys, ys[1:])]
+        dec = {}
+        for y in ys: dec[y // 10 * 10] = dec.get(y // 10 * 10, 0) + 1
+        dtxt = ", ".join(f"{d}s: {v}" for d, v in sorted(dec.items()))
+        if es:
+            h += f"<h2>{e(nom)} en la Copa de Europa, año a año</h2>\n"
+            p = f"{nom} ha ganado la Copa de Europa y la Champions League {n} {_pl(n, 'vez', 'veces')}: la primera en {ys[0]} y la última, de momento, en {ys[-1]}. "
+            if gaps:
+                g1 = max(gaps); g2 = min(gaps)
+                p += f"El mayor intervalo entre dos títulos fue de {g1[0]} años ({g1[1]}-{g1[2]}) y el más corto, de {g2[0]} {_pl(g2[0], 'año', 'años')} ({g2[1]}-{g2[2]}). "
+            p += f"Por décadas: {dtxt}. Cálculo propio a partir de la lista de campeones de la UEFA ({C.CHAMPIONS[0][0]}-{C.CHAMPIONS[-1][0]})."
+        else:
+            h += f"<h2>{e(nom)} in the European Cup, year by year</h2>\n"
+            p = f"{nom} has won the European Cup and Champions League {n} {_pl(n, 'time', 'times')}: the first in {ys[0]} and the latest, so far, in {ys[-1]}. "
+            if gaps:
+                g1 = max(gaps); g2 = min(gaps)
+                p += f"The longest gap between two titles was {g1[0]} years ({g1[1]}–{g1[2]}) and the shortest, {g2[0]} {_pl(g2[0], 'year', 'years')} ({g2[1]}–{g2[2]}). "
+            p += f"By decade: {dtxt}. Our own calculation from UEFA's list of champions ({C.CHAMPIONS[0][0]}–{C.CHAMPIONS[-1][0]})."
+        h += f"<p>{e(p)}</p>\n"
+        if n >= 2:
+            fil = "".join(f"<tr><td>{i + 1}</td><td>{y}</td><td>{'—' if i == 0 else y - ys[i - 1]}</td></tr>" for i, y in enumerate(ys))
+            cab = ("Título", "Año de la final", "Años desde el anterior") if es else ("Title", "Year of the final", "Years since the previous one")
+            h += f"<table><thead><tr><th>{cab[0]}</th><th>{cab[1]}</th><th>{cab[2]}</th></tr></thead><tbody>{fil}</tbody></table>\n"
+    elif slug == "curiosidades-eurocopa":
+        import curiosidades_estadisticas as S
+        h += f"<h2>{'Todas las finales de la Eurocopa' if es else 'Every European Championship final'}</h2>\n"
+        h += f"<p>{e('Año, sede, campeón, subcampeón y resultado de las 17 ediciones disputadas entre 1960 y 2024, según UEFA.com.' if es else 'Year, host, champion, runner-up and score of the 17 editions played between 1960 and 2024, according to UEFA.com.')}</p>\n"
+        cab = ("Año", "Sede", "Campeón", "Subcampeón", "Resultado") if es else ("Year", "Host", "Champion", "Runner-up", "Score")
+        fil = "".join(f"<tr><td>{x[0]}</td><td>{e(S.seu(L, x[1]))}</td><td>{e(S.seu(L, x[2]))}</td><td>{e(S.seu(L, x[3]))}</td><td>{e(S.celda_eu(L, x[4]))}</td></tr>" for x in S.EURO)
+        h += "<table><thead><tr>" + "".join(f"<th>{c}</th>" for c in cab) + f"</tr></thead><tbody>{fil}</tbody></table>\n"
+    return h
+
 def pagina(L, t):
     es = L.lang == "es"; k = 0 if es else 1
     ruta = "curiosidades/" + t[L.lang] + "/"
@@ -75,6 +119,7 @@ def pagina(L, t):
     h += '<p class="indice">' + "".join(f'<a href="#h{i}">{e(x[k])}</a>' for i, x in enumerate(t["hechos"])) + '</p>\n'
     for i, x in enumerate(t["hechos"]):
         h += entrada(L, ICONOS[t["ic"]], str(i + 1), e(x[k]), [e(x[2 + k])], None, f"h{i}")
+    h += bloque_calculado(L, t)
     h += C.faq(L, FAQ_TEMAS.get(t["es"], []))
     ext, internos = [], []
     for n, u in t["src"]:
@@ -93,7 +138,8 @@ def hub(L):
     ruta = "curiosidades/" + HUB[k] + "/"
     h = cabecera(L, HUB_T[k] + " | TIKITEXTO", HUB_D[k], ruta, HUB_T[k])
     h = D.alinear(L, h, ruta, HUB[k], HUB)
-    h += f'<div class="caja">{e(HUB_D[k])}</div>\n<div class="tarjetas">\n'
+    import hubs_texto as _HT
+    h += f'<div class="caja">{e(HUB_D[k])}</div>\n' + _HT.parrafos("temas", L.lang) + '<div class="tarjetas">\n'
     for q in T.TEMAS:
         h += f'<a class="tarjeta" href="{L.url("curiosidades/" + q[L.lang] + "/")}">{ICONOS[q["ic"]]}<b>{e(q["t"][k])}</b><span>{len(q["hechos"])} {"curiosidades" if es else "facts"}</span></a>\n'
     return ruta, h + '</div>\n' + pie(L)
@@ -106,4 +152,10 @@ if __name__ == "__main__":
             cont = C.con_huecos(L, cont)
             d = os.path.join(C.RAIZ, L.prefix + ruta); os.makedirs(d, exist_ok=True)
             open(os.path.join(d, "index.html"), "w", encoding="utf-8").write(cont); out.append(L.prefix + ruta)
-    print(len(out), "páginas")
+    import json
+    _dd = []
+    for q in T.TEMAS:
+        for i, x in enumerate(q["hechos"]):
+            _dd.append({"h": x[0], "he": x[1], "t": x[2], "te": x[3], "u": f"/curiosidades/{q['es']}/#h{i}", "ue": f"/en/curiosidades/{q['en']}/#h{i}"})
+    open(os.path.join(C.RAIZ, "dato_dia.json"), "w", encoding="utf-8").write(json.dumps(_dd, ensure_ascii=False, separators=(",", ":")))
+    print(len(out), "páginas;", len(_dd), "datos del día")

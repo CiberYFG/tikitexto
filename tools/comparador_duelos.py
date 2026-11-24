@@ -2,7 +2,7 @@
 """Páginas estáticas de duelos del COMPARADOR (es/en) para SEO: «X vs Y».
 Datos: comparador_data.py. Rutas: comparador/<a>-vs-<b>/ y en/football-comparator/<a>-vs-<b>/.
 Orden: ... -> comparador.py -> comparador_duelos.py -> seo.py -> csp.py -> buscador.py"""
-import fecha_sitio as _FS
+import re, fecha_sitio as _FS
 import os, sys, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import curiosidades as C
@@ -114,6 +114,16 @@ CLAVES_FINAL = {"fin", "fin_g"}
 
 def _et(s, k): return s["es"] if k == 0 else s["en"]
 
+def brecha(fs, na, nb, k):
+    """Frase calculada con la mayor distancia entre ambos dentro de un área (sin texto genérico repetido)."""
+    c = [(abs(f[1] - f[2]), f) for f in fs if f[3] in ("a", "b") and isinstance(f[1], (int, float)) and isinstance(f[2], (int, float))]
+    if not c: return ""
+    d, f = max(c, key=lambda x: (x[0], x[1][0]["k"]))
+    w, l, vw, vl = (na, nb, f[1], f[2]) if f[3] == "a" else (nb, na, f[2], f[1])
+    if d == 0: return ""
+    return (f"La mayor distancia está en «{f[0]['es']}»: {w} suma {fmt(vw)} y {l} {fmt(vl)}, una diferencia de {fmt(d)}.",
+            f"The biggest gap is in “{f[0]['en']}”: {w} has {fmt(vw)} and {l} {fmt(vl)}, a difference of {fmt(d)}.")[k]
+
 def areas_html(lg, m, bl, A, B, filas):
     k = 0 if lg == "es" else 1; na, nb = nom(A, k), nom(B, k); por = {s["k"]: (s, va, vb, g) for s, va, vb, g in filas}; out = ""
     for clave, titulo, ks in AREAS.get(m, []):
@@ -125,7 +135,7 @@ def areas_html(lg, m, bl, A, B, filas):
         elif wa > wb: veredicto = (f"{na} lidera esta área ({wa} de {ct} apartados comparables).", f"{na} leads this area ({wa} of {ct} comparable items).")[k]
         elif wb > wa: veredicto = (f"{nb} lidera esta área ({wb} de {ct} apartados comparables).", f"{nb} leads this area ({wb} of {ct} comparable items).")[k]
         else: veredicto = (f"El área está igualada entre {na} y {nb}.", f"The area is level between {na} and {nb}.")[k]
-        out += f"<h3>{e(titulo[k])}</h3><p>{e(det)}. {e(veredicto)} {e(EXPL[clave][k])}</p>\n"
+        out += f"<h3>{e(titulo[k])}</h3><p>{e(det)}. {e(veredicto)} {e(brecha(fs, na, nb, k))}</p>\n"
     return out
 
 def destacados(lg, bl, X, n=5):
@@ -171,7 +181,7 @@ LEER = (("Las filas con ganador puntúan: gana quien tiene la cifra más alta y 
 def faq(lg, A, B, filas, pa, pb, bl):
     k = 0 if lg == "es" else 1; na, nb = nom(A, k), nom(B, k); qa = []
     res = resumen(lg, A, B, filas, pa, pb)
-    qa.append((f"¿Quién tiene más títulos, {na} o {nb}?", f"Who has more trophies, {na} or {nb}?", res + " Mira la tabla para ver cada título por separado.", res + " See the table for each trophy separately."))
+    qa.append((f"¿Quién tiene más títulos, {na} o {nb}?", f"Who has more trophies, {na} or {nb}?", res, res))
     for s, va, vb, g in filas:
         if g in ("a", "b") and s["k"] in ("bdo", "ucl_t", "ucl", "mundial", "wc", "ligas", "liga_t"):
             w, vw, vl = (na, va, vb) if g == "a" else (nb, vb, va)
@@ -179,10 +189,15 @@ def faq(lg, A, B, filas, pa, pb, bl):
             qa.append((f"¿Quién tiene más — {et_es} — entre {na} y {nb}?", f"Who has more — {et_en} — {na} or {nb}?",
                        f"{w}, con {vw} frente a {vl}.", f"{w}, with {vw} against {vl}."))
             break
-    qa.append(("¿De dónde salen estos datos?", "Where does this data come from?",
-               "De las bases oficiales de UEFA y FIFA, France Football y las webs de las federaciones. La fecha aparece al final de la página y los datos que no hemos podido contrastar se muestran con un guion.",
-               "From UEFA and FIFA official records, France Football and federation websites. The date is shown at the bottom and unconfirmed figures appear as a dash."))
+    num = [(abs(va - vb) / max(abs(va), abs(vb), 1), s, va, vb, g) for s, va, vb, g in filas if g in ("a", "b") and isinstance(va, (int, float)) and isinstance(vb, (int, float))]
+    if num:
+        r, s, va, vb, g = max(num, key=lambda x: (x[0], x[1]["k"]))
+        w, l, vw, vl = (na, nb, va, vb) if g == "a" else (nb, na, vb, va)
+        qa.append((f"¿En qué se diferencian más {na} y {nb}?", f"Where do {na} and {nb} differ most?",
+                   f"En «{s['es']}»: {w} tiene {fmt(vw)} y {l} {fmt(vl)}.", f"In “{s['en']}”: {w} has {fmt(vw)} and {l} {fmt(vl)}."))
     return qa
+
+_NOIDX = set()
 
 def pagina(lg, d, m, a, b, todos):
     t = T[lg]; k = 0 if lg == "es" else 1; L = C.Idioma(lg)
@@ -216,7 +231,7 @@ def pagina(lg, d, m, a, b, todos):
 {C.CSP}<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="google-adsense-account" content="ca-pub-3562310629171137">
 <meta name="theme-color" content="#04030f">
-<title>{e(titulo)}</title>
+{'<meta name="robots" content="noindex, follow">' + chr(10) if (m, a, b) in _NOIDX else ''}<title>{e(titulo)}</title>
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{DOM}{ruta}">
 {alt}<meta property="og:title" content="{e(titulo)}">
@@ -247,7 +262,6 @@ def pagina(lg, d, m, a, b, todos):
 <section><h2>{e(t['tab'])}</h2>
 <table><thead><tr><th>{e(t['stat'])}</th><th>{e(na)}</th><th>{e(nb)}</th></tr></thead><tbody>
 {trs}</tbody></table></section>
-<section><h2>{e(t['leer'])}</h2><p>{e(LEER[0][k])}</p></section>
 <section>{fq}</section>
 <section><h2>{e(t['otros'])}</h2><ul>{ol}</ul></section>
 <section><h2>{e(t['fuentes'])}</h2><ul>{fu}</ul><p>{e(d['fecha'][k])}</p></section>
@@ -258,11 +272,26 @@ def pagina(lg, d, m, a, b, todos):
 </html>
 """
 
+MIN_PALABRAS = 420   # un duelo con menos texto propio no se indexa (sigue disponible para los usuarios)
+
+def _palabras(h):
+    t = re.sub(r"<script.*?</script>|<style.*?</style>", " ", h[h.index('<main'):h.index('</main>')], flags=re.S)
+    return len(re.sub(r"<[^>]+>", " ", t).split())
+
+def delgados():
+    """pares cuyas páginas (en cualquier idioma) quedan por debajo de MIN_PALABRAS"""
+    d = CD.construir(); d["fecha"] = list(CD.FECHA); todos = pares(d); out = set()
+    for m, a, b in todos:
+        if min(_palabras(pagina(lg, d, m, a, b, todos)) for lg in ("es", "en")) < MIN_PALABRAS: out.add((m, a, b))
+    return out
+
 def rutas():
-    d = CD.construir(); return [(m, a, b) for m, a, b in pares(d)]
+    """duelos que van al sitemap (solo los que tienen texto suficiente)"""
+    d = CD.construir(); fin = delgados(); return [(m, a, b) for m, a, b in pares(d) if (m, a, b) not in fin]
 
 if __name__ == "__main__":
     d = CD.construir(); d["fecha"] = list(CD.FECHA); todos = pares(d)
+    _NOIDX.update(delgados())
     ids = {m: {x["id"] for x in d[m]["items"]} for m, _ in CP.MODOS}
     n = 0
     for m, a, b in todos:

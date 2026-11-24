@@ -84,7 +84,8 @@ def pagina_coleccion(L, c):
 def hub_historias(L):
     ruta = HUB_H + "/"
     h = base(L, HUB_H_T, HUB_H_D, ruta, COLOR_H, FECHA_H)
-    h += f'<div class="caja">{e(HUB_H_D)}</div>\n<div class="tarjetas">\n'
+    import hubs_texto as _HT
+    h += f'<div class="caja">{e(HUB_H_D)}</div>\n' + _HT.parrafos("historias", "es") + '<div class="tarjetas">\n'
     for c in H.COLECCIONES:
         h += tarjeta(f"/{HUB_H}/{c['slug']}/", c["emoji"], c["c"][0], c["titulo"], c["desc"][:105].rsplit(" ", 1)[0] + "…")
     h += '</div>\n'
@@ -170,7 +171,7 @@ def pagina_peque(L, p):
 def hub_peques(L):
     ruta = HUB_P + "/"
     h = base(L, HUB_P_T, HUB_P_D, ruta, COLOR_P, FECHA_P, BALON)
-    h += f'<div class="caja">🧒 {e(HUB_P_D)} Para los más mayores de la casa, también hay <a href="/{HUB_H}/">historias y anécdotas</a>.</div>\n<div class="tarjetas">\n'
+    h += f'<div class="caja">🧒 {e(HUB_P_D)} Para los más mayores de la casa, también hay <a href="/{HUB_H}/">historias y anécdotas</a>.</div>\n' + __import__("hubs_texto").parrafos("peques", "es") + '<div class="tarjetas">\n'
     for p in PAGINAS_P:
         h += tarjeta(f"/{HUB_P}/{p['slug']}/", p["emoji"], p["c"][0], p["titulo"], p["desc"][:100].rsplit(" ", 1)[0] + "…")
     return ruta, h + '</div>\n' + pie(L, "", False)

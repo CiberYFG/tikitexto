@@ -728,7 +728,12 @@ def pagina_indice(L):
     h += tema("#ffc83d", "🧪", "Laboratorio de datos · estudios propios" if es else "Data lab · our own studies", "Cifras que calculamos nosotros con gráficos y tablas interactivas que puedes filtrar, ordenar y descargar." if es else "Figures we compute ourselves, with charts and interactive tables you can filter, sort and download.", "4 " + ("estudios" if es else "studies"), lab_panel(L), clase="lab")
     # 1) artículos (solo español): categorías dentro del tema
     if es:
-        h += tema("#7c3aed", "✍️", "Artículos de análisis", "63 textos largos y originales: reglas, tácticas, premios, historia y cómo funciona el fútbol por dentro.", "57 artículos", cats_articulos(), "cur")
+        from articulos_meta import CATS as _CATS, todos as _todos
+        _na = len(_todos())
+        cu = (f'<p>Una biblioteca de {_na} textos largos de elaboración propia, ordenados por temas. Están todos en su propia sección, donde cada tema se despliega con sus artículos:</p>\n'
+              + f'<div class="chips"{_col("#7c3aed")}>' + "".join(f'<a href="/articulos/">{em} {e(t)}</a>' for _c, em, t, _d, _co, _sl in _CATS) + '</div>\n'
+              + '<p><a href="/articulos/">Abrir la biblioteca de artículos →</a></p>\n')
+        h += tema("#7c3aed", "✍️", "Artículos de análisis", f"{_na} textos largos y originales: reglas, tácticas, premios, historia y cómo funciona el fútbol por dentro.", f"{_na} artículos", cu, "cur")
     # 2) datos y récords
     dt = ("Récords y rankings con fuentes", "Goleadores de la Champions y del Mundial, Balón de Oro, Pichichi, Eurocopa, Bota de Oro y más, con la fuente y la fecha de los datos.") if es else ("Records and rankings, with sources", "Champions League and World Cup scorers, Ballon d'Or, Pichichi, the Euros, the Golden Shoe and more, with source and data date.")
     h += tema_enlace("#0f9d58", "📊", dt[0], dt[1], "9 páginas" if es else "9 pages", L.url("curiosidades/datos/"))

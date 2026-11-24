@@ -329,7 +329,8 @@ def hub(L, todas):
     d = ("Máximos goleadores, partidos con la selección, Balón de Oro, Pichichi, Bota de Oro, Eurocopa y entrenadores con más Champions. Datos con fuentes."
          if es else "Top scorers, international caps, Ballon d'Or, Pichichi, Golden Shoe, the Euros and managers with the most Champions League titles. Sourced stats.")
     h = cabecera(L, t + " | TIKITEXTO", d, ruta, t)
-    h += f'<div class="caja">{e(d)}</div>\n<div class="tarjetas">\n'
+    import hubs_texto as _HT
+    h += f'<div class="caja">{e(d)}</div>\n' + _HT.parrafos("datos", L.lang) + '<div class="tarjetas">\n'
     for q in todas:
         h += f'<a class="tarjeta" href="{L.url("curiosidades/" + q["slug"] + "/")}">{q["ic"]}<b>{e(q["t"][k])}</b><span>{e(q["fecha"][k])}</span></a>\n'
     import hist_data as _H

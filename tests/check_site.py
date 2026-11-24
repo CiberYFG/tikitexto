@@ -793,7 +793,7 @@ with sync_playwright() as p:
         check("curiosidades: el hub cabe en una pantalla de móvil", hubalto[0] <= hubalto[1] + 2, str(hubalto))
         check("curiosidades: laboratorio con 4 estudios propios enlazados", pv.locator(".est-panel:not([hidden]) a.lab-c").count() == 4)
         pv.click(".est-tab >> nth=1"); pv.wait_for_timeout(200)
-        check("curiosidades: al pulsar la pestaña de artículos se ven sus 7 categorías", pv.locator(".est-panel:not([hidden]) details.tema").count() == 7, str(pv.locator(".est-panel:not([hidden]) details.tema").count()))
+        check("curiosidades: la pestaña de artículos muestra sus 7 categorías como enlaces (sin copiar las tarjetas de /articulos/)", pv.locator(".est-panel:not([hidden]) .chips a").count() == 7 and pv.locator(".est-panel:not([hidden]) a.tarjeta").count() == 0, str(pv.locator(".est-panel:not([hidden]) .chips a").count()))
         pv.goto(BASE + "articulos/", wait_until="networkidle", timeout=60000)
         n_art = pv.evaluate("document.querySelectorAll('.est-panel a.tarjeta').length")
         check("articulos: 81 artículos agrupados en 7 pestañas (la primera, BALÓN DE ORO)", n_art == 81 and pv.locator(".est-tab").count() == 7 and pv.locator(".est-tab.oro").count() == 1, str(n_art))
@@ -1825,9 +1825,10 @@ for _r in ("comparador/", "en/football-comparator/"):
         if "-vs-" not in _s: continue
         _n3 += 1; _h = open(_os.path.join(_dd, _s, "index.html"), encoding="utf-8").read()
         _wc = len(_re3al.sub(r"<[^>]+>", " ", _h).split())
-        if _wc < 250 or "FAQPage" not in _h or "<table>" not in _h or 'hreflang="x-default"' not in _h or ("https://tikitexto.com/" + _r + _s + "/") not in _sm3:
+        _noidx = 'name="robots" content="noindex' in _h   # los duelos con poco texto no se indexan ni van al sitemap
+        if _wc < 250 or "FAQPage" not in _h or "<table>" not in _h or 'hreflang="x-default"' not in _h or ((("https://tikitexto.com/" + _r + _s + "/") in _sm3) == _noidx):
             _mal3.append(_r + _s)
-check("duelos del comparador: >=40 páginas con tabla, FAQ, hreflang y sitemap", _n3 >= 40 and not _mal3, str(_mal3[:3]) + " n=" + str(_n3))
+check("duelos del comparador: >=40 páginas con tabla, FAQ, hreflang; las indexables en el sitemap y las delgadas con noindex", _n3 >= 40 and not _mal3, str(_mal3[:3]) + " n=" + str(_n3))
 
 print("3ay) Saber como estudio: banco de trabajo, tablas interactivas, enfoque y laboratorio")
 try:
@@ -1910,6 +1911,48 @@ else:
      _br.close()
  except Exception as _ex:
      check("admin: prueba de navegador", False, str(_ex)[:200])
+
+print("3az) Sin contenido duplicado ni páginas finas; franja del hub de Saber (dato del día y seguir leyendo)")
+try:
+    import re as _rz, html as _hz, itertools as _itz
+    _smz = open(_os.path.join(_raiz, "sitemap.xml"), encoding="utf-8").read()
+    _urlsz = _rz.findall(r"<loc>https://tikitexto.com/([^<]*)</loc>", _smz)
+    _pz = {}; _noidx_en_sitemap = []
+    for _u in _urlsz:
+        _f = _os.path.join(_raiz, _u, "index.html") if (_u.endswith("/") or _u == "") else _os.path.join(_raiz, _u)
+        _h = open(_f, encoding="utf-8").read()
+        if _rz.search(r'name="robots" content="[^"]*noindex', _h): _noidx_en_sitemap.append(_u)
+        _m = _rz.search(r"<main[^>]*>(.*?)</main>", _h, _rz.S); _c = _m.group(1) if _m else _h
+        _c = _rz.sub(r"<script.*?</script>|<style.*?</style>|<nav.*?</nav>", "", _c, flags=_rz.S)
+        _pz[_u] = _hz.unescape(_rz.sub(r"<[^>]+>", " ", _c)).lower()
+    check("ninguna página del sitemap lleva noindex", not _noidx_en_sitemap, str(_noidx_en_sitemap[:3]))
+    _delg = [(_u, len(_t.split())) for _u, _t in _pz.items() if len(_t.split()) < 300 and _u not in ("contacto.html", "accesibilidad.html")]
+    check("ninguna página indexable tiene menos de 300 palabras", not _delg, str(_delg[:4]))
+    _sh = {}
+    for _u, _t in _pz.items():
+        _w = _rz.findall(r"\w+", _t); _sh[_u] = set(tuple(_w[i:i + 6]) for i in range(len(_w) - 5))
+    _dup = []
+    for _a, _b in _itz.combinations(list(_pz), 2):
+        _A, _B = _sh[_a], _sh[_b]
+        if _A and _B and len(_A & _B) / min(len(_A), len(_B)) > 0.60: _dup.append((_a, _b))
+    check("ningún par de páginas indexables comparte más del 60 % de su texto", not _dup, str(_dup[:3]))
+except Exception as _ex:
+    check("duplicados: prueba estática", False, str(_ex)[:200])
+try:
+  from playwright.sync_api import sync_playwright as _spz
+  with _spz() as _pwz:
+    _bz = _pwz.chromium.launch(); _cz = _bz.new_context(viewport={"width": 1280, "height": 800}, service_workers="block")
+    _cz.add_init_script("localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');localStorage.setItem('tikitexto:saber:ultimo', JSON.stringify({u:'/articulos/balon-de-oro/',t:'Prueba',n:2,m:9}));")
+    _pzp = _cz.new_page(); _ez = []; _pzp.on("pageerror", lambda e: _ez.append(str(e)))
+    _pzp.goto(BASE + "curiosidades/", wait_until="networkidle", timeout=60000); _pzp.wait_for_timeout(800)
+    check("hub de Saber: «Sigue donde lo dejaste» enlaza al artículo a medias", _pzp.locator(".est-sig[href='/articulos/balon-de-oro/']").count() == 1)
+    check("hub de Saber: «Dato del día» con enlace a un tema", _pzp.locator(".est-dia").count() == 1 and "/curiosidades/curiosidades-" in (_pzp.get_attribute(".est-dia", "href") or "") + "curiosidades-")
+    _pzp.goto(BASE + "en/curiosidades/", wait_until="networkidle", timeout=60000); _pzp.wait_for_timeout(800)
+    check("hub de Saber (en): dato del día en inglés", _pzp.locator(".est-dia").count() == 1 and "fact of the day" in _pzp.inner_text(".est-dia").lower())
+    check("hub de Saber: sin errores de JavaScript", not _ez, str(_ez[:2]))
+    _bz.close()
+except Exception as _ex:
+    check("hub de Saber: prueba de navegador", False, str(_ex)[:200])
 
 print(f"\n{len(ok)} correctas, {len(fallos)} con fallo")
 if fallos:

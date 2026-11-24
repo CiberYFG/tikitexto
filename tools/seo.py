@@ -249,7 +249,8 @@ for _l in ("es", "en"):
         _migas = [("TIKITEXTO", DOM + ("" if _l == "es" else "en/")), (_t[5], DOM + _JSL[_l][0]), (g[_l + "_h1"], DOM + _ruta)]
         escribir(_ruta, pagina(_l, _ruta, g[_l + "_t"], g[_l + "_d"], g[_l + "_h1"], g[_l + "_lead"], g["modo"], _bl, g[_l + "_qa"], _alts_juego(g), 2 if _l == "es" else 3, _migas, pasos=g[_l + "_pasos"], como=_t[0]))
     _items = "".join('<li><a href="%s/">%s</a></li>' % (g[_l], esc(g[_l + "_h1"])) for g in _jd.J)
-    _hub_bl = '<h2>%s</h2><ul class="g">%s</ul>' % (_t[5], _items)
+    import hubs_texto as _HT
+    _hub_bl = _HT.parrafos("juegos", _l) + '<h2>%s</h2><ul class="g">%s</ul>' % (_t[5], _items)
     _hub_alts = '<link rel="alternate" hreflang="es" href="%sjuegos/">\n<link rel="alternate" hreflang="en" href="%sen/games/">\n<link rel="alternate" hreflang="x-default" href="%sjuegos/">' % (DOM, DOM, DOM)
     _hub_faq = [("¿Hace falta registrarse?" if _l == "es" else "Do I need to sign up?", "No: todos los juegos se pueden jugar como invitado y con cuenta guardas tu progreso." if _l == "es" else "No: every game can be played as a guest and with an account your progress is saved."),
                 ("¿Qué son los tikitextos?" if _l == "es" else "What are tikitextos?", "Son los puntos de TIKITEXTO: se ganan acertando o ganando partidas y cuentan para el ranking mundial." if _l == "es" else "They are TIKITEXTO points: you earn them by guessing or winning games and they count for the worldwide ranking.")]

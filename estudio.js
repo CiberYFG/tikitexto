@@ -36,6 +36,7 @@
     if (temas.length < 3) return false;
     var cont = el("div", "est-hub"), tabs = el("div", "est-tabs"), stage = el("div", "est-stage");
     tabs.setAttribute("role", "tablist"); main.insertBefore(cont, temas[0]);
+    try { previo(main, cont); } catch (e) { /* nada */ }
     var items = [];
     temas.forEach(function (t, i) {
       var emo = (t.querySelector(".t-emo") || {}).textContent || "•";
@@ -89,6 +90,38 @@
     return true;
   }
 
+  /* franja previa del hub: «Sigue donde lo dejaste» (lectura a medias) y «Dato del día» (rota por fecha) */
+  var PRE = {
+    es: { sig: "Sigue donde lo dejaste", sec: "secciones vistas", dia: "Dato del día", mas: "Ver más curiosidades de este tema →" },
+    en: { sig: "Pick up where you left off", sec: "sections seen", dia: "Fact of the day", mas: "More facts on this topic →" },
+    pt: { sig: "Continue de onde parou", sec: "seções vistas", dia: "Curiosidade do dia", mas: "Ver mais →" },
+    fr: { sig: "Reprenez où vous en étiez", sec: "sections vues", dia: "Le fait du jour", mas: "Voir plus →" },
+    it: { sig: "Riprendi da dove eri rimasto", sec: "sezioni viste", dia: "Il dato del giorno", mas: "Vedi altro →" },
+    de: { sig: "Mach da weiter, wo du aufgehört hast", sec: "Abschnitte gesehen", dia: "Fakt des Tages", mas: "Mehr dazu →" }
+  };
+  function previo(main, cont) {
+    var P = PRE[lg] || PRE.en, caja = el("div", "est-pre"), algo = false;
+    var raw = sget("tikitexto:saber:ultimo"), o = null;
+    try { o = raw ? JSON.parse(raw) : null; } catch (e) { o = null; }
+    if (o && o.u && o.u !== location.pathname && /^\/[a-z0-9\-\/]+\/$/i.test(o.u)) {
+      var a = el("a", "est-sig"); a.href = o.u;
+      a.appendChild(el("b", null, P.sig)); a.appendChild(el("span", null, o.t)); a.appendChild(el("small", null, o.n + " / " + o.m + " " + P.sec + " →"));
+      caja.appendChild(a); algo = true;
+    }
+    if (algo) main.insertBefore(caja, cont);
+    if (lg !== "es" && lg !== "en") return;
+    var ctrl = window.fetch ? fetch("/dato_dia.json", { credentials: "omit" }) : null; if (!ctrl) return;
+    ctrl.then(function (r) { return r.ok ? r.json() : null; }).then(function (L) {
+      if (!L || !L.length) return;
+      var d = new Date(), n = Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())) / 86400000), x = L[n % L.length], en = lg === "en";
+      var c = el("a", "est-dia"); c.href = en ? x.ue : x.u;
+      c.appendChild(el("small", null, "✨ " + P.dia)); c.appendChild(el("b", null, en ? x.he : x.h)); c.appendChild(el("span", null, en ? x.te : x.t)); c.appendChild(el("em", null, P.mas));
+      caja.appendChild(c); if (!algo) main.insertBefore(caja, cont);
+      medirTodo();
+    }).catch(function () { /* sin red: no se muestra */ });
+  }
+  function medirTodo() { try { dispatchEvent(new Event("resize")); } catch (e) { /* nada */ } }
+
   /* cuenta animada de las cifras del laboratorio */
   function contar(panel) {
     if (reduce) return;
@@ -137,6 +170,11 @@
     function pinta() {
       var n = 0; secs.forEach(function (s, i) { var v = vistas.indexOf(s.id) !== -1; links[i].classList.toggle("vista", v); if (v) n++; });
       cuenta.textContent = n + " / " + secs.length + " " + T.vistas; mi.style.width = (n / secs.length * 100) + "%";
+      try {
+        var h1 = doc.querySelector("h1"), u = sget("tikitexto:saber:ultimo"), o = u ? JSON.parse(u) : null;
+        if (n > 0 && n < secs.length && h1) sset("tikitexto:saber:ultimo", JSON.stringify({ u: location.pathname, t: h1.textContent.replace(/\s+/g, " ").trim().slice(0, 120), n: n, m: secs.length }));
+        else if (n >= secs.length && o && o.u === location.pathname) sset("tikitexto:saber:ultimo", "");
+      } catch (e) { /* sin almacenamiento */ }
     }
     pinta();
     // plegado

@@ -239,3 +239,25 @@ tbody tr.est-pin td:first-child { box-shadow: inset 3px 0 0 var(--acento2), inse
 @media (prefers-reduced-motion: reduce) { .hero::after, .etiqueta::before, .lab-svg rect { animation: none; } .est-tab, .lab-c, .tarjeta { transition: none; } html { scroll-behavior: auto; } }
 @media print { .est-rail, .est-tb, .est-prog { display: none; } .est-grid { display: block; } .est-sec.cerrada > .est-sec-b { display: block; } }
 .est-grid .indice { display: none; }
+
+/* franja previa del hub: seguir leyendo + dato del día */
+.est-pre { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; margin: 0 0 12px; }
+.est-sig, .est-dia { display: flex; flex-direction: column; gap: 3px; padding: 11px 14px; border: 1px solid var(--linea); border-radius: 12px; background: var(--caja); color: var(--texto); text-decoration: none; line-height: 1.35; position: relative; overflow: hidden; }
+.est-sig::before, .est-dia::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--acento); }
+.est-dia::before { background: var(--acento2); }
+.est-sig b, .est-dia b { font-size: 15px; }
+.est-sig span, .est-dia span { font-size: 14px; color: var(--suave); }
+.est-sig small, .est-dia small { font: 700 11px/1.2 ui-monospace, Menlo, Consolas, monospace; letter-spacing: .06em; text-transform: uppercase; color: var(--acento); }
+.est-dia small { color: var(--acento2); }
+.est-dia em { font-style: normal; font-size: 13px; font-weight: 700; color: var(--acento); }
+.est-sig:hover, .est-dia:hover, .est-sig:focus-visible, .est-dia:focus-visible { border-color: var(--acento); box-shadow: 0 0 0 2px var(--glow); outline: none; }
+:root[data-tema="oscuro"] .est-dia small { color: var(--acento2); }
+.est-pre { align-items: stretch; }
+@media (max-width: 700px) {
+  .est-pre { grid-template-columns: minmax(0, 1fr); gap: 6px; margin-bottom: 8px; }
+  .est-sig, .est-dia { padding: 7px 12px; gap: 1px; }
+  .est-sig b, .est-dia b { font-size: 14px; }
+  .est-sig span { display: none; }
+  .est-dia span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 13px; }
+  .est-dia em { display: none; }
+}
