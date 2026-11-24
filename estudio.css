@@ -210,7 +210,9 @@ tbody tr.est-pin td:first-child { box-shadow: inset 3px 0 0 var(--acento2), inse
   .est-btns { display: none; }
 }
 @media (max-width: 820px) {
-  .est-hub { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); height: calc(100dvh - var(--hubtop, 300px) - 8px); min-height: 380px; }
+  /* Móvil: sin caja con scroll interno; el panel tiene su altura natural y se desplaza toda la página */
+  .est-hub { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; height: auto; min-height: 0; }
+  .est-stage { overflow: visible; padding: 0 12px 12px; }
   .est-tabs { flex-direction: row; overflow-x: auto; overflow-y: hidden; padding: 2px 2px 6px; gap: 6px; scrollbar-width: none; }
   .est-tabs::-webkit-scrollbar { display: none; }
   .est-tab { flex: none; width: auto; grid-template-columns: 30px auto; gap: 7px; padding: 6px 12px 6px 8px; border-radius: 12px; }
@@ -222,7 +224,7 @@ tbody tr.est-pin td:first-child { box-shadow: inset 3px 0 0 var(--acento2), inse
   .est-ph .pn, .est-ph p { display: none; }
   .est-tab.lab .tt { padding-right: 0; }
   .lab { grid-template-columns: minmax(0, 1fr); }
-  .lab-n { font-size: 1.7rem; } .lab-svg { height: 60px; }
+  .lab-n { font-size: 1.7rem; } .lab-svg { height: 96px; }
 }
 @media (max-width: 560px) {
   main { padding: 0 12px 48px; }

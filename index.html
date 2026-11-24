@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-Hh7AAfX3Yp/x7pTDr4V5becjXTit8YHHDq0YZJCFmvA=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-SP+8ZrdpVSKe9BulLko2+PjorF2bN3SxnXc8MmTFwPg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-Hh7AAfX3Yp/x7pTDr4V5becjXTit8YHHDq0YZJCFmvA=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-fZis9WTL0cf3HQFy7BI/B4YZXGKVn5j0XT20qUtAycY=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>
 <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WN89TQCM"></script>
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -6189,13 +6189,13 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     const p = perfil();
     const notas = statsContenido.querySelectorAll(".stats__nota");
     notas[notas.length - 1].textContent = "El ranking mundial se actualiza cada vez que abres esta pantalla.";
-    titulo.textContent = "🌍 Ranking mundial · Top 20";
+    titulo.textContent = "🌍 Ranking mundial · Top 10";
     ol.innerHTML = "<li><em>Cargando…</em></li>";
     enviarPend();
 
     const inv = esInvitado();
     Promise.all([api("ranking_top"), inv ? Promise.resolve({ estado: "invitado" }) : api("reclamar_nombre", { p_nombre: datosJ.actual, p_token: p.token })]).then(function (res) {
-      const filas = res[0], yo = res[1], mio = (datosJ.actual || "\u0000").toLowerCase();
+      const filas = (Array.isArray(res[0]) ? res[0] : []).slice(0, 10), yo = res[1], mio = (datosJ.actual || "\u0000").toLowerCase();
       if (yo.estado === "ok") { p.pts = yo.pts; p.puesto = yo.puesto; guardarJ(); pintarTikis(); }
       let html = filas.map(function (x, i) {
         return '<li class="' + (x.nombre.toLowerCase() === mio ? "rank--yo " : "") + (i < 3 ? "podio podio--" + ["oro", "plata", "bronce"][i] : "") + '"><span>' + (["🥇", "🥈", "🥉"][i] || (i + 1)) + "</span><em>" + esc(x.nombre) + "</em><b>" + (Number(x.pts) || 0) + " ⚡</b></li>";
@@ -6208,12 +6208,29 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
         const inv = document.createElement("button");
         inv.type = "button";
         inv.className = "boton boton--secundario boton-invitar";
-        inv.innerHTML = "<span>🎁 Invita a un amigo</span>" + (datosJ.actual ? "<b>+3 tikitextos</b>" : "");
+        inv.innerHTML = "<span>🎁 Invita a un amigo</span><b>+5 tikitextos de regalo</b>";
+        /* Regalo por compartir: +5 tikitextos la primera vez que se comparte en este dispositivo (una sola vez) */
+        const regaloCompartir = function () {
+          try {
+            if (localStorage.getItem("tikitexto:regalo-compartir")) return;
+            localStorage.setItem("tikitexto:regalo-compartir", "1");
+          } catch (er) { return; }
+          const pp = perfil();
+          pp.pts += 5;
+          const enLinea = ONLINE && pp.online && !ADM_ON;
+          if (enLinea) pp.pend = (pp.pend || 0) + 5;
+          guardarJ(); pintarTikis();
+          if (enLinea) enviarPend();
+          const num2 = statsContenido.querySelector(".stats__num");
+          if (num2) num2.textContent = pp.pts;
+          mostrarAviso("🎁 +5 tikitextos de regalo");
+          lanzarConfeti();
+        };
         inv.addEventListener("click", function () {
           const url = "https://tikitexto.com/" + (datosJ.actual ? "?inv=" + encodeURIComponent(datosJ.actual) : "");
           const texto = TIKI.t("Juega conmigo a los juegos de fútbol de TIKITEXTO. ¿Cuántos puntos sacas?");
-          if (navigator.share) navigator.share({ title: "TIKITEXTO", text: texto, url: url }).catch(function () {});
-          else if (navigator.clipboard) navigator.clipboard.writeText(texto + " " + url).then(function () { mostrarAviso("Enlace copiado"); }).catch(function () {});
+          if (navigator.share) navigator.share({ title: "TIKITEXTO", text: texto, url: url }).then(regaloCompartir).catch(function () {});
+          else if (navigator.clipboard) navigator.clipboard.writeText(texto + " " + url).then(function () { mostrarAviso("Enlace copiado"); regaloCompartir(); }).catch(function () {});
         });
         titulo.parentNode.insertBefore(inv, titulo);
       }

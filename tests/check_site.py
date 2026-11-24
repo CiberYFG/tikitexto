@@ -789,8 +789,8 @@ with sync_playwright() as p:
         pv.goto(BASE + "curiosidades/", wait_until="networkidle", timeout=60000); pv.wait_for_timeout(300)
         check("curiosidades: hub «estudio» con pestañas (laboratorio de datos primero y seleccionado)", pv.locator(".est-tab").count() >= 7 and pv.locator(".est-tab[aria-selected=true]").count() == 1 and pv.locator(".est-tab.lab[aria-selected=true]").count() == 1, str(pv.locator(".est-tab").count()))
         check("curiosidades: buscador presente", pv.locator(".bus__in").count() == 1)
-        hubalto = pv.evaluate("(()=>{const h=document.querySelector('.est-hub').getBoundingClientRect(); return [Math.round(h.bottom), innerHeight]})()")
-        check("curiosidades: el hub cabe en una pantalla de móvil", hubalto[0] <= hubalto[1] + 2, str(hubalto))
+        hubalto = pv.evaluate("(()=>{const s=document.querySelector('.est-stage'); return [getComputedStyle(s).overflowY, document.documentElement.scrollWidth, innerWidth]})()")
+        check("curiosidades (móvil): el panel no tiene scroll interno (se desplaza la página) y no hay scroll horizontal", hubalto[0] == "visible" and hubalto[1] <= hubalto[2] + 1, str(hubalto))
         check("curiosidades: laboratorio con 4 estudios propios enlazados", pv.locator(".est-panel:not([hidden]) a.lab-c").count() == 4)
         pv.click(".est-tab >> nth=1"); pv.wait_for_timeout(200)
         check("curiosidades: la pestaña de artículos muestra sus 7 categorías como enlaces (sin copiar las tarjetas de /articulos/)", pv.locator(".est-panel:not([hidden]) .chips a").count() == 7 and pv.locator(".est-panel:not([hidden]) a.tarjeta").count() == 0, str(pv.locator(".est-panel:not([hidden]) .chips a").count()))
@@ -1953,6 +1953,26 @@ try:
     _bz.close()
 except Exception as _ex:
     check("hub de Saber: prueba de navegador", False, str(_ex)[:200])
+
+print("3ba) Ranking mundial de 10 y regalo de 5 tikitextos al compartir (una vez)")
+try:
+    with sync_playwright() as _pw:
+        _bb = _pw.chromium.launch(); _cb = _bb.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+        _pb = _cb.new_page()
+        _pb.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','j');Object.defineProperty(navigator,'share',{value:()=>Promise.resolve(),configurable:true})")
+        _filas = json.dumps([{"nombre": "Jug%02d" % i, "pts": 100 - i} for i in range(15)])
+        _pb.route("**/rest/v1/rpc/ranking_top", lambda r: r.fulfill(status=200, content_type="application/json", body=_filas))
+        _pb.route("**/rest/v1/rpc/registrar*", lambda r: r.fulfill(status=200, content_type="application/json", body="{}"))
+        _pb.goto(BASE, wait_until="networkidle", timeout=60000); _pb.wait_for_timeout(500)
+        _pb.evaluate("document.querySelector('[data-stats]').click()"); _pb.wait_for_timeout(1200)
+        check("ranking mundial: solo 10 personas aunque el servidor devuelva más", _pb.locator("ol.rank li").count() == 10 and "Top 10" in _pb.inner_text(".stats__sub >> nth=-1"))
+        _pb.evaluate("document.querySelector('.boton-invitar').click()"); _pb.wait_for_timeout(800)
+        check("compartir: +5 tikitextos de regalo", _pb.inner_text(".stats__num").strip() == "5" and "+5" in _pb.inner_text(".boton-invitar"))
+        _pb.evaluate("document.querySelector('.boton-invitar').click()"); _pb.wait_for_timeout(500)
+        check("compartir: el regalo solo se da una vez", _pb.inner_text(".stats__num").strip() == "5")
+        _bb.close()
+except Exception as _ex:
+    check("ranking/compartir: prueba de navegador", False, str(_ex)[:200])
 
 print(f"\n{len(ok)} correctas, {len(fallos)} con fallo")
 if fallos:

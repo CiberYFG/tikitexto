@@ -11,6 +11,8 @@ Anterior ||| Previous ||| Anterior ||| Précédent ||| Precedente ||| Zurück
 Invita a un amigo ||| Invite a friend ||| Convide um amigo ||| Invite un ami ||| Invita un amico ||| Lade einen Freund ein
 Juega conmigo a los juegos de fútbol de TIKITEXTO. ¿Cuántos puntos sacas? ||| Play TIKITEXTO's football games with me. How many points can you get? ||| Jogue comigo os jogos de futebol do TIKITEXTO. Quantos pontos você faz? ||| Joue avec moi aux jeux de football de TIKITEXTO. Combien de points peux-tu faire ? ||| Gioca con me ai giochi di calcio di TIKITEXTO. Quanti punti fai? ||| Spiel mit mir die Fußballspiele von TIKITEXTO. Wie viele Punkte schaffst du?
 Invita a un amigo · +3 tikitextos ||| Invite a friend · +3 tikitextos ||| Convide um amigo · +3 tikitextos ||| Invite un ami · +3 tikitextos ||| Invita un amico · +3 tikitextos ||| Lade einen Freund ein · +3 Tikitextos
++5 tikitextos de regalo ||| +5 tikitextos as a gift ||| +5 tikitextos de presente ||| +5 tikitextos offerts ||| +5 tikitextos in regalo ||| +5 Tikitextos geschenkt
+🎁 +5 tikitextos de regalo ||| 🎁 +5 tikitextos as a gift ||| 🎁 +5 tikitextos de presente ||| 🎁 +5 tikitextos offerts ||| 🎁 +5 tikitextos in regalo ||| 🎁 +5 Tikitextos geschenkt
 +3 tikitextos ||| +3 tikitextos ||| +3 tikitextos ||| +3 tikitextos ||| +3 tikitextos ||| +3 Tikitextos
 🎁 Invita a un amigo ||| 🎁 Invite a friend ||| 🎁 Convide um amigo ||| 🎁 Invite un ami ||| 🎁 Invita un amico ||| 🎁 Lade einen Freund ein
 Enlace copiado ||| Link copied ||| Link copiado ||| Lien copié ||| Link copiato ||| Link kopiert
@@ -186,7 +188,7 @@ Intentos para acertar ||| Attempts to solve ||| Tentativas para acertar ||| Essa
 TIKITEXTOS ||| TIKITEXTOS ||| TIKITEXTOS ||| TIKITEXTOS ||| TIKITEXTOS ||| TIKITEXTOS
 ⚡ Tikitextos ||| ⚡ Tikitextos ||| ⚡ Tikitextos ||| ⚡ Tikitextos ||| ⚡ Tikitextos ||| ⚡ Tikitextos
 🏆 Ranking · Top jugadores ||| 🏆 Ranking · Top players ||| 🏆 Ranking · Melhores jogadores ||| 🏆 Classement · Meilleurs joueurs ||| 🏆 Classifica · Migliori giocatori ||| 🏆 Rangliste · Beste Spieler
-🌍 Ranking mundial · Top 20 ||| 🌍 World ranking · Top 20 ||| 🌍 Ranking mundial · Top 20 ||| 🌍 Classement mondial · Top 20 ||| 🌍 Classifica mondiale · Top 20 ||| 🌍 Weltrangliste · Top 20
+🌍 Ranking mundial · Top 10 ||| 🌍 World ranking · Top 10 ||| 🌍 Ranking mundial · Top 10 ||| 🌍 Classement mondial · Top 10 ||| 🌍 Classifica mondiale · Top 10 ||| 🌍 Weltrangliste · Top 10
 🏆 Ranking (sin conexión con el mundial) ||| 🏆 Ranking (not connected to the world ranking) ||| 🏆 Ranking (sem conexão com o mundial) ||| 🏆 Classement (hors connexion au classement mondial) ||| 🏆 Classifica (senza connessione a quella mondiale) ||| 🏆 Rangliste (ohne Verbindung zur Weltrangliste)
 El ranking mundial se actualiza cada vez que abres esta pantalla. ||| The world ranking updates every time you open this screen. ||| O ranking mundial é atualizado toda vez que você abre esta tela. ||| Le classement mondial se met à jour à chaque ouverture de cet écran. ||| La classifica mondiale si aggiorna ogni volta che apri questa schermata. ||| Die Weltrangliste wird jedes Mal aktualisiert, wenn du diesen Bildschirm öffnest.
 <li><em>Sé el primero en entrar 🚀</em></li> ||| <li><em>Be the first to join 🚀</em></li> ||| <li><em>Seja o primeiro a entrar 🚀</em></li> ||| <li><em>Sois le premier à entrer 🚀</em></li> ||| <li><em>Sii il primo a entrare 🚀</em></li> ||| <li><em>Sei der Erste 🚀</em></li>
