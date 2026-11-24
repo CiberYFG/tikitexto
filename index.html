@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Dtee3TJe+GFU+ExsKT/LJSePM4kc9cF3iaf9cy4c8GY=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-Hh7AAfX3Yp/x7pTDr4V5becjXTit8YHHDq0YZJCFmvA=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-Hh7AAfX3Yp/x7pTDr4V5becjXTit8YHHDq0YZJCFmvA=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-SP+8ZrdpVSKe9BulLko2+PjorF2bN3SxnXc8MmTFwPg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>
 <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WN89TQCM"></script>
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -933,6 +933,9 @@ body.sin-desplazamiento { overflow: hidden; }
 }
 
 .inicio__pie strong { color: var(--texto); }
+.inicio__legal { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 6px; margin-bottom: 4px; }
+.inicio__legal a { display: inline-block; padding: 6px 8px; min-height: 24px; color: var(--texto-suave); font-weight: 700; font-size: .72rem; text-decoration: underline; text-underline-offset: 2px; }
+.inicio__legal a:hover, .inicio__legal a:focus-visible { color: var(--texto); }
 
 /* ---------- Pantalla de partida ---------- */
 .partida {
@@ -1705,8 +1708,9 @@ button.ir-juegos { border: 0; cursor: pointer; }
 .ch-est__t { font-size: .7rem; letter-spacing: .1em; }
 .ch-est__t--1 { color: #2fbf71; } .ch-est__t--2 { color: #e0a21b; } .ch-est__t--3 { color: #e0452b; }
 .ch-info { margin: 8px 0; min-height: 1.4em; text-align: center; font-weight: 700; font-size: .95rem; }
-.ch-campo { display: block; margin: 0 auto; width: min(100%, calc(72dvh * .625)); height: auto; aspect-ratio: 400 / 640; border-radius: 18px; touch-action: none; cursor: grab; box-shadow: 0 10px 30px rgba(0,0,0,.35), 0 0 0 3px rgba(255,255,255,.2); background: #1f8f45; user-select: none; -webkit-user-select: none; }
+.ch-campo { display: block; margin: 0 auto; width: min(100%, max(200px, calc((100vh - 232px) * .625))); width: min(100%, max(200px, calc((100dvh - 232px) * .625))); height: auto; aspect-ratio: 400 / 640; border-radius: 18px; touch-action: none; cursor: grab; box-shadow: 0 10px 30px rgba(0,0,0,.35), 0 0 0 3px rgba(255,255,255,.2); background: #1f8f45; user-select: none; -webkit-user-select: none; }
 .ch-pie { margin-top: 12px; text-align: center; }
+@media (min-width: 600px) { .ch-campo { width: min(100%, max(200px, calc((100vh - 216px) * .625))); width: min(100%, max(200px, calc((100dvh - 216px) * .625))); } }
 .ch-volver { border: 0; cursor: pointer; padding: 9px 14px; border-radius: 999px; font: 800 .85rem/1 var(--fuente); color: inherit; background: rgba(127,127,127,.15); }
 .ch-res { margin-top: 16px; padding: 18px; border-radius: 22px; text-align: center; background: var(--superficie); border: 2px solid #1f8f45; animation: entrada .3s ease both; }
 .ch-res--perdido { border-color: #d94a5a; }
@@ -2758,6 +2762,12 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
   </main>
 
   <footer class="inicio__pie">
+    <nav class="inicio__legal" aria-label="Información legal">
+      <a href="aviso-legal.html">Aviso legal</a>
+      <a href="privacidad.html">Privacidad</a>
+      <a href="cookies.html">Cookies</a>
+      <a href="contacto.html">Contacto</a>
+    </nav>
     Hecho para <strong>aficionados y amantes del fútbol</strong>
   </footer>
 </div>
@@ -8224,7 +8234,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   const CH_W = 400, CH_H = 640, CH_RC = 17.5, CH_RB = 13, CH_BOCA = 136, CH_POSTE = 6;
   const CH_LX = 10, CH_LY = 30, CH_MX = 11.5, CH_MY = 31.5; /* línea del campo y borde interior: las piezas llegan justo hasta la línea */
   const CH_TT = 10;
-  const CH_META = 2, CH_TURNOS = 99, CH_VMAX = 18, CH_VSAQUE = 8; /* mejor de 3 · el saque sale suave para que no haya gol directo */
+  const CH_TIEMPO = 90, CH_PRORROGA = 60, CH_META = 2, CH_TURNOS = 99, CH_VMAX = 18, CH_VSAQUE = 8; /* mejor de 3 · el saque sale suave para que no haya gol directo */
   const CH_NIVELES = [["facil", "Fácil"], ["normal", "Normal"], ["dificil", "Difícil"]];
 
   /* Estilos desbloqueables. u: ["f"] gratis · ["gan",n] victorias · ["gol",n] goles · ["par",n] partidas · ["racha",n] victorias seguidas · ["tiki",n] coste en tikitextos */
@@ -8764,7 +8774,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     panel.appendChild(stats);
     panel.appendChild(chRapido(c));
     const lista = tEl("ul", "nv-lista");
-    ["Cada uno tiene 4 chapas. En tu turno mueves solo una: arrástrala hacia atrás y suéltala.", "Empuja el balón a la portería rival. Gana el primero que marque " + CH_META + " goles.", "Tienes 1 minuto: al acabar el tiempo gana quien vaya por delante. Si hay empate, ¡muerte súbita!", "⚡ Cada partido que ganes te da +1 tikitexto."].forEach(function (t) { lista.appendChild(tEl("li", "", t)); });
+    ["Cada uno tiene 4 chapas. En tu turno mueves solo una: arrástrala hacia atrás y suéltala.", "Empuja el balón a la portería rival. Gana el primero que marque " + CH_META + " goles.", "Tienes 1:30: al acabar el tiempo gana quien vaya por delante. Si hay empate, ¡prórroga de 1 minuto y, si sigue igual, muerte súbita!", "⚡ Cada partido que ganes te da +1 tikitexto."].forEach(function (t) { lista.appendChild(tEl("li", "", t)); });
     panel.appendChild(lista);
     panel.appendChild(tEl("p", "ch-etq", "Rival"));
     const niv = tEl("div", "ch-niveles");
@@ -8892,12 +8902,13 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   /* ---------- Partida ---------- */
   function chEmpezar() {
     const c = chDatos();
-    ch.nivel = c.niv; ch.fy = c.eq.formacion; ch.fr = CH_EST.formacion[Math.floor(Math.random() * CH_EST.formacion.length)].id; ch.saque = true; ch.aviso = 0; ch.lat = 0; ch.resto = 60; ch.tiempo = false; ch.tPrev = 0; ch.S = chNuevoEstado(ch.fy, ch.fr); ch.marca = [0, 0]; ch.turnos = [0, 0]; ch.turno = 1; ch.mov = false; ch.fin = false; ch.oro = false;
+    ch.nivel = c.niv; ch.fy = c.eq.formacion; ch.fr = CH_EST.formacion[Math.floor(Math.random() * CH_EST.formacion.length)].id; ch.saque = true; ch.aviso = 0; ch.lat = 0; ch.resto = CH_TIEMPO; ch.pror = false; ch.tiempo = false; ch.tPrev = 0; ch.S = chNuevoEstado(ch.fy, ch.fr); ch.marca = [0, 0]; ch.turnos = [0, 0]; ch.turno = 1; ch.mov = false; ch.fin = false; ch.oro = false;
     ch.bola = []; ch.parts = []; ch.drag = null; ch.pos = null; ch.pausa = 0; ch.pensando = false; ch.rot = 0; ch.tt = CH_TT;
     ch.sesion++; chParar();
     chCuerpo.innerHTML = "";
+    try { window.scrollTo(0, 0); } catch (e) { /* opcional */ }
     const marc = tEl("div", "ch-led");
-    marc.innerHTML = '<div class="ch-led__lado ch-led__lado--yo" id="chLadoYo"><span class="ch-led__nom">Tú</span><b class="ch-led__n" id="chMy">0</b></div><div class="ch-led__centro"><span class="ch-led__reloj" id="chReloj">1:00</span><span class="ch-led__vs">VS</span><span class="ch-led__meta" id="chMeta">2 ⚽</span></div><div class="ch-led__lado ch-led__lado--rv" id="chLadoRv"><b class="ch-led__n" id="chMr">0</b><span class="ch-led__nom">Rival</span></div>';
+    marc.innerHTML = '<div class="ch-led__lado ch-led__lado--yo" id="chLadoYo"><span class="ch-led__nom">Tú</span><b class="ch-led__n" id="chMy">0</b></div><div class="ch-led__centro"><span class="ch-led__reloj" id="chReloj">1:30</span><span class="ch-led__vs">VS</span><span class="ch-led__meta" id="chMeta">2 ⚽</span></div><div class="ch-led__lado ch-led__lado--rv" id="chLadoRv"><b class="ch-led__n" id="chMr">0</b><span class="ch-led__nom">Rival</span></div>';
     chCuerpo.appendChild(marc);
     const info = tEl("p", "ch-info", ""); info.id = "chInfo"; info.setAttribute("aria-live", "polite");
     chCuerpo.appendChild(info);
@@ -8932,7 +8943,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     const el = $("#chInfo"); if (!el) return;
     el.textContent = ch.fin ? "" : ch.pensando ? "El rival está pensando…" : ch.mov ? "…" : ch.turno === 1 ? (ch.oro ? "¡Muerte súbita! Tu turno" : ch.saque ? "Saque suave: arrastra una chapa hacia atrás y suéltala" : "Tu turno: arrastra una chapa hacia atrás y suéltala") : ch.oro ? "¡Muerte súbita! Turno del rival" : "Turno del rival";
     const me = $("#chMeta"), led = $(".ch-led");
-    if (me) { me.textContent = ch.oro ? "MUERTE SÚBITA" : "2 ⚽"; me.classList.toggle("ch-led__meta--muerte", ch.oro); }
+    if (me) { me.textContent = ch.oro ? "MUERTE SÚBITA" : ch.pror ? "PRÓRROGA" : "2 ⚽"; me.classList.toggle("ch-led__meta--muerte", ch.oro || ch.pror); }
     if (led) led.classList.toggle("ch-led--muerte", ch.oro && !ch.fin);
     if (ch.cv) ch.cv.classList.toggle("ch-campo--muerte", ch.oro && !ch.fin);
     chLed("chMy", ch.marca[0]); chLed("chMr", ch.marca[1]);
@@ -8981,7 +8992,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     chSonSuelta(Math.hypot(vx, vy) / CH_VMAX);
     chInfo();
   }
-  /* Cuenta atrás del partido (1:00) en el marcador LED */
+  /* Cuenta atrás del partido (1:30 + prórroga de 1:00) en el marcador LED */
   function chReloj() {
     const el = $("#chReloj"); if (!el) return;
     const s = Math.ceil(ch.resto), t = Math.floor(s / 60) + ":" + (s % 60 < 10 ? "0" : "") + (s % 60);
@@ -9005,7 +9016,9 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     } else ch.tt = CH_TT;
     if (ch.tiempo && !ch.mov && ch.pausa === 0 && !ch.fin) {
       ch.tiempo = false;
-      if (ch.marca[0] !== ch.marca[1]) chFinPartido(); else { chMuerte(); chInfo(); }
+      if (ch.marca[0] !== ch.marca[1]) chFinPartido();
+      else if (!ch.pror) chProrroga();
+      else { chMuerte(); chInfo(); }
       chReloj();
     }
     if (ch.pausa > 0) { ch.pausa--; if (ch.pausa === 0) chTrasPausa(); }
@@ -9044,9 +9057,15 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     ch.pausa = 55;
     chInfo();
   }
+  function chProrroga() {
+    ch.pror = true; ch.resto = CH_PRORROGA; ch.aviso = 120; ch.avisoT = "PRÓRROGA"; ch.lat = 0;
+    chTono(330, 0.25, 0.1, "triangle", 440); chRuido(0.5, 900, 0.5, 0.06);
+    setTimeout(function () { chTono(440, 0.35, 0.1, "triangle", 550); }, 230);
+    chInfo();
+  }
   function chMuerte() {
     if (ch.oro) return;
-    ch.oro = true; ch.aviso = 120; ch.lat = 0;
+    ch.oro = true; ch.aviso = 120; ch.avisoT = "MUERTE SÚBITA"; ch.lat = 0;
     chTono(110, 0.5, 0.1, "sawtooth", 70); chRuido(0.6, 300, 0.7, 0.08);
     setTimeout(function () { chTono(98, 0.6, 0.09, "triangle", 65); }, 260);
   }
@@ -9055,7 +9074,6 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     const [a, b] = ch.marca;
     if (a >= CH_META || b >= CH_META || (ch.oro && a !== b)) { chFinPartido(); return; }
     if (ch.turnos[0] >= CH_TURNOS && ch.turnos[1] >= CH_TURNOS && !ch.oro) { if (a !== b) { chFinPartido(); return; } chMuerte(); }
-    else if (a === 1 && b === 1) chMuerte();
     chColocar(ch.S); ch.saque = true; ch.turno = ch.ultimoGol === 1 ? 2 : 1; ch.espera = false; chInfo();
   }
   function chFinTurno() {
@@ -9166,7 +9184,11 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
       x.textAlign = "center"; x.translate(CH_W / 2 + Math.sin(Date.now() / 30) * 3 * t, CH_H / 2); x.scale(s, s);
       x.font = "900 44px Inter, system-ui, sans-serif"; x.lineWidth = 7; x.strokeStyle = "#400"; x.fillStyle = "#ff2d4d"; x.globalAlpha = Math.min(1, t * 4);
       x.shadowColor = "#ff0033"; x.shadowBlur = 22;
-      x.strokeText("MUERTE", 0, -6); x.fillText("MUERTE", 0, -6); x.strokeText("SÚBITA", 0, 40); x.fillText("SÚBITA", 0, 40); x.restore();
+      const par = ch.avisoT === "PRÓRROGA" ? ["PRÓRROGA", "+1:00"] : ["MUERTE", "SÚBITA"];
+      if (par[1] === "+1:00") { x.font = "900 40px Inter, system-ui, sans-serif"; }
+      x.strokeText(par[0], 0, -6); x.fillText(par[0], 0, -6);
+      if (par[1] === "+1:00") { x.font = "800 26px Inter, system-ui, sans-serif"; x.lineWidth = 5; }
+      x.strokeText(par[1], 0, 40); x.fillText(par[1], 0, 40); x.restore();
     }
     if (ch.pausa > 0 && !ch.fin) {
       x.save(); x.textAlign = "center"; x.font = "900 76px Inter, system-ui, sans-serif"; x.lineWidth = 8; x.strokeStyle = "rgba(0,0,0,.55)"; x.fillStyle = "hsl(" + ((Date.now() / 6) % 360) + ",95%,62%)";
@@ -9205,7 +9227,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     return { reposo: function () { sv.classList.add("ch-tut-on"); }, pasos: [[900, function () { sv.classList.add("ch-tut-on"); }], [1800, function () { sv.classList.remove("ch-tut-on"); }]] };
   }
   const TUT_CH = [
-    { titulo: "Dos equipos de 4 chapas", texto: "Tú juegas con las azules (abajo) y el rival con las rojas (arriba). Hay un balón en el centro.", lista: ["Gana el primero que marque 2 goles (al mejor de 3).", "Tienes 1 minuto. Con 1-1 o empate al final, muerte súbita: el siguiente gol lo decide todo."], escena: chTutEscena },
+    { titulo: "Dos equipos de 4 chapas", texto: "Tú juegas con las azules (abajo) y el rival con las rojas (arriba). Hay un balón en el centro.", lista: ["Gana el primero que marque 2 goles (al mejor de 3).", "Tienes 1:30. Si hay empate al final, prórroga de 1 minuto; si sigue igual, muerte súbita: el siguiente gol lo decide todo."], escena: chTutEscena },
     { titulo: "Arrastra hacia atrás y suelta", texto: "En tu turno solo puedes mover una chapa. Tócala, arrástrala en dirección contraria a donde quieres ir y suéltala: cuanto más tires, más fuerte sale.", lista: ["La flecha cambia de verde a rojo según la fuerza.", "Cuando todo se para, juega el rival."], escena: chTutEscena },
     { titulo: "Mete gol y desbloquea estilos", texto: "Empuja el balón a la portería de arriba. Con tus victorias y goles desbloqueas chapas, balones, estelas, céspedes y ambientes en la sala de estilos.", lista: ["⚡ Cada partido que ganes te da +1 tikitexto.", "Algunos estilos también se compran con tikitextos."], escena: chTutEscena }
   ];

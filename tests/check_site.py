@@ -814,7 +814,7 @@ with sync_playwright() as p:
         check("chapas: menú con niveles y sala de estilos", pw.locator(".ch-niv").count() == 3 and pw.locator(".ch-menu .boton").count() == 2)
         pw.click("#chEmpezar"); pw.wait_for_timeout(400)
         check("chapas: campo y marcador", pw.locator(".ch-campo").count() == 1 and pw.locator(".ch-led").count() == 1 and pw.inner_text(".ch-led").replace("\n", "").count("0") >= 2)
-        check("chapas: reloj LED de 1 minuto", pw.inner_text("#chReloj").strip() in ("1:00", "0:59"))
+        check("chapas: reloj LED de 1:30", pw.inner_text("#chReloj").strip() in ("1:30", "1:29"))
         box = pw.locator(".ch-campo").bounding_box()
         pw.mouse.move(box["x"] + 105 / 400 * box["width"], box["y"] + 440 / 640 * box["height"]); pw.mouse.down()
         pw.mouse.move(box["x"] + 130 / 400 * box["width"], box["y"] + 520 / 640 * box["height"], steps=4); pw.mouse.up()
@@ -852,6 +852,33 @@ with sync_playwright() as p:
         cw.close()
     except Exception as e:
         check("chapas", False, str(e)[:200])
+
+    print("3ax) Chapas: campo entero al entrar y prórroga")
+    try:
+        for (vw, vh) in [(390, 844), (360, 640), (1280, 720)]:
+            cc = br.new_context(viewport={"width": vw, "height": vh}, service_workers="block")
+            pc = cc.new_page()
+            pc.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');")
+            pc.goto(BASE + "?modo=chapas", wait_until="networkidle", timeout=60000); pc.wait_for_timeout(500)
+            for _ in range(5):
+                if pc.is_visible("#modalTutorial"): pc.click("#tutSiguiente"); pc.wait_for_timeout(120)
+            pc.evaluate("window.scrollTo(0, 120)")
+            pc.click("#chEmpezar"); pc.wait_for_timeout(500)
+            r = pc.evaluate("() => { const c = document.querySelector('.ch-campo').getBoundingClientRect(), l = document.querySelector('.ch-led').getBoundingClientRect(); return { top: c.top, bottom: c.bottom, ledB: l.bottom, vh: innerHeight, sy: scrollY }; }")
+            check("chapas %dx%d: al entrar se ve el campo entero (portería rival incluida)" % (vw, vh), r["sy"] == 0 and r["top"] >= r["ledB"] - 1 and r["bottom"] <= r["vh"] + 1, str(r))
+            if vw == 390:
+                check("chapas: el partido empieza en 1:30", pc.inner_text("#chReloj").strip() in ("1:30", "1:29"))
+                pc.evaluate("() => { const C = TIKI.chapas.ch; C.marca = [1, 1]; C.pausa = 1; }"); pc.wait_for_timeout(500)
+                check("chapas: con 1-1 no hay muerte súbita inmediata", pc.evaluate("!TIKI.chapas.ch.oro && !TIKI.chapas.ch.fin"))
+                pc.evaluate("() => { const C = TIKI.chapas.ch; C.mov = false; C.pausa = 0; C.turno = 1; C.resto = 0.05; }"); pc.wait_for_timeout(900)
+                check("chapas: empate al acabar el tiempo = prórroga de 1 minuto", pc.evaluate("TIKI.chapas.ch.pror && !TIKI.chapas.ch.oro && !TIKI.chapas.ch.fin") and pc.inner_text("#chReloj").strip() in ("1:00", "0:59") and "PRÓRROGA" in pc.inner_text("#chMeta"))
+                pc.evaluate("() => { const C = TIKI.chapas.ch; C.mov = false; C.pausa = 0; C.turno = 1; C.resto = 0.05; }"); pc.wait_for_timeout(900)
+                check("chapas: empate tras la prórroga = muerte súbita", pc.evaluate("TIKI.chapas.ch.oro && !TIKI.chapas.ch.fin") and "MUERTE" in pc.inner_text("#chMeta"))
+                pc.evaluate("() => { const C = TIKI.chapas.ch; C.mov = false; C.pausa = 0; C.turno = 1; C.resto = 0; C.oro = false; C.pror = false; C.marca = [0, 1]; C.tiempo = true; }"); pc.wait_for_timeout(900)
+                check("chapas: con ventaja al acabar el tiempo se acaba el partido", pc.evaluate("TIKI.chapas.ch.fin"))
+            cc.close()
+    except Exception as e:
+        check("chapas campo y prórroga", False, str(e)[:200])
 
     print("3x) Penaltis 3D")
     try:
@@ -1540,7 +1567,7 @@ with sync_playwright() as p:
         check("portada: tocar un acordeón lo despliega y abrir otro cierra el anterior", pau.locator(".info--c details.info__acc[open]").count() == 1)
         pau.evaluate("document.querySelectorAll('.info__acc summary')[1].click()"); pau.wait_for_timeout(200)
         check("portada: acordeón exclusivo", pau.locator(".info--c details.info__acc[open]").count() == 1)
-        check("portada: el pie solo tiene el botón de tutorial y ayuda", pau.locator("#abrirAyuda").count() == 1 and pau.locator("footer a[href='aviso-legal.html']").count() == 0 and pau.locator(".ayuda-wrap a").count() == 0)
+        check("portada: el pie tiene el botón de ayuda y 4 enlaces legales clave", pau.locator("#abrirAyuda").count() == 1 and pau.locator(".ayuda-wrap a").count() == 0 and pau.locator(".inicio__pie .inicio__legal a").count() == 4 and all(pau.locator(".inicio__pie a[href='%s']" % h).count() == 1 for h in ("aviso-legal.html", "privacidad.html", "cookies.html", "contacto.html")))
         check("ayuda: el panel está cerrado al entrar", pau.evaluate("document.querySelector('#modalAyuda').hidden"))
         pau.evaluate("document.querySelector('#abrirAyuda').click()"); pau.wait_for_timeout(300)
         check("ayuda: se abre y reúne tutorial, novedades, idioma y enlaces legales", pau.is_visible("#modalAyuda") and pau.is_visible("#abrirTutorial") and pau.is_visible("#abrirTutNv") and pau.is_visible("#abrirIdioma") and pau.locator("#modalAyuda .ayuda__legal a").count() == 5 and pau.is_visible("#abrirCookies"))
