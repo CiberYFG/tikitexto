@@ -22,6 +22,18 @@ PAGINAS = [
          "TIKITEXTO's own study of the 23 World Cups: nations with most titles, how many hosts won, finals decided in extra time or penalties, the tournament's growth and top scorers' goals. With a filterable table."),
       fecha=("Datos a 19 de julio de 2026", "Data as of 19 July 2026")),
 ]
+PAGINAS += [
+ dict(es="estadisticas-copa-de-europa-champions-1956-2026", en="european-cup-champions-league-winners-statistics", ic=COPA, fn="copa_europa",
+      t=("Estadísticas de la Copa de Europa y la Champions 1956-2026: campeones por club, país y década", "European Cup and Champions League statistics 1956–2026: winners by club, country and decade"),
+      d=("Estudio propio de TIKITEXTO con los 71 campeones de la Copa de Europa y la Champions League: títulos por club y país, rachas, sequías, campeones de una sola vez y quién domina cada década. Con tabla filtrable.",
+         "TIKITEXTO's own study of the 71 European Cup and Champions League winners: titles by club and country, streaks, droughts, one-time winners and who dominates each decade. With a filterable table."),
+      fecha=("Datos a 24 de noviembre de 2026", "Data as of 24 November 2026")),
+ dict(es="estadisticas-eurocopa-1960-2024", en="european-championship-statistics-1960-2024", ic=BALON, fn="eurocopa",
+      t=("Estadísticas de la Eurocopa 1960-2024: campeones, anfitriones, finales y crecimiento del torneo", "European Championship statistics 1960–2024: champions, hosts, finals and growth of the tournament"),
+      d=("Estudio propio de TIKITEXTO con las 17 ediciones de la Eurocopa: selecciones con más títulos, anfitriones campeones, finales en prórroga o penaltis, goles por final y cómo pasó de 4 a 24 selecciones. Con tabla filtrable.",
+         "TIKITEXTO's own study of the 17 European Championships: nations with most titles, hosts that won, finals decided in extra time or on penalties, goals per final and how it grew from 4 to 24 teams. With a filterable table."),
+      fecha=("Datos a 24 de noviembre de 2026", "Data as of 24 November 2026")),
+]
 for p in PAGINAS: D.todas_slugs[p["es"]] = D.todas_slugs[p["en"]] = (p["es"], p["en"])
 
 PAIS_CLUB = {"Milan": "IT", "Inter": "IT", "Juventus": "IT", "Manchester United": "EN", "Chelsea": "EN", "Liverpool": "EN", "Manchester City": "EN", "Tottenham": "EN", "Arsenal": "EN",
@@ -228,11 +240,259 @@ def mundiales(L, p, k):
     h += f'<p class="fecha">{"Fuente de los datos" if es else "Data source"}: {src}. {e(p["fecha"][k])}.</p>\n'
     return ruta, h + pie(L)
 
+
+# ---------------- Copa de Europa / Champions 1956-2026 (campeones) ----------------
+PAIS_C = {"Real Madrid": "ES", "Barcelona": "ES", "Benfica": "PT", "Oporto": "PT", "Milan": "IT", "Inter": "IT", "Juventus": "IT", "Celtic": "SC", "Manchester United": "EN", "Liverpool": "EN",
+          "Nottingham Forest": "EN", "Aston Villa": "EN", "Chelsea": "EN", "Manchester City": "EN", "Feyenoord": "NL", "Ajax": "NL", "PSV Eindhoven": "NL", "Bayern de Múnich": "DE", "Hamburgo": "DE",
+          "Borussia Dortmund": "DE", "Steaua de Bucarest": "RO", "Estrella Roja": "YU", "Olympique de Marsella": "FR", "París Saint-Germain": "FR"}
+NOM_C = {"ES": ("España", "Spain"), "EN": ("Inglaterra", "England"), "IT": ("Italia", "Italy"), "DE": ("Alemania", "Germany"), "FR": ("Francia", "France"), "NL": ("Países Bajos", "Netherlands"),
+         "PT": ("Portugal", "Portugal"), "SC": ("Escocia", "Scotland"), "RO": ("Rumanía", "Romania"), "YU": ("Yugoslavia (hoy Serbia)", "Yugoslavia (now Serbia)")}
+CLUB_EN_C = {"Bayern de Múnich": "Bayern Munich", "París Saint-Germain": "Paris Saint-Germain", "Hamburgo": "Hamburg", "Steaua de Bucarest": "Steaua Bucharest", "Oporto": "Porto",
+             "Estrella Roja": "Red Star Belgrade", "Olympique de Marsella": "Marseille", "Atlético de Madrid": "Atlético Madrid"}
+GRANDES5 = {"ES", "EN", "IT", "DE", "FR"}
+def cclub(L, c): return c if L.lang == "es" else CLUB_EN_C.get(c, c)
+def cpais(L, c): return NOM_C[c][0 if L.lang == "es" else 1]
+
+def rachas(W, clave):
+    out = []; cur = [W[0]]
+    for a, b in zip(W, W[1:]):
+        if clave(a) == clave(b): cur.append(b)
+        else: out.append(cur); cur = [b]
+    out.append(cur)
+    return sorted(out, key=lambda r: (-len(r), r[0][0]))
+
+def calc_copa():
+    W = C.CHAMPIONS; r = {"W": W, "n": len(W)}
+    tit = {}
+    for y, c in W: tit[c] = tit.get(c, 0) + 1
+    r["tit"] = sorted(tit.items(), key=lambda kv: (-kv[1], kv[0]))
+    pt = {}; pc = {}
+    for y, c in W:
+        pt[PAIS_C[c]] = pt.get(PAIS_C[c], 0) + 1; pc.setdefault(PAIS_C[c], set()).add(c)
+    r["pais"] = sorted(pt.items(), key=lambda kv: (-kv[1], kv[0])); r["pais_clubs"] = {k: len(v) for k, v in pc.items()}
+    r["distintos"] = len(tit)
+    r["unicos"] = sorted([c for c, n in tit.items() if n == 1], key=lambda c: [y for y, x in W if x == c][0])
+    primera = {}
+    for y, c in W: primera.setdefault(c, y)
+    r["primera"] = primera
+    ultimo = {}
+    for y, c in W: ultimo[c] = y
+    r["ultimo"] = ultimo
+    # décadas
+    decs = sorted({y // 10 * 10 for y, c in W})
+    r["decs"] = decs
+    r["dec_pais"] = {d: {} for d in decs}; r["dec_club"] = {d: {} for d in decs}; r["dec_nuevos"] = {d: 0 for d in decs}
+    for y, c in W:
+        d = y // 10 * 10
+        r["dec_pais"][d][PAIS_C[c]] = r["dec_pais"][d].get(PAIS_C[c], 0) + 1
+        r["dec_club"][d][c] = r["dec_club"][d].get(c, 0) + 1
+        if primera[c] == y: r["dec_nuevos"][d] += 1
+    r["dec_n"] = {d: sum(1 for y, c in W if y // 10 * 10 == d) for d in decs}
+    r["dec_dist"] = {d: len(r["dec_club"][d]) for d in decs}
+    r["rach_club"] = rachas(W, lambda x: x[1])[:5]; r["rach_pais"] = rachas(W, lambda x: PAIS_C[x[1]])[:5]
+    # sequías (años entre dos títulos seguidos del mismo club) y espera actual
+    gaps = []
+    for c in tit:
+        ys = [y for y, x in W if x == c]
+        for a, b in zip(ys, ys[1:]): gaps.append((b - a, c, a, b))
+    r["gaps"] = sorted(gaps, key=lambda g: (-g[0], g[1]))[:5]
+    r["espera"] = sorted(((2026 - ultimo[c], c, ultimo[c]) for c in tit), key=lambda t: (-t[0], t[1]))
+    # campeones de fuera de los cinco grandes países
+    fuera = [(y, c) for y, c in W if PAIS_C[c] not in GRANDES5]
+    r["fuera"] = fuera; r["fuera_ult"] = fuera[-1]
+    r["fuera_dec"] = {d: sum(1 for y, c in fuera if y // 10 * 10 == d) for d in decs}
+    # título nº de cada edición
+    cuenta = {}; num_t = []
+    for y, c in W:
+        cuenta[c] = cuenta.get(c, 0) + 1; num_t.append(cuenta[c])
+    r["num"] = num_t
+    r["revalida"] = sum(1 for a, b in zip(W, W[1:]) if a[1] == b[1])
+    r["top3"] = sum(n for c, n in r["tit"][:3])
+    return r
+
+def copa_europa(L, p, k):
+    es = L.lang == "es"; r = calc_copa(); W = r["W"]; n = r["n"]
+    ruta = "curiosidades/" + p[L.lang] + "/"
+    h = cabecera(L, p["t"][k] + " | TIKITEXTO", p["d"][k], ruta, p["t"][k], p["ic"])
+    h = D.alinear(L, h, ruta, p[L.lang], (p["es"], p["en"]))
+    h = h.replace(L.ui["checked"], p["fecha"][k])
+    assert r["tit"][0][1] > 2 * r["tit"][1][1]
+    top = r["tit"][0]; rc = r["rach_club"][0]; rp = r["rach_pais"]; gap = r["gaps"][0]
+    uni = r["unicos"]; cl = lambda c: cclub(L, c); pa = lambda c: cpais(L, c)
+    h += f'<div class="caja">{e(p["d"][k])}</div>\n' + SCRIPT
+    h += h2("Lo más llamativo en 7 datos" if es else "The key findings in 7 numbers")
+    h += lista([
+        (f"<b>{cl(top[0])}</b> ha ganado {top[1]} de las {n} ediciones ({dec(L, 100 * top[1] / n, 0)} %), más del doble que el siguiente, {cl(r['tit'][1][0])} ({r['tit'][1][1]})." if es else f"<b>{cl(top[0])}</b> has won {top[1]} of the {n} editions ({dec(L, 100 * top[1] / n, 0)} %), more than double the next club, {cl(r['tit'][1][0])} ({r['tit'][1][1]})."),
+        (f"Solo <b>{r['distintos']} clubes</b> han ganado el torneo en {n} ediciones, y los tres que más lo han hecho suman {r['top3']} títulos ({dec(L, 100 * r['top3'] / n, 0)} %)." if es else f"Only <b>{r['distintos']} clubs</b> have won the tournament in {n} editions, and the top three alone account for {r['top3']} titles ({dec(L, 100 * r['top3'] / n, 0)} %)."),
+        (f"<b>{pa(r['pais'][0][0])}</b> lidera por países con {r['pais'][0][1]} títulos, por delante de {pa(r['pais'][1][0])} ({r['pais'][1][1]}) e {pa(r['pais'][2][0])} ({r['pais'][2][1]})." if es else f"<b>{pa(r['pais'][0][0])}</b> leads by country with {r['pais'][0][1]} titles, ahead of {pa(r['pais'][1][0])} ({r['pais'][1][1]}) and {pa(r['pais'][2][0])} ({r['pais'][2][1]})."),
+        (f"La mayor racha de un club son <b>{len(rc)} títulos seguidos</b> ({cl(rc[0][1])}, {rc[0][0]}-{rc[-1][0]}); la de un país, <b>{len(rp[0])}</b> ({pa(PAIS_C[rp[0][0][1]])}, {rp[0][0][0]}-{rp[0][-1][0]})." if es else f"The longest run by a club is <b>{len(rc)} titles in a row</b> ({cl(rc[0][1])}, {rc[0][0]}–{rc[-1][0]}); by a country, <b>{len(rp[0])}</b> ({pa(PAIS_C[rp[0][0][1]])}, {rp[0][0][0]}–{rp[0][-1][0]})."),
+        (f"La sequía más larga entre dos títulos del mismo club fue la de <b>{cl(gap[1])}: {gap[0]} años</b> ({gap[2]}-{gap[3]})." if es else f"The longest drought between two titles for the same club was <b>{cl(gap[1])}'s: {gap[0]} years</b> ({gap[2]}–{gap[3]})."),
+        (f"<b>{len(uni)} clubes</b> ganaron una sola vez y no han repetido: {', '.join(cl(c) for c in uni)}." if es else f"<b>{len(uni)} clubs</b> won once and have not repeated: {', '.join(cl(c) for c in uni)}."),
+        (f"El último campeón de fuera de los cinco grandes países (España, Inglaterra, Italia, Alemania y Francia) fue el <b>{cl(r['fuera_ult'][1])} en {r['fuera_ult'][0]}</b>." if es else f"The last champion from outside the big five countries (Spain, England, Italy, Germany and France) was <b>{cl(r['fuera_ult'][1])} in {r['fuera_ult'][0]}</b>."),
+    ])
+    h += h2(f"Títulos por club ({n} ediciones)" if es else f"Titles per club ({n} editions)")
+    h += barras("Títulos por club" if es else "Titles per club", [(cl(c), t) for c, t in r["tit"]], color="#2563eb")
+    h += par((f"Los {len(uni)} clubes de un solo título son una prueba de lo cerrado que está el palmarés: de los {r['distintos']} campeones, {len([1 for c, t in r['tit'] if t >= 3])} tienen tres o más copas y concentran {sum(t for c, t in r['tit'] if t >= 3)} de los {n} títulos." if es else f"The {len(uni)} one-time winners show how closed the roll of honour is: of the {r['distintos']} champions, {len([1 for c, t in r['tit'] if t >= 3])} have three or more cups and hold {sum(t for c, t in r['tit'] if t >= 3)} of the {n} titles."))
+    h += h2("Títulos por país" if es else "Titles per country")
+    h += barras("Títulos por país" if es else "Titles per country", [(pa(c), t) for c, t in r["pais"]], color="#0f9d58")
+    h += C.tabla(("País", "Títulos", "Clubes distintos campeones") if es else ("Country", "Titles", "Different winning clubs"), [(pa(c), t, r["pais_clubs"][c]) for c, t in r["pais"]])
+    h += par((f"Inglaterra reparte sus {dict(r['pais'])['EN']} títulos entre {r['pais_clubs']['EN']} clubes distintos; España concentra sus {dict(r['pais'])['ES']} en solo {r['pais_clubs']['ES']} clubes (Real Madrid y Barcelona)." if es else f"England spreads its {dict(r['pais'])['EN']} titles across {r['pais_clubs']['EN']} different clubs; Spain concentrates all {dict(r['pais'])['ES']} in just {r['pais_clubs']['ES']} clubs (Real Madrid and Barcelona)."))
+    h += h2("Década a década: quién ganó" if es else "Decade by decade: who won")
+    h += columnas("Clubes distintos campeones por década" if es else "Different champion clubs per decade", [(f"{d}s", r["dec_dist"][d]) for d in r["decs"]], color="#7c3aed")
+    filas = []
+    for d in r["decs"]:
+        lider = sorted(r["dec_club"][d].items(), key=lambda kv: (-kv[1], kv[0]))
+        pl = sorted(r["dec_pais"][d].items(), key=lambda kv: (-kv[1], kv[0]))
+        filas.append((f"{d}s", r["dec_n"][d], ", ".join(f"{cl(c)} ({t})" for c, t in lider[:2]), ", ".join(f"{pa(c)} ({t})" for c, t in pl[:2]), r["dec_dist"][d]))
+    h += C.tabla(("Década", "Ediciones", "Clubes con más títulos", "Países con más títulos", "Clubes distintos") if es else ("Decade", "Editions", "Clubs with most titles", "Countries with most titles", "Different clubs"), filas)
+    h += par((f"La década de 1950 solo tiene {r['dec_n'][1950]} ediciones (la Copa empezó en 1956) y la de 2020, {r['dec_n'][2020]} hasta 2026. Las décadas más repartidas fueron las de {' y '.join(str(d) + 's' for d in r['decs'] if r['dec_dist'][d] == max(r['dec_dist'].values()))}, con {max(r['dec_dist'].values())} campeones distintos." if es else f"The 1950s have only {r['dec_n'][1950]} editions (the Cup began in 1956) and the 2020s {r['dec_n'][2020]} up to 2026. The most evenly spread decades were the {' and '.join(str(d) + 's' for d in r['decs'] if r['dec_dist'][d] == max(r['dec_dist'].values()))}, with {max(r['dec_dist'].values())} different champions."))
+    h += h2("Rachas: los reinados más largos" if es else "Streaks: the longest reigns")
+    filas = [(cl(x[0][1]), len(x), f"{x[0][0]}-{x[-1][0]}") for x in r["rach_club"] if len(x) >= 2]
+    h += C.tabla(("Club", "Títulos seguidos", "Años") if es else ("Club", "Titles in a row", "Years"), filas)
+    filas = [(pa(PAIS_C[x[0][1]]), len(x), f"{x[0][0]}-{x[-1][0]}") for x in r["rach_pais"] if len(x) >= 3]
+    h += par("Y por países, las series de campeones del mismo país:" if es else "And by country, the runs of champions from the same country:")
+    h += C.tabla(("País", "Ediciones seguidas", "Años") if es else ("Country", "Editions in a row", "Years"), filas)
+    larg = sum(len(x) - 1 for x in rachas(W, lambda x: x[1]) if len(x) >= 3); nlarg = sum(1 for x in rachas(W, lambda x: x[1]) if len(x) >= 3)
+    assert r["revalida"] / (n - 1) < 0.25 and r["revalida"] > 0
+    h += par((f"Solo {r['revalida']} veces de {n - 1} posibles el campeón logró revalidar el título la temporada siguiente: menos de una de cada cuatro. Además, {larg} de esas {r['revalida']} repeticiones pertenecen a las {nlarg} series de tres o más títulos seguidos (Real Madrid 1956-1960, Ajax, Bayern y Real Madrid 2016-2018)." if es else f"Only {r['revalida']} times out of {n - 1} possible did the champion retain the title the following season: fewer than one in four. Moreover, {larg} of those {r['revalida']} repeats belong to the {nlarg} streaks of three or more titles (Real Madrid 1956–1960, Ajax, Bayern and Real Madrid 2016–2018)."))
+    h += h2("Sequías: cuánto se puede tardar en volver a ganar" if es else "Droughts: how long a club can wait")
+    h += C.tabla(("Club", "Entre los títulos de", "Años de espera") if es else ("Club", "Between the titles of", "Years waited"), [(cl(c), f"{a} y {b}" if es else f"{a} and {b}", g) for g, c, a, b in r["gaps"]])
+    h += par("Cuenta solo el tiempo entre dos títulos del mismo club; la espera actual de los clubes que no ganan desde hace más tiempo está en la tabla siguiente." if es else "This counts only the time between two titles of the same club; the current wait of the clubs that have gone longest without winning is in the next table.")
+    h += C.tabla(("Club", "Último título", "Años sin ganar (hasta 2026)") if es else ("Club", "Last title", "Years without winning (to 2026)"), [(cl(c), y, a) for a, c, y in r["espera"][:8]])
+    h += h2("Los campeones de fuera de los cinco grandes países" if es else "Champions from outside the big five countries")
+    h += columnas("Títulos de campeones de fuera de ES/EN/IT/DE/FR por década" if es else "Titles from outside ES/EN/IT/DE/FR per decade", [(f"{d}s", r["fuera_dec"][d]) for d in r["decs"]], color="#d97706")
+    assert {c for y, c in r["fuera"]} == {"Benfica", "Celtic", "Feyenoord", "Ajax", "Steaua de Bucarest", "Oporto", "PSV Eindhoven", "Estrella Roja"} and all(PAIS_C[c] in GRANDES5 for y, c in W if y > r["fuera_ult"][0])
+    h += par((f"Entre 1956 y 2026 hubo {len(r['fuera'])} títulos de clubes de países distintos de España, Inglaterra, Italia, Alemania y Francia: Benfica, Celtic, Feyenoord, Ajax, Steaua, Oporto, PSV y Estrella Roja. Desde {r['fuera_ult'][0]}, último año con un campeón de fuera del grupo, los {2026 - r['fuera_ult'][0]} títulos siguientes han ido a esos cinco países." if es else f"Between 1956 and 2026 there were {len(r['fuera'])} titles won by clubs from countries other than Spain, England, Italy, Germany and France: Benfica, Celtic, Feyenoord, Ajax, Steaua, Porto, PSV and Red Star. Since {r['fuera_ult'][0]}, the last year with a champion from outside the group, the next {2026 - r['fuera_ult'][0]} titles have all gone to those five countries."))
+    h += h2(f"Las {n} ediciones en una tabla filtrable" if es else f"All {n} editions in a filterable table")
+    rows = [(y, cl(c), pa(PAIS_C[c]), r["num"][i]) for i, (y, c) in reversed(list(enumerate(W)))]
+    h += tabla_f(("Año", "Campeón", "País", "Título nº del club") if es else ("Year", "Champion", "Country", "Club's title no."), rows,
+                 "Escribe un club, un país o un año para filtrar; pulsa una cabecera para ordenar." if es else "Type a club, a country or a year to filter; click a header to sort.")
+    h += h2("Cómo hemos hecho este estudio" if es else "How we made this study")
+    h += par(("Todas las cifras las calcula un programa a partir de la lista de campeones de la Copa de Europa (1956-1992) y la Champions League (desde 1993) que usamos en nuestras páginas de campeones, contrastada con UEFA.com. Una «sequía» es el tiempo entre dos títulos consecutivos del mismo club; la «espera» se cuenta hasta 2026. Cada país se asigna según el club (el Estrella Roja de 1991 representa a Yugoslavia). La interpretación es de TIKITEXTO; si ves un error, escríbenos desde la página de contacto." if es else "Every figure is calculated by a program from the list of European Cup (1956–1992) and Champions League (from 1993) winners that we use on our champions pages, checked against UEFA.com. A “drought” is the time between two consecutive titles of the same club; the “wait” is counted up to 2026. Each country is assigned by club (Red Star in 1991 stands for Yugoslavia). The interpretation is TIKITEXTO's; if you spot a mistake, write to us from the contact page."))
+    h += C.faq(L, [
+        ("¿Quién ha ganado más Copas de Europa y Champions League?", "Who has won the most European Cups and Champions Leagues?",
+         f"El Real Madrid, con {top[1]} títulos en {n} ediciones; le siguen {cl(r['tit'][1][0])} ({r['tit'][1][1]}) y, con {r['tit'][2][1]} cada uno, {cl(r['tit'][2][0])} y {cl(r['tit'][3][0])}.",
+         f"Real Madrid, with {top[1]} titles in {n} editions; next come {cl(r['tit'][1][0])} ({r['tit'][1][1]}) and, with {r['tit'][2][1]} each, {cl(r['tit'][2][0])} and {cl(r['tit'][3][0])}."),
+        ("¿Qué país tiene más Champions League?", "Which country has the most Champions League titles?",
+         f"España, con {r['pais'][0][1]} títulos, seguida de Inglaterra ({r['pais'][1][1]}) e Italia ({r['pais'][2][1]}).", f"Spain, with {r['pais'][0][1]} titles, followed by England ({r['pais'][1][1]}) and Italy ({r['pais'][2][1]})."),
+        ("¿Cuál es la mayor racha de títulos consecutivos?", "What is the longest run of consecutive titles?",
+         f"Cinco: el Real Madrid ganó las cinco primeras ediciones (1956-1960). Después han ganado tres seguidas el Ajax (1971-1973), el Bayern (1974-1976) y el Real Madrid (2016-2018).", f"Five: Real Madrid won the first five editions (1956–1960). Since then Ajax (1971–1973), Bayern (1974–1976) and Real Madrid (2016–2018) have each won three in a row."),
+        ("¿Cuántos clubes distintos han sido campeones de Europa?", "How many different clubs have been European champions?",
+         f"{r['distintos']} clubes en {n} ediciones. De ellos, {len(uni)} han ganado una sola vez: {', '.join(cl(c) for c in uni)}.", f"{r['distintos']} clubs in {n} editions. Of them, {len(uni)} have won only once: {', '.join(cl(c) for c in uni)}."),
+        ("¿Cuándo ganó por última vez un club de fuera de los cinco grandes países?", "When did a club from outside the big five countries last win?",
+         f"En {r['fuera_ult'][0]}, con el {cl(r['fuera_ult'][1])}. Desde entonces todos los campeones han sido de España, Inglaterra, Italia, Alemania o Francia.", f"In {r['fuera_ult'][0]}, with {cl(r['fuera_ult'][1])}. Since then every champion has come from Spain, England, Italy, Germany or France.")])
+    src = '<a href="https://www.uefa.com/uefachampionsleague/history/" rel="noopener" target="_blank">UEFA.com · historia de la Champions League</a>'
+    h += f'<p class="fecha">{"Fuente de los datos" if es else "Data source"}: {src}. {e(p["fecha"][k])}.</p>\n'
+    return ruta, h + pie(L)
+
+# ---------------- Eurocopa 1960-2024 ----------------
+# (año, sede, campeón, subcampeón, resultado, selecciones, nota)  — UEFA.com; 1968: la final se repitió (1-1 y 2-0)
+EURO = [
+ (1960, "Francia", "Unión Soviética", "Yugoslavia", "2-1 (prórroga)", 4), (1964, "España", "España", "Unión Soviética", "2-1", 4),
+ (1968, "Italia", "Italia", "Yugoslavia", "1-1 y 2-0 en el desempate", 4), (1972, "Bélgica", "Alemania Occidental", "Unión Soviética", "3-0", 4),
+ (1976, "Yugoslavia", "Checoslovaquia", "Alemania Occidental", "2-2 (5-3 en penaltis)", 4), (1980, "Italia", "Alemania Occidental", "Bélgica", "2-1", 8),
+ (1984, "Francia", "Francia", "España", "2-0", 8), (1988, "Alemania Occidental", "Países Bajos", "Unión Soviética", "2-0", 8),
+ (1992, "Suecia", "Dinamarca", "Alemania", "2-0", 8), (1996, "Inglaterra", "Alemania", "República Checa", "2-1 (gol de oro)", 16),
+ (2000, "Bélgica y Países Bajos", "Francia", "Italia", "2-1 (gol de oro)", 16), (2004, "Portugal", "Grecia", "Portugal", "1-0", 16),
+ (2008, "Austria y Suiza", "España", "Alemania", "1-0", 16), (2012, "Polonia y Ucrania", "España", "Italia", "4-0", 16),
+ (2016, "Francia", "Portugal", "Francia", "1-0 (prórroga)", 24), (2020, "11 países (jugada en 2021)", "Italia", "Inglaterra", "1-1 (3-2 en penaltis)", 24),
+ (2024, "Alemania", "España", "Inglaterra", "2-1", 24)]
+SEL_EU = {"Unión Soviética": "Soviet Union", "Yugoslavia": "Yugoslavia", "España": "Spain", "Italia": "Italy", "Alemania Occidental": "West Germany", "Checoslovaquia": "Czechoslovakia", "Bélgica": "Belgium",
+          "Francia": "France", "Países Bajos": "Netherlands", "Dinamarca": "Denmark", "Alemania": "Germany", "República Checa": "Czech Republic", "Grecia": "Greece", "Portugal": "Portugal", "Inglaterra": "England",
+          "Suecia": "Sweden", "Austria y Suiza": "Austria and Switzerland", "Bélgica y Países Bajos": "Belgium and the Netherlands", "Polonia y Ucrania": "Poland and Ukraine",
+          "11 países (jugada en 2021)": "11 countries (played in 2021)"}
+def seu(L, s): return s if L.lang == "es" else SEL_EU.get(s, s)
+def celda_eu(L, v):
+    if L.lang == "es": return v
+    for a, b in (("(prórroga)", "(a.e.t.)"), ("(gol de oro)", "(golden goal)"), ("(5-3 en penaltis)", "(5–3 on pens)"), ("(3-2 en penaltis)", "(3–2 on pens)"), ("1-1 y 2-0 en el desempate", "1–1 and 2–0 in the replay")): v = v.replace(a, b)
+    return v
+def marc_eu(res):
+    m = re.match(r"(\d+)-(\d+)", res); a, b = int(m.group(1)), int(m.group(2))
+    if res.startswith("1-1 y 2-0"): a, b = 2, 0
+    return a, b
+
+def calc_euro():
+    r = {"E": EURO, "n": len(EURO)}
+    tit = {}
+    unif = {"Alemania Occidental": "Alemania"}
+    for x in EURO:
+        s = unif.get(x[2], x[2]); tit[s] = tit.get(s, 0) + 1
+    r["tit"] = sorted(tit.items(), key=lambda kv: (-kv[1], kv[0]))
+    fin = {}
+    for x in EURO:
+        for s in (x[2], x[3]): s = unif.get(s, s); fin[s] = fin.get(s, 0) + 1
+    r["fin"] = fin
+    r["perd"] = sorted(((s, n) for s, n in fin.items() if s not in tit), key=lambda t: (-t[1], t[0]))
+    r["perdidas"] = {s: fin[s] - tit.get(s, 0) for s in fin}
+    r["anf"] = [x[0] for x in EURO if x[1] == x[2]]
+    r["anf_final"] = [x[0] for x in EURO if x[1] == x[3]]
+    r["pror"] = [x[0] for x in EURO if "prórroga" in x[4] or "gol de oro" in x[4]]
+    r["pen"] = [x[0] for x in EURO if "penaltis" in x[4]]
+    g = [sum(marc_eu(x[4])) for x in EURO]; r["goles"] = sum(g); r["goles_med"] = sum(g) / len(EURO)
+    r["gol1"] = [x[0] for x in EURO if abs(marc_eu(x[4])[0] - marc_eu(x[4])[1]) == 1]
+    r["mayor"] = max(EURO, key=lambda x: abs(marc_eu(x[4])[0] - marc_eu(x[4])[1]))
+    r["equipos"] = [(x[0], x[5]) for x in EURO]
+    r["revalida"] = [(a[0], b[0], unif.get(a[2], a[2])) for a, b in zip(EURO, EURO[1:]) if unif.get(a[2], a[2]) == unif.get(b[2], b[2])]
+    r["este"] = [x[0] for x in EURO if x[2] in ("Unión Soviética", "Checoslovaquia")]
+    return r
+
+def eurocopa(L, p, k):
+    es = L.lang == "es"; r = calc_euro(); E = r["E"]; n = r["n"]; sl = lambda s: seu(L, s)
+    ruta = "curiosidades/" + p[L.lang] + "/"
+    h = cabecera(L, p["t"][k] + " | TIKITEXTO", p["d"][k], ruta, p["t"][k], p["ic"])
+    h = D.alinear(L, h, ruta, p[L.lang], (p["es"], p["en"]))
+    h = h.replace(L.ui["checked"], p["fecha"][k])
+    top = r["tit"][0]; mayor = r["mayor"]; mm = marc_eu(mayor[4]); perd = r["perd"]
+    h += f'<div class="caja">{e(p["d"][k])}</div>\n' + SCRIPT
+    h += h2("Lo más llamativo en 6 datos" if es else "The key findings in 6 numbers")
+    h += lista([
+        (f"<b>{sl(top[0])}</b> es la selección con más Eurocopas ({top[1]}), seguida de {sl(r['tit'][1][0])} ({r['tit'][1][1]}) y, con {r['tit'][2][1]} cada una, {' y '.join(sl(s) for s, t in r['tit'] if t == r['tit'][2][1])} (Alemania incluye a Alemania Occidental)." if es else f"<b>{sl(top[0])}</b> is the nation with most European Championships ({top[1]}), followed by {sl(r['tit'][1][0])} ({r['tit'][1][1]}) and, with {r['tit'][2][1]} each, {' and '.join(sl(s) for s, t in r['tit'] if t == r['tit'][2][1])} (Germany includes West Germany)."),
+        (f"Solo <b>{len(r['anf'])} de {n}</b> anfitriones levantaron el trofeo en casa ({', '.join(map(str, r['anf']))}), y {len(r['anf_final'])} más perdieron la final que jugaron como locales ({', '.join(map(str, r['anf_final']))})." if es else f"Only <b>{len(r['anf'])} of {n}</b> hosts lifted the trophy at home ({', '.join(map(str, r['anf']))}), and {len(r['anf_final'])} more lost a final they played as hosts ({', '.join(map(str, r['anf_final']))})."),
+        (f"<b>{len(r['pror'])} finales</b> necesitaron la prórroga o el gol de oro ({', '.join(map(str, r['pror']))}) y <b>{len(r['pen'])}</b> se decidieron en los penaltis ({', '.join(map(str, r['pen']))})." if es else f"<b>{len(r['pror'])} finals</b> needed extra time or a golden goal ({', '.join(map(str, r['pror']))}) and <b>{len(r['pen'])}</b> were decided on penalties ({', '.join(map(str, r['pen']))})."),
+        (f"La media es de <b>{dec(L, r['goles_med'], 2)} goles por final</b> ({r['goles']} en {n}, contando el desempate de 1968 y sin los penaltis); la mayor diferencia fue el {mm[0]}-{mm[1]} de {mayor[0]}." if es else f"The average is <b>{dec(L, r['goles_med'], 2)} goals per final</b> ({r['goles']} in {n}, counting the 1968 replay and not penalties); the biggest margin was the {mm[0]}–{mm[1]} of {mayor[0]}."),
+        (f"El torneo pasó de <b>4 selecciones en 1960 a 24 desde 2016</b>: cada ampliación (8 en 1980, 16 en 1996, 24 en 2016) multiplicó los partidos." if es else f"The tournament grew from <b>4 teams in 1960 to 24 since 2016</b>: each expansion (8 in 1980, 16 in 1996, 24 in 2016) multiplied the number of matches."),
+        (f"Solo <b>{len(r['revalida'])} selección</b> ha ganado dos ediciones seguidas: " + ", ".join(f"{sl(s)} ({a} y {b})" for a, b, s in r["revalida"]) + "." if es else f"Only <b>{len(r['revalida'])} nation</b> has won two editions in a row: " + ", ".join(f"{sl(s)} ({a} and {b})" for a, b, s in r["revalida"]) + "."),
+    ])
+    h += h2("Títulos por selección" if es else "Titles per nation")
+    h += barras("Títulos por selección" if es else "Titles per nation", [(sl(s), t) for s, t in r["tit"]], color="#d97706")
+    h += par("Alemania Occidental y Alemania se cuentan juntas (1972, 1980 y 1996); la Unión Soviética, Checoslovaquia y Yugoslavia ya no existen como selecciones, así que sus títulos o finales no pertenecen a nadie hoy." if es else "West Germany and Germany are counted together (1972, 1980 and 1996); the Soviet Union, Czechoslovakia and Yugoslavia no longer exist as national teams, so their titles and finals belong to no one today.")
+    h += h2("Finalistas que nunca ganaron" if es else "Finalists who never won")
+    h += par(", ".join(f"{sl(s)} ({t} {('final' if t == 1 else 'finales') if es else ('final' if t == 1 else 'finals')})" for s, t in perd) + ".")
+    mx = max(t for s_, t in perd); masv = [sl(s_) for s_, t in perd if t == mx]
+    assert [x[0] for x in E if x[3] == "Inglaterra"] == [2020, 2024]
+    h += par((f"Es el reverso del palmarés: {' y '.join(masv)} ({mx} finales cada una) son las que más veces han llegado a la final sin ganarla. Inglaterra jugó dos seguidas (2020 y 2024) y perdió ambas." if es else f"It is the flip side of the roll of honour: {' and '.join(masv)} ({mx} finals each) have reached the most finals without winning. England played two in a row (2020 and 2024) and lost both."))
+    h += h2("El torneo ha crecido: selecciones por edición" if es else "The tournament has grown: teams per edition")
+    h += columnas("Selecciones por edición" if es else "Teams per edition", r["equipos"], color="#2563eb")
+    h += par("Entre 1960 y 1976 solo cuatro selecciones jugaban la fase final (semifinales y final); desde 1980 hay fase de grupos, desde 1996 son 16 y desde 2016, 24. A más equipos, más variedad de campeones: Grecia (2004) y Dinamarca (1992, que entró a última hora por la exclusión de Yugoslavia) son las dos grandes sorpresas." if es else "Between 1960 and 1976 only four teams played the final tournament (semi-finals and final); since 1980 there has been a group stage, since 1996 there have been 16 teams and since 2016, 24. More teams brought more variety of champions: Greece (2004) and Denmark (1992, who came in late after Yugoslavia's exclusion) are the two great surprises.")
+    h += h2("Los resultados de las 17 finales" if es else "The results of all 17 finals")
+    h += columnas("Goles por final" if es else "Goals per final", [(x[0], sum(marc_eu(x[4]))) for x in E], color="#dc2626")
+    h += par("En 1968 la final acabó 1-1 y se repitió dos días después (2-0 para Italia): es el único desempate en una final. Los goles de la gráfica no incluyen los penaltis de 1976 ni de 2020." if es else "In 1968 the final ended 1–1 and was replayed two days later (2–0 to Italy): it is the only replay in a final. The goals in the chart do not include the penalties of 1976 and 2020.")
+    h += h2("Las 17 ediciones en una tabla filtrable" if es else "All 17 editions in a filterable table")
+    rows = [(x[0], sl(x[1]), sl(x[2]), sl(x[3]), celda_eu(L, x[4]), x[5]) for x in reversed(E)]
+    h += tabla_f(("Año", "Sede", "Campeón", "Subcampeón", "Final", "Selecciones") if es else ("Year", "Host", "Champion", "Runner-up", "Final", "Teams"), rows,
+                 "Escribe una selección o un año para filtrar; pulsa una cabecera para ordenar." if es else "Type a nation or a year to filter; click a header to sort.")
+    h += h2("Cómo hemos hecho este estudio" if es else "How we made this study")
+    h += par(("Las cifras las calcula un programa a partir de las 17 finales (1960-2024) con los datos de UEFA.com. Contamos Alemania Occidental y Alemania como una sola selección en la clasificación. La Eurocopa de 2020 se jugó en 2021 y en 11 países, por eso no la contamos como «anfitrión campeón» aunque Italia acogió partidos. El número de goles de 1968 cuenta el desempate (2-0); los de 1976 y 2020 no incluyen los penaltis. La interpretación es de TIKITEXTO; si ves un error, escríbenos desde la página de contacto." if es else "A program calculates the figures from the 17 finals (1960–2024) using UEFA.com data. We count West Germany and Germany as a single nation in the ranking. Euro 2020 was played in 2021 and in 11 countries, so we do not count it as a “host champion” even though Italy staged matches. The 1968 goal count uses the replay (2–0); those of 1976 and 2020 exclude the penalties. The interpretation is TIKITEXTO's; if you spot a mistake, write to us from the contact page."))
+    h += C.faq(L, [
+        ("¿Qué selección ha ganado más Eurocopas?", "Which nation has won the most European Championships?",
+         f"España, con {top[1]} títulos (1964, 2008, 2012 y 2024); le sigue Alemania con {r['tit'][1][1]}, contando los de Alemania Occidental.", f"Spain, with {top[1]} titles (1964, 2008, 2012 and 2024); Germany follows with {r['tit'][1][1]}, counting those of West Germany."),
+        ("¿Cuántos anfitriones han ganado la Eurocopa?", "How many hosts have won the European Championship?",
+         f"{len(r['anf'])}: {', '.join(map(str, r['anf']))} (España, Italia y Francia).", f"{len(r['anf'])}: {', '.join(map(str, r['anf']))} (Spain, Italy and France)."),
+        ("¿Cuántas finales de la Eurocopa se han decidido en los penaltis?", "How many European Championship finals have gone to penalties?",
+         f"{len(r['pen'])}: la de {r['pen'][0]} (Checoslovaquia ante Alemania Occidental) y la de {r['pen'][1]} (Italia ante Inglaterra).", f"{len(r['pen'])}: {r['pen'][0]} (Czechoslovakia against West Germany) and {r['pen'][1]} (Italy against England)."),
+        ("¿Cuántos equipos juegan la Eurocopa?", "How many teams play in the European Championship?",
+         "Desde 2016, 24. Antes fueron 16 (1996-2012), 8 (1980-1992) y 4 (1960-1976).", "Since 2016, 24. Before that there were 16 (1996–2012), 8 (1980–1992) and 4 (1960–1976)."),
+        ("¿Qué selecciones han llegado a la final de la Eurocopa sin ganarla nunca?", "Which nations have reached a European Championship final without ever winning?",
+         ", ".join(f"{sl(s)} ({t})" for s, t in perd) + ".", ", ".join(f"{sl(s)} ({t})" for s, t in perd) + ".")])
+    src = '<a href="https://www.uefa.com/" rel="noopener" target="_blank">UEFA.com · historia de la Eurocopa</a>'
+    h += f'<p class="fecha">{"Fuente de los datos" if es else "Data source"}: {src}. {e(p["fecha"][k])}.</p>\n'
+    return ruta, h + pie(L)
+
 if __name__ == "__main__":
     out = []
     for lg in LANGS:
         L = Idioma(lg); k = 0 if lg == "es" else 1
-        for p, fn in zip(PAGINAS, (champions, mundiales)):
+        for p, fn in zip(PAGINAS, (champions, mundiales) + tuple(globals()[x["fn"]] for x in PAGINAS[2:])):
             ruta, cont = fn(L, p, k)
             cont = C.con_huecos(L, cont)
             d = os.path.join(C.RAIZ, L.prefix + ruta); os.makedirs(d, exist_ok=True)

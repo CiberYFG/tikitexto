@@ -1761,26 +1761,30 @@ check("nombre del titular: sí figura en el aviso legal (Titularidad del sitio)"
 _pv = open(_os.path.join(_raiz, "privacidad.html"), encoding="utf-8").read()
 check("privacidad: identifica al responsable remitiendo al aviso legal", "aviso-legal.html" in _pv and "Responsable:" in _pv)
 
-# 3ai) páginas de texto de las clases animadas (es/en)
+# 3ai) clases animadas: solo los hubs (es/en); las páginas de texto por lección se retiraron (23-24-nov-2026)
 import json as _js
 _cl = _js.load(open(_os.path.join(_raiz, "tools", "clases_texto.json"), encoding="utf-8"))
 _smx = open(_os.path.join(_raiz, "sitemap.xml"), encoding="utf-8").read()
-_mal = []
-for _g in _cl:
-    for _r in ("clases/%s/" % _g["id"],):
-        _hh = open(_os.path.join(_raiz, _r, "index.html"), encoding="utf-8").read() if _os.path.exists(_os.path.join(_raiz, _r, "index.html")) else ""
-        _pal = len(re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[\s\S]*?</\1>", "", _hh)).split())
-        if not (_pal > 450 and "FAQPage" in _hh and 'hreflang="en"' in _hh and "/" + _r in _smx): _mal.append(_r + " " + str(_pal))
-check("clases: 18 páginas es con +450 palabras, FAQ, hreflang y sitemap", len(_cl) == 18 and not _mal, "; ".join(_mal[:4]))
-check("clases: 18 páginas en inglés y hubs en el sitemap", len(_os.listdir(_os.path.join(_raiz, "en", "classes"))) == 19 and "https://tikitexto.com/en/classes/</loc>" in _smx and "https://tikitexto.com/clases/</loc>" in _smx)
+for _r, _lg in (("clases/", "es"), ("en/classes/", "en")):
+    _fp = _os.path.join(_raiz, _r, "index.html"); _hh = open(_fp, encoding="utf-8").read() if _os.path.exists(_fp) else ""
+    _pal = len(re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[\s\S]*?</\1>", "", _hh)).split())
+    _tit = sum(1 for _g in _cl if _g[_lg]["titulo"] in _hh)
+    check("clases hub %s: +900 palabras, las 18 clases resumidas, FAQ y enlace al reproductor (%d palabras, %d clases)" % (_lg, _pal, _tit), _pal > 900 and _tit == 18 and "FAQPage" in _hh and "modo=clases" in _hh, "")
+check("clases: sin páginas de texto por lección (solo hubs) y hubs en el sitemap", len(_cl) == 18 and _os.listdir(_os.path.join(_raiz, "en", "classes")) == ["index.html"] and _os.listdir(_os.path.join(_raiz, "clases")) == ["index.html"] and "https://tikitexto.com/en/classes/</loc>" in _smx and "https://tikitexto.com/clases/</loc>" in _smx and "/clases/fuera-de-juego/" not in _smx)
 
 # 3aj) estudios estadísticos propios (es/en) con tabla filtrable
-for _r in ("curiosidades/estadisticas-finales-champions/", "curiosidades/estadisticas-mundiales/", "en/curiosidades/champions-league-finals-statistics/", "en/curiosidades/world-cup-statistics/"):
+for _r in ("curiosidades/estadisticas-finales-champions/", "curiosidades/estadisticas-mundiales/", "en/curiosidades/champions-league-finals-statistics/", "en/curiosidades/world-cup-statistics/", "curiosidades/estadisticas-copa-de-europa-champions-1956-2026/", "en/curiosidades/european-cup-champions-league-winners-statistics/", "curiosidades/estadisticas-eurocopa-1960-2024/", "en/curiosidades/european-championship-statistics-1960-2024/"):
     _fp = _os.path.join(_raiz, _r, "index.html"); _hh = open(_fp, encoding="utf-8").read() if _os.path.exists(_fp) else ""
     _pal = len(re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[\s\S]*?</\1>", "", _hh)).split())
     check("estadísticas %s: +500 palabras, gráficos SVG, tabla filtrable, FAQ, hreflang y sitemap" % _r, _pal > 500 and _hh.count("<svg") >= 2 and "data-filtro" in _hh and "/tabla_filtro.js" in _hh and "FAQPage" in _hh and 'hreflang="en"' in _hh and "/" + _r in open(_os.path.join(_raiz, "sitemap.xml"), encoding="utf-8").read(), str(_pal))
 _hh = open(_os.path.join(_raiz, "curiosidades/estadisticas-finales-champions/index.html"), encoding="utf-8").read()
 check("estadísticas Champions: Real Madrid 6 de 20 y 4 finales en penaltis (cálculo propio)", "ganó 6 de las 20" in _hh and "4 finales</b> se decidieron en los penaltis" in _hh)
+_hh = open(_os.path.join(_raiz, "curiosidades/estadisticas-copa-de-europa-champions-1956-2026/index.html"), encoding="utf-8").read()
+check("estadísticas Copa de Europa: Real Madrid 15 de 71, España 20, racha de 5 y 24 campeones (cálculo propio)", "Real Madrid</b> ha ganado 15 de las 71" in _hh and "España</b> lidera por países con 20 títulos" in _hh and "5 títulos seguidos</b> (Real Madrid, 1956-1960)" in _hh and "Solo <b>24 clubes</b>" in _hh and "1956-2026" in _hh)
+_hh = open(_os.path.join(_raiz, "curiosidades/estadisticas-eurocopa-1960-2024/index.html"), encoding="utf-8").read()
+check("estadísticas Eurocopa: España 4 títulos, 3 anfitriones campeones y 2 finales en penaltis (cálculo propio)", "España</b> es la selección con más Eurocopas (4)" in _hh and "Solo <b>3 de 17</b> anfitriones" in _hh and "<b>2</b> se decidieron en los penaltis (1976, 2020)" in _hh)
+_ci = open(_os.path.join(_raiz, "curiosidades/index.html"), encoding="utf-8").read()
+check("curiosidades: el índice enlaza las 4 estadísticas propias", all(x in _ci for x in ("estadisticas-finales-champions", "estadisticas-mundiales", "estadisticas-copa-de-europa-champions-1956-2026", "estadisticas-eurocopa-1960-2024")))
 check("tabla_filtro.js existe y no carga recursos externos", "http" not in open(_os.path.join(_raiz, "tabla_filtro.js"), encoding="utf-8").read())
 
 # 3ak) comparador (es/en): carga, 4 modos, marcador coherente, URL compartible, sin errores JS
