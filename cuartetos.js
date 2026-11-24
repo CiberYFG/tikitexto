@@ -252,6 +252,7 @@ export function abrir(api, raiz) {
       d.racha = gana ? (d.rachaAyer === ayerTxt() ? (d.racha || 0) + 1 : 1) : 0; if (gana) d.rachaAyer = hoyTxt(); if (!gana) d.rachaAyer = "";
       if (d.racha > d.mejor) d.mejor = d.racha;
       if (gana) tiki = true;
+      try { api.racha && api.racha("cu"); } catch (e) { /* opcional */ }
     } else if (gana) { d.libre++; if (d.libre % 3 === 0) tiki = true; }
     if (tiki) { try { api.tiki(); } catch (e) { /* opcional */ } S.tikis = 1; au.tiki(); }
     try { api.guardar(); } catch (e) { /* opcional */ }

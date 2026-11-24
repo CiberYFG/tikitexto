@@ -296,7 +296,7 @@ export function abrir(api, raiz) {
     let tiki = false;
     if (S.modo === "dia") {
       const ayer = new Date(); ayer.setDate(ayer.getDate() - 1); const sAyer = ayer.getFullYear() + "-" + String(ayer.getMonth() + 1).padStart(2, "0") + "-" + String(ayer.getDate()).padStart(2, "0");
-      d.racha = d.dia === sAyer ? d.racha + 1 : 1; d.rachaMax = Math.max(d.rachaMax, d.racha); d.dias++; d.dia = hoy(); d.diaAc = S.ac; d.diaPts = S.pts; d.diaGrid = S.grid; tiki = S.ac >= UMBRAL_DIA;
+      d.racha = d.dia === sAyer ? d.racha + 1 : 1; d.rachaMax = Math.max(d.rachaMax, d.racha); d.dias++; d.dia = hoy(); d.diaAc = S.ac; d.diaPts = S.pts; d.diaGrid = S.grid; tiki = S.ac >= UMBRAL_DIA; try { api.racha && api.racha("tv"); } catch (e) { /* opcional */ }
     } else tiki = S.ac === NPREG;
     if (tiki) { S.tikis++; d.tiki++; try { api.tiki(); } catch (e) { /* opcional */ } try { api.victoria(); } catch (e) { /* opcional */ } }
     try { api.guardar(); } catch (e) { /* opcional */ }

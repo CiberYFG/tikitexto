@@ -1555,6 +1555,86 @@ with sync_playwright() as p:
     except Exception as e:
         check("memoria de parejas", False, str(e)[:150])
 
+    print("3bb) Cruces, racha diaria global y El que gana se queda")
+    try:
+        cbb = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
+        pbb = cbb.new_page(); errs_bb = []
+        pbb.on("pageerror", lambda e: errs_bb.append(str(e)))
+        pbb.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');sessionStorage.setItem('tikitexto:grupo','letras')")
+        pbb.goto(BASE, wait_until="networkidle", timeout=60000); pbb.wait_for_timeout(400)
+        # --- Racha global (lógica sin interfaz) ---
+        pbb.evaluate("document.querySelector('[data-cruces]').click()"); pbb.wait_for_timeout(2000)
+        check("cruces: se abre la pantalla", pbb.locator(".cr-raiz").count() == 1)
+        r = pbb.evaluate("""(()=>{ const j=TIKI.cruces.juego(); const rng=j.mulberry(777); let mal=0, n=0, nulo=0, minimo=99;
+          for(let k=0;k<300;k++){ const g=j.generar(rng); n++; if(!g){nulo++; continue;} if(g.cand.length!==9||g.cand.some(l=>l.length<1)) mal++; minimo=Math.min(minimo,...g.cand.map(l=>l.length)); if(!j.resolver(g.cand)) mal++; }
+          const a=j.generar(j.mulberry(20261124)), b=j.generar(j.mulberry(20261124));
+          return {mal,n,nulo,minimo, det: JSON.stringify([a.filas,a.cols])===JSON.stringify([b.filas,b.cols]), bus:j.buscar('mess',null).map(x=>x.n).join(',')}; })()""")
+        check("cruces: 300 cuadrículas con solución (jugadores distintos) y todas las casillas con candidatos", r["mal"] == 0 and r["nulo"] == 0 and r["minimo"] >= 1, str(r))
+        check("cruces: la cuadrícula diaria es determinista y el buscador no distingue tildes", r["det"] and "Messi" in r["bus"], str(r))
+        pbb.evaluate("TIKI.cruces.juego().empezar('libre')"); pbb.wait_for_timeout(200)
+        check("cruces: 9 casillas, 3 balones y cabecera", pbb.locator(".cr-cel").count() == 9 and pbb.locator("[data-vidas] i.on").count() == 3)
+        pbb.evaluate("TIKI.cruces.juego().seleccionar(0)"); pbb.wait_for_timeout(100)
+        mal = pbb.evaluate("""(()=>{ const j=TIKI.cruces.juego(); const g=j.S.g; const bad=j.JUG.find(x=>g.cand[0].indexOf(x)<0); j.probar(bad); return j.S.fallos; })()""")
+        check("cruces: un jugador que no encaja resta un balón", mal == 1 and pbb.locator("[data-vidas] i.on").count() == 2)
+        pbb.evaluate("""(()=>{ const j=TIKI.cruces.juego(); const sol=j.resolver(j.S.g.cand); j.S.sel=0; j.probar(sol[0]); })()""")
+        check("cruces: un jugador correcto rellena la casilla", pbb.evaluate("TIKI.cruces.juego().S.cel[0] !== null") is True)
+        pbb.evaluate("""(()=>{ const j=TIKI.cruces.juego(); const sol=j.resolver(j.S.g.cand); for(let i=1;i<9;i++){ if(j.S.fase!=='juego') break; j.S.sel=i; j.probar(sol[i]); } })()""")
+        pbb.wait_for_timeout(1500)
+        check("cruces: completar las 9 casillas termina la partida con el resultado 9/9", pbb.locator("[data-fin]:not([hidden])").count() == 1 and pbb.inner_text("[data-fin-res]").strip() == "9/9", pbb.inner_text("[data-fin-res]"))
+        pbb.evaluate("TIKI.cruces.juego().cerrar()"); pbb.wait_for_timeout(300)
+        check("cruces: cerrar quita la pantalla", pbb.locator(".cr-raiz").count() == 0)
+        # --- Racha global ---
+        b = pbb.evaluate("""(()=>{ const R=TIKI.racha; const a0=R.actual(); const v=R.marca('cu'); const a1=R.actual(); const v2=R.marca('cu'); const v3=R.marca('tv'); const a2=R.actual();
+          return {a0:a0.racha, v, a1:a1.racha, hecho:a1.hecho, v2, v3, retos:a2.retos.join(','), banner:document.querySelector('[data-rg-n]').textContent}; })()""")
+        check("racha: el primer reto del día pone la racha en 1 y repetir no la sube", b["a0"] == 0 and b["v"] == 1 and b["a1"] == 1 and b["hecho"] is True and b["v2"] == 1 and b["v3"] == 1, str(b))
+        check("racha: se anotan los retos de hoy y el banner muestra el número", "cu" in b["retos"] and "tv" in b["retos"] and b["banner"] == "1", str(b))
+        pbb.click("[data-racha]"); pbb.wait_for_timeout(1200)
+        check("racha: el banner abre la tarjeta para compartir", pbb.locator(".rc-raiz").count() == 1 and pbb.locator("[data-rc-cv]").count() == 1 and pbb.inner_text("[data-rc-n]").strip() == "1" and pbb.locator(".rc-hoy li.ok").count() == 2, pbb.inner_text(".rc-raiz")[:120])
+        ok_png = pbb.evaluate("""(()=>{ const c=document.querySelector('[data-rc-cv]'); return !!c._full && c._full.width===1080 && c._full.height===1350 && c._full.toDataURL('image/png').length>5000; })()""")
+        check("racha: la tarjeta de 1080×1350 se dibuja", ok_png)
+        pbb.keyboard.press("Escape"); pbb.wait_for_timeout(300)
+        check("racha: Esc cierra la tarjeta", pbb.locator(".rc-raiz").count() == 0)
+        # racha de varios días y rotura
+        f = pbb.evaluate("""(()=>{ const R=TIKI.racha; const dd=(n)=>{const x=new Date(); x.setDate(x.getDate()-n); return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');};
+          const clave=Object.keys(localStorage).find(k=>/jug/i.test(k)&&k.indexOf('tikitexto')===0); const raw=JSON.parse(localStorage.getItem(clave)); const p=raw.perfiles[raw.actual];
+          p.nv.rg={ult:dd(1),racha:4,mejor:6,hoy:{f:dd(1),j:['d']},total:9}; localStorage.setItem(clave,JSON.stringify(raw)); return clave; })()""")
+        pbb.reload(wait_until="networkidle"); pbb.wait_for_timeout(800)
+        ayer = pbb.evaluate("TIKI.racha.actual()")
+        check("racha: si ayer jugaste, la racha sigue viva y hoy aún no cuenta", ayer["racha"] == 4 and ayer["hecho"] is False and ayer["mejor"] == 6, str(ayer))
+        check("racha: el banner invita a mantenerla", "mantenerla" in pbb.inner_text("[data-rg-s]"), pbb.inner_text("[data-rg-s]"))
+        pbb.evaluate("TIKI.racha.marca('cr')"); sube = pbb.evaluate("TIKI.racha.actual()")
+        check("racha: completar hoy la sube a 5 y suma un día", sube["racha"] == 5 and sube["total"] == 10 and sube["hecho"] is True, str(sube))
+        pbb.evaluate("""(()=>{ const clave=Object.keys(localStorage).find(k=>/jug/i.test(k)&&k.indexOf('tikitexto')===0); const raw=JSON.parse(localStorage.getItem(clave)); const p=raw.perfiles[raw.actual];
+          const x=new Date(); x.setDate(x.getDate()-3); p.nv.rg.ult=x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0'); localStorage.setItem(clave,JSON.stringify(raw)); })()""")
+        pbb.reload(wait_until="networkidle"); pbb.wait_for_timeout(800)
+        rota = pbb.evaluate("TIKI.racha.actual()")
+        check("racha: tras saltarte días la racha vuelve a 0 y se conserva la mejor", rota["racha"] == 0 and rota["mejor"] == 6, str(rota))
+        pbb.evaluate("TIKI.racha.marca('d')")
+        check("racha: al volver a jugar empieza otra vez en 1", pbb.evaluate("TIKI.racha.actual().racha") == 1)
+        # --- El que gana se queda ---
+        pbb.evaluate("document.querySelector('[data-queda]').click()"); pbb.wait_for_timeout(2000)
+        check("queda: se abre el menú con 6 categorías", pbb.locator(".qg-raiz").count() == 1 and pbb.locator(".qg-chip").count() == 6)
+        e = pbb.evaluate("""(()=>{ const j=TIKI.queda.juego(); const res=[]; j.CATS.forEach(c=>{ const l=j.elegir(c.k); res.push(l.length===16 && new Set(l.map(x=>x.n)).size===16); }); return res.every(Boolean); })()""")
+        check("queda: cada categoría da 16 jugadores distintos", e is True)
+        pbb.click("[data-qg=jugar]"); pbb.wait_for_timeout(300)
+        check("queda: aparecen dos cartas y el duelo 1/15", pbb.locator(".qg-carta").count() == 2 and "1/15" in pbb.inner_text("[data-prog]"), pbb.inner_text("[data-prog]"))
+        pbb.keyboard.press("ArrowLeft"); pbb.wait_for_timeout(300)
+        check("queda: elegir marca ganador y perdedor", pbb.locator(".qg-carta.gana").count() == 1 and pbb.locator(".qg-carta.pierde").count() == 1)
+        pbb.wait_for_timeout(900)
+        check("queda: pasa al duelo 2/15", "2/15" in pbb.inner_text("[data-prog]"), pbb.inner_text("[data-prog]"))
+        for _ in range(14):
+            pbb.evaluate("TIKI.queda.juego().elige(1)"); pbb.wait_for_timeout(720)
+            if pbb.locator("[data-fin]:not([hidden])").count(): break
+        check("queda: tras 15 duelos sale el campeón y un podio de 3", pbb.locator("[data-fin]:not([hidden])").count() == 1 and pbb.locator("[data-podio] li").count() == 3 and len(pbb.inner_text("[data-camp]").strip()) > 2, pbb.inner_text("[data-camp]"))
+        check("queda: el texto para compartir lleva el enlace del modo", "modo=queda" in pbb.evaluate("TIKI.queda.juego().S.texto"))
+        pbb.evaluate("document.querySelector('[data-qg=salir]').click()") if pbb.locator("[data-qg=salir]").count() else pbb.evaluate("TIKI.queda.juego().cerrar()")
+        pbb.wait_for_timeout(300)
+        check("queda: cerrar quita la pantalla", pbb.locator(".qg-raiz").count() == 0)
+        check("cruces/racha/queda: sin errores de JavaScript", not errs_bb, "; ".join(errs_bb)[:200])
+        cbb.close()
+    except Exception as e:
+        check("cruces, racha y queda", False, str(e)[:200])
+
     print("3au) Portada compacta y panel de tutorial y ayuda")
     try:
         cau = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
