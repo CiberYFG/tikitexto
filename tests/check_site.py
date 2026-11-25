@@ -1866,7 +1866,7 @@ for _r, _lg in (("clases/", "es"), ("en/classes/", "en")):
     import html as _ht
     _tit = sum(1 for _g in _cl if _ht.escape(_g[_lg]["titulo"]) in _hh)
     check("clases hub %s: +900 palabras, las 18 clases resumidas, FAQ y enlace al reproductor (%d palabras, %d clases)" % (_lg, _pal, _tit), _pal > 900 and _tit == 18 and "FAQPage" in _hh and "modo=clases" in _hh, "")
-check("clases: sin páginas de texto por lección (solo hubs) y hubs en el sitemap", len(_cl) == 18 and _os.listdir(_os.path.join(_raiz, "en", "classes")) == ["index.html"] and _os.listdir(_os.path.join(_raiz, "clases")) == ["index.html"] and "https://tikitexto.com/en/classes/</loc>" in _smx and "https://tikitexto.com/clases/</loc>" in _smx and "/clases/fuera-de-juego/" not in _smx)
+check("clases: sin páginas de texto por lección (solo hubs) y hubs en el sitemap", len(_cl) == 18 and [_f for _f in _os.listdir(_os.path.join(_raiz, "en", "classes")) if _f != "index.html" and 'http-equiv="refresh"' not in open(_os.path.join(_raiz, "en", "classes", _f, "index.html"), encoding="utf-8").read()] == [] and [_f for _f in _os.listdir(_os.path.join(_raiz, "clases")) if _f != "index.html" and 'http-equiv="refresh"' not in open(_os.path.join(_raiz, "clases", _f, "index.html"), encoding="utf-8").read()] == [] and "https://tikitexto.com/en/classes/</loc>" in _smx and "https://tikitexto.com/clases/</loc>" in _smx and "/clases/fuera-de-juego/" not in _smx)
 
 # 3aj) estudios estadísticos propios (es/en) con tabla filtrable
 for _r in ("curiosidades/estadisticas-finales-champions/", "curiosidades/estadisticas-mundiales/", "en/curiosidades/champions-league-finals-statistics/", "en/curiosidades/world-cup-statistics/", "curiosidades/estadisticas-copa-de-europa-champions-1956-2026/", "en/curiosidades/european-cup-champions-league-winners-statistics/", "curiosidades/estadisticas-eurocopa-1960-2024/", "en/curiosidades/european-championship-statistics-1960-2024/"):
@@ -1915,7 +1915,9 @@ for _r in ("comparador/", "en/football-comparator/"):
     _dd = _os.path.join(_raiz, _r)
     for _s in sorted(_os.listdir(_dd)):
         if "-vs-" not in _s: continue
-        _n3 += 1; _h = open(_os.path.join(_dd, _s, "index.html"), encoding="utf-8").read()
+        _h = open(_os.path.join(_dd, _s, "index.html"), encoding="utf-8").read()
+        if 'http-equiv="refresh"' in _h: continue   # página puente de una URL retirada (tools/puentes.py)
+        _n3 += 1
         _wc = len(_re3al.sub(r"<[^>]+>", " ", _h).split())
         _noidx = 'name="robots" content="noindex' in _h   # los duelos con poco texto no se indexan ni van al sitemap
         if _wc < 250 or "FAQPage" not in _h or "<table>" not in _h or 'hreflang="x-default"' not in _h or ((("https://tikitexto.com/" + _r + _s + "/") in _sm3) == _noidx):
