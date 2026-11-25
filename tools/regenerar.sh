@@ -5,4 +5,5 @@ for s in curiosidades curiosidades_datos curiosidades_historia curiosidades_esta
 python3 tools/seo.py > /dev/null
 [ -f tools/menu_paginas.py ] && python3 tools/menu_paginas.py
 python3 tools/csp.py | tail -1
+python3 tools/lastmod.py
 python3 tools/buscador.py | tail -1
