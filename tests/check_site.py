@@ -18,6 +18,16 @@ def check(nombre, condicion, detalle=""):
 
 with sync_playwright() as p:
     br = p.chromium.launch()
+    # En la comprobación programada de GitHub (CHECK_TAG=1) el navegador se identifica con «TikitextoCheck»
+    # y cmp.js no carga la medición de Cloudflare: así estas visitas automáticas no ensucian las estadísticas reales.
+    ETIQUETA = [os.environ.get("CHECK_TAG") == "1"]
+    if ETIQUETA[0]:
+        _nc_orig = br.new_context
+        _t0 = _nc_orig(); _pg0 = _t0.new_page(); UA_CHECK = _pg0.evaluate("navigator.userAgent") + " TikitextoCheck/1.0"; _t0.close()
+        def _nc(**kw):
+            if ETIQUETA[0]: kw.setdefault("user_agent", UA_CHECK)
+            return _nc_orig(**kw)
+        br.new_context = _nc
     ctx = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
     # Las pruebas del juego van en español; el selector de idioma se prueba aparte (3d)
     ctx.add_init_script("if(!localStorage.getItem('tikitexto:idioma'))localStorage.setItem('tikitexto:idioma','es');if(!localStorage.getItem('tikitexto:consentimiento'))localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:vista','juegos');")
@@ -279,6 +289,7 @@ with sync_playwright() as p:
     except Exception as e:
         check("páginas de búsqueda", False, str(e)[:150])
 
+    ETIQUETA[0] = False  # 3f prueba la medición real: aquí no se etiqueta
     print("3f) Aviso de consentimiento (medición sin cookies + Google solo con aceptación)")
     try:
         def _ctx(init=""):
@@ -352,6 +363,7 @@ with sync_playwright() as p:
     except Exception as e:
         check("aviso de consentimiento", False, str(e)[:200])
 
+    ETIQUETA[0] = os.environ.get("CHECK_TAG") == "1"
     print("3g) Racha diaria y compartir")
     try:
         cg = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block")

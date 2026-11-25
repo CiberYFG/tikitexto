@@ -37,6 +37,7 @@
   var cfCargado = false, gtmActivo = false;
   function cargarCf() {
     if (cfCargado) return; cfCargado = true;
+    if (/TikitextoCheck/.test(navigator.userAgent || "")) return; // comprobación automática propia: no cuenta como visita
     var s = document.createElement("script");
     s.defer = true; s.src = "https://static.cloudflareinsights.com/beacon.min.js";
     s.setAttribute("data-cf-beacon", '{"token": "' + CF_TOKEN + '"}');

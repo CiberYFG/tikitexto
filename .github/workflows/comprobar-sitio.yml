@@ -2,7 +2,7 @@ name: Comprobar tikitexto.com
 
 on:
   schedule:
-    - cron: "23 */6 * * *"   # cada 6 horas
+    - cron: "23 5 * * *"   # una vez al día (antes cada 6 horas)
   workflow_dispatch:          # también se puede lanzar a mano desde la pestaña Actions
 
 permissions:
@@ -23,6 +23,8 @@ jobs:
           pip install playwright
           playwright install --with-deps chromium
       - name: Ejecutar comprobaciones
+        env:
+          CHECK_TAG: "1"   # el navegador se identifica como TikitextoCheck; cmp.js no lo cuenta como visita
         run: python tests/check_site.py
       - name: Avisar con un issue si algo falla
         if: failure()
