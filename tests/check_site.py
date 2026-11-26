@@ -203,7 +203,7 @@ with sync_playwright() as p:
         if pi.is_visible("#volverPortal"): pi.click("#volverPortal"); pi.wait_for_timeout(300)
         texto0 = pi.inner_text("body")
         check("el portal está en inglés (Games / Learn)", "Games" in texto0 and "Learn" in texto0 and "Football history, facts and" in texto0)
-        pi.click("#portalJuegos"); pi.wait_for_timeout(300); pi.evaluate("document.querySelector('[data-vs=letras]').click()"); pi.wait_for_timeout(700)
+        pi.click("#portalJuegos"); pi.wait_for_timeout(300); pi.evaluate("document.querySelector('[data-vs=letras]').click()"); pi.wait_for_timeout(1000)
         texto = pi.inner_text("body")
         check("la portada está en inglés", "Football history, facts and" in texto0 and "Word games" in texto and "Choose a mode" in texto.replace("CHOOSE A MODE", "Choose a mode"))
         check("el menú de modos está traducido", "Goalkeepers" in texto and "Porteros" not in texto)
@@ -524,12 +524,12 @@ with sync_playwright() as p:
         check("invitado: no se pide nickname al entrar", not pgi.is_visible("#modalCuenta"))
         pgi.wait_for_timeout(500)
         check("invitado: en la portada no se muestra el aviso gris (solo en la vista de juegos)", not pgi.is_visible("#chipInvitado"))
-        if pgi.is_visible("#portalJuegos"): pgi.click("#portalJuegos"); pgi.wait_for_timeout(300); pgi.evaluate("document.querySelector('[data-vs=letras]').click()"); pgi.wait_for_timeout(700)
+        if pgi.is_visible("#portalJuegos"): pgi.click("#portalJuegos"); pgi.wait_for_timeout(300); pgi.evaluate("document.querySelector('[data-vs=letras]').click()"); pgi.wait_for_timeout(1000)
         check("invitado: aviso gris «Estás jugando como invitado» arriba", pgi.is_visible("#chipInvitado"))
         pgi.click("#chipInvitado"); pgi.wait_for_timeout(300)
         check("invitado: el aviso lleva a Ajustes", pgi.is_visible("#ajusteCodigo") is False and pgi.locator(".ajustes").count() == 1)
         pgi.keyboard.press("Escape"); pgi.wait_for_timeout(200)
-        if pgi.is_visible("#portalJuegos"): pgi.click("#portalJuegos"); pgi.wait_for_timeout(300); pgi.evaluate("document.querySelector('[data-vs=letras]').click()"); pgi.wait_for_timeout(700)
+        if pgi.is_visible("#portalJuegos"): pgi.click("#portalJuegos"); pgi.wait_for_timeout(300); pgi.evaluate("document.querySelector('[data-vs=letras]').click()"); pgi.wait_for_timeout(1000)
         pgi.click("[data-stats]"); pgi.wait_for_timeout(400)
         check("invitado: el ranking ofrece elegir nickname", pgi.is_visible("#botonNick"))
         pgi.click("#botonNick"); pgi.wait_for_timeout(300)
@@ -634,8 +634,8 @@ with sync_playwright() as p:
         check("portada: portal visible, juegos ocultos", ph.is_visible('#portal') and not ph.is_visible('[data-modo="diario"]'))
         check("portada: Saber con enlaces reales", ph.evaluate("document.querySelectorAll('.portal__chips a[href]').length >= 4") and ph.get_attribute('.portal__enlace', 'href') == 'curiosidades/')
         ph.click('#portalJuegos'); ph.wait_for_timeout(300)
-        check("pantalla dividida: aparece al entrar en Juegos con Letras y Videojuegos y el rayo", ph.is_visible('#vistaSplit') and ph.is_visible('[data-vs=letras]') and ph.is_visible('[data-vs=dinamicos]') and ph.evaluate("document.querySelectorAll('#vistaSplit .vs__rayo polyline').length >= 3"))
-        ph.evaluate("document.querySelector('[data-vs=dinamicos]').click()"); ph.wait_for_timeout(800)
+        check("pantalla dividida: aparece al entrar en Juegos con Letras, Videojuegos y Mapas y los rayos", ph.is_visible('#vistaSplit') and ph.is_visible('[data-vs=letras]') and ph.is_visible('[data-vs=dinamicos]') and ph.is_visible('[data-vs=mapas]') and ph.evaluate("document.querySelectorAll('#vistaSplit .vs__rayo polyline').length >= 3"))
+        ph.evaluate("document.querySelector('[data-vs=dinamicos]').click()"); ph.wait_for_timeout(1400)
         check("pantalla dividida: elegir Videojuegos abre los dinámicos y la oculta", ph.is_hidden('#vistaSplit') and ph.is_visible('#grupoDinamicos') and not ph.is_visible('#grupoLetras'))
         ph.evaluate("document.querySelector('[data-grupo-btn=letras]').click()"); ph.wait_for_timeout(300)
         check("portada: Juegos muestra los modos y #juegos", ph.is_visible('[data-modo="diario"]') and not ph.is_visible('#portal') and ph.url.endswith('#juegos'))
@@ -1736,6 +1736,98 @@ with sync_playwright() as p:
         cdm.close()
     except Exception as e:
         check("mapas (Clava el sitio)", False, str(e)[:250])
+
+    print("3bd) Pantalla dividida «Y» de 3 cuñas (Letras, Videojuegos, Mapas)")
+    try:
+        _INIT_S = "localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1')"
+        def _espera_oculta(pg, ms=3000):
+            for _ in range(ms // 100):
+                if pg.evaluate("document.getElementById('vistaSplit').hidden"): return True
+                pg.wait_for_timeout(100)
+            return False
+        def _abre_split(pg):
+            pg.evaluate("document.querySelector('#portalJuegos').click()"); pg.wait_for_timeout(900)
+        _VISTA = {"letras": "#grupoLetras", "dinamicos": "#grupoDinamicos", "mapas": "#grupoMapas"}
+        # escritorio
+        csd = br.new_context(viewport={"width": 1280, "height": 720}, service_workers="block"); psd = csd.new_page(); errs_sd = []
+        psd.on("pageerror", lambda e: errs_sd.append(str(e)))
+        psd.add_init_script(_INIT_S)
+        psd.goto(BASE, wait_until="networkidle", timeout=60000); psd.wait_for_timeout(400)
+        _abre_split(psd)
+        inf = psd.evaluate("TIKI_SPLIT.info()")
+        check("split (escritorio): disposición horizontal con las tres cuñas", inf["o"] == "h" and sorted(inf["nombres"]) == ["dinamicos", "letras", "mapas"] and inf["abierto"], str(inf["nombres"]))
+        check("split (escritorio): cada cuña ocupa entre el 20 % y el 50 % de la pantalla y suman todo", all(0.2 <= a <= 0.5 for a in inf["areas"]) and 0.97 <= sum(inf["areas"]) <= 1.03, str(inf["areas"]))
+        check("split (escritorio): tres rayos con sus capas y el botón «Mapas» visible", psd.evaluate("document.querySelectorAll('#vistaSplit .vs__rayo g').length === 3 && document.querySelectorAll('#vistaSplit .vs__rayo polyline').length === 9") and psd.is_visible("[data-vs=mapas]"))
+        check("split (escritorio): los textos están dentro de la pantalla y lejos del centro", all(30 < v["x"] < inf["W"] - 30 and 30 < v["y"] < inf["H"] - 30 and ((v["x"] - inf["centro"]["x"]) ** 2 + (v["y"] - inf["centro"]["y"]) ** 2) ** 0.5 > 110 for v in inf["anclas"].values()), str(inf["anclas"]))
+        # el texto y las pestañas internas salen en español
+        check("split (escritorio): textos de las tres cuñas", psd.evaluate("[...document.querySelectorAll('#vistaSplit .vs__in b')].map(e => e.textContent).join('|')") == "Juegos de letras|Videojuegos|Juegos de mapas")
+        # al apuntar una cuña con el ratón crece
+        for _n in ("mapas", "letras", "dinamicos"):
+            base = inf["areas"][inf["nombres"].index(_n)]
+            an = inf["anclas"][_n]; psd.mouse.move(an["x"], an["y"]); psd.wait_for_timeout(900)
+            a1 = psd.evaluate("TIKI_SPLIT.info()"); i1 = a1["nombres"].index(_n)
+            check("split (escritorio): al apuntar «%s» esa cuña crece" % _n, a1["areas"][i1] > base + 0.03, "%.3f → %.3f" % (base, a1["areas"][i1]))
+            psd.mouse.move(640, 1); psd.mouse.move(640, 2); psd.wait_for_timeout(300)
+        # clic real en el texto de cada cuña abre su pestaña
+        csd.close()
+        for _n in ("letras", "dinamicos", "mapas"):
+            c1 = br.new_context(viewport={"width": 1280, "height": 720}, service_workers="block"); p1 = c1.new_page()
+            p1.add_init_script(_INIT_S); p1.goto(BASE, wait_until="networkidle", timeout=60000); p1.wait_for_timeout(300)
+            _abre_split(p1); an = p1.evaluate("TIKI_SPLIT.info().anclas")[_n]
+            p1.mouse.click(an["x"], an["y"])
+            ok_h = _espera_oculta(p1); p1.wait_for_timeout(300)
+            check("split: clic real sobre «%s» abre su pestaña y oculta la pantalla" % _n, ok_h and p1.is_visible(_VISTA[_n]) and p1.locator("[data-grupo-btn=%s][aria-selected=true]" % _n).count() == 1)
+            c1.close()
+        # teclado: 3 abre Mapas; Esc vuelve a la portada
+        c2 = br.new_context(viewport={"width": 1280, "height": 720}, service_workers="block"); p2 = c2.new_page()
+        p2.add_init_script(_INIT_S); p2.goto(BASE, wait_until="networkidle", timeout=60000); p2.wait_for_timeout(300)
+        _abre_split(p2); p2.keyboard.press("Escape"); p2.wait_for_timeout(500)
+        check("split: Esc cierra la pantalla y vuelve a la portada", p2.evaluate("document.getElementById('vistaSplit').hidden") and p2.is_visible("#portal"))
+        _abre_split(p2); p2.keyboard.press("3"); ok_t = _espera_oculta(p2)
+        check("split: la tecla 3 elige Mapas", ok_t and p2.locator("[data-grupo-btn=mapas][aria-selected=true]").count() == 1)
+        c2.close()
+        # móvil (vertical)
+        c3 = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block", has_touch=True, is_mobile=True); p3 = c3.new_page(); errs_sm = []
+        p3.on("pageerror", lambda e: errs_sm.append(str(e)))
+        p3.add_init_script(_INIT_S); p3.goto(BASE, wait_until="networkidle", timeout=60000); p3.wait_for_timeout(300)
+        _abre_split(p3); im = p3.evaluate("TIKI_SPLIT.info()")
+        check("split (móvil): disposición vertical con Letras arriba y las otras dos abajo", im["o"] == "v" and im["anclas"]["letras"]["y"] < im["anclas"]["dinamicos"]["y"] - 150 and im["anclas"]["letras"]["y"] < im["anclas"]["mapas"]["y"] - 150 and im["anclas"]["dinamicos"]["x"] < im["anclas"]["mapas"]["x"], str(im["anclas"]))
+        check("split (móvil): reparto de áreas y textos dentro", all(0.2 <= a <= 0.55 for a in im["areas"]) and 0.97 <= sum(im["areas"]) <= 1.03 and all(30 < v["x"] < 360 and 30 < v["y"] < 814 for v in im["anclas"].values()), str(im["areas"]))
+        check("split (móvil): sin desbordamiento horizontal", p3.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1"))
+        an = im["anclas"]["mapas"]; p3.touchscreen.tap(an["x"], an["y"]); ok_m = _espera_oculta(p3)
+        check("split (móvil): tocar «Mapas» abre su pestaña", ok_m and p3.is_visible("#grupoMapas"))
+        # girar el móvil con la pantalla abierta
+        p3.goto(BASE, wait_until="networkidle", timeout=60000); p3.wait_for_timeout(300)
+        _abre_split(p3); p3.set_viewport_size({"width": 844, "height": 390}); p3.wait_for_timeout(600)
+        ig = p3.evaluate("TIKI_SPLIT.info()")
+        check("split: al girar el dispositivo pasa a horizontal y sigue repartido", ig["o"] == "h" and 0.97 <= sum(ig["areas"]) <= 1.03, str(ig["areas"]))
+        check("split: sin errores de JavaScript", not errs_sd and not errs_sm, "; ".join(errs_sd + errs_sm)[:150])
+        c3.close()
+        # movimiento reducido
+        c4 = br.new_context(viewport={"width": 1280, "height": 720}, service_workers="block", reduced_motion="reduce"); p4 = c4.new_page(); errs_r = []
+        p4.on("pageerror", lambda e: errs_r.append(str(e)))
+        p4.add_init_script(_INIT_S); p4.goto(BASE, wait_until="networkidle", timeout=60000); p4.wait_for_timeout(300)
+        _abre_split(p4); ir = p4.evaluate("TIKI_SPLIT.info()")
+        check("split (movimiento reducido): se reparte en seguida y sin animaciones", ir["reducido"] and 0.97 <= sum(ir["areas"]) <= 1.03 and p4.evaluate("getComputedStyle(document.querySelector('.vs__anillo')).animationName") == "none", str(ir["areas"]))
+        p4.evaluate("document.querySelector('[data-vs=letras]').click()"); p4.wait_for_timeout(500)
+        check("split (movimiento reducido): elegir cierra al momento", p4.evaluate("document.getElementById('vistaSplit').hidden") and p4.is_visible("#grupoLetras") and not errs_r)
+        c4.close()
+        # sin el script: respaldo estático
+        c5 = br.new_context(viewport={"width": 1280, "height": 720}, service_workers="block"); c5.route("**/split.js", lambda r: r.abort()); p5 = c5.new_page()
+        p5.add_init_script(_INIT_S); p5.goto(BASE, wait_until="domcontentloaded", timeout=60000); p5.wait_for_timeout(1200)
+        p5.evaluate("document.querySelector('#portalJuegos').click()"); p5.wait_for_timeout(500)
+        check("split (sin script): se ve la pantalla con las tres opciones", p5.is_visible("#vistaSplit") and p5.is_visible("[data-vs=mapas]") and p5.evaluate("getComputedStyle(document.querySelector('[data-vs=mapas]')).clipPath.indexOf('polygon') === 0"))
+        p5.evaluate("document.querySelector('[data-vs=mapas]').click()"); ok_f = _espera_oculta(p5)
+        check("split (sin script): elegir sigue funcionando", ok_f and p5.is_visible("#grupoMapas"))
+        c5.close()
+        # estático
+        _rz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        _ix = open(os.path.join(_rz, "index.html"), encoding="utf-8").read()
+        _sj = open(os.path.join(_rz, "split.js"), encoding="utf-8").read()
+        check("split: index.html enlaza split.js y no quedan animaciones SMIL del rayo antiguo", '<script src="split.js" defer></script>' in _ix and "vsRespL" not in _ix and "<animate " not in _ix[_ix.index('id="vistaSplit"'):_ix.index('id="vistaSplit"') + 6000])
+        check("split: sin manejadores en línea ni recursos externos en split.js", not re.search(r"\bon[a-z]+\s*=", _sj.replace("onload", "")) and "http" not in _sj)
+    except Exception as e:
+        check("pantalla dividida «Y» (3bd)", False, str(e)[:250])
 
     print("3au) Portada compacta y panel de tutorial y ayuda")
     try:
