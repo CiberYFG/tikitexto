@@ -142,12 +142,16 @@ export function crearMapa(cont, op) {
   /* ───── vista ───── */
   const anchoMundo = () => 256 * Math.pow(2, z);
   function zMin() { return Math.max(0.2, Math.log2(Math.max(w, 1) / 256)); }
+  /* holgura: zonas de la pantalla tapadas por paneles (en píxeles). El mapa puede desplazarse esos píxeles más allá de sus bordes,
+     así los puntos que hay que encuadrar nunca quedan debajo de un panel aunque estén muy separados. */
+  let holg = { t: 0, r: 0, b: 0, l: 0 };
+  const entre = (v, lo, hi) => (lo <= hi ? Math.max(lo, Math.min(hi, v)) : (lo + hi) / 2);
   function acota() {
     z = Math.max(zMin(), Math.min(ZMAX, z));
     const W = anchoMundo();
     const mx = w / 2 / W, my = h / 2 / W;
-    cx = W >= w ? Math.max(mx, Math.min(1 - mx, cx)) : 0.5;
-    cy = W >= h ? Math.max(my, Math.min(1 - my, cy)) : 0.5;
+    cx = entre(cx, mx - holg.l / W, 1 - mx + holg.r / W);
+    cy = entre(cy, my - holg.t / W, 1 - my + holg.b / W);
   }
   const aPantalla = (x, y) => { const W = anchoMundo(); return { x: w / 2 + (x - cx) * W, y: h / 2 + (y - cy) * W }; };
   const dePantalla = (sx, sy) => { const W = anchoMundo(); return { x: cx + (sx - w / 2) / W, y: cy + (sy - h / 2) / W }; };
@@ -188,16 +192,22 @@ export function crearMapa(cont, op) {
     pedir();
   }
   function encuadra(puntos, relleno, ms, zTope) {
-    relleno = relleno == null ? 60 : relleno;
+    /* relleno: número (todos los lados) o {t, r, b, l} para dejar libres zonas tapadas por paneles */
+    const R = typeof relleno === "object" && relleno ? { t: relleno.t || 0, r: relleno.r || 0, b: relleno.b || 0, l: relleno.l || 0 } : { t: relleno == null ? 60 : relleno, r: relleno == null ? 60 : relleno, b: relleno == null ? 60 : relleno, l: relleno == null ? 60 : relleno };
     if (!puntos.length) return;
     const ps = puntos.map((p) => proyecta(p.lon, p.lat));
     let x0 = 2, x1 = -1, y0 = 2, y1 = -1;
     ps.forEach((p) => { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); });
     const dx = Math.max(x1 - x0, 1e-9), dy = Math.max(y1 - y0, 1e-9);
-    const aw = Math.max(40, w - 2 * relleno), ah = Math.max(40, h - 2 * relleno);
+    const aw = Math.max(40, w - R.l - R.r), ah = Math.max(40, h - R.t - R.b);
     let zz = Math.log2(Math.min(aw / dx, ah / dy) / 256);
     zz = Math.min(zz, zTope == null ? 7.5 : zTope);
-    const c = invierte((x0 + x1) / 2, (y0 + y1) / 2);
+    zz = Math.max(zMin(), Math.min(ZMAX, zz));
+    const W2 = 256 * Math.pow(2, zz);
+    // el centro de la caja debe quedar en el centro del área libre (no en el de la pantalla)
+    const ox = (w / 2 - (R.l + aw / 2)) / W2, oy = (h / 2 - (R.t + ah / 2)) / W2;
+    const c = invierte((x0 + x1) / 2 + ox, (y0 + y1) / 2 + oy);
+    holg = { t: R.t, r: R.r, b: R.b, l: R.l };
     volarA(c.lon, c.lat, zz, ms == null ? 900 : ms);
   }
   function pasoVuelo(ahora) {
@@ -438,6 +448,13 @@ export function crearMapa(cont, op) {
     if (!mundo) return;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     limpiaRejilla();
+    // los marcadores (chincheta o balón y su rótulo) reservan su sitio: así ninguna ciudad se pinta debajo de ellos
+    marcadores.forEach((m) => {
+      if (m.tipo === "zona") return;
+      const q0 = proyecta(m.lon, m.lat), p0 = aPantalla(q0.x, q0.y);
+      ocupa(p0.x - 16, p0.y - 46, p0.x + 16, p0.y + 14);
+      if (m.etiqueta) { const a0 = medida(m.etiqueta, 12, 700, false, 0) / 2 + 4; ocupa(p0.x - a0, p0.y + 4, p0.x + a0, p0.y + 30); }
+    });
     const W = anchoMundo(), idx = IDIOMAS.indexOf(idioma);
     // mares
     if (etiq.mares) MARES.forEach((m) => {
@@ -551,7 +568,7 @@ export function crearMapa(cont, op) {
         if (r > 6) { ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, 6.2832); ctx.fillStyle = m.color + "22"; ctx.fill(); ctx.setLineDash([5, 5]); ctx.lineWidth = 1.5; ctx.strokeStyle = m.color; ctx.stroke(); ctx.setLineDash([]); }
       }
     });
-    ps.forEach((p) => { if (p.m.tipo === "pin") pin(p.x, p.y, p.m.color, p.t, p.m.etiqueta); else balon(p.x, p.y, p.m.color, p.t, p.m.etiqueta); });
+    ps.forEach((p) => { if (p.m.tipo === "pin") pin(p.x, p.y, p.m.color, p.t, p.m.etiqueta); else if (p.m.tipo === "balon") balon(p.x, p.y, p.m.color, p.t, p.m.etiqueta); /* "zona": solo el círculo */ });
     if (ps.some((p) => p.t < 1 || p.m.tipo === "balon")) pedir();
   }
   function dibujaEscala() {
@@ -632,10 +649,13 @@ export function crearMapa(cont, op) {
     volarA: volarA,
     encuadra: encuadra,
     zoomMas: (d) => { const v = vista(); volarA(v.lon, v.lat, z + (d == null ? 1 : d), 260); },
-    ponMarcadores: (lista) => { const ahora = hoyLuz(); marcadores = lista.map((m) => Object.assign({ t0: ahora, tipo: "pin", color: "#e0321f" }, m)); pedir(); },
+    ponMarcadores: (lista) => { const ahora = hoyLuz(); marcadores = lista.map((m) => Object.assign({ t0: ahora, tipo: "pin", color: "#e0321f" }, m)); invalida(); },
     marcadores: () => marcadores.slice(),
+    nombreCiudad: (i) => (nombresC && nombresC[i]) || (ciudades && ciudades[i] && ciudades[i].asc) || "",
+    nombrePais: (iso) => { const p = paisesD && paisesD.find((q) => q.iso === iso); return p ? p.nom : ""; },
     setTema: (t) => { tema = t === "claro" ? "claro" : "oscuro"; P = TEMAS[tema]; cv.style.background = P.mar; invalida(); },
     setEtiquetas: (o) => { etiq = Object.assign(etiq, o); invalida(); },
+    setHolgura: (o) => { holg = Object.assign({ t: 0, r: 0, b: 0, l: 0 }, o || {}); acota(); invalida(); },
     setInteractivo: (v) => { interactivo = !!v; },
     redibuja: pedir,
     forzarDibujo: () => { if (raf) { cancelAnimationFrame(raf); raf = 0; } baseInvalida = true; sucio = true; bucle(); },

@@ -42,7 +42,7 @@ const num = (v) => (typeof v === "number" && isFinite(v) ? v : 0);
 const JUEGOS_PROBADOS = [
   (P, NV) => num(P.jugadas), (P, NV) => num((NV.sl || {}).part), (P, NV) => num((NV.to || {}).part), (P, NV) => num((NV.pp || {}).part), (P, NV) => num((NV.pe || {}).part),
   (P, NV) => num((NV.cu || {}).part), (P, NV) => num((NV.sp || {}).part), (P, NV) => num((NV.pb || {}).part), (P, NV) => num((NV.tl || {}).tandas), (P, NV) => num((NV.p || {}).tandas),
-  (P, NV) => num((NV.c || {}).gan) + num((NV.c || {}).per) + num((NV.c || {}).emp), (P, NV) => num((NV.dd || {}).part), (P, NV) => num((NV.tv || {}).part), (P, NV) => num((NV.lt || {}).part), (P, NV) => num((NV.so || {}).part), (P, NV) => num((NV.mp || {}).part), (P, NV) => num(NV.a), (P, NV) => num(NV.t), (P, NV) => num(NV.f),
+  (P, NV) => num((NV.c || {}).gan) + num((NV.c || {}).per) + num((NV.c || {}).emp), (P, NV) => num((NV.dd || {}).part), (P, NV) => num((NV.tv || {}).part), (P, NV) => num((NV.lt || {}).part), (P, NV) => num((NV.so || {}).part), (P, NV) => num((NV.mp || {}).part), (P, NV) => num((NV.ma || {}).part), (P, NV) => num(NV.a), (P, NV) => num(NV.t), (P, NV) => num(NV.f),
 ];
 export const LOGROS = [
   { id: "tiki", g: "gen", ico: "⚡", tiers: [10, 50, 250], get: (P) => num(P.pts),
@@ -91,6 +91,12 @@ export const LOGROS = [
   { id: "duelo", g: "letras", ico: "⚔️", tiers: [8, 20, 40], get: (P, NV) => num((NV.dd || {}).aciertos),
     t: ["Dato sobre dato", "Stat showdown", "Dado contra dado", "Duel de chiffres", "Sfida di numeri", "Zahlenduell"],
     d: ["Acierta {n} duelos de datos en una partida", "Win {n} data duels in one game", "Acerte {n} duelos de dados numa partida", "Gagne {n} duels de données en une partie", "Vinci {n} duelli di dati in una partita", "Gewinne {n} Datenduelle in einer Partie"] },
+  { id: "mapasj", g: "letras", ico: "🗺️", tiers: [3, 15, 60], get: (P, NV) => num((NV.ma || {}).part),
+    t: ["Cartógrafo del fútbol", "Football cartographer", "Cartógrafo do futebol", "Cartographe du football", "Cartografo del calcio", "Fußball-Kartograf"],
+    d: ["Completa {n} partidas de Clava el sitio", "Complete {n} games of Pin the spot", "Complete {n} partidas de Crava o local", "Termine {n} parties de Plante le lieu", "Completa {n} partite di Pianta il luogo", "Beende {n} Partien von Setz den Ort"] },
+  { id: "mapasp", g: "letras", ico: "📍", tiers: [5, 25, 100], get: (P, NV) => num((NV.ma || {}).perf),
+    t: ["Chincheta de oro", "Golden pin", "Alfinete de ouro", "Punaise en or", "Puntina d'oro", "Goldene Nadel"],
+    d: ["Clava {n} sitios casi al milímetro (950+ puntos)", "Nail {n} spots almost exactly (950+ points)", "Crave {n} locais quase na mosca (950+ pontos)", "Plante {n} lieux presque au mètre près (950+ points)", "Centra {n} luoghi quasi al millimetro (950+ punti)", "Triff {n} Orte fast auf den Punkt (950+ Punkte)"] },
   { id: "trivia", g: "letras", ico: "🎓", tiers: [30, 150, 600], get: (P, NV) => num((NV.tv || {}).ac),
     t: ["Sabelotodo", "Know-it-all", "Sabe-tudo", "Monsieur Je-sais-tout", "Sapientone", "Besserwisser"],
     d: ["Acierta {n} preguntas de Trivia", "Answer {n} Trivia questions correctly", "Acerte {n} perguntas do Trivia", "Réponds juste à {n} questions de Trivia", "Rispondi correttamente a {n} domande di Trivia", "Beantworte {n} Trivia-Fragen richtig"] },

@@ -1628,6 +1628,115 @@ with sync_playwright() as p:
     except Exception as e:
         check("cruces y racha", False, str(e)[:200])
 
+    print("3bc) Clava el sitio (juego de mapas)")
+    try:
+        def _espera_mapas(pg, t=45000):
+            for _i in range(int(t / 300)):
+                if pg.evaluate("!!(window.TIKI && TIKI.mapas && TIKI.mapas.juego() && TIKI.mapas.juego().S.listo)"): return True
+                pg.wait_for_timeout(300)
+            raise Exception("el mapa no terminó de cargar")
+        _init_mc = "localStorage.setItem('tikitexto:idioma','%s');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');sessionStorage.setItem('tikitexto:grupo','letras')"
+        cmc = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
+        pmc = cmc.new_page(); errs_mc = []
+        pmc.on("pageerror", lambda e: errs_mc.append(str(e)))
+        pmc.on("console", lambda m: errs_mc.append(m.text) if m.type == "error" and re.search(r"Content Security Policy|Refused|mapas", m.text, re.I) else None)
+        pmc.add_init_script(_init_mc % "es")
+        pmc.goto(BASE, wait_until="networkidle", timeout=60000); pmc.wait_for_timeout(400)
+        check("mapas: hay 3 pestañas y la de «Mapas» es visible", pmc.locator(".vj-sel [data-grupo-btn]").count() == 3 and pmc.locator("#tabMapas").is_visible())
+        check("mapas: las 3 pestañas caben en el ancho (sin scroll horizontal)", pmc.evaluate("(()=>{const e=document.querySelector('.vj-sel'); return e.scrollWidth<=e.clientWidth+1;})()"))
+        pmc.evaluate("document.querySelector('[data-grupo-btn=mapas]').click()"); pmc.wait_for_timeout(300)
+        check("mapas: la pestaña muestra su panel con la tarjeta del juego", pmc.locator("#grupoMapas").is_visible() and pmc.locator("#grupoMapas [data-mapas]").count() == 1 and not pmc.locator("#grupoLetras").is_visible())
+        pmc.evaluate("document.querySelector('[data-mapas]').click()")
+        _espera_mapas(pmc)
+        check("mapas: se abre, carga el mapa y muestra el menú", pmc.locator(".mp-raiz").count() == 1 and pmc.locator("[data-menu]:not([hidden])").count() == 1 and pmc.locator("[data-mapa] canvas").count() >= 1)
+        check("mapas: el mapa tiene tamaño y el módulo no se traduce solo", pmc.evaluate("(()=>{const c=document.querySelector('[data-mapa] canvas'); return c.clientWidth>200 && c.clientHeight>200 && document.querySelector('.mp-raiz').hasAttribute('data-no-t');})()"))
+        # --- datos y lógica ---
+        r = pmc.evaluate("""(()=>{ const j=TIKI.mapas.juego(); const it=j.ITEMS; const ids=new Set(it.map(i=>i.id)); const tp={}; it.forEach(i=>{tp[i.tipo]=(tp[i.tipo]||0)+1;});
+          const ok=it.every(i=>i.lat>=-90&&i.lat<=90&&i.lon>=-180&&i.lon<=180&&(i.nom||i.ex)&&i.sub!==undefined);
+          const A=j.eligeDiario(j.mulberry(20261127)), B=j.eligeDiario(j.mulberry(20261127)), C=j.eligeDiario(j.mulberry(20261128));
+          let desdeTodos=true; for(let s=1;s<=300;s++){ const d=j.eligeDiario(j.mulberry(s)); if(new Set(d.map(x=>x.tipo)).size!==5||d.length!==5||new Set(d.map(x=>x.id)).size!==5) desdeTodos=false; for(let k=1;k<5;k++) if(d[k].dif<d[k-1].dif) desdeTodos=false; }
+          return {n:it.length, ids:ids.size, tp, ok, det:A.map(x=>x.id).join()===B.map(x=>x.id).join(), otro:A.map(x=>x.id).join()!==C.map(x=>x.id).join(), desdeTodos}; })()""")
+        check("mapas: ≥200 lugares con id único, coordenadas válidas y las 5 categorías", r["n"] >= 200 and r["ids"] == r["n"] and r["ok"] and all(r["tp"].get(t, 0) >= 10 for t in ("est", "nac", "club", "sed", "cur")), str(r))
+        check("mapas: el reto diario es determinista por fecha y cambia de un día a otro", r["det"] and r["otro"], str(r))
+        check("mapas: 300 retos diarios con 5 lugares distintos, uno de cada tipo y de menos a más difícil", r["desdeTodos"])
+        pt = pmc.evaluate("""(()=>{ const j=TIKI.mapas.juego(); return { a:j.base(0,'est'), b:j.base(2.5,'est'), c:j.base(2.5+450,'est'), d:j.base(30,'est'), e:j.base(7,'nac'), f:j.base(20000,'sed'),
+          p:j.puntos(0,'est',true,false), x:j.puntos(0,'est',false,true), px:j.puntos(0,'est',true,true), mono: [0,5,20,60,150,400,1000,3000].map(d=>j.base(d,'club')) }; })()""")
+        check("mapas: 1.000 puntos dentro del margen y caída exponencial fuera (e⁻¹ a 450 km)", pt["a"] == 1000 and pt["b"] == 1000 and abs(pt["c"] - 1000 / 2.718281828) < 0.5 and pt["d"] < 1000 and pt["e"] == 1000 and pt["f"] < 1, str(pt))
+        check("mapas: la puntuación baja siempre al alejarse", all(pt["mono"][i] >= pt["mono"][i + 1] for i in range(len(pt["mono"]) - 1)), str(pt["mono"]))
+        check("mapas: la pista resta un 40 % y el modo experto multiplica por 1,5", pt["p"] == 600 and pt["x"] == 1500 and pt["px"] == 900, str(pt))
+        # --- partida del reto diario ---
+        pmc.evaluate("document.querySelector('[data-mp=diario]').click()"); pmc.wait_for_timeout(400)
+        check("mapas: el reto diario arranca con 5 rondas y pregunta visible", pmc.evaluate("TIKI.mapas.juego().S.rondas.length") == 5 and pmc.evaluate("TIKI.mapas.juego().S.fase") == "juego" and len(pmc.inner_text("[data-q]").strip()) > 5)
+        check("mapas: antes de colocar la chincheta el botón «Clavar» está desactivado", pmc.evaluate("document.querySelector('[data-mp=clavar]').disabled") is True)
+        pmc.evaluate("(()=>{const j=TIKI.mapas.juego(); const it=j.S.rondas[0]; j.colocar(it.lon+0.5, it.lat+0.5);})()"); pmc.wait_for_timeout(200)
+        check("mapas: al colocar la chincheta se activa «Clavar»", pmc.evaluate("document.querySelector('[data-mp=clavar]').disabled") is False)
+        pmc.evaluate("document.querySelector('[data-mp=clavar]').click()"); pmc.wait_for_timeout(500)
+        q = pmc.evaluate("(()=>{const j=TIKI.mapas.juego(); const r=j.S.res[0]; return {fase:j.S.fase, n:j.S.res.length, d:r.d, pts:r.pts, vis:!document.querySelector('[data-res]').hidden};})()")
+        check("mapas: clavar muestra el resultado de la ronda con km y puntos", q["fase"] == "reveal" and q["n"] == 1 and q["vis"] and q["d"] < 100 and q["pts"] > 0, str(q))
+        pmc.evaluate("TIKI.mapas.juego().siguiente()"); pmc.wait_for_timeout(300)
+        # ronda 2: con pista y chincheta exacta -> 600
+        pmc.evaluate("TIKI.mapas.juego().pista()"); pmc.wait_for_timeout(200)
+        check("mapas: la pista se usa una sola vez por ronda (botón desactivado)", pmc.evaluate("document.querySelector('[data-ro=pista]').disabled") is True and pmc.evaluate("TIKI.mapas.juego().S.pista") is True)
+        pmc.evaluate("(()=>{const j=TIKI.mapas.juego(); const it=j.S.rondas[1]; j.colocar(it.lon, it.lat); j.clavar();})()"); pmc.wait_for_timeout(300)
+        check("mapas: con pista y chincheta exacta la ronda da 600 puntos", pmc.evaluate("TIKI.mapas.juego().S.res[1].pts") == 600, str(pmc.evaluate("TIKI.mapas.juego().S.res[1]")) [:120])
+        pmc.evaluate("TIKI.mapas.juego().siguiente()"); pmc.wait_for_timeout(300)
+        # ronda 3: en el otro lado del mundo -> casi 0
+        pmc.evaluate("(()=>{const j=TIKI.mapas.juego(); const it=j.S.rondas[2]; j.colocar(((it.lon+180+540)%360)-180, -it.lat); j.clavar();})()"); pmc.wait_for_timeout(300)
+        lejos = pmc.evaluate("TIKI.mapas.juego().S.res[2]")
+        check("mapas: una chincheta en las antípodas apenas puntúa", lejos["d"] > 10000 and lejos["pts"] <= 2, str(lejos)[:160])
+        pmc.evaluate("TIKI.mapas.juego().siguiente()"); pmc.wait_for_timeout(300)
+        for _k in (3, 4):
+            pmc.evaluate("(()=>{const j=TIKI.mapas.juego(); const it=j.S.rondas[%d]; j.colocar(it.lon, it.lat); j.clavar();})()" % _k); pmc.wait_for_timeout(250)
+            pmc.evaluate("TIKI.mapas.juego().siguiente()"); pmc.wait_for_timeout(300)
+        pmc.wait_for_timeout(1500)
+        fin = pmc.evaluate("(()=>{const j=TIKI.mapas.juego(); return {fase:j.S.fase, total:j.S.total, suma:j.S.res.reduce((a,x)=>a+x.pts,0), n:j.S.res.length, filas:document.querySelectorAll('[data-f-lista] li').length, vis:!document.querySelector('[data-fin]').hidden, tot:document.querySelector('[data-f-tot]').textContent.replace(/\\D/g,''), tiki:!document.querySelector('[data-f-tiki]').hidden, comp:!document.querySelector('[data-f-comp-b]').hidden};})()")
+        check("mapas: tras 5 rondas sale el resultado con la suma correcta y 5 filas", fin["vis"] and fin["n"] == 5 and fin["filas"] == 5 and fin["total"] == fin["suma"] and fin["tot"] == str(fin["total"]), str(fin))
+        check("mapas: el reto diario con media ≥500 da +1 tikitexto y se puede compartir", fin["tiki"] and fin["comp"], str(fin))
+        check("mapas: el reto cuenta para la racha diaria (clave ma)", "ma" in pmc.evaluate("TIKI.racha.actual().retos.join(',')").split(","))
+        pmc.evaluate("document.querySelector('[data-mp=menu]').click()"); pmc.wait_for_timeout(300)
+        pmc.evaluate("TIKI.mapas.juego().diario()"); pmc.wait_for_timeout(600)
+        again = pmc.evaluate("(()=>{const j=TIKI.mapas.juego(); return {vis:!document.querySelector('[data-fin]').hidden, tiki:!document.querySelector('[data-f-tiki]').hidden, n:j.S.res.length, total:j.S.total};})()")
+        check("mapas: repetir el reto de hoy enseña el resultado guardado sin dar otro tikitexto", again["vis"] and not again["tiki"] and again["n"] == 5 and again["total"] == fin["total"], str(again))
+        # --- partida libre ---
+        pmc.evaluate("document.querySelector('[data-mp=menu]').click()"); pmc.wait_for_timeout(300)
+        pmc.evaluate("(()=>{const j=TIKI.mapas.juego(); j.S.cat='est'; j.empezar('libre');})()"); pmc.wait_for_timeout(300)
+        lib = pmc.evaluate("(()=>{const j=TIKI.mapas.juego(); return {modo:j.S.modo, tipos:[...new Set(j.S.rondas.map(r=>r.tipo))].join(), n:j.S.rondas.length, comp:!document.querySelector('[data-f-comp-b]').hidden||document.querySelector('[data-fin]').hidden};})()")
+        check("mapas: la partida libre respeta la categoría elegida (estadios)", lib["modo"] == "libre" and lib["tipos"] == "est" and lib["n"] == 5, str(lib))
+        pmc.evaluate("(()=>{const j=TIKI.mapas.juego(); j.S.experto=true; j.S.cat='todo'; j.empezar('libre');})()"); pmc.wait_for_timeout(300)
+        ex = pmc.evaluate("(()=>{const j=TIKI.mapas.juego(); const it=j.S.rondas[0]; j.colocar(it.lon,it.lat); j.clavar(); return {act:j.S.expertoAct, pts:j.S.res[0].pts};})()")
+        check("mapas: el modo experto (partida libre) multiplica por 1,5", ex["act"] is True and ex["pts"] == 1500, str(ex))
+        pmc.keyboard.press("Escape"); pmc.wait_for_timeout(300)
+        check("mapas: Esc vuelve al menú y otra vez cierra el juego", pmc.locator("[data-menu]:not([hidden])").count() == 1)
+        pmc.keyboard.press("Escape"); pmc.wait_for_timeout(400)
+        check("mapas: cerrar quita la pantalla y vuelve la portada", pmc.locator(".mp-raiz").count() == 0 and pmc.evaluate("TIKI.mapas.juego()") is None)
+        check("mapas: sin errores de JavaScript ni CSP", not errs_mc, "; ".join(errs_mc)[:200])
+        cmc.close()
+        # --- enlace directo y otros idiomas ---
+        for _lg, _txt in (("en", "SPOT"), ("de", "ORT"), ("fr", "LIEU")):
+            cl = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block"); pl = cl.new_page(); errs_l = []
+            pl.on("pageerror", lambda e: errs_l.append(str(e)))
+            pl.add_init_script(_init_mc % _lg)
+            pl.goto(BASE + "?modo=mapas", wait_until="networkidle", timeout=60000)
+            _espera_mapas(pl)
+            logo = pl.inner_text(".mp-logo")
+            check("mapas (%s): ?modo=mapas abre el juego y está traducido (%s)" % (_lg, _txt), _txt in logo.upper() and "EL SITIO" not in logo.upper(), logo.replace("\n", " "))
+            pl.evaluate("document.querySelector('[data-mp=diario]').click()"); pl.wait_for_timeout(300)
+            pq = pl.inner_text("[data-q]") if pl.locator("[data-q]").count() else ""
+            check("mapas (%s): la pregunta de la ronda no queda en español" % _lg, not re.search(r"¿|Dónde|Dónde|ciudad", pq) , pq[:80])
+            check("mapas (%s): sin errores de JavaScript" % _lg, not errs_l, "; ".join(errs_l)[:150])
+            cl.close()
+        # --- pantalla dividida y pestañas en escritorio ---
+        cdm = br.new_context(viewport={"width": 1280, "height": 720}, service_workers="block"); pdm = cdm.new_page()
+        pdm.add_init_script("localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1')")
+        pdm.goto(BASE, wait_until="networkidle", timeout=60000); pdm.wait_for_timeout(400)
+        pdm.evaluate("document.querySelector('#portalJuegos').click()"); pdm.wait_for_timeout(700)
+        check("mapas: la pantalla dividida ofrece también «Mapas»", pdm.locator("#vistaSplit [data-vs=mapas]").count() == 1)
+        pdm.evaluate("document.querySelector('[data-vs=mapas]').click()"); pdm.wait_for_timeout(1500)
+        check("mapas: elegir «Mapas» en la pantalla dividida abre su pestaña", pdm.locator("#grupoMapas").is_visible() and pdm.locator("#tabMapas[aria-selected=true]").count() == 1)
+        cdm.close()
+    except Exception as e:
+        check("mapas (Clava el sitio)", False, str(e)[:250])
+
     print("3au) Portada compacta y panel de tutorial y ayuda")
     try:
         cau = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
@@ -1728,16 +1837,16 @@ with sync_playwright() as p:
           localStorage.setItem('tikitexto:jugadores', JSON.stringify(d)); })()""")
         plg.goto(BASE, wait_until="networkidle", timeout=60000); plg.wait_for_timeout(5000)
         check("logros: la primera vez avisa de lo ya conseguido (una sola vez)", plg.locator(".lg-toast").count() >= 1)
-        check("logros: el banner muestra medallas y rango", re.match(r"^\d+/102", plg.locator("[data-lg-cnt]").first.inner_text().strip()) is not None, plg.locator("[data-lg-cnt]").first.inner_text())
+        check("logros: el banner muestra medallas y rango", re.match(r"^\d+/108", plg.locator("[data-lg-cnt]").first.inner_text().strip()) is not None, plg.locator("[data-lg-cnt]").first.inner_text())
         plg.evaluate("document.querySelector('[data-logros]').click()"); plg.wait_for_timeout(1800)
-        check("logros: se abre la vitrina con las 34 tarjetas", plg.locator(".lg-raiz").count() == 1 and plg.locator(".lg-card").count() == 34)
+        check("logros: se abre la vitrina con las 36 tarjetas", plg.locator(".lg-raiz").count() == 1 and plg.locator(".lg-card").count() == 36)
         check("logros: botón de compartir y anillo de progreso", plg.locator("[data-lg=compartir]").count() == 1 and plg.locator(".lg-anillo .prog").count() == 1)
         check("logros: hay medallas de oro, plata y bronce y bloqueadas", plg.locator(".lg-card--3").count() >= 1 and plg.locator(".lg-card--2").count() >= 1 and plg.locator(".lg-card--1").count() >= 1 and plg.locator(".lg-card--0").count() >= 1)
         plg.click("[data-f=ganadas]"); plg.wait_for_timeout(300)
         n_g = plg.locator(".lg-card").count()
         plg.click("[data-f=pendientes]"); plg.wait_for_timeout(300)
         n_p = plg.locator(".lg-card").count()
-        check("logros: los filtros reparten las tarjetas", 0 < n_g < 34 and 0 < n_p < 34 and plg.locator(".lg-card--3").count() == 0, "%d/%d" % (n_g, n_p))
+        check("logros: los filtros reparten las tarjetas", 0 < n_g < 36 and 0 < n_p < 36 and plg.locator(".lg-card--3").count() == 0, "%d/%d" % (n_g, n_p))
         plg.keyboard.press("Escape"); plg.wait_for_timeout(300)
         check("logros: Esc cierra la vitrina", plg.locator(".lg-raiz").count() == 0)
         # un logro nuevo muestra un aviso
@@ -1817,6 +1926,32 @@ for _r in ("juegos/", "en/games/"):
 _hh = open(_os.path.join(_raiz, "articulos", "reglas-basicas-del-futbol-para-principiantes", "index.html"), encoding="utf-8").read()
 check("artículos: llevan autoría editorial (sin nombre propio) y enlace a «cómo elaboramos el contenido»", "Edita y revisa el titular del sitio" in _hh and "/aviso-legal.html" in _hh and not re.search(r"asistencia de|inteligencia artificial", _hh, re.I) and "sobre-tikitexto.html#editorial" in _hh and '"author"' in _hh)
 
+print("3bc-b) Clava el sitio (estático: traducciones, datos y archivos)")
+# 3bc-b) Clava el sitio: comprobaciones estáticas: traducciones completas y coherentes del módulo y datos de lugares
+try:
+    _src = open(_os.path.join(_raiz, "mapas.js"), encoding="utf-8").read()
+    _ini = _src.index("const X = {"); _fin = _src.index("\n};", _ini)
+    _filas = re.findall(r"^\s+(\w+): (\[.*\]),\s*$", _src[_ini:_fin], re.M)
+    _mal = []
+    for _k, _arr in _filas:
+        try: _v = json.loads(_arr)
+        except Exception: _mal.append(_k + ":json"); continue
+        if len(_v) != 6 or any(not str(x).strip() for x in _v): _mal.append(_k + ":6 idiomas"); continue
+        _ph = [sorted(re.findall(r"\{\w+\}", x)) for x in _v]
+        if any(p_ != _ph[0] for p_ in _ph): _mal.append(_k + ":marcadores")
+    check("mapas: %d textos del módulo, todos en los 6 idiomas y con los mismos marcadores" % len(_filas), len(_filas) > 60 and not _mal, ", ".join(_mal)[:200])
+    _lug = open(_os.path.join(_raiz, "mapas_lugares.js"), encoding="utf-8").read()
+    check("mapas: mapas_lugares.js está generado (cabecera y datos)", len(_lug) > 20000 and "export" in _lug)
+    for _f in ("mapas/mundo.bin", "mapas/ciudades.json", "mapas/paises.json", "mapas/t", "mapas_motor.js", "mapas.css"):
+        check("mapas: existe %s" % _f, _os.path.exists(_os.path.join(_raiz, _f)))
+    _pj = json.load(open(_os.path.join(_raiz, "mapas", "paises.json"), encoding="utf-8"))
+    _isos = [r[4] for r in _pj]
+    check("mapas: Francia, Noruega y Kosovo tienen código ISO (solo los territorios en disputa quedan con -99)", all(c in _isos for c in ("FR", "NO", "XK", "ES", "AR", "BR")) and _isos.count("-99") <= 20, str(_isos.count("-99")))
+    _lic = open(_os.path.join(_raiz, "mapas", "LEEME.md"), encoding="utf-8").read() if _os.path.exists(_os.path.join(_raiz, "mapas", "LEEME.md")) else ""
+    check("mapas: la guía del juego existe (es/en) y está en el sitemap", _os.path.exists(_os.path.join(_raiz, "juegos", "clava-el-sitio-juego-mapas-futbol", "index.html")) and _os.path.exists(_os.path.join(_raiz, "en", "games", "pin-the-spot-football-map-game", "index.html")))
+except Exception as e:
+    check("mapas (estático)", False, str(e)[:250])
+
 # 3aw) El nombre del titular solo puede aparecer en aviso-legal.html
 print("3aw) Nombre del titular solo en el aviso legal")
 _NOMBRE = re.compile("Yago|Fern[aá]ndez\\s+Gal[aá]n", re.I)
@@ -1827,6 +1962,7 @@ for _d, _ds, _fs in _os.walk(_raiz):
         if not _f.endswith((".html", ".js", ".json", ".xml", ".txt", ".md", ".py", ".css", ".webmanifest", ".mjs", ".yml", ".sh")) and _f not in ("LICENSE", "CNAME"): continue
         _p = _os.path.join(_d, _f)
         if _os.path.relpath(_p, _raiz) == "aviso-legal.html": continue
+        if _os.path.relpath(_p, _raiz).startswith("mapas/n_"): continue  # nombres de ciudades/países generados de Natural Earth (p. ej. «Ayagoz»)
         _n_f += 1
         try: _t = open(_p, encoding="utf-8").read()
         except Exception: continue

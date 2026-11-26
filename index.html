@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BlqDrulopjl3fv1p5Os24rVJ/iR5O/brJoTs9VWfIOo=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-Hh7AAfX3Yp/x7pTDr4V5becjXTit8YHHDq0YZJCFmvA=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-6UlHlYfCjPwylMPR26LDvRhs/0Gni/57ybuYfdOgDsY=' 'sha256-FMaof7MtT904lC9alWhBUm6SOqBzVD/gpWZ5KGwmDXo=' 'sha256-Hh7AAfX3Yp/x7pTDr4V5becjXTit8YHHDq0YZJCFmvA=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>
 <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WN89TQCM"></script>
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -1634,6 +1634,7 @@ button.ir-juegos { border: 0; cursor: pointer; }
 .dd-card { background: linear-gradient(150deg, #0e2b6b, #20196b 55%, #6b1d57); }
 .mp-card { background: linear-gradient(150deg, #0e3a6b, #1a2a7a 55%, #3b1d6b); }
 .cr-card { background: linear-gradient(150deg, #0b3a4a, #1b2a78 55%, #5a1f6b); }
+.ma-card { background: linear-gradient(150deg, #0a2a4a, #0b4a5c 55%, #17418a); }
 .so-card { background: linear-gradient(150deg, #0a4a30, #0b3a5c 58%, #1a5a2a); }
 .lt-card { background: linear-gradient(150deg, #2a1668, #1b1b78 55%, #5b1a60); }
 .tv-card { background: linear-gradient(150deg, #0a4a5c, #0b2a6b 55%, #134a2a); }
@@ -1745,7 +1746,8 @@ button.ir-juegos { border: 0; cursor: pointer; }
 .ch-aviso { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 90; padding: 10px 18px; border-radius: 999px; background: #10131f; color: #fff; font-weight: 700; }
 /* ===== PORTAL: Juegos / Saber ===== */
 .vj { display: none; } html.vista-j .vj { display: block; } html.vista-j .vp { display: none; }
-.vj-sel { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0 6px; }
+.vj-sel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 8px 0 6px; }
+@media (max-width: 520px) { .vj-tab { padding: 10px 4px 9px; } .vj-tab b { font-size: .95rem; } .vj-tab small { font-size: .6rem; } .vj-tab__ico { font-size: 1.15rem; } }
 .vj-tab { position: relative; display: grid; justify-items: center; gap: 2px; padding: 12px 8px 11px; border: 2px solid rgba(127,127,127,.3); border-radius: 18px; background: var(--superficie, rgba(127,127,127,.08)); color: var(--texto); font: inherit; cursor: pointer; transition: transform .15s, box-shadow .2s, border-color .2s; }
 .vj-tab b { font: 900 1.1rem/1.1 var(--fuente-titulo); letter-spacing: .01em; }
 .vj-tab small { font-size: .7rem; font-weight: 700; opacity: .75; }
@@ -1755,6 +1757,8 @@ button.ir-juegos { border: 0; cursor: pointer; }
 .vj-tab--letras[aria-selected="true"] { background: linear-gradient(135deg, #1f8f6a, #1b5fd6); box-shadow: 0 8px 22px rgba(27,95,214,.4); }
 .vj-tab--din[aria-selected="true"] { background: linear-gradient(#1a1030, #0c1b2e) padding-box, conic-gradient(from 0deg, #ff2e63, #ffd300, #2eff7b, #19c8ff, #a24bff, #ff2e63) border-box; border: 2px solid transparent; box-shadow: 0 8px 24px rgba(162,75,255,.45); }
 .vj-tab--din:not([aria-selected="true"])::after { content: "NUEVO"; position: absolute; top: 4px; right: 8px; padding: 2px 7px; border-radius: 999px; background: #ff2e63; color: #fff; font: 900 .56rem/1.2 var(--fuente); letter-spacing: .08em; }
+.vj-tab--map[aria-selected="true"] { background: linear-gradient(135deg, #0b6a8a, #1f8f6a 58%, #d9a21b); box-shadow: 0 8px 22px rgba(11,106,138,.45); }
+.vj-tab--map:not([aria-selected="true"])::after { content: "NUEVO"; position: absolute; top: 4px; right: 6px; padding: 2px 7px; border-radius: 999px; background: #0b6a8a; color: #fff; font: 900 .56rem/1.2 var(--fuente); letter-spacing: .08em; }
 .vj-tab:focus-visible { outline: 3px solid var(--texto); outline-offset: 3px; }
 .vj-grupo[hidden] { display: none; }
 .vj-tab { overflow: hidden; isolation: isolate; }
@@ -1784,7 +1788,10 @@ html.vs-abierto { overflow: hidden; }
 .vs__r1 { stroke: #19c8ff; stroke-width: 18px; opacity: .35; } .vs__r2 { stroke: #ffe58a; stroke-width: 7px; opacity: .9; } .vs__r3 { stroke: #fff; stroke-width: 2.6px; }
 @keyframes vsLuz { 0%, 100% { opacity: .85; } 50% { opacity: 1; } }
 .vs--fuera .vs__lado--l { transform: translateX(-60%); opacity: 0; } .vs--fuera .vs__lado--r { transform: translateX(60%); opacity: 0; }
-.vs--fuera .vs__rayo, .vs--fuera .vs__titulo, .vs--fuera .vs__volver { opacity: 0; transition: opacity .25s; }
+.vs--fuera .vs__rayo, .vs--fuera .vs__titulo, .vs--fuera .vs__volver, .vs--fuera .vs__mapas { opacity: 0; transition: opacity .25s; }
+.vs__mapas { position: absolute; z-index: 6; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 10px; padding: 11px 20px; border-radius: 999px; border: 2px solid #ffd23a; background: rgba(5,6,15,.8); color: #fff; font: 900 .95rem/1 var(--fuente-titulo); cursor: pointer; white-space: nowrap; box-shadow: 0 8px 26px rgba(0,0,0,.5), 0 0 24px rgba(255,210,58,.35); -webkit-tap-highlight-color: transparent; }
+.vs__mapas small { font: 700 .72rem/1 var(--fuente, system-ui); opacity: .8; }
+.vs__mapas:hover, .vs__mapas:focus-visible { filter: brightness(1.2); outline: none; }
 @media (max-aspect-ratio: 1/1) {
   .vs__lado { padding: 0 5%; } .vs__txt { max-width: 34%; }
   .vs__lado--l { align-items: flex-end; padding-bottom: 52%; } .vs__lado--r { align-items: flex-start; padding-top: 30%; }
@@ -2455,6 +2462,7 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
     <div class="vj-sel" role="tablist" aria-label="Tipo de juegos">
       <button type="button" class="vj-tab vj-tab--letras" role="tab" id="tabLetras" data-grupo-btn="letras" aria-selected="true" aria-controls="grupoLetras"><canvas class="vj-tab__fx" data-fx="letras" aria-hidden="true"></canvas><span class="vj-tab__ico" aria-hidden="true">Aa</span><b>Letras</b><small>Adivina y descifra</small></button>
       <button type="button" class="vj-tab vj-tab--din" role="tab" id="tabDin" data-grupo-btn="dinamicos" aria-selected="false" aria-controls="grupoDinamicos"><canvas class="vj-tab__fx" data-fx="din" aria-hidden="true"></canvas><span class="vj-tab__ico" aria-hidden="true">🎮</span><b>Dinámicos</b><small>Física, reflejos y retos</small></button>
+      <button type="button" class="vj-tab vj-tab--map" role="tab" id="tabMapas" data-grupo-btn="mapas" aria-selected="false" aria-controls="grupoMapas"><span class="vj-tab__ico" aria-hidden="true">🗺️</span><b>Mapas</b><small>Clava el sitio</small></button>
     </div>
     <button type="button" class="tikis" data-stats aria-label="Ver estadísticas y ranking"><span>⚡</span><b id="tikisNum">0</b> tikitextos <em id="tikisNivel">Cantera</em><span>Ver ranking ›</span></button>
     <button type="button" class="lg-banner" data-logros aria-label="Vitrina de logros"><span class="lg-banner__ico" aria-hidden="true"><i>🥉</i><i>🥈</i><i>🥇</i></span><span class="lg-banner__txt"><b>Vitrina de logros</b><small>Medallas de bronce, plata y oro</small></span><em class="lg-banner__cnt" data-lg-cnt data-no-t><span data-lg-n></span><span class="lg-banner__rg" data-lg-r></span></em><span class="lg-banner__go" aria-hidden="true">›</span></button>
@@ -2722,6 +2730,20 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
       </div>
     </section>
 
+    </div>
+
+    <div class="vj-grupo" id="grupoMapas" role="tabpanel" aria-labelledby="tabMapas" data-grupo="mapas" hidden>
+    <h2 class="inicio__juegos" id="tituloMapas">Juegos de mapas</h2>
+    <p class="inicio__descripcion">Un mapa del mundo propio, con zoom, ciudades y carreteras. Clava la chincheta donde crees que está el sitio y gana puntos por cercanía.</p>
+    <button type="button" class="ch-card ma-card" data-mapas>
+      <span class="ch-card__dib" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><linearGradient id="mpc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0d2a47"/><stop offset="1" stop-color="#0b4a5c"/></linearGradient></defs><rect x="5" y="5" width="110" height="110" rx="16" fill="url(#mpc)" stroke="#ffd24a" stroke-width="3"/><g fill="#2b4d70" stroke="#6fa3d6" stroke-width="1.2"><path d="M14 30c8-6 20-8 28-3 6 4 2 10-3 13-6 3-6 9-12 11-6 2-9 8-13 5-5-5-4-20 0-26z"/><path d="M52 24c8-5 22-4 30 1 7 5 12 3 17 8 5 6-2 12-9 13-8 1-9 8-17 9-7 1-10-5-14-8-6-5-14-6-12-15 1-5 2-6 5-8z"/><path d="M44 62c7-3 15 0 18 7 4 8-2 17-8 21-6 3-9-3-11-9-2-7-4-16 1-19z"/><path d="M82 70c6-4 16-2 19 4 3 7-3 14-11 14-8 0-12-12-8-18z"/></g><path d="M34 52 Q60 28 86 44" fill="none" stroke="#ff7a66" stroke-width="2.4" stroke-dasharray="5 5" stroke-linecap="round"/><circle cx="86" cy="44" r="7" fill="#fff" stroke="#34e089" stroke-width="3"/><path d="M86 41l3 2-1 4h-4l-1-4z" fill="#16202b"/><path d="M34 52c-7-6-9-16-3-21 5-4 12-1 13 5 1 6-3 12-10 16z" fill="#e0321f" stroke="#fff" stroke-width="1.6"/><circle cx="35" cy="37" r="3" fill="#fff"/></svg></span>
+      <span>
+        <span class="ah-card__sello">NUEVO · MAPAS</span>
+        <span class="ch-card__titulo">CLAVA EL SITIO</span>
+        <span class="ah-card__desc">Estadios, ciudades natales de cracks, clubes y sedes de finales: clava la chincheta en el mapa y suma puntos según lo cerca que estés. Reto diario igual para todos.</span>
+        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </button>
     </div>
 
     <aside class="hueco hueco--medio" aria-label="Publicidad">Publicidad</aside>
@@ -9290,6 +9312,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (o.closest("[data-duelo]")) { abrirDuelo(); return; }
     if (o.closest("[data-parejas]")) { abrirParejas(); return; }
     if (o.closest("[data-cruces]")) { abrirCruces(); return; }
+    if (o.closest("[data-mapas]")) { abrirMapas(); return; }
     if (o.closest("[data-sopa]")) { abrirSopa(); return; }
     if (o.closest("[data-lineatiempo]")) { abrirLineaTiempo(); return; }
     if (o.closest("[data-trivia]")) { abrirTrivia(); return; }
@@ -9329,6 +9352,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   TIKI.pinball = { juego: function () { return pbActivo; } };
   TIKI.serpiente = { juego: function () { return spActivo; } };
   TIKI.cuartetos = { juego: function () { return cuActivo; } };
+  TIKI.mapas = { juego: function () { return maActivo; } };
   TIKI.clases = { juego: function () { return clActivo; } };
   TIKI.chapas = { ch: ch, gol: chGol, datos: chDatos, pensar: chPensar, simular: chSimular, estilos: CH_EST, nuevo: chNuevoEstado, VSAQUE: CH_VSAQUE }; /* solo para las pruebas automáticas */
 
@@ -9346,8 +9370,9 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     try { g = sessionStorage.getItem("tikitexto:grupo") || "letras"; } catch (e) { /* sin almacenamiento */ }
     const m = new URLSearchParams(location.search).get("modo");
     if (m && ["chapas", "tarjetas", "fichajes", "penaltis", "pinball", "tirolibre", "slalom", "toques"].indexOf(m) >= 0) g = "dinamicos";
+    if (m === "mapas") g = "mapas";
     if (m === "navidad" || m === "serpiente" || m === "cuartetos" || m === "pertenece" || m === "pasapalabra" || m === "duelo" || m === "trivia" || m === "lineatiempo" || m === "sopa" || m === "parejas" || m === "cruces") g = "letras";
-    poner(g === "dinamicos" ? "dinamicos" : "letras", false);
+    poner(g === "dinamicos" || g === "mapas" ? g : "letras", false);
   })();
 
   /* Efectos dentro de los botones de pestaña: letras que caen (Letras) y explosiones que reaccionan entre sí (Dinámicos) */
@@ -9776,6 +9801,34 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     }).catch(function (err) { try { console.error("cruces: no se pudo cargar", err); } catch (e) { /* sin consola */ } raiz.remove(); crCargando = false; });
   }
 
+  /* ───── CLAVA EL SITIO (mapas.js / mapas.css, carga perezosa) ───── */
+  var maActivo = null, maCargando = false;
+  function abrirMapas() {
+    if (maActivo || maCargando) return;
+    if (!tieneCuenta()) { mostrarCuenta(); return; }
+    maCargando = true;
+    const raiz = document.createElement("div"); raiz.className = "mp-raiz"; raiz.id = "maRaiz";
+    document.body.appendChild(raiz);
+    const vg = vigilaCarga(raiz, function () { maCargando = false; }, abrirMapas);
+    const css = new Promise(function (ok) {
+      if (document.getElementById("maCss")) { ok(); return; }
+      const l = document.createElement("link"); l.rel = "stylesheet"; l.id = "maCss"; l.href = "mapas.css"; l.onload = ok; l.onerror = ok; document.head.appendChild(l);
+    });
+    Promise.all([import("./mapas.js" + (cgIntento ? "?r=" + cgIntento : "")), css]).then(function (r) {
+      const api = {
+        t: function (s) { return TIKI.t ? TIKI.t(s) : s; },
+        locale: TIKI.locale,
+        sonido: function () { return TIKI.ajustes.sonido(); },
+        datos: function () { const n = nvDatos(); if (!n.ma) n.ma = {}; return n.ma; },
+        guardar: guardarJ, tiki: nvSumarTikitexto, victoria: sonidoVictoria,
+        racha: function (k) { try { return TIKI.racha ? TIKI.racha.marca(k) : 0; } catch (er) { return 0; } },
+        salir: function () { raiz.remove(); maActivo = null; document.title = "TIKITEXTO · Adivina el nombre del día"; },
+      };
+      vg.fin(); maActivo = r[0].abrir(api, raiz); maCargando = false;
+      document.title = "TIKITEXTO · Clava el sitio";
+    }).catch(function (err) { try { console.error("mapas: no se pudo cargar", err); } catch (e) { /* sin consola */ } vg.error(); });
+  }
+
   /* ───── VITRINA DE LOGROS (logros.js / logros.css, carga perezosa) ───── */
   var lgActivo = null, lgCargando = false, lgTimer = 0, lgDentro = false, lgModulo = null;
   function lgApi(raiz) {
@@ -9949,6 +10002,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (m === "duelo" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirDuelo(); return; }
     if (m === "parejas" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirParejas(); return; }
     if (m === "cruces" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirCruces(); return; }
+    if (m === "mapas" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirMapas(); return; }
     if (m === "sopa" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirSopa(); return; }
     if (m === "lineatiempo" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirLineaTiempo(); return; }
     if (m === "trivia" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirTrivia(); return; }
@@ -10082,6 +10136,7 @@ document.addEventListener("click", function (e) { var a = e.target.closest && e.
         <span class="vs__deco" aria-hidden="true">⚽ 🎮 🕹️ ⚡</span>
         <span class="vs__txt"><i aria-hidden="true">🎮</i><b>Videojuegos</b><small>Física, reflejos y retos</small></span>
       </button>
+      <button type="button" class="vs__mapas" data-vs="mapas"><span aria-hidden="true">🗺️</span><span>Juegos de mapas</span><small>Clava el sitio</small></button>
       <svg class="vs__rayo" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
         <polyline class="vs__r1" points="70.0,0.0 69.2,10.0 58.8,20.0 61.2,30.0 50.8,40.0 53.2,50.0 42.8,60.0 45.2,70.0 34.8,80.0 37.2,90.0 30.0,100.0"><animate attributeName="points" dur="3.4s" repeatCount="indefinite" calcMode="spline" keyTimes="0;.5;1" keySplines=".42 0 .58 1;.42 0 .58 1" values="70.0,0.0 69.2,10.0 58.8,20.0 61.2,30.0 50.8,40.0 53.2,50.0 42.8,60.0 45.2,70.0 34.8,80.0 37.2,90.0 30.0,100.0;70.0,0.0 70.6,10.0 57.4,20.0 62.6,30.0 49.4,40.0 54.6,50.0 41.4,60.0 46.6,70.0 33.4,80.0 38.6,90.0 30.0,100.0;70.0,0.0 69.2,10.0 58.8,20.0 61.2,30.0 50.8,40.0 53.2,50.0 42.8,60.0 45.2,70.0 34.8,80.0 37.2,90.0 30.0,100.0"/></polyline>
         <polyline class="vs__r2" points="70.0,0.0 69.2,10.0 58.8,20.0 61.2,30.0 50.8,40.0 53.2,50.0 42.8,60.0 45.2,70.0 34.8,80.0 37.2,90.0 30.0,100.0"><animate attributeName="points" dur="3.4s" repeatCount="indefinite" calcMode="spline" keyTimes="0;.5;1" keySplines=".42 0 .58 1;.42 0 .58 1" values="70.0,0.0 69.2,10.0 58.8,20.0 61.2,30.0 50.8,40.0 53.2,50.0 42.8,60.0 45.2,70.0 34.8,80.0 37.2,90.0 30.0,100.0;70.0,0.0 70.6,10.0 57.4,20.0 62.6,30.0 49.4,40.0 54.6,50.0 41.4,60.0 46.6,70.0 33.4,80.0 38.6,90.0 30.0,100.0;70.0,0.0 69.2,10.0 58.8,20.0 61.2,30.0 50.8,40.0 53.2,50.0 42.8,60.0 45.2,70.0 34.8,80.0 37.2,90.0 30.0,100.0"/></polyline>

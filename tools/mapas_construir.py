@@ -471,7 +471,7 @@ def construye_paises(base, salida):
         ml, xl = f.get("MIN_LABEL"), f.get("MAX_LABEL")
         nom = {k: (limpia(f.get("NAME_" + k.upper())) or limpia(f.get("NAME")) or "") for k in IDIOMAS}
         out.append([round(lx, 3), round(ly, 3), round(ml if ml is not None else 4, 1),
-                    round(xl if xl is not None else 9, 1), limpia(f.get("ISO_A2")) or "",
+                    round(xl if xl is not None else 9, 1), (lambda a, b: b if a in ("", "-99") else a)(limpia(f.get("ISO_A2")) or "", limpia(f.get("ISO_A2_EH")) or ""),
                     int(f.get("POP_EST") or 0)] + [nom[k] for k in IDIOMAS])
     with open(os.path.join(salida, "paises.json"), "w", encoding="utf-8") as fh:
         json.dump(out, fh, ensure_ascii=False, separators=(",", ":"))

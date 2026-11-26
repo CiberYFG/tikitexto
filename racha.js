@@ -4,6 +4,7 @@ const RETOS = [
   { k: "cu", ico: "🧩", n: "Cuartetos" },
   { k: "tv", ico: "❓", n: "Trivia" },
   { k: "cr", ico: "✖️", n: "Cruces" },
+  { k: "ma", ico: "🗺️", n: "Clava el sitio" },
 ];
 const PLANTILLA = `
 <div class="rc-fondo" aria-hidden="true"></div>
