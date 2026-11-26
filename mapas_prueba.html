@@ -1,0 +1,9 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>html,body{margin:0;height:100%;background:#0a1829}#c{position:fixed;inset:0}</style>
+<div id="c"></div>
+<script type="module">
+import { crearMapa } from "./mapas_motor.js";
+const q = new URLSearchParams(location.search);
+window.M = crearMapa(document.getElementById("c"), { base: "mapas/", tema: q.get("tema") || "oscuro", idioma: q.get("lang") || "es" });
+M.listo.then(() => { window.LISTO = true; });
+</script>
