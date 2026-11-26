@@ -30,6 +30,8 @@ PUENTES["clases/como-funciona-una-liga/"] = "articulos/formatos-de-competicion-l
 PUENTES["clases/reglas-basicas-del-futbol/"] = "articulos/reglas-basicas-del-futbol-para-principiantes/"
 PUENTES["clases/saques-banda-meta-esquina/"] = "clases/"
 for s in CLASES_EN: PUENTES["en/classes/" + s + "/"] = "en/classes/"
+PUENTES["juegos/el-que-gana-se-queda-futbol/"] = "juegos/"  # juego retirado el 26-nov-2026
+PUENTES["en/games/football-winner-stays-on-game/"] = "en/games/"
 for s in DUELOS_ES: PUENTES["comparador/" + s + "/"] = "comparador/"
 for s in DUELOS_EN: PUENTES["en/football-comparator/" + s + "/"] = "en/football-comparator/"
 

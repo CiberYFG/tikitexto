@@ -1567,7 +1567,7 @@ with sync_playwright() as p:
     except Exception as e:
         check("memoria de parejas", False, str(e)[:150])
 
-    print("3bb) Cruces, racha diaria global y El que gana se queda")
+    print("3bb) Cruces y racha diaria global")
     try:
         cbb = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block")
         pbb = cbb.new_page(); errs_bb = []
@@ -1623,29 +1623,10 @@ with sync_playwright() as p:
         check("racha: tras saltarte días la racha vuelve a 0 y se conserva la mejor", rota["racha"] == 0 and rota["mejor"] == 6, str(rota))
         pbb.evaluate("TIKI.racha.marca('d')")
         check("racha: al volver a jugar empieza otra vez en 1", pbb.evaluate("TIKI.racha.actual().racha") == 1)
-        # --- El que gana se queda ---
-        pbb.evaluate("document.querySelector('[data-queda]').click()"); pbb.wait_for_timeout(2000)
-        check("queda: se abre el menú con 6 categorías", pbb.locator(".qg-raiz").count() == 1 and pbb.locator(".qg-chip").count() == 6)
-        e = pbb.evaluate("""(()=>{ const j=TIKI.queda.juego(); const res=[]; j.CATS.forEach(c=>{ const l=j.elegir(c.k); res.push(l.length===16 && new Set(l.map(x=>x.n)).size===16); }); return res.every(Boolean); })()""")
-        check("queda: cada categoría da 16 jugadores distintos", e is True)
-        pbb.click("[data-qg=jugar]"); pbb.wait_for_timeout(300)
-        check("queda: aparecen dos cartas y el duelo 1/15", pbb.locator(".qg-carta").count() == 2 and "1/15" in pbb.inner_text("[data-prog]"), pbb.inner_text("[data-prog]"))
-        pbb.keyboard.press("ArrowLeft"); pbb.wait_for_timeout(300)
-        check("queda: elegir marca ganador y perdedor", pbb.locator(".qg-carta.gana").count() == 1 and pbb.locator(".qg-carta.pierde").count() == 1)
-        pbb.wait_for_timeout(900)
-        check("queda: pasa al duelo 2/15", "2/15" in pbb.inner_text("[data-prog]"), pbb.inner_text("[data-prog]"))
-        for _ in range(14):
-            pbb.evaluate("TIKI.queda.juego().elige(1)"); pbb.wait_for_timeout(720)
-            if pbb.locator("[data-fin]:not([hidden])").count(): break
-        check("queda: tras 15 duelos sale el campeón y un podio de 3", pbb.locator("[data-fin]:not([hidden])").count() == 1 and pbb.locator("[data-podio] li").count() == 3 and len(pbb.inner_text("[data-camp]").strip()) > 2, pbb.inner_text("[data-camp]"))
-        check("queda: el texto para compartir lleva el enlace del modo", "modo=queda" in pbb.evaluate("TIKI.queda.juego().S.texto"))
-        pbb.evaluate("document.querySelector('[data-qg=salir]').click()") if pbb.locator("[data-qg=salir]").count() else pbb.evaluate("TIKI.queda.juego().cerrar()")
-        pbb.wait_for_timeout(300)
-        check("queda: cerrar quita la pantalla", pbb.locator(".qg-raiz").count() == 0)
-        check("cruces/racha/queda: sin errores de JavaScript", not errs_bb, "; ".join(errs_bb)[:200])
+        check("cruces/racha: sin errores de JavaScript", not errs_bb, "; ".join(errs_bb)[:200])
         cbb.close()
     except Exception as e:
-        check("cruces, racha y queda", False, str(e)[:200])
+        check("cruces y racha", False, str(e)[:200])
 
     print("3au) Portada compacta y panel de tutorial y ayuda")
     try:
