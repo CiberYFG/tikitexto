@@ -717,7 +717,8 @@ with sync_playwright() as p:
         pobres = []
         for hr in enlaces:
             pa.goto(BASE + hr.lstrip("/"), wait_until="domcontentloaded", timeout=60000)
-            palabras = pa.evaluate("(document.querySelector('.articulo')||document.querySelector('.est-cont')).innerText.split(/\\s+/).length")
+            pa.wait_for_function("document.querySelector('.articulo')||document.querySelector('.est-cont')", timeout=15000)
+            palabras = pa.evaluate("(document.querySelector('.articulo')||document.querySelector('.est-cont')||document.querySelector('main')).innerText.split(/\\s+/).length")
             h2 = pa.evaluate("document.querySelectorAll('main h2').length")
             hl = pa.evaluate("Array.from(document.querySelectorAll('link[rel=alternate]')).map(l => l.hreflang).join(',')")
             if palabras < 650 or h2 < 4 or hl != "es,x-default": pobres.append(f"{hr}: {palabras} palabras, {h2} h2, {hl}")
