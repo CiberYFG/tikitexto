@@ -1,218 +1,264 @@
-/* TIKITEXTO · pantalla dividida al entrar en «Juegos» (Letras · Videojuegos · Mapas).
-   Una «Y» de tres cuñas separadas por rayos. Todo se calcula aquí (geometría de los recortes, rayos,
-   centro que respira y sigue al ratón, cuña que crece al apuntarla y animación al elegir).
-   Sin dependencias ni recursos externos. Respeta prefers-reduced-motion.
-   Atajos: 1 = letras, 2 = videojuegos, 3 = mapas. Esc lo gestiona index.html. */
+/* TIKITEXTO · pantalla «mundo» al entrar en «Juegos» (Letras · Videojuegos · Mapas).
+   Un globo terráqueo visto desde el polo norte y dividido en tres reinos (tres cuñas de colores que se juntan en el logo).
+   Todo se dibuja aquí: el globo (canvas 2D, píxel a píxel, con una máscara de tierra propia en mapas/tierra.png), las estrellas,
+   las etiquetas (botones reales que viajan con el globo), el giro lento, el arrastre con inercia y la inmersión al elegir.
+   Sin dependencias ni recursos externos. Respeta prefers-reduced-motion. Atajos: 1 = letras, 2 = videojuegos, 3 = mapas;
+   ← → giran el globo. Esc lo gestiona index.html. Si no hay canvas, queda el respaldo de franjas del CSS. */
 (function () {
   "use strict";
   var sp = document.getElementById("vistaSplit");
   if (!sp) return;
-  var h = document.documentElement, RAD = Math.PI / 180;
+  var h = document.documentElement, TAU = Math.PI * 2;
   var reducido = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-  var lados = {}, txts = {};
+  var mundo = sp.querySelector(".vs__mundo"), cv = sp.querySelector(".vs__globo"), est = sp.querySelector(".vs__estrellas");
+  var hub = sp.querySelector(".vs__hub"), velo = sp.querySelector(".vs__velo");
+  var ctx = null, ectx = null;
+  try { ctx = cv && cv.getContext("2d"); ectx = est && est.getContext("2d"); } catch (e) { ctx = null; }
+  if (!ctx || !mundo) return; /* sin canvas: franjas del CSS y manejadores de index.html */
+
+  /* Reinos: la longitud se reparte en tres cuñas de 120°, con las fronteras en −20°, 100° y 220° (cortan el Atlántico y el Pacífico):
+     0 = Letras (Europa, África, Oriente Medio, India), 1 = Mapas (Asia oriental y Pacífico), 2 = Videojuegos (América). */
+  var NOM = ["letras", "mapas", "dinamicos"], REINO = { letras: 0, mapas: 1, dinamicos: 2 };
+  var ORDEN_TECLAS = ["letras", "dinamicos", "mapas"];
+  var COL0 = 455.11; /* columna de la textura (1024 = 360°) donde empieza la cuña 0 */
+  var CC = [COL0 + 170.667, COL0 + 512, COL0 + 853.333]; /* columna central de cada cuña */
+  var OFF0 = CC[0] - 426.667; /* con el giro a 0, Letras arriba a la izquierda, Videojuegos arriba a la derecha y Mapas abajo */
+  var PAL = [
+    { o: [4, 46, 54], t: [40, 218, 152], c: [170, 255, 224] },
+    { o: [8, 40, 88], t: [255, 206, 58], c: [255, 244, 176] },
+    { o: [46, 12, 74], t: [255, 84, 156], c: [255, 200, 230] }
+  ];
+
+  var lados = {};
   Array.prototype.forEach.call(sp.querySelectorAll(".vs__lado"), function (el) {
-    var n = el.getAttribute("data-vs"); lados[n] = el; txts[n] = el.querySelector(".vs__txt");
-    txts[n].style.left = "0"; txts[n].style.top = "0";
+    lados[el.getAttribute("data-vs")] = el; el.style.left = "0"; el.style.top = "0";
   });
-  var hub = sp.querySelector(".vs__hub");
-  var svg = sp.querySelector(".vs__rayo");
-  var grupos = Array.prototype.slice.call(svg.querySelectorAll("g"));
   if (hub) { hub.style.left = "0"; hub.style.top = "0"; }
 
-  /* Rayos (grados, sentido horario con y hacia abajo) y reparto de las cuñas: la cuña i está entre el rayo i y el i+1.
-     Horizontal: Y con el tronco hacia abajo (Mapas abajo, Letras a la izquierda, Videojuegos a la derecha).
-     Vertical: Y invertida (Letras arriba, Videojuegos abajo a la izquierda, Mapas abajo a la derecha). */
-  var DISP = {
-    h: { ang: [24, 156, 270], nom: ["mapas", "letras", "dinamicos"], cy: 0.46 },
-    v: { ang: [90, 204, 336], nom: ["dinamicos", "letras", "mapas"], cy: 0.5 }
-  };
-  var ORDEN_TECLAS = ["letras", "dinamicos", "mapas"];
-
   var E = {
-    abierto: false, W: 0, H: 0, min: 0, o: "h", d: DISP.h, base: { x: 0, y: 0 }, c: { x: 0, y: 0 },
-    hover: null, foco: null, ptr: { x: 0, y: 0, on: false }, p: 1, t0: 0, sel: null, selT0: 0, selC0: null, fin: false,
-    top: 0, raf: 0, last: 0, areas: [0, 0, 0], anclas: {}, timers: []
+    abierto: false, W: 0, H: 0, D: 0, R: 0, k: 1, rho: 0.6, base: { x: 0, y: 0 }, cx: 0, cy: 0,
+    spin: 0, vel: 0, auto: 0.052, hover: null, foco: null, drag: null, ptr: { x: 0, y: 0, on: false },
+    p: 1, t0: 0, sel: null, selT0: 0, fin: false, raf: 0, last: 0, timers: [], bri: [1, 1, 1], briT: [1, 1, 1],
+    pos: {}, anclas: {}, tierra: false, tierraCargando: false, coste: 0, lentos: 0, nMax: 460, estT: 0, fuga: null
   };
+  var TEX = new Uint8Array(1024 * 512);
+  var LR = new Uint8Array(48), LG = new Uint8Array(48), LB = new Uint8Array(48);
+  var G = { N: 0, cnt: 0, P: null, BC: null, RW: null, SH: null, RR: null, RIM: null, GR: null, img: null, u32: null };
 
   function ease(p) { return 1 - Math.pow(1 - p, 3); }
-  function hash(k, j) { var s = Math.sin(k * 12.9898 + j * 78.233) * 43758.5453; return s - Math.floor(s); }
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  function mod1024(v) { v = v % 1024; return v < 0 ? v + 1024 : v; }
+
+  /* ---------- tabla de colores (cuña × nivel de tierra) ---------- */
+  function tabla() {
+    var r, l, c, f, cst, j, v, p, b, t;
+    for (r = 0; r < 3; r++) {
+      p = PAL[r]; b = E.bri[r];
+      for (l = 0; l < 16; l++) {
+        f = l / 15; cst = (1 - Math.abs(2 * f - 1)) * 0.5; j = r * 16 + l;
+        for (c = 0; c < 3; c++) {
+          v = p.o[c] + (p.t[c] - p.o[c]) * f; v += (p.c[c] - v) * cst; v *= b; v = v > 255 ? 255 : v;
+          t = c === 0 ? LR : c === 1 ? LG : LB; t[j] = v;
+        }
+      }
+    }
+  }
+
+  /* ---------- precálculo por píxel (se rehace solo si cambia el tamaño) ---------- */
+  function prepara(N) {
+    var half = N / 2, tot = N * N, P = new Int32Array(tot), BC = new Float32Array(tot), RW = new Int32Array(tot), SH = new Uint16Array(tot);
+    var RR = new Float32Array(tot), RIM = new Uint8Array(tot), GR = new Uint8Array(tot), n = 0, iy, ix, x, y, r2, r, z, ang, phi, row, d, sh, dpx, q, anillos = [], lx, ly, lz, ln;
+    for (q = 15; q < 90; q += 15) anillos.push(Math.cos(q * Math.PI / 180));
+    lx = -0.42; ly = -0.5; lz = 0.76; ln = Math.sqrt(lx * lx + ly * ly + lz * lz); lx /= ln; ly /= ln; lz /= ln;
+    for (iy = 0; iy < N; iy++) for (ix = 0; ix < N; ix++) {
+      x = (ix + 0.5 - half) / half; y = (iy + 0.5 - half) / half; r2 = x * x + y * y;
+      if (r2 > 1) continue;
+      r = Math.sqrt(r2); z = Math.sqrt(1 - r2); ang = Math.atan2(y, x); phi = Math.asin(z);
+      row = Math.min(255, ((1 - phi / (Math.PI / 2)) * 256) | 0);
+      d = x * lx + y * ly + z * lz; if (d < 0) d = 0;
+      sh = (0.4 + 0.72 * d) * (0.62 + 0.38 * Math.pow(z, 0.45));
+      P[n] = iy * N + ix; BC[n] = -ang / TAU * 1024; RW[n] = row * 1024; SH[n] = Math.min(330, (sh * 256) | 0);
+      RIM[n] = (Math.pow(1 - z, 3) * 110) | 0; RR[n] = r * half;
+      dpx = 9; for (q = 0; q < anillos.length; q++) dpx = Math.min(dpx, Math.abs(r - anillos[q]) * half);
+      GR[n] = dpx < 0.75 ? 1 : 0;
+      n++;
+    }
+    cv.width = N; cv.height = N;
+    G.N = N; G.cnt = n; G.P = P; G.BC = BC; G.RW = RW; G.SH = SH; G.RR = RR; G.RIM = RIM; G.GR = GR;
+    G.img = ctx.createImageData(N, N); G.u32 = new Uint32Array(G.img.data.buffer);
+  }
+
+  /* ---------- dibujo del globo ---------- */
+  function renderGlobo(spin) {
+    if (!G.N) return;
+    var cnt = G.cnt, P = G.P, BC = G.BC, RW = G.RW, SH = G.SH, RR = G.RR, RIM = G.RIM, GR = G.GR, u = G.u32;
+    var off = mod1024(OFF0 - spin * 1024 / TAU), sw = Math.max(1.4, G.N / 150), sw5 = sw * 5;
+    var k, lc, rc, f, ri, fr, d, px, L, j, s, r, g, b, a, q;
+    for (k = 0; k < cnt; k++) {
+      lc = BC[k] + off; if (lc < 0) lc += 1024; else if (lc >= 1024) lc -= 1024;
+      rc = lc - COL0; if (rc < 0) rc += 1024;
+      f = rc * 0.0029296875; ri = f | 0; fr = f - ri; d = fr < 0.5 ? fr : 1 - fr; px = d * 2.0944 * RR[k];
+      L = TEX[RW[k] + (lc | 0)] >> 4; j = (ri << 4) + L; s = SH[k];
+      r = (LR[j] * s) >> 8; g = (LG[j] * s) >> 8; b = (LB[j] * s) >> 8;
+      a = RIM[k] + (GR[k] ? 24 : 0);
+      if (px < sw5) { q = 1 - px / sw5; a += (q * q * 150) | 0; if (px < sw) a += 105; }
+      r += a; g += a; b += a;
+      u[P[k]] = 0xff000000 | ((b > 255 ? 255 : b) << 16) | ((g > 255 ? 255 : g) << 8) | (r > 255 ? 255 : r);
+    }
+    ctx.putImageData(G.img, 0, 0);
+  }
+
+  /* ---------- estrellas ---------- */
+  var estrellas = [];
+  function creaEstrellas() {
+    var n = clamp(Math.round(E.W * E.H / 9000), 60, 230), i, s = 7;
+    function rnd() { s = (s * 16807) % 2147483647; return s / 2147483647; }
+    estrellas = [];
+    for (i = 0; i < n; i++) estrellas.push({ x: rnd() * E.W, y: rnd() * E.H, z: rnd() < 0.18 ? 2 : 1, a: 0.3 + rnd() * 0.6, v: 0.7 + rnd() * 2.2, f: rnd() * TAU });
+  }
+  function pintaEstrellas(t) {
+    if (!ectx) return;
+    var i, s, a;
+    ectx.clearRect(0, 0, est.width, est.height); ectx.fillStyle = "#fff";
+    for (i = 0; i < estrellas.length; i++) {
+      s = estrellas[i]; a = s.a * (reducido ? 0.8 : 0.62 + 0.38 * Math.sin(t * 0.001 * s.v + s.f));
+      ectx.globalAlpha = a; ectx.fillRect(s.x, s.y, s.z, s.z);
+    }
+    var fg = E.fuga;
+    if (fg && !reducido) {
+      var q = (t - fg.t0) / 800;
+      if (q >= 1) E.fuga = null;
+      else {
+        var hx = fg.x + fg.dx * q * fg.l * 2.2, hy = fg.y + fg.dy * q * fg.l * 2.2, gr = ectx.createLinearGradient(hx, hy, hx - fg.dx * fg.l, hy - fg.dy * fg.l);
+        gr.addColorStop(0, "rgba(255,255,255,.95)"); gr.addColorStop(1, "rgba(255,255,255,0)");
+        ectx.globalAlpha = 1 - q * q; ectx.strokeStyle = gr; ectx.lineWidth = 1.6; ectx.beginPath(); ectx.moveTo(hx, hy); ectx.lineTo(hx - fg.dx * fg.l, hy - fg.dy * fg.l); ectx.stroke();
+      }
+    } else if (!fg && !reducido && t - E.estT > 6500) {
+      E.estT = t; E.fuga = { t0: t, x: E.W * (0.1 + Math.random() * 0.5), y: E.H * Math.random() * 0.4, dx: 0.8, dy: 0.45, l: 90 + Math.random() * 60 };
+    }
+    ectx.globalAlpha = 1;
+  }
 
   /* ---------- medidas ---------- */
   function medir() {
     E.W = sp.clientWidth || window.innerWidth; E.H = sp.clientHeight || window.innerHeight;
-    E.o = E.W / E.H >= 1.05 ? "h" : "v"; E.d = DISP[E.o];
-    E.min = Math.min(E.W, E.H);
-    E.top = E.o === "v" ? 112 : 0; /* franja del botón «Inicio» y del título: los textos de las cuñas no entran ahí */
-    E.base = { x: E.W / 2, y: E.H * E.d.cy };
-    sp.classList.toggle("vs--v", E.o === "v");
-    sp.style.setProperty("--vs-k", Math.max(0.58, Math.min(1.15, E.min / 720)).toFixed(3));
-    svg.setAttribute("viewBox", "0 0 " + E.W + " " + E.H);
-    colocaFx();
+    var ancho = E.W / E.H >= 1.05, top = ancho ? 56 : 108, bot = 12, cm = document.getElementById("cmp"), rb = cm && cm.getBoundingClientRect(), b2, libre;
+    /* si el aviso de cookies ocupa la parte baja, el globo cabe entero por encima (solo si queda sitio suficiente) */
+    if (rb && rb.height > 0 && rb.top > E.H * 0.4 && rb.top < E.H) { b2 = E.H - rb.top + 8; if (E.H - top - b2 >= 0.58 * E.H) bot = Math.max(bot, b2); }
+    libre = E.H - top - bot;
+    E.D = Math.max(180, Math.min(E.W * (ancho ? 0.96 : 0.98), libre)); E.R = E.D / 2;
+    E.base = { x: E.W / 2, y: top + (ancho ? libre / 2 : (libre - E.D) * 0.3 + E.D / 2) };
+    E.k = clamp(E.D / 520, 0.6, 1.12); E.rho = 0.6;
+    sp.style.setProperty("--vs-k", E.k.toFixed(3));
+    sp.classList.toggle("vs--compacto", ancho && E.H < 480);
+    mundo.style.width = E.D + "px"; mundo.style.height = E.D + "px";
+    var dpr = Math.min(window.devicePixelRatio || 1, 1.5), N = clamp(Math.round(E.D * dpr * 0.9), 200, E.nMax);
+    if (N !== G.N) prepara(N);
+    if (est) { est.width = E.W; est.height = E.H; creaEstrellas(); }
   }
 
-  /* ---------- decoración alrededor del texto de cada cuña ---------- */
-  var fxL = [], fxD = [];
-  function creaFx() {
-    var cl = lados.letras && lados.letras.querySelector(".vs__fx"), cd = lados.dinamicos && lados.dinamicos.querySelector(".vs__fx");
-    var letras = "TIKITEXTOGOLAZO", cls = ["g", "y", "n"], k, s;
-    if (cl) for (k = 0; k < 12; k++) {
-      s = document.createElement("span"); s.className = "vs__t vs__t--" + cls[k % 3]; s.textContent = letras.charAt(k);
-      s.style.transform = "rotate(" + ((k * 37) % 30 - 15) + "deg)"; cl.appendChild(s); fxL.push(s);
-    }
-    var em = ["⚽", "🎮", "⚡", "🏆", "🕹️", "🥅", "🔥", "⚽"];
-    if (cd) for (k = 0; k < em.length; k++) {
-      s = document.createElement("span"); s.className = "vs__e"; s.textContent = em[k];
-      s.style.fontSize = (26 + (k * 7) % 22) + "px"; cd.appendChild(s); fxD.push(s);
-    }
+  /* ---------- reparto de reinos y posiciones ---------- */
+  function offActual() { return mod1024(OFF0 - E.spin * 1024 / TAU); }
+  function reinoEn(x, y) {
+    var dx = x - E.cx, dy = y - E.cy, r = Math.hypot(dx, dy), hubR = hub ? hub.offsetWidth * 0.6 : 0;
+    if (r > E.R || r < hubR) return null;
+    var lc = mod1024(-Math.atan2(dy, dx) / TAU * 1024 + offActual()), rc = mod1024(lc - COL0);
+    return NOM[Math.min(2, (rc * 0.0029296875) | 0)];
   }
-  function colocaFx() {
-    var k = parseFloat(sp.style.getPropertyValue("--vs-k")) || 1, rx = 255 * k, ry = 168 * k, i, an;
-    for (i = 0; i < fxL.length; i++) { an = i / fxL.length * 6.2832 + 0.3; fxL[i].style.left = Math.round(Math.cos(an) * rx - 20 * k) + "px"; fxL[i].style.top = Math.round(Math.sin(an) * ry - 20 * k) + "px"; }
-    for (i = 0; i < fxD.length; i++) { an = i / fxD.length * 6.2832 + 0.7; fxD[i].style.left = Math.round(Math.cos(an) * rx * 1.02 - 18) + "px"; fxD[i].style.top = Math.round(Math.sin(an) * ry * 1.02 - 18) + "px"; }
-  }
+  function angDe(e) { return Math.atan2(e.clientY - E.cy, e.clientX - E.cx); }
 
-  /* ---------- geometría ---------- */
-  function lejos(c) {
-    var m = 0, xs = [0, E.W], ys = [0, E.H];
-    for (var a = 0; a < 2; a++) for (var b = 0; b < 2; b++) m = Math.max(m, Math.hypot(xs[a] - c.x, ys[b] - c.y));
-    return m;
-  }
-  /* Rayo desde c con ángulo a: línea recta o zigzag de rayo (vértices a distancias fijas del centro). */
-  function rayo(c, a, j, R, Rp, t, zig) {
-    var dx = Math.cos(a * RAD), dy = Math.sin(a * RAD), pts = [{ x: c.x, y: c.y }];
-    if (zig) {
-      var st = Math.max(46, E.min * 0.085), n = Math.ceil(R / st), amp = E.min * 0.03, k, dist, f;
-      if (n > 26) { n = 26; st = R / n; }
-      for (k = 1; k <= n; k++) {
-        dist = k * st; if (dist >= Rp - st * 0.3) break;
-        f = (k % 2 ? 1 : -1) * (0.5 + 0.5 * hash(k, j)) * amp * (1 + (reducido ? 0 : 0.16 * Math.sin(t * 0.0017 + k * 0.9 + j * 2)));
-        pts.push({ x: c.x + dx * dist - dy * f, y: c.y + dy * dist + dx * f });
-      }
-    }
-    pts.push({ x: c.x + dx * Rp, y: c.y + dy * Rp });
-    return pts;
-  }
-  function cuna(i, rays, c, Rp) {
-    var a = E.d.ang[i], b = E.d.ang[(i + 1) % 3], ra = rays[i], rb = rays[(i + 1) % 3], pts = ra.slice(), g, k;
-    if (b <= a) b += 360;
-    for (g = a + 9; g < b - 1; g += 9) pts.push({ x: c.x + Math.cos(g * RAD) * Rp, y: c.y + Math.sin(g * RAD) * Rp });
-    for (k = rb.length - 1; k >= 1; k--) pts.push(rb[k]);
-    return pts;
-  }
-  function corte(poly, ax, v, mayor) {
-    var out = [], n = poly.length, i, a, b, da, db, t;
-    for (i = 0; i < n; i++) {
-      a = poly[i]; b = poly[(i + 1) % n];
-      da = mayor ? a[ax] - v : v - a[ax]; db = mayor ? b[ax] - v : v - b[ax];
-      if (da >= 0) out.push(a);
-      if ((da >= 0) !== (db >= 0)) { t = da / (da - db); out.push({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t }); }
-    }
-    return out;
-  }
-  function recorta(p) { return corte(corte(corte(corte(p, "x", 0, true), "x", E.W, false), "y", 0, true), "y", E.H, false); }
-  function medidas(p) {
-    var A = 0, cx = 0, cy = 0, n = p.length, i, a, b, cr;
-    for (i = 0; i < n; i++) { a = p[i]; b = p[(i + 1) % n]; cr = a.x * b.y - b.x * a.y; A += cr; cx += (a.x + b.x) * cr; cy += (a.y + b.y) * cr; }
-    A /= 2;
-    if (Math.abs(A) < 1) return { a: 0, x: E.W / 2, y: E.H / 2 };
-    return { a: Math.abs(A), x: cx / (6 * A), y: cy / (6 * A) };
-  }
-  function poligono(p) {
-    if (p.length < 3) return "polygon(0px 0px,0px 0px,0px 0px)";
-    var s = "polygon(", i;
-    for (i = 0; i < p.length; i++) s += (i ? "," : "") + p[i].x.toFixed(1) + "px " + p[i].y.toFixed(1) + "px";
-    return s + ")";
-  }
-  function bis(i) { var a = E.d.ang[i], b = E.d.ang[(i + 1) % 3]; if (b <= a) b += 360; return (a + b) / 2; }
-  function idx(n) { return E.d.nom.indexOf(n); }
-
-  /* ---------- dibujo ---------- */
-  function pinta(t) {
-    var c = E.c, d = E.d, R = lejos(c) * 1.1, e = ease(E.p), Rp = Math.max(8, R * e), rz = [], rs = [], j, i, n, el, pz, ps, m, mz, pts, s;
-    for (j = 0; j < 3; j++) { rz.push(rayo(c, d.ang[j], j, R, Rp, t, true)); rs.push(rayo(c, d.ang[j], j, R, Rp, t, false)); }
+  function pinta(ts, dt) {
+    var e = ease(E.p), sv = E.spin + (1 - e) * 2.2, offc = OFF0 - sv * 1024 / TAU, rho = E.rho * E.R * (0.35 + 0.65 * e), i, n, ang, x, y;
+    var s = 0.55 + 0.45 * e, tx = 0, ty = 0, cx = E.cx, cy = E.cy, q = 0, z = 0;
     for (i = 0; i < 3; i++) {
-      n = d.nom[i]; el = lados[n];
-      pz = recorta(cuna(i, rz, c, Rp)); ps = recorta(cuna(i, rs, c, Rp));
-      s = poligono(pz); el.style.clipPath = s; el.style.webkitClipPath = s;
-      m = medidas(E.top ? corte(ps, "y", E.top, true) : ps); mz = medidas(pz);
-      E.areas[i] = mz.a / (E.W * E.H); E.anclas[n] = { x: m.x, y: m.y };
-      txts[n].style.transform = "translate3d(" + m.x.toFixed(1) + "px," + m.y.toFixed(1) + "px,0)";
+      n = NOM[i]; ang = -(CC[i] - offc) * TAU / 1024; x = cx + Math.cos(ang) * rho; y = cy + Math.sin(ang) * rho;
+      E.pos[n] = { x: x, y: y }; E.anclas[n] = { x: Math.round(x), y: Math.round(y) };
+      lados[n].style.transform = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0) translate(-50%,-50%)";
     }
-    for (j = 0; j < 3; j++) {
-      pts = rz[j].map(function (q) { return q.x.toFixed(1) + "," + q.y.toFixed(1); }).join(" ");
-      var pl = grupos[j].querySelectorAll("polyline"), k;
-      for (k = 0; k < pl.length; k++) pl[k].setAttribute("points", pts);
-      var ch = grupos[j].querySelector("circle");
-      if (ch) {
-        if (reducido || E.sel || E.p < 1) ch.setAttribute("r", "0");
-        else {
-          var tot = 0, q = rz[j], seg = [], acc, pos, u;
-          for (k = 1; k < q.length; k++) { u = Math.hypot(q[k].x - q[k - 1].x, q[k].y - q[k - 1].y); seg.push(u); tot += u; }
-          pos = (((t * 0.00042) + j / 3) % 1) * tot * 0.62 + 40; acc = 0;
-          for (k = 0; k < seg.length; k++) {
-            if (acc + seg[k] >= pos) { u = (pos - acc) / seg[k]; ch.setAttribute("cx", (q[k].x + (q[k + 1].x - q[k].x) * u).toFixed(1)); ch.setAttribute("cy", (q[k].y + (q[k + 1].y - q[k].y) * u).toFixed(1)); ch.setAttribute("r", "4.5"); break; }
-            acc += seg[k];
-          }
-        }
-      }
+    if (E.sel) {
+      q = Math.min(1, (ts - E.selT0) / 620); z = q < 0.5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2;
+      var P0 = E.pos[E.sel], p0x = P0.x - cx, p0y = P0.y - cy; s = 1 + 3.6 * z;
+      tx = P0.x * (1 - z) + (E.W / 2) * z - cx - s * p0x; ty = P0.y * (1 - z) + (E.H / 2) * z - cy - s * p0y;
+      if (velo) velo.style.opacity = Math.max(0, (q - 0.5) / 0.5).toFixed(3);
     }
-    if (hub) {
-      var sc = E.sel ? 1 - Math.min(1, (t - E.selT0) / 260) : e;
-      hub.style.transform = "translate3d(" + c.x.toFixed(1) + "px," + c.y.toFixed(1) + "px,0) scale(" + Math.max(0, sc).toFixed(3) + ")";
+    mundo.style.transform = "translate3d(" + (cx - E.D / 2 + tx).toFixed(1) + "px," + (cy - E.D / 2 + ty).toFixed(1) + "px,0) scale(" + s.toFixed(4) + ")";
+    mundo.style.opacity = Math.min(1, e * 1.8).toFixed(3);
+    if (hub) hub.style.transform = "translate3d(" + cx.toFixed(1) + "px," + cy.toFixed(1) + "px,0)";
+    /* brillo del reino apuntado */
+    var hv = E.hover || E.foco, cambio = false, r, k = reducido ? 1 : 1 - Math.exp(-(dt || 0.016) * 10);
+    for (r = 0; r < 3; r++) {
+      E.briT[r] = hv && REINO[hv] === r ? 1.3 : 1;
+      if (Math.abs(E.briT[r] - E.bri[r]) > 0.004) { E.bri[r] += (E.briT[r] - E.bri[r]) * k; cambio = true; }
     }
-  }
-
-  function objetivo(t) {
-    var b = E.base, tx = b.x, ty = b.y, n = E.hover || E.foco, a;
-    if (!reducido) {
-      tx += Math.sin(t * 0.0009) * E.W * 0.006; ty += Math.cos(t * 0.0007) * E.H * 0.006;
-      if (E.ptr.on) { tx += (E.ptr.x / E.W - 0.5) * E.W * 0.05; ty += (E.ptr.y / E.H - 0.5) * E.H * 0.05; }
-    }
-    if (n && idx(n) >= 0) { a = bis(idx(n)) * RAD; tx -= Math.cos(a) * E.min * 0.085; ty -= Math.sin(a) * E.min * 0.085; }
-    return { x: tx, y: ty };
+    if (cambio || !E.tablaOk) { tabla(); E.tablaOk = true; }
+    var t0 = performance.now();
+    renderGlobo(sv);
+    return { q: q, coste: performance.now() - t0 };
   }
 
   function bucle(ts) {
     E.raf = 0;
     if (!E.abierto) return;
-    var dt = Math.min(0.05, (ts - (E.last || ts)) / 1000), seguir = true;
+    var dt = Math.min(0.05, (ts - (E.last || ts)) / 1000), seguir = true, k, o, r;
     E.last = ts;
-    if (E.p < 1) E.p = Math.min(1, (ts - E.t0) / 560);
-    if (E.sel) {
-      var q = Math.min(1, (ts - E.selT0) / 440), z = q < 0.5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2, i = idx(E.sel), a = bis(i < 0 ? 0 : i) * RAD, R2 = 2.4 * Math.max(E.W, E.H);
-      E.c.x = E.selC0.x + (E.base.x - Math.cos(a) * R2 - E.selC0.x) * z; E.c.y = E.selC0.y + (E.base.y - Math.sin(a) * R2 - E.selC0.y) * z;
-      if (q >= 1 && !E.fin) { E.fin = true; terminar(); seguir = false; }
-    } else {
-      var o = objetivo(ts), k = 1 - Math.exp(-dt * 9);
-      E.c.x += (o.x - E.c.x) * k; E.c.y += (o.y - E.c.y) * k;
+    if (E.p < 1) E.p = Math.min(1, (ts - E.t0) / 750);
+    if (!E.drag) {
+      var tg = (E.hover || E.foco) && !E.sel ? E.auto * 0.1 : E.auto;
+      E.vel += (tg - E.vel) * (1 - Math.exp(-dt * 1.8)); E.spin += E.vel * dt;
     }
-    pinta(ts);
-    if (seguir && E.abierto && !reducido) E.raf = requestAnimationFrame(bucle);
+    o = { x: E.base.x, y: E.base.y };
+    if (E.ptr.on && !E.sel) { o.x += (E.ptr.x / E.W - 0.5) * E.W * 0.02; o.y += (E.ptr.y / E.H - 0.5) * E.H * 0.02; }
+    k = 1 - Math.exp(-dt * 7); E.cx += (o.x - E.cx) * k; E.cy += (o.y - E.cy) * k;
+    r = pinta(ts, dt);
+    E.coste = E.coste * 0.9 + r.coste * 0.1;
+    if (E.coste > 13 && E.nMax > 220 && ++E.lentos > 25) { E.lentos = 0; E.nMax = Math.max(220, Math.round(G.N * 0.8)); medir(); } else if (E.coste <= 13) E.lentos = 0;
+    if (!E.estUlt || ts - E.estUlt > 45) { E.estUlt = ts; pintaEstrellas(ts); }
+    if (E.sel && r.q >= 1 && !E.fin) { E.fin = true; terminar(); seguir = false; }
+    if (seguir && E.abierto) E.raf = requestAnimationFrame(bucle);
   }
   function pide() {
     if (!E.abierto) return;
-    if (reducido) {
-      if (E.sel) return;
-      var o = objetivo(0); E.c.x = o.x; E.c.y = o.y; pinta(0);
-    } else if (!E.raf) E.raf = requestAnimationFrame(bucle);
+    if (reducido) { if (!E.sel) { E.cx = E.base.x; E.cy = E.base.y; pinta(0, 1); } }
+    else if (!E.raf) E.raf = requestAnimationFrame(bucle);
+  }
+
+  /* ---------- textura de tierra (solo al abrir por primera vez) ---------- */
+  function cargaTierra() {
+    if (E.tierra || E.tierraCargando) return;
+    E.tierraCargando = true;
+    var im = new Image();
+    im.onload = function () {
+      try {
+        var c = document.createElement("canvas"), x, d, i;
+        c.width = 1024; c.height = 512; x = c.getContext("2d"); x.drawImage(im, 0, 0, 1024, 512);
+        d = x.getImageData(0, 0, 1024, 512).data;
+        for (i = 0; i < 1024 * 512; i++) TEX[i] = d[i * 4];
+        E.tierra = true; pide();
+      } catch (e) {}
+    };
+    im.onerror = function () { E.tierraCargando = false; };
+    im.src = "mapas/tierra.png";
   }
 
   /* ---------- abrir, cerrar, elegir ---------- */
   function libera() { E.timers.forEach(clearTimeout); E.timers = []; if (E.raf) { cancelAnimationFrame(E.raf); E.raf = 0; } }
   function abrir() {
-    libera(); medir();
-    E.abierto = true; E.sel = null; E.fin = false; E.hover = null; E.foco = null; E.last = 0;
-    E.c = { x: E.base.x, y: E.base.y }; E.t0 = performance.now(); E.p = reducido ? 1 : 0;
+    libera(); medir(); cargaTierra();
+    E.abierto = true; E.sel = null; E.fin = false; E.hover = null; E.foco = null; E.drag = null; E.last = 0; E.estUlt = 0; E.coste = 0; E.lentos = 0;
+    E.spin = 0; E.vel = E.auto; E.cx = E.base.x; E.cy = E.base.y; E.bri = [1, 1, 1]; E.tablaOk = false;
+    E.t0 = performance.now(); E.p = reducido ? 1 : 0;
+    if (velo) { velo.style.opacity = "0"; velo.style.background = ""; }
     sp.classList.remove("vs--elige", "vs--fuera"); sp.classList.add("vs--abre");
-    Object.keys(lados).forEach(function (n) { lados[n].classList.remove("vs__lado--sel"); });
-    pinta(E.t0);
-    E.timers.push(setTimeout(function () { sp.classList.remove("vs--abre"); }, 900));
+    Object.keys(lados).forEach(function (n) { lados[n].classList.remove("vs--resalta"); });
+    pinta(E.t0, 0.016); pintaEstrellas(E.t0);
+    E.timers.push(setTimeout(function () { sp.classList.remove("vs--abre"); }, 1000));
     if (!reducido) E.raf = requestAnimationFrame(bucle);
   }
   function cerrar() {
     E.abierto = false; libera();
     sp.hidden = true; sp.classList.remove("vs--elige", "vs--fuera", "vs--abre"); h.classList.remove("vs-abierto");
+    if (velo) velo.style.opacity = "0";
   }
   function terminar() {
     sp.classList.add("vs--fuera");
@@ -220,42 +266,91 @@
   }
   function elegir(n) {
     if (E.sel || !E.abierto || !lados[n]) return;
-    var tab = document.querySelector('[data-grupo-btn="' + n + '"]');
+    var tab = document.querySelector('[data-grupo-btn="' + n + '"]'), p = PAL[REINO[n]];
     if (tab) tab.click();
     window.scrollTo(0, 0); h.classList.remove("vs-abierto");
-    E.sel = n; lados[n].classList.add("vs__lado--sel");
+    E.sel = n; E.drag = null;
     if (reducido) { terminar(); return; }
-    sp.classList.add("vs--elige"); E.selT0 = performance.now(); E.selC0 = { x: E.c.x, y: E.c.y }; E.p = 1;
+    if (velo) velo.style.background = "radial-gradient(circle at 50% 50%, rgb(" + p.t.join(",") + ") 0, rgb(" + p.o.join(",") + ") 62%, #05060f 100%)";
+    sp.classList.add("vs--elige"); E.selT0 = performance.now(); E.p = 1;
     if (!E.raf) E.raf = requestAnimationFrame(bucle);
+  }
+  function resalta(n) {
+    E.hover = n;
+    Object.keys(lados).forEach(function (m) { lados[m].classList.toggle("vs--resalta", m === n); });
+    pide();
   }
 
   /* ---------- eventos ---------- */
-  creaFx();
   Object.keys(lados).forEach(function (n) {
     var el = lados[n];
     el.addEventListener("click", function () { elegir(n); });
-    el.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") { E.hover = n; pide(); } });
-    el.addEventListener("pointerleave", function () { if (E.hover === n) { E.hover = null; pide(); } });
+    el.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse" && !E.drag) resalta(n); });
+    el.addEventListener("pointerleave", function () { if (E.hover === n) resalta(null); });
     el.addEventListener("focus", function () { var v = false; try { v = el.matches(":focus-visible"); } catch (e) {} if (v) { E.foco = n; pide(); } });
     el.addEventListener("blur", function () { if (E.foco === n) { E.foco = null; pide(); } });
   });
+  mundo.addEventListener("pointerdown", function (e) {
+    if (E.sel || !E.abierto || (e.button !== undefined && e.button > 0)) return;
+    E.drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, t0: performance.now(), a: angDe(e), mov: 0, lt: performance.now() };
+    try { mundo.setPointerCapture(e.pointerId); } catch (x) {}
+    mundo.classList.add("vs--arrastra");
+  });
+  mundo.addEventListener("pointermove", function (e) {
+    var d = E.drag, a, da, now, dtt;
+    if (d && e.pointerId === d.id) {
+      d.mov = Math.max(d.mov, Math.hypot(e.clientX - d.x0, e.clientY - d.y0));
+      a = angDe(e);
+      if (d.mov > 6) {
+        da = d.a - a; if (da > Math.PI) da -= TAU; else if (da < -Math.PI) da += TAU;
+        E.spin += da; now = performance.now(); dtt = Math.max(0.008, (now - d.lt) / 1000); d.lt = now;
+        E.vel += (clamp(da / dtt, -7, 7) - E.vel) * 0.35;
+        pide();
+      }
+      d.a = a;
+    } else if (e.pointerType === "mouse") {
+      var n = reinoEn(e.clientX, e.clientY);
+      if (n !== E.hover) resalta(n);
+    }
+  });
+  function suelta(e, cancela) {
+    var d = E.drag;
+    if (!d || e.pointerId !== d.id) return;
+    E.drag = null; mundo.classList.remove("vs--arrastra");
+    if (!cancela && d.mov <= 8 && performance.now() - d.t0 < 700) { var n = reinoEn(e.clientX, e.clientY); if (n) elegir(n); }
+    pide();
+  }
+  mundo.addEventListener("pointerup", function (e) { suelta(e, false); });
+  mundo.addEventListener("pointercancel", function (e) { suelta(e, true); });
+  mundo.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse" && !E.drag && E.hover && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest(".vs__lado"))) resalta(null); });
   sp.addEventListener("pointermove", function (e) {
     if (e.pointerType !== "mouse") return;
-    E.ptr.x = e.clientX; E.ptr.y = e.clientY; E.ptr.on = true; pide();
+    E.ptr.x = e.clientX; E.ptr.y = e.clientY; E.ptr.on = true;
   });
-  sp.addEventListener("pointerleave", function () { E.ptr.on = false; pide(); });
+  sp.addEventListener("pointerleave", function () { E.ptr.on = false; });
   document.addEventListener("keydown", function (e) {
     if (!E.abierto || sp.hidden || e.ctrlKey || e.metaKey || e.altKey) return;
     var i = "123".indexOf(e.key);
     if (e.key.length === 1 && i >= 0) { e.preventDefault(); elegir(ORDEN_TECLAS[i]); }
+    else if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); E.spin += (e.key === "ArrowLeft" ? -1 : 1) * 0.26; pide(); }
   });
-  window.addEventListener("resize", function () { if (!E.abierto) return; medir(); if (!E.sel) { E.c = { x: E.base.x, y: E.base.y }; } pide(); if (reducido) pinta(0); });
+  document.addEventListener("click", function () { /* al aceptar o rechazar las cookies el aviso desaparece: el globo recupera el sitio */
+    if (!E.abierto) return;
+    setTimeout(function () { if (E.abierto && !E.sel) { medir(); pide(); } }, 140);
+  });
+  window.addEventListener("resize", function () { if (!E.abierto) return; medir(); if (!E.sel) { E.cx = E.base.x; E.cy = E.base.y; } pide(); });
+
+  sp.classList.add("vs--globo");
 
   /* Solo para pruebas */
   window.TIKI_SPLIT = {
     abrir: abrir, cerrar: cerrar, elegir: elegir,
     info: function () {
-      return { abierto: E.abierto, o: E.o, W: E.W, H: E.H, nombres: E.d.nom.slice(), areas: E.areas.slice(), anclas: JSON.parse(JSON.stringify(E.anclas)), centro: { x: E.c.x, y: E.c.y }, base: { x: E.base.x, y: E.base.y }, sel: E.sel, reducido: reducido };
-    }
+      return {
+        abierto: E.abierto, o: E.W / E.H >= 1.05 ? "h" : "v", W: E.W, H: E.H, nombres: ORDEN_TECLAS.slice(), centro: { x: E.cx, y: E.cy }, base: { x: E.base.x, y: E.base.y },
+        R: E.R, D: E.D, anclas: JSON.parse(JSON.stringify(E.anclas)), sel: E.sel, reducido: reducido, spin: E.spin, tierra: E.tierra, N: G.N, coste: E.coste
+      };
+    },
+    reino: function (x, y) { return reinoEn(x, y); }
   };
 })();

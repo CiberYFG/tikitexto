@@ -996,73 +996,83 @@
 },
 "en/games/3d-football-runner-game/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "b33071a41bb39dec"
+"mod": "2026-11-27",
+"h": "074fd3e747b499e7"
 },
 "en/games/3d-free-kick-game/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "c952947d67477f3e"
+"mod": "2026-11-27",
+"h": "5f6cf5b6b19b7d25"
 },
 "en/games/3d-penalty-shootout-game/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "cea13d32eef582ad"
+"mod": "2026-11-27",
+"h": "a1256cb8d9e46428"
 },
 "en/games/bottle-cap-football-game/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "7d1a0a5b48687ba4"
+"mod": "2026-11-27",
+"h": "d8bf93453004a6ae"
+},
+"en/games/find-the-country-blank-world-map-game/index.html": {
+"pub": "2026-11-27",
+"mod": "2026-11-27",
+"h": "eb2b999fa75fbb6b"
 },
 "en/games/football-alphabet-quiz/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "4b27ec6e119d0d94"
+"mod": "2026-11-27",
+"h": "cfdec4ebbe2d6213"
+},
+"en/games/football-compass-map-game/index.html": {
+"pub": "2026-11-27",
+"mod": "2026-11-27",
+"h": "2c49cb8be8945eb9"
 },
 "en/games/football-connections-puzzle/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "4457c61a7ffe0648"
+"mod": "2026-11-27",
+"h": "9a9e64a0b7c69173"
 },
 "en/games/football-crosses-grid-game/index.html": {
 "pub": "2026-11-24",
-"mod": "2026-11-26",
-"h": "038ed710fce4484f"
+"mod": "2026-11-27",
+"h": "e6b06ff523a7e348"
 },
 "en/games/football-data-duel-game/index.html": {
 "pub": "2026-11-21",
-"mod": "2026-11-26",
-"h": "025cff13eb8ac536"
+"mod": "2026-11-27",
+"h": "8b7e1630d65c30e8"
 },
 "en/games/football-juggling-keepy-uppy-game/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "3b44ec544d0aa69d"
+"mod": "2026-11-27",
+"h": "27c24ec37eb71130"
 },
 "en/games/football-memory-pairs-game/index.html": {
 "pub": "2026-11-23",
-"mod": "2026-11-26",
-"h": "6678b3de7abfbd61"
+"mod": "2026-11-27",
+"h": "f2e1234a418cd148"
 },
 "en/games/football-pinball-game/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "e2211bdd8d207a50"
+"mod": "2026-11-27",
+"h": "6f42aec321a20a6c"
 },
 "en/games/football-timeline-game/index.html": {
 "pub": "2026-11-23",
-"mod": "2026-11-26",
-"h": "18843db4b4e19e8c"
+"mod": "2026-11-27",
+"h": "8cf5200079c02cae"
 },
 "en/games/football-trivia-quiz-game/index.html": {
 "pub": "2026-11-23",
-"mod": "2026-11-26",
-"h": "6205628289f326ba"
+"mod": "2026-11-27",
+"h": "6032889d8ce5fab8"
 },
 "en/games/football-which-one-belongs-quiz/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "609e49d01ca3f596"
+"mod": "2026-11-27",
+"h": "8f4ae90df05b0e68"
 },
 "en/games/football-winner-stays-on-game/index.html": {
 "pub": "2026-11-24",
@@ -1071,23 +1081,33 @@
 },
 "en/games/football-word-search-game/index.html": {
 "pub": "2026-11-23",
-"mod": "2026-11-26",
-"h": "0c43cb537e62842c"
+"mod": "2026-11-27",
+"h": "3b87b7aa194fd97d"
 },
 "en/games/hidden-football-stars-word-grid/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "30c04d7086f3652c"
+"mod": "2026-11-27",
+"h": "b77e4184cc2a8653"
 },
 "en/games/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "257a747be7a9d02f"
+"mod": "2026-11-27",
+"h": "02abc1d6e658d871"
 },
 "en/games/pin-the-spot-football-map-game/index.html": {
 "pub": "2026-11-26",
-"mod": "2026-11-26",
-"h": "c480e9c23a6698d0"
+"mod": "2026-11-27",
+"h": "b4eea4775ab3ac08"
+},
+"en/games/star-route-football-map-game/index.html": {
+"pub": "2026-11-27",
+"mod": "2026-11-27",
+"h": "f663cbb26257c544"
+},
+"en/games/zoom-out-football-city-guessing-game/index.html": {
+"pub": "2026-11-27",
+"mod": "2026-11-27",
+"h": "33c6513b6a32d55f"
 },
 "en/guess-the-manager/index.html": {
 "pub": "2026-10-31",
@@ -1176,8 +1196,8 @@
 },
 "index.html": {
 "pub": "2026-10-30",
-"mod": "2026-11-26",
-"h": "39a84cf0cc6213ae"
+"mod": "2026-11-27",
+"h": "38c72c3075d1ccae"
 },
 "it/curiosidades/campeones/index.html": {
 "pub": "2026-10-31",
@@ -1196,98 +1216,118 @@
 },
 "juegos/a-que-pertenece-futbol/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "1e5f9e788538b603"
+"mod": "2026-11-27",
+"h": "102ffd669a4e98a4"
+},
+"juegos/brujula-del-futbol-juego-de-mapas/index.html": {
+"pub": "2026-11-27",
+"mod": "2026-11-27",
+"h": "cd1d1225df976ade"
 },
 "juegos/chapas-futbol-online/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "bce3c0d57b44f995"
+"mod": "2026-11-27",
+"h": "e9651319324a85d4"
 },
 "juegos/clava-el-sitio-juego-mapas-futbol/index.html": {
 "pub": "2026-11-26",
-"mod": "2026-11-26",
-"h": "f16e9ae7284d287f"
+"mod": "2026-11-27",
+"h": "f972352354730613"
 },
 "juegos/cracks-ocultos-futbol/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "0a310673347f904d"
+"mod": "2026-11-27",
+"h": "e7ee3c5ad510ed8a"
 },
 "juegos/cruces-futbol-cuadricula/index.html": {
 "pub": "2026-11-24",
-"mod": "2026-11-26",
-"h": "3c77ee02dba61d47"
+"mod": "2026-11-27",
+"h": "3efc827b8ca2b21c"
 },
 "juegos/cuartetos-futbol/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "ee7a55a7780f8219"
+"mod": "2026-11-27",
+"h": "a71653584201e888"
 },
 "juegos/duelo-de-datos-futbol/index.html": {
 "pub": "2026-11-21",
-"mod": "2026-11-26",
-"h": "5edb10b413550eb4"
+"mod": "2026-11-27",
+"h": "062f7e06d2e1052a"
 },
 "juegos/el-que-gana-se-queda-futbol/index.html": {
 "pub": "2026-11-24",
 "mod": "2026-11-25",
 "h": "48429fd567a021cb"
 },
+"juegos/encuentra-el-pais-mapa-mudo-futbol/index.html": {
+"pub": "2026-11-27",
+"mod": "2026-11-27",
+"h": "1e5ac6d3a09c4023"
+},
 "juegos/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "49f851ab66d32686"
+"mod": "2026-11-27",
+"h": "82e8dd782e2a559c"
 },
 "juegos/linea-del-tiempo-futbol/index.html": {
 "pub": "2026-11-23",
-"mod": "2026-11-26",
-"h": "7803495188d4b58d"
+"mod": "2026-11-27",
+"h": "23588c53d8d35caa"
 },
 "juegos/memoria-parejas-futbol/index.html": {
 "pub": "2026-11-23",
-"mod": "2026-11-26",
-"h": "bce839afc83fddb1"
+"mod": "2026-11-27",
+"h": "abe8caa150095758"
 },
 "juegos/pasapalabra-futbol/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "42435ba86f698557"
+"mod": "2026-11-27",
+"h": "3345afd791fe27f3"
 },
 "juegos/penaltis-3d-futbol/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "52aa4bf346091c6a"
+"mod": "2026-11-27",
+"h": "c5aed7d27872cb6a"
 },
 "juegos/pinball-futbol-golazo/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "7a8d74608cd6cf88"
+"mod": "2026-11-27",
+"h": "0577499ecc773ad1"
+},
+"juegos/ruta-del-crack-juego-de-mapas-futbol/index.html": {
+"pub": "2026-11-27",
+"mod": "2026-11-27",
+"h": "9cd5b512aae258e0"
 },
 "juegos/slalom-futbol-3d/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "1df9e897b8ffac10"
+"mod": "2026-11-27",
+"h": "fa6d195bed97c61d"
 },
 "juegos/sopa-de-letras-futbol/index.html": {
 "pub": "2026-11-23",
-"mod": "2026-11-26",
-"h": "0f2acc8444ea1458"
+"mod": "2026-11-27",
+"h": "d6ace17a862ba64a"
 },
 "juegos/tiros-libres-3d-futbol/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "d0252c966bee5a16"
+"mod": "2026-11-27",
+"h": "4197e1086f05265f"
 },
 "juegos/toques-futbol-malabares/index.html": {
 "pub": "2026-11-16",
-"mod": "2026-11-26",
-"h": "8ed13d28e155b721"
+"mod": "2026-11-27",
+"h": "2b293b0eaf41bf29"
 },
 "juegos/trivia-futbol-preguntas/index.html": {
 "pub": "2026-11-23",
-"mod": "2026-11-26",
-"h": "6419f9e1132581e3"
+"mod": "2026-11-27",
+"h": "ce78cbc977d3ad91"
+},
+"juegos/zoom-out-juego-de-ciudades-futbol/index.html": {
+"pub": "2026-11-27",
+"mod": "2026-11-27",
+"h": "f6d19a8d99bd2b10"
 },
 "peques/adivinanzas-de-futbol/index.html": {
 "pub": "2026-11-05",

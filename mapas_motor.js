@@ -108,7 +108,7 @@ export function crearMapa(cont, op) {
   let w = 300, h = 300, dpr = 1;
   let cx = 0.5, cy = 0.42, z = 1.4;
   let etiq = { paises: op.paises !== false, ciudades: op.ciudades !== false, mares: op.mares !== false, carreteras: op.carreteras !== false };
-  let marcadores = [], destruido = false, sucio = true, raf = 0, interactivo = true;
+  let marcadores = [], destruido = false, sucio = true, raf = 0, interactivo = true, capa = null;
   let mundo = null, indice = null;
   const teselas = new Map(); // clave -> {estado:"carga"|"lista"|"error", datos, uso}
   let ciudades = null, nombresC = null, paisesD = null;
@@ -187,7 +187,7 @@ export function crearMapa(cont, op) {
     const q = proyecta(lon, lat);
     inercia = null;
     zz = Math.max(zMin(), Math.min(ZMAX, zz == null ? z : zz));
-    if (!ms) { cx = q.x; cy = q.y; z = zz; acota(); cambio(); if (alTerminar) alTerminar(); return; }
+    if (!ms) { vuelo = null; cx = q.x; cy = q.y; z = zz; acota(); cambio(); if (alTerminar) alTerminar(); return; }
     vuelo = { t0: performance.now(), ms: ms, x0: cx, y0: cy, z0: z, x1: q.x, y1: q.y, z1: zz, fin: alTerminar };
     pedir();
   }
@@ -631,6 +631,11 @@ export function crearMapa(cont, op) {
         if (!bref || !activo || performance.now() - ultimoRender > 45 || !cubre()) renderBase();
       }
       compone();
+      if (capa) { /* capa propia del juego (p. ej. un país resaltado), bajo los marcadores */
+        mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        try { const o = aPantalla(0, 0); capa(mctx, { ox: o.x, oy: o.y, W: anchoMundo(), dpr: dpr, w: w, h: h }); } catch (e) { /* opcional */ }
+        mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
       dibujaMarcadores();
       dibujaEscala();
       if (hayVuelo) cambio();
@@ -652,11 +657,13 @@ export function crearMapa(cont, op) {
     ponMarcadores: (lista) => { const ahora = hoyLuz(); marcadores = lista.map((m) => Object.assign({ t0: ahora, tipo: "pin", color: "#e0321f" }, m)); invalida(); },
     marcadores: () => marcadores.slice(),
     nombreCiudad: (i) => (nombresC && nombresC[i]) || (ciudades && ciudades[i] && ciudades[i].asc) || "",
+    ciudad: (i) => { const c = ciudades && ciudades[i]; return c ? { lon: c.lon, lat: c.lat, pop: c.pop, cap: c.cap, iso: c.iso, nom: (nombresC && nombresC[i]) || c.asc } : null; },
     nombrePais: (iso) => { const p = paisesD && paisesD.find((q) => q.iso === iso); return p ? p.nom : ""; },
     setTema: (t) => { tema = t === "claro" ? "claro" : "oscuro"; P = TEMAS[tema]; cv.style.background = P.mar; invalida(); },
     setEtiquetas: (o) => { etiq = Object.assign(etiq, o); invalida(); },
     setHolgura: (o) => { holg = Object.assign({ t: 0, r: 0, b: 0, l: 0 }, o || {}); acota(); invalida(); },
     setInteractivo: (v) => { interactivo = !!v; },
+    setCapa: (fn) => { capa = typeof fn === "function" ? fn : null; pedir(); },
     redibuja: pedir,
     forzarDibujo: () => { if (raf) { cancelAnimationFrame(raf); raf = 0; } baseInvalida = true; sucio = true; bucle(); },
     estadoTeselas: () => [...teselas.entries()].map((e) => e[0] + ":" + e[1].estado),

@@ -1,0 +1,62 @@
+/* MAPAS · minijuegos (Zoom out, Brújula, Ruta del crack, Encuentra el país). Se carga junto con mapas.css (mismo sistema visual: .mp-*);
+   aquí solo lo propio de estos juegos: reloj de la ronda, botones de respuesta y la brújula de 8 rumbos. Prefijo mj-. */
+
+/* reloj de la ronda: barra fina bajo la pregunta */
+.mj-tiempo { height: 6px; margin: 11px 0 1px; border-radius: 6px; background: rgba(160, 190, 220, .28); overflow: hidden; }
+.mj-tiempo i { display: block; height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--ok), var(--oro)); transform-origin: left center; transform: scaleX(1); }
+.mj-tiempo.pocos i { background: linear-gradient(90deg, var(--mal), var(--nar)); animation: mjLate .5s ease-in-out infinite alternate; }
+@keyframes mjLate { from { opacity: 1; } to { opacity: .55; } }
+
+/* respuestas */
+.mj-resp:empty { display: none; }
+.mj-resp--op { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mj-resp--1 { grid-template-columns: 1fr; }
+.mj-op { position: relative; min-height: 50px; display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 15px; border: 1px solid var(--borde); background: var(--vidrio-2); color: var(--txt); text-align: left; font: 750 .93rem/1.12 var(--f); letter-spacing: -.01em; transition: transform .1s, background .15s, border-color .15s, box-shadow .2s; }
+.mj-op b { flex: none; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 7px; background: rgba(160, 190, 220, .25); font: 800 .74rem/1 var(--f); color: var(--sub); }
+.mj-op span { min-width: 0; overflow-wrap: anywhere; }
+.mj-op:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--oro); background: var(--vidrio); }
+.mj-op:active:not(:disabled) { transform: scale(.97); }
+.mj-op:disabled { cursor: default; }
+.mj-op.ok { background: rgba(52, 224, 137, .22); border-color: var(--ok); box-shadow: 0 0 0 2px rgba(52, 224, 137, .3); }
+.mj-op.ok b { background: var(--ok); color: #04200f; }
+.mj-op.mal { background: rgba(255, 91, 69, .2); border-color: var(--mal); animation: mjSacude .35s; }
+.mj-op.mal b { background: var(--mal); color: #fff; }
+.mj-op:disabled:not(.ok):not(.mal) { opacity: .55; }
+@keyframes mjSacude { 20%, 60% { transform: translateX(-4px); } 40%, 80% { transform: translateX(4px); } }
+.mp-raiz[data-t="claro"] .mj-op.ok { background: rgba(11, 143, 77, .16); border-color: #0b8f4d; }
+.mp-raiz[data-t="claro"] .mj-op.mal { background: rgba(192, 48, 31, .14); border-color: #c0301f; }
+
+/* brújula: 8 rumbos en 4 × 2 (compacta: cabe en móvil y en horizontal) */
+.mj-resp--dir { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+.mj-dir { min-height: 54px; flex-direction: column; justify-content: center; gap: 3px; padding: 6px 4px; text-align: center; }
+.mj-dir i { display: block; font: 800 1.35rem/1 var(--f); font-style: normal; color: var(--oro); transition: transform .2s; }
+.mp-raiz[data-t="claro"] .mj-dir i { color: #a35f00; }
+.mj-dir span { font: 800 .78rem/1 var(--f); letter-spacing: .06em; }
+.mj-dir.ok i { color: var(--ok); } .mj-dir.mal i { color: var(--mal); }
+
+/* acciones (pista / confirmar) */
+.mj-acc { display: flex; gap: 8px; }
+.mj-acc .mp-cta { min-height: 48px; }
+.mj-acc .mp-cta[data-confirmar] { flex: 1; }
+.mj-pista { flex: 1; width: auto; white-space: nowrap; min-height: 48px; border-radius: 14px; }
+.mj-pista.usada { opacity: .6; }
+.mj-acc:has([data-confirmar]:not([hidden])) .mj-pista { flex: 0 0 auto; }
+
+@media (min-width: 760px) {
+  .mj-resp--op { gap: 9px; }
+  .mj-op { min-height: 54px; font-size: 1rem; }
+}
+@media (max-height: 560px) and (orientation: landscape) {
+  .mj-op { min-height: 40px; padding: 5px 9px; font-size: .85rem; }
+  .mj-dir { min-height: 42px; flex-direction: row; gap: 6px; }
+  .mj-dir i { font-size: 1.05rem; }
+  .mj-tiempo { margin: 6px 0 0; height: 5px; }
+  .mj-resp--op { grid-template-columns: repeat(4, 1fr); }
+  .mp-raiz[data-juego-mapas] .mp-guia { display: none; }
+  .mp-raiz[data-juego-mapas]:not([data-juego-mapas="zoom"]) .mp-preg__s { display: none; }
+  .mp-raiz[data-juego-mapas] .mp-preg { padding: 8px 14px 9px; }
+  .mp-raiz[data-juego-mapas] .mp-preg__k { margin-bottom: 3px; }
+  .mj-acc .mp-cta, .mj-pista { min-height: 38px; padding-top: 6px; padding-bottom: 6px; font-size: .9rem; }
+  .mp-raiz[data-juego-mapas] .mp-pie__caja { padding: 8px; }
+}
+@media (prefers-reduced-motion: reduce) { .mj-tiempo.pocos i, .mj-op.mal { animation: none !important; } }

@@ -2,7 +2,7 @@
 <html lang="es" data-tema="claro" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-6UlHlYfCjPwylMPR26LDvRhs/0Gni/57ybuYfdOgDsY=' 'sha256-Hh7AAfX3Yp/x7pTDr4V5becjXTit8YHHDq0YZJCFmvA=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-Q4DNc5dFFJiuKYDV00M/c+l8IGecYTkotvVctW9aob8=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Hh7AAfX3Yp/x7pTDr4V5becjXTit8YHHDq0YZJCFmvA=' 'sha256-OePUUsC1M/wMD1ozJdtm5REZK5I+iKPpmpWmN4rhbM0=' 'sha256-PgH5EQF4/s2wLsm7R6RBSJnb2D9OaAZ8h5Sb9HNFO1c=' 'sha256-Q4DNc5dFFJiuKYDV00M/c+l8IGecYTkotvVctW9aob8=' 'sha256-QuFKx5dzAO5095xkJNjNI9ZhcXkxyXlqzvciKSpjyNg=' 'sha256-SeSctom3ekMrPURkZsWRH4rwrILQ7wTRf/JwjzxvMA0=' 'sha256-YyRqnmVGgWo3JA5aYcoapceVk0W90PmtD20TbTqEVB8=' 'sha256-n04q1GGcc7VDy1wzskMTKWZpGSRWJZMPPkfd9jMZOmQ=' 'sha256-oMYQz1NXkbX2s9bymskXVb7zr703Sp6M9oi7O8iDmUY=' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; media-src 'self' data:; connect-src 'self' https://dvybttkqvrpzrvpnszxc.supabase.co https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});</script>
 <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WN89TQCM"></script>
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -1635,6 +1635,10 @@ button.ir-juegos { border: 0; cursor: pointer; }
 .mp-card { background: linear-gradient(150deg, #0e3a6b, #1a2a7a 55%, #3b1d6b); }
 .cr-card { background: linear-gradient(150deg, #0b3a4a, #1b2a78 55%, #5a1f6b); }
 .ma-card { background: linear-gradient(150deg, #0a2a4a, #0b4a5c 55%, #17418a); }
+.mj-card--zoom { background: linear-gradient(150deg, #0a3a5a, #0b5a6c 55%, #1a3f8a); }
+.mj-card--bru { background: linear-gradient(150deg, #0e2b6b, #1a2a7a 55%, #0b5a5c); }
+.mj-card--ruta { background: linear-gradient(150deg, #2a1668, #1b2a78 55%, #0b4a5c); }
+.mj-card--pais { background: linear-gradient(150deg, #0a4a40, #0b3a6c 55%, #1a2a7a); }
 .so-card { background: linear-gradient(150deg, #0a4a30, #0b3a5c 58%, #1a5a2a); }
 .lt-card { background: linear-gradient(150deg, #2a1668, #1b1b78 55%, #5b1a60); }
 .tv-card { background: linear-gradient(150deg, #0a4a5c, #0b2a6b 55%, #134a2a); }
@@ -1764,68 +1768,68 @@ button.ir-juegos { border: 0; cursor: pointer; }
 .vj-tab { overflow: hidden; isolation: isolate; }
 .vj-tab__fx { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; border-radius: inherit; }
 .vj-grupo > .ch-card, .vj-grupo > .ah-card, .vj-grupo > .nd-card, .vj-grupo > .novedad { margin-top: 14px; }
-/* Pantalla dividida al entrar en Juegos: «Y» de 3 cuñas (la geometría y la animación las pone split.js; aquí, el aspecto y un respaldo estático sin JS) */
+/* Pantalla «mundo» al entrar en Juegos: un globo terráqueo con tres reinos (Letras · Videojuegos · Mapas). split.js dibuja el globo en un <canvas>
+   (mira al polo norte: los tres reinos son tres cuñas que se juntan en el logo), lo hace girar y coloca las etiquetas; aquí, el aspecto y un respaldo
+   sin JS (tres franjas). */
 html.vs-abierto { overflow: hidden; }
-.vs { position: fixed; inset: 0; z-index: 3000; background: #05060f; overflow: hidden; transition: opacity .18s; touch-action: manipulation; }
+.vs { position: fixed; inset: 0; z-index: 3000; background: radial-gradient(ellipse at 50% 44%, #131f55 0, #080c26 52%, #03040d 100%); overflow: hidden; color: #fff; transition: opacity .18s; touch-action: manipulation; }
 .vs[hidden] { display: none; }
 .vs:focus { outline: none; }
 .vs--fuera { opacity: 0; }
-.vs__lado { position: absolute; inset: 0; margin: 0; padding: 0; border: 0; cursor: pointer; color: #fff; font: inherit; overflow: hidden; -webkit-tap-highlight-color: transparent; transition: filter .25s; }
+.vs__estrellas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.vs__mundo { position: absolute; left: 0; top: 0; z-index: 1; border-radius: 50%; will-change: transform; touch-action: none; cursor: grab; -webkit-tap-highlight-color: transparent; }
+.vs__mundo.vs--arrastra { cursor: grabbing; }
+.vs__globo { display: block; width: 100%; height: 100%; border-radius: 50%; }
+.vs__atm { position: absolute; inset: -7%; border-radius: 50%; pointer-events: none; background: radial-gradient(closest-side, transparent 84%, rgba(90, 175, 255, .42) 88.5%, rgba(145, 100, 255, .16) 94%, transparent 100%); }
+.vs__lado { margin: 0; padding: 0; border: 0; color: #fff; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .vs__lado:focus { outline: none; }
-.vs__lado:hover, .vs__lado:focus-visible { filter: brightness(1.14) saturate(1.1); }
-.vs__lado::before { content: ""; position: absolute; inset: 0; pointer-events: none; }
-.vs__lado--letras { --g: #2fe0a2; background: linear-gradient(160deg, #0f6b52, #1b5fd6 62%, #1a2a7a); clip-path: polygon(50% 46%, 50% 0%, 0% 0%, 0% 85.6%); }
-.vs__lado--letras::before { background: repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0 2px, transparent 2px 58px), repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0 2px, transparent 2px 58px); }
-.vs__lado--dinamicos { --g: #ff5f9a; background: linear-gradient(200deg, #2a0f4f, #7a1fa2 50%, #ff2e63 130%); clip-path: polygon(50% 46%, 100% 85.6%, 100% 0%, 50% 0%); }
-.vs__lado--dinamicos::before { background: repeating-linear-gradient(45deg, rgba(255,255,255,.055) 0 2px, transparent 2px 15px); }
-.vs__lado--mapas { --g: #ffd23a; background: linear-gradient(200deg, #062f44, #0b6a8a 50%, #e9b030 135%); clip-path: polygon(50% 46%, 0% 85.6%, 0% 100%, 100% 100%, 100% 85.6%); }
-.vs__lado--mapas::before { background: repeating-linear-gradient(0deg, rgba(255,255,255,.075) 0 1px, transparent 1px 46px), repeating-linear-gradient(90deg, rgba(255,255,255,.075) 0 1px, transparent 1px 46px); }
-.vs__txt { position: absolute; z-index: 2; width: 0; height: 0; will-change: transform; }
-.vs__lado--letras .vs__txt { left: 26%; top: 36%; } .vs__lado--dinamicos .vs__txt { left: 74%; top: 36%; } .vs__lado--mapas .vs__txt { left: 50%; top: 80%; }
-.vs__glow { position: absolute; left: -380px; top: -380px; width: 760px; height: 760px; border-radius: 50%; background: radial-gradient(circle, var(--g) 0, transparent 62%); opacity: .5; pointer-events: none; }
-.vs__fx { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; animation: vsFlota 7s ease-in-out infinite; }
-.vs__t { position: absolute; width: calc(40px * var(--vs-k, 1)); height: calc(40px * var(--vs-k, 1)); display: grid; place-items: center; border-radius: 9px; font: 900 calc(1.3rem * var(--vs-k, 1))/1 var(--fuente-titulo); opacity: .3; }
-.vs__t--g { background: #35c57f; color: #05341f; } .vs__t--y { background: #f2c230; color: #3a2a00; } .vs__t--n { background: #7b8696; color: #10141c; }
-.vs__e { position: absolute; opacity: .34; line-height: 1; }
-.vs__mapa { position: absolute; left: calc(-260px * var(--vs-k, 1)); top: calc(-190px * var(--vs-k, 1)); width: calc(520px * var(--vs-k, 1)); height: calc(380px * var(--vs-k, 1)); opacity: .9; }
-.vs__onda { transform-box: fill-box; transform-origin: center; animation: vsOnda 2.6s ease-out infinite; }
-.vs__in { position: absolute; left: 0; top: 0; width: max-content; max-width: min(300px, 44vw); transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 7px; text-align: center; text-shadow: 0 3px 16px rgba(0,0,0,.5); }
-.vs__lado:focus-visible .vs__in { outline: 3px solid #fff; outline-offset: 12px; border-radius: 22px; }
-.vs__ico { position: relative; display: grid; place-items: center; width: calc(70px * var(--vs-k, 1)); height: calc(70px * var(--vs-k, 1)); min-width: 52px; min-height: 52px; border-radius: 20px; font: 900 calc(2rem * var(--vs-k, 1))/1 var(--fuente-titulo); font-style: normal; background: rgba(255,255,255,.16); border: 2px solid rgba(255,255,255,.55); box-shadow: 0 8px 22px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.45); transition: transform .25s; }
-.vs__ico--t { background: #fff; color: #174a9a; border-color: #fff; box-shadow: 0 6px 0 rgba(0,0,0,.28), 0 12px 24px rgba(0,0,0,.28); text-shadow: none; }
-.vs__ico--m::before, .vs__ico--m::after { content: ""; position: absolute; inset: -2px; border-radius: 22px; border: 2px solid #ffd23a; opacity: 0; animation: vsOnda2 2.4s ease-out infinite; }
+.vs__lado--letras { --g: #2fe0a2; --gs: rgba(47, 224, 162, .5); }
+.vs__lado--dinamicos { --g: #ff5f9a; --gs: rgba(255, 95, 154, .5); }
+.vs__lado--mapas { --g: #ffd23a; --gs: rgba(255, 210, 58, .5); }
+.vs__in { display: grid; justify-items: center; gap: 6px; text-align: center; text-shadow: 0 3px 14px rgba(0, 0, 0, .55); }
+.vs__ico { position: relative; display: grid; place-items: center; width: calc(62px * var(--vs-k, 1)); height: calc(62px * var(--vs-k, 1)); min-width: 40px; min-height: 40px; border-radius: 18px; font: 900 calc(1.8rem * var(--vs-k, 1))/1 var(--fuente-titulo); font-style: normal; background: rgba(255, 255, 255, .16); border: 2px solid rgba(255, 255, 255, .55); box-shadow: 0 6px 18px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .45); transition: transform .25s; }
+.vs__ico--t { background: #fff; color: #174a9a; border-color: #fff; box-shadow: 0 5px 0 rgba(0, 0, 0, .28), 0 10px 20px rgba(0, 0, 0, .28); text-shadow: none; }
+.vs__ico--m::before, .vs__ico--m::after { content: ""; position: absolute; inset: -2px; border-radius: 20px; border: 2px solid #ffd23a; opacity: 0; animation: vsOnda2 2.4s ease-out infinite; }
 .vs__ico--m::after { animation-delay: 1.2s; }
 .vs__lado:hover .vs__ico, .vs__lado:focus-visible .vs__ico { transform: scale(1.1) rotate(-3deg); }
-.vs__in b { font: 900 clamp(1.1rem, 2.6vw, 1.95rem)/1.05 var(--fuente-titulo); }
-.vs__in small { font: 800 clamp(.78rem, 1.45vw, 1rem)/1.3 var(--fuente, system-ui); text-shadow: 0 2px 10px rgba(0,0,0,.65), 0 0 3px rgba(0,0,0,.5); }
+.vs__in b { font: 900 clamp(.95rem, 2vw, 1.5rem)/1.05 var(--fuente-titulo); }
+.vs__in small { font: 800 clamp(.74rem, 1.2vw, .92rem)/1.25 var(--fuente, system-ui); text-shadow: 0 2px 10px rgba(0, 0, 0, .65), 0 0 3px rgba(0, 0, 0, .5); }
 .vs__nuevo { padding: 3px 9px; border-radius: 999px; background: #ffd23a; color: #3b2a00; font: 900 .62rem/1.2 var(--fuente, system-ui); letter-spacing: .09em; text-shadow: none; }
-.vs__rayo { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; overflow: visible; }
-.vs__rayo polyline { fill: none; stroke-linejoin: round; stroke-linecap: round; }
-.vs__r1 { stroke: #19c8ff; stroke-width: 22px; opacity: .2; } .vs__r2 { stroke: #ffe58a; stroke-width: 6px; opacity: .95; } .vs__r3 { stroke: #fff; stroke-width: 2.4px; }
-.vs__chispa { fill: #fff; stroke: rgba(255,226,120,.6); stroke-width: 7px; }
-.vs__hub { --hub: clamp(70px, calc(92px * var(--vs-k, 1)), 96px); position: absolute; z-index: 5; width: var(--hub); height: var(--hub); margin: calc(var(--hub) / -2) 0 0 calc(var(--hub) / -2); border-radius: 50%; background: #05060f; display: grid; place-items: center; pointer-events: none; box-shadow: 0 0 0 4px rgba(255,255,255,.92), 0 0 30px rgba(25,200,255,.75), 0 0 90px rgba(255,210,58,.5); left: 50%; top: 46%; }
-.vs__hub img { width: 50%; height: 50%; border-radius: 22%; }
-.vs__anillo { position: absolute; inset: -11px; border-radius: 50%; background: conic-gradient(#19c8ff, #ffd23a, #ff2e9a, #2fe0a2, #19c8ff); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px)); mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px)); animation: vsGira 5s linear infinite; }
-.vs__titulo { position: absolute; z-index: 6; left: 50%; top: calc(66px + env(safe-area-inset-top)); transform: translateX(-50%); margin: 0; padding: 9px 20px; border-radius: 999px; background: rgba(5,6,15,.62); border: 1px solid rgba(255,255,255,.28); color: #fff; font: 900 clamp(.9rem, 2.4vw, 1.25rem)/1.1 var(--fuente-titulo); white-space: nowrap; pointer-events: none; }
-.vs__volver { position: absolute; z-index: 7; left: calc(12px + env(safe-area-inset-left)); top: calc(10px + env(safe-area-inset-top)); height: 40px; padding: 0 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,.35); background: rgba(5,6,15,.55); color: #fff; font: 800 .85rem/1 var(--fuente, system-ui); cursor: pointer; backdrop-filter: blur(4px); }
+.vs__hub { --hub: clamp(52px, calc(78px * var(--vs-k, 1)), 84px); position: absolute; z-index: 3; left: 0; top: 0; width: var(--hub); height: var(--hub); margin: calc(var(--hub) / -2) 0 0 calc(var(--hub) / -2); border-radius: 50%; background: #05060f; display: grid; place-items: center; pointer-events: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, .92), 0 0 26px rgba(25, 200, 255, .75), 0 0 80px rgba(255, 210, 58, .5); will-change: transform; }
+.vs__hub img { width: 52%; height: 52%; border-radius: 22%; }
+.vs__anillo { position: absolute; inset: -10px; border-radius: 50%; background: conic-gradient(#19c8ff, #ffd23a, #ff2e9a, #2fe0a2, #19c8ff); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px)); mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px)); animation: vsGira 5s linear infinite; }
+.vs__titulo { position: absolute; z-index: 6; left: 50%; top: calc(62px + env(safe-area-inset-top)); transform: translateX(-50%); margin: 0; padding: 9px 20px; border-radius: 999px; background: rgba(5, 6, 15, .62); border: 1px solid rgba(255, 255, 255, .28); color: #fff; font: 900 clamp(.9rem, 2.4vw, 1.25rem)/1.1 var(--fuente-titulo); white-space: nowrap; pointer-events: none; }
+.vs__volver { position: absolute; z-index: 7; left: calc(12px + env(safe-area-inset-left)); top: calc(10px + env(safe-area-inset-top)); height: 40px; padding: 0 16px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, .35); background: rgba(5, 6, 15, .55); color: #fff; font: 800 .85rem/1 var(--fuente, system-ui); cursor: pointer; backdrop-filter: blur(4px); }
 .vs__volver:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.vs__velo { position: absolute; inset: 0; z-index: 8; opacity: 0; pointer-events: none; }
+/* móvil apaisado: sin subtítulos para que quepan las tres etiquetas */
+.vs--compacto .vs__in small { display: none; }
 @media (min-aspect-ratio: 21/20) { .vs__titulo { top: calc(14px + env(safe-area-inset-top)); } }
-@media (max-aspect-ratio: 21/20) {
-  .vs__lado--letras { clip-path: polygon(50% 50%, 0% 39.7%, 0% 0%, 100% 0%, 100% 39.7%); }
-  .vs__lado--dinamicos { clip-path: polygon(50% 50%, 50% 100%, 0% 100%, 0% 39.7%); }
-  .vs__lado--mapas { clip-path: polygon(50% 50%, 100% 39.7%, 100% 100%, 50% 100%); }
-  .vs__lado--letras .vs__txt { left: 50%; top: 21%; } .vs__lado--dinamicos .vs__txt { left: 25%; top: 72%; } .vs__lado--mapas .vs__txt { left: 75%; top: 72%; }
-  .vs__hub { top: 50%; }
-}
-.vs--elige .vs__titulo, .vs--elige .vs__volver, .vs--elige .vs__hub, .vs--elige .vs__rayo { opacity: 0; transition: opacity .22s; }
-.vs--elige .vs__lado:not(.vs__lado--sel) .vs__txt { opacity: 0; transition: opacity .2s; }
-.vs--abre .vs__in { animation: vsEntra .5s .18s cubic-bezier(.2,.9,.3,1.2) both; }
-.vs--abre .vs__titulo { animation: vsEntra .5s .1s both; }
+
+/* con el globo activo (split.js añade vs--globo): las tres etiquetas son botones de cristal que orbitan con el globo */
+.vs--globo .vs__lado { position: absolute; left: 0; top: 0; z-index: 4; display: block; width: max-content; max-width: min(190px, 46vw); padding: calc(9px * var(--vs-k, 1)) calc(13px * var(--vs-k, 1)) calc(10px * var(--vs-k, 1)); border-radius: 20px; background: linear-gradient(160deg, rgba(8, 12, 34, .82), rgba(8, 12, 34, .6)); border: 2px solid var(--g); box-shadow: 0 8px 26px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .16), 0 0 24px var(--gs); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); will-change: transform; transition: box-shadow .2s, scale .2s; }
+.vs--globo .vs__lado:hover, .vs--globo .vs__lado:focus-visible, .vs--globo .vs__lado.vs--resalta { scale: 1.07; box-shadow: 0 10px 30px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .22), 0 0 40px var(--g); }
+.vs--globo .vs__lado:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.vs--globo .vs__in { gap: calc(5px * var(--vs-k, 1)); }
+.vs--globo .vs__in b { font-size: clamp(.82rem, calc(1.18rem * var(--vs-k, 1)), 1.45rem); }
+.vs--globo .vs__in small { font-size: clamp(.68rem, calc(.86rem * var(--vs-k, 1)), .92rem); }
+.vs--elige .vs__titulo, .vs--elige .vs__volver, .vs--elige .vs__hub, .vs--elige .vs__lado, .vs--elige .vs__estrellas { opacity: 0; transition: opacity .25s; }
+.vs--abre .vs__lado { animation: vsPop .5s .28s cubic-bezier(.2, .9, .3, 1.2) both; }
+.vs--abre .vs__titulo { animation: vsBaja .5s .1s both; }
+.vs--abre .vs__hub { animation: vsPop .45s .1s both; }
+
+/* respaldo (sin JavaScript o sin canvas): tres franjas con el mismo color de cada reino */
+.vs:not(.vs--globo) .vs__estrellas, .vs:not(.vs--globo) .vs__mundo, .vs:not(.vs--globo) .vs__hub, .vs:not(.vs--globo) .vs__velo { display: none; }
+.vs:not(.vs--globo) .vs__lado { position: absolute; left: 0; right: 0; height: 33.34%; display: grid; place-items: center; }
+.vs:not(.vs--globo) .vs__lado--letras { top: 0; padding-top: 88px; box-sizing: border-box; background: linear-gradient(160deg, #0f6b52, #1b5fd6 62%, #1a2a7a); }
+.vs:not(.vs--globo) .vs__lado--dinamicos { top: 33.33%; background: linear-gradient(200deg, #2a0f4f, #7a1fa2 50%, #ff2e63 130%); }
+.vs:not(.vs--globo) .vs__lado--mapas { top: 66.66%; background: linear-gradient(200deg, #062f44, #0b6a8a 50%, #e9b030 135%); }
+.vs:not(.vs--globo) .vs__lado:hover, .vs:not(.vs--globo) .vs__lado:focus-visible { filter: brightness(1.14) saturate(1.1); }
+.vs:not(.vs--globo) .vs__lado:focus-visible .vs__in { outline: 3px solid #fff; outline-offset: 10px; border-radius: 20px; }
 @keyframes vsGira { to { transform: rotate(360deg); } }
-@keyframes vsFlota { 0%, 100% { transform: translateY(0) rotate(-1.2deg); } 50% { transform: translateY(-9px) rotate(1.2deg); } }
-@keyframes vsOnda { 0% { transform: scale(.4); opacity: .9; } 100% { transform: scale(2.4); opacity: 0; } }
 @keyframes vsOnda2 { 0% { transform: scale(1); opacity: .85; } 100% { transform: scale(2); opacity: 0; } }
-@keyframes vsEntra { from { opacity: 0; transform: translate(-50%, -50%) scale(.6); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+@keyframes vsPop { from { opacity: 0; scale: .6; } to { opacity: 1; scale: 1; } }
+@keyframes vsBaja { from { opacity: 0; transform: translate(-50%, -14px); } to { opacity: 1; transform: translate(-50%, 0); } }
 @media (prefers-reduced-motion: reduce) { .vs, .vs *, .vs *::before, .vs *::after { animation: none !important; transition: none !important; } }
 
 /* Modos en cuadrícula tipo vídeo */
@@ -2491,7 +2495,7 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
     <div class="vj-sel" role="tablist" aria-label="Tipo de juegos">
       <button type="button" class="vj-tab vj-tab--letras" role="tab" id="tabLetras" data-grupo-btn="letras" aria-selected="true" aria-controls="grupoLetras"><canvas class="vj-tab__fx" data-fx="letras" aria-hidden="true"></canvas><span class="vj-tab__ico" aria-hidden="true">Aa</span><b>Letras</b><small>Adivina y descifra</small></button>
       <button type="button" class="vj-tab vj-tab--din" role="tab" id="tabDin" data-grupo-btn="dinamicos" aria-selected="false" aria-controls="grupoDinamicos"><canvas class="vj-tab__fx" data-fx="din" aria-hidden="true"></canvas><span class="vj-tab__ico" aria-hidden="true">🎮</span><b>Dinámicos</b><small>Física, reflejos y retos</small></button>
-      <button type="button" class="vj-tab vj-tab--map" role="tab" id="tabMapas" data-grupo-btn="mapas" aria-selected="false" aria-controls="grupoMapas"><span class="vj-tab__ico" aria-hidden="true">🗺️</span><b>Mapas</b><small>Clava el sitio</small></button>
+      <button type="button" class="vj-tab vj-tab--map" role="tab" id="tabMapas" data-grupo-btn="mapas" aria-selected="false" aria-controls="grupoMapas"><span class="vj-tab__ico" aria-hidden="true">🗺️</span><b>Mapas</b><small>5 juegos</small></button>
     </div>
     <button type="button" class="tikis" data-stats aria-label="Ver estadísticas y ranking"><span>⚡</span><b id="tikisNum">0</b> tikitextos <em id="tikisNivel">Cantera</em><span>Ver ranking ›</span></button>
     <button type="button" class="lg-banner" data-logros aria-label="Vitrina de logros"><span class="lg-banner__ico" aria-hidden="true"><i>🥉</i><i>🥈</i><i>🥇</i></span><span class="lg-banner__txt"><b>Vitrina de logros</b><small>Medallas de bronce, plata y oro</small></span><em class="lg-banner__cnt" data-lg-cnt data-no-t><span data-lg-n></span><span class="lg-banner__rg" data-lg-r></span></em><span class="lg-banner__go" aria-hidden="true">›</span></button>
@@ -2763,13 +2767,49 @@ html[data-idioma]:not([data-idioma="es"]) [data-solo-es], html[data-idioma]:not(
 
     <div class="vj-grupo" id="grupoMapas" role="tabpanel" aria-labelledby="tabMapas" data-grupo="mapas" hidden>
     <h2 class="inicio__juegos" id="tituloMapas">Juegos de mapas</h2>
-    <p class="inicio__descripcion">Un mapa del mundo propio, con zoom, ciudades y carreteras. Clava la chincheta donde crees que está el sitio y gana puntos por cercanía.</p>
+    <p class="inicio__descripcion">Un mapa del mundo propio, con zoom, ciudades y carreteras, y cinco juegos para ponerte a prueba: clavar sitios, reconocer ciudades, orientarte, seguir la ruta de un crack y encontrar países.</p>
     <button type="button" class="ch-card ma-card" data-mapas>
       <span class="ch-card__dib" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><linearGradient id="mpc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0d2a47"/><stop offset="1" stop-color="#0b4a5c"/></linearGradient></defs><rect x="5" y="5" width="110" height="110" rx="16" fill="url(#mpc)" stroke="#ffd24a" stroke-width="3"/><g fill="#2b4d70" stroke="#6fa3d6" stroke-width="1.2"><path d="M14 30c8-6 20-8 28-3 6 4 2 10-3 13-6 3-6 9-12 11-6 2-9 8-13 5-5-5-4-20 0-26z"/><path d="M52 24c8-5 22-4 30 1 7 5 12 3 17 8 5 6-2 12-9 13-8 1-9 8-17 9-7 1-10-5-14-8-6-5-14-6-12-15 1-5 2-6 5-8z"/><path d="M44 62c7-3 15 0 18 7 4 8-2 17-8 21-6 3-9-3-11-9-2-7-4-16 1-19z"/><path d="M82 70c6-4 16-2 19 4 3 7-3 14-11 14-8 0-12-12-8-18z"/></g><path d="M34 52 Q60 28 86 44" fill="none" stroke="#ff7a66" stroke-width="2.4" stroke-dasharray="5 5" stroke-linecap="round"/><circle cx="86" cy="44" r="7" fill="#fff" stroke="#34e089" stroke-width="3"/><path d="M86 41l3 2-1 4h-4l-1-4z" fill="#16202b"/><path d="M34 52c-7-6-9-16-3-21 5-4 12-1 13 5 1 6-3 12-10 16z" fill="#e0321f" stroke="#fff" stroke-width="1.6"/><circle cx="35" cy="37" r="3" fill="#fff"/></svg></span>
       <span>
         <span class="ah-card__sello">NUEVO · MAPAS</span>
         <span class="ch-card__titulo">CLAVA EL SITIO</span>
         <span class="ah-card__desc">Estadios, ciudades natales de cracks, clubes y sedes de finales: clava la chincheta en el mapa y suma puntos según lo cerca que estés. Reto diario igual para todos.</span>
+        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </button>
+    <button type="button" class="ch-card ma-card mj-card mj-card--zoom" data-mapasj="zoom">
+      <span class="ch-card__dib" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><linearGradient id="mjz" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0d2a47"/><stop offset="1" stop-color="#0b5a6c"/></linearGradient></defs><rect x="5" y="5" width="110" height="110" rx="16" fill="url(#mjz)" stroke="#ffd24a" stroke-width="3"/><g fill="#2b4d70" stroke="#6fa3d6" stroke-width="1.2"><path d="M12 34c8-6 18-7 26-2 5 4 2 9-3 12-6 3-6 8-11 10-6 2-9 7-12 4-5-5-4-19 0-24z"/><path d="M70 82c7-4 17-3 24 2 5 4 3 11-4 13-7 2-9 7-16 6-7-1-9-8-7-14 1-3 2-5 3-7z"/></g><g fill="none" stroke="#6fa3d6" stroke-width="1.3" stroke-dasharray="3 4" opacity=".7"><circle cx="58" cy="56" r="40"/><circle cx="58" cy="56" r="30"/></g><circle cx="58" cy="56" r="24" fill="rgba(255,255,255,.1)" stroke="#ffd24a" stroke-width="5"/><path d="M76 74l24 24" stroke="#ffd24a" stroke-width="8" stroke-linecap="round"/><path d="M47 56h22" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M58 38c-6-4-8-12-3-16 4-3 10-1 11 4 1 5-2 9-8 12z" fill="#e0321f" stroke="#fff" stroke-width="1.5" transform="translate(0 4)"/></svg></span>
+      <span>
+        <span class="ah-card__sello">NUEVO · MAPAS</span>
+        <span class="ch-card__titulo">ZOOM OUT</span>
+        <span class="ah-card__desc">El mapa se aleja poco a poco desde una ciudad: reconócela cuanto antes entre cuatro opciones y gana más puntos.</span>
+        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </button>
+    <button type="button" class="ch-card ma-card mj-card mj-card--bru" data-mapasj="brujula">
+      <span class="ch-card__dib" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><radialGradient id="mjb" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#17418a"/><stop offset="1" stop-color="#0a1c3a"/></radialGradient></defs><circle cx="60" cy="60" r="52" fill="url(#mjb)" stroke="#ffd24a" stroke-width="4"/><circle cx="60" cy="60" r="43" fill="none" stroke="#6fa3d6" stroke-width="1.2" stroke-dasharray="2 5"/><g stroke="#ffd24a" stroke-width="3" stroke-linecap="round"><path d="M60 13v10M60 97v10M13 60h10M97 60h10"/></g><g stroke="#9fc2ea" stroke-width="2" stroke-linecap="round"><path d="M27 27l7 7M93 27l-7 7M27 93l7-7M93 93l-7-7"/></g><text x="60" y="30" text-anchor="middle" font-family="system-ui,sans-serif" font-weight="900" font-size="13" fill="#fff">N</text><g transform="rotate(48 60 60)"><path d="M60 22l9 38H51z" fill="#ff5b45" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><path d="M60 98l-9-38h18z" fill="#eaf3fc" stroke="#6fa3d6" stroke-width="1.4" stroke-linejoin="round"/></g><circle cx="60" cy="60" r="7" fill="#fff" stroke="#16202b" stroke-width="2"/><path d="M60 56.5l3 2.2-1.1 3.6h-3.8L57 58.7z" fill="#16202b"/></svg></span>
+      <span>
+        <span class="ah-card__sello">NUEVO · MAPAS</span>
+        <span class="ch-card__titulo">BRÚJULA DEL FÚTBOL</span>
+        <span class="ah-card__desc">¿Hacia dónde queda el estadio de ese club? Elige el rumbo entre ocho o decide cuál de tres sitios está más cerca.</span>
+        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </button>
+    <button type="button" class="ch-card ma-card mj-card mj-card--ruta" data-mapasj="ruta">
+      <span class="ch-card__dib" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><linearGradient id="mjr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a1668"/><stop offset="1" stop-color="#0b4a5c"/></linearGradient></defs><rect x="5" y="5" width="110" height="110" rx="16" fill="url(#mjr)" stroke="#ffd24a" stroke-width="3"/><g fill="#34508a" stroke="#7fa4de" stroke-width="1.2" opacity=".75"><path d="M10 40c10-8 26-9 36-3 6 4 2 11-4 14-8 4-8 10-15 13-8 3-12 9-16 5-6-6-5-23-1-29z"/><path d="M66 20c9-5 24-4 32 2 6 5 10 11 4 16-6 5-14 3-20 7-7 4-10-3-14-7-5-5-7-14-2-18z"/></g><path d="M30 88C34 62 50 66 56 50S76 32 92 40" fill="none" stroke="#ffd24a" stroke-width="3" stroke-dasharray="6 6" stroke-linecap="round"/><g stroke="#fff" stroke-width="1.8"><path d="M30 92c-8-7-11-18-4-23 5-4 12-1 14 6 1 6-3 12-10 17z" fill="#e0321f"/><path d="M58 56c-7-6-9-15-3-20 5-4 12-1 13 5 1 6-2 11-10 15z" fill="#e0321f"/></g><circle cx="31" cy="75" r="3" fill="#fff"/><circle cx="58" cy="41" r="3" fill="#fff"/><circle cx="92" cy="40" r="10" fill="#fff" stroke="#34e089" stroke-width="3.5"/><path d="M92 34l5 3.5-2 6h-6.4l-2-6z" fill="#16202b"/></svg></span>
+      <span>
+        <span class="ah-card__sello">NUEVO · MAPAS</span>
+        <span class="ch-card__titulo">RUTA DEL CRACK</span>
+        <span class="ah-card__desc">Unos pines marcan las ciudades de los clubes por los que pasó una leyenda: adivina qué jugador es.</span>
+        <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </span>
+    </button>
+    <button type="button" class="ch-card ma-card mj-card mj-card--pais" data-mapasj="paises">
+      <span class="ch-card__dib" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><linearGradient id="mjp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0d2a47"/><stop offset="1" stop-color="#14506a"/></linearGradient></defs><rect x="5" y="5" width="110" height="110" rx="16" fill="url(#mjp)" stroke="#ffd24a" stroke-width="3"/><g fill="#2b4d70" stroke="#6fa3d6" stroke-width="1.2"><path d="M12 30c8-6 20-8 28-3 6 4 2 10-3 13-6 3-6 9-12 11-6 2-9 8-13 5-5-5-4-20 0-26z"/><path d="M62 74c7-3 15 0 18 7 4 8-2 17-8 21-6 3-9-3-11-9-2-7-4-16 1-19z"/><path d="M84 28c8-3 16 1 20 8 3 6-3 12-10 13-8 1-14-4-14-10 0-5 1-9 4-11z"/></g><path d="M48 24c8-5 20-4 26 2 5 5 1 12-4 15-7 4-6 11-13 13-7 2-9-4-12-8-4-6-6-17 3-22z" fill="#ffd24a" stroke="#fff" stroke-width="2"/><circle cx="58" cy="40" r="11" fill="none" stroke="#fff" stroke-width="2.5" opacity=".9"/><circle cx="58" cy="40" r="19" fill="none" stroke="#fff" stroke-width="1.6" opacity=".45"/><circle cx="58" cy="40" r="3.4" fill="#fff"/></svg></span>
+      <span>
+        <span class="ah-card__sello">NUEVO · MAPAS</span>
+        <span class="ch-card__titulo">ENCUENTRA EL PAÍS</span>
+        <span class="ah-card__desc">Un mapa mudo del mundo: toca el país que te piden o adivina cuál está resaltado.</span>
         <span class="ah-card__accion">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </span>
     </button>
@@ -9342,6 +9382,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (o.closest("[data-parejas]")) { abrirParejas(); return; }
     if (o.closest("[data-cruces]")) { abrirCruces(); return; }
     if (o.closest("[data-mapas]")) { abrirMapas(); return; }
+    if (o.closest("[data-mapasj]")) { abrirMapasJuego(o.closest("[data-mapasj]").dataset.mapasj); return; }
     if (o.closest("[data-sopa]")) { abrirSopa(); return; }
     if (o.closest("[data-lineatiempo]")) { abrirLineaTiempo(); return; }
     if (o.closest("[data-trivia]")) { abrirTrivia(); return; }
@@ -9382,6 +9423,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
   TIKI.serpiente = { juego: function () { return spActivo; } };
   TIKI.cuartetos = { juego: function () { return cuActivo; } };
   TIKI.mapas = { juego: function () { return maActivo; } };
+  TIKI.mapasj = { juego: function () { return mjActivo; } };
   TIKI.clases = { juego: function () { return clActivo; } };
   TIKI.chapas = { ch: ch, gol: chGol, datos: chDatos, pensar: chPensar, simular: chSimular, estilos: CH_EST, nuevo: chNuevoEstado, VSAQUE: CH_VSAQUE }; /* solo para las pruebas automáticas */
 
@@ -9399,7 +9441,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     try { g = sessionStorage.getItem("tikitexto:grupo") || "letras"; } catch (e) { /* sin almacenamiento */ }
     const m = new URLSearchParams(location.search).get("modo");
     if (m && ["chapas", "tarjetas", "fichajes", "penaltis", "pinball", "tirolibre", "slalom", "toques"].indexOf(m) >= 0) g = "dinamicos";
-    if (m === "mapas") g = "mapas";
+    if (m === "mapas" || m === "zoomout" || m === "brujula" || m === "rutacrack" || m === "encuentrapais") g = "mapas";
     if (m === "navidad" || m === "serpiente" || m === "cuartetos" || m === "pertenece" || m === "pasapalabra" || m === "duelo" || m === "trivia" || m === "lineatiempo" || m === "sopa" || m === "parejas" || m === "cruces") g = "letras";
     poner(g === "dinamicos" || g === "mapas" ? g : "letras", false);
   })();
@@ -9858,6 +9900,38 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     }).catch(function (err) { try { console.error("mapas: no se pudo cargar", err); } catch (e) { /* sin consola */ } vg.error(); });
   }
 
+  /* ───── MAPAS · minijuegos (mapas_juegos.js / mapas_juegos.css, carga perezosa; reutilizan mapas.css y el motor del mapa) ───── */
+  var mjActivo = null, mjCargando = false;
+  var MJ_URL = { zoomout: "zoom", brujula: "brujula", rutacrack: "ruta", encuentrapais: "paises" };
+  var MJ_TITULO = { zoom: "Zoom out", brujula: "Brújula del fútbol", ruta: "Ruta del crack", paises: "Encuentra el país" };
+  function abrirMapasJuego(clave) {
+    if (mjActivo || mjCargando || maActivo || !MJ_TITULO[clave]) return;
+    if (!tieneCuenta()) { mostrarCuenta(); return; }
+    mjCargando = true;
+    const raiz = document.createElement("div"); raiz.className = "mp-raiz"; raiz.id = "mjRaiz";
+    document.body.appendChild(raiz);
+    const vg = vigilaCarga(raiz, function () { mjCargando = false; }, function () { abrirMapasJuego(clave); });
+    function hoja(id, href) {
+      return new Promise(function (ok) {
+        if (document.getElementById(id)) { ok(); return; }
+        const l = document.createElement("link"); l.rel = "stylesheet"; l.id = id; l.href = href; l.onload = ok; l.onerror = ok; document.head.appendChild(l);
+      });
+    }
+    Promise.all([import("./mapas_juegos.js" + (cgIntento ? "?r=" + cgIntento : "")), hoja("maCss", "mapas.css"), hoja("mjCss", "mapas_juegos.css")]).then(function (r) {
+      const api = {
+        t: function (s) { return TIKI.t ? TIKI.t(s) : s; },
+        locale: TIKI.locale,
+        sonido: function () { return TIKI.ajustes.sonido(); },
+        datos: function () { const n = nvDatos(); if (!n.mj) n.mj = {}; if (!n.mj[clave]) n.mj[clave] = {}; return n.mj[clave]; },
+        guardar: guardarJ, tiki: nvSumarTikitexto, victoria: sonidoVictoria,
+        racha: function (k) { try { return TIKI.racha ? TIKI.racha.marca(k) : 0; } catch (er) { return 0; } },
+        salir: function () { raiz.remove(); mjActivo = null; document.title = "TIKITEXTO · Adivina el nombre del día"; },
+      };
+      vg.fin(); mjActivo = r[0].abrir(api, raiz, clave); mjCargando = false;
+      document.title = "TIKITEXTO · " + MJ_TITULO[clave];
+    }).catch(function (err) { try { console.error("mapas (minijuegos): no se pudo cargar", err); } catch (e) { /* sin consola */ } vg.error(); });
+  }
+
   /* ───── VITRINA DE LOGROS (logros.js / logros.css, carga perezosa) ───── */
   var lgActivo = null, lgCargando = false, lgTimer = 0, lgDentro = false, lgModulo = null;
   function lgApi(raiz) {
@@ -10032,6 +10106,7 @@ NISSAN STADIUM|mu|Yokohama · Final del Mundial de 2002`.split("\n").map(functio
     if (m === "parejas" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirParejas(); return; }
     if (m === "cruces" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirCruces(); return; }
     if (m === "mapas" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirMapas(); return; }
+    if (MJ_URL[m] && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirMapasJuego(MJ_URL[m]); return; }
     if (m === "sopa" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirSopa(); return; }
     if (m === "lineatiempo" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirLineaTiempo(); return; }
     if (m === "trivia" && tieneCuenta() && modalTutorial.hidden && $("#modalCuenta").hidden && !estado.modo) { abrirTrivia(); return; }
@@ -10154,23 +10229,21 @@ document.addEventListener("click", function (e) { var a = e.target.closest && e.
 })();
 </script>
 <div class="vs" id="vistaSplit" role="dialog" aria-label="Tipo de juegos" tabindex="-1" hidden>
+      <canvas class="vs__estrellas" data-no-t aria-hidden="true"></canvas>
       <button type="button" class="vs__volver" id="vsVolver">← Inicio</button>
       <p class="vs__titulo">¿Cómo quieres jugar?</p>
+      <div class="vs__mundo" data-no-t aria-hidden="true"><canvas class="vs__globo" width="480" height="480"></canvas><span class="vs__atm"></span></div>
+      <div class="vs__hub" aria-hidden="true"><span class="vs__anillo"></span><img src="icons/favicon-48.png" alt="" width="46" height="46"></div>
       <button type="button" class="vs__lado vs__lado--letras" data-vs="letras">
-        <span class="vs__txt"><span class="vs__glow" aria-hidden="true"></span><span class="vs__fx" data-no-t aria-hidden="true"></span><span class="vs__in"><i class="vs__ico vs__ico--t" aria-hidden="true">Aa</i><b>Juegos de letras</b><small>Adivina y descifra</small></span></span>
+        <span class="vs__in"><i class="vs__ico vs__ico--t" aria-hidden="true">Aa</i><b>Juegos de letras</b><small>Adivina y descifra</small></span>
       </button>
       <button type="button" class="vs__lado vs__lado--dinamicos" data-vs="dinamicos">
-        <span class="vs__txt"><span class="vs__glow" aria-hidden="true"></span><span class="vs__fx" data-no-t aria-hidden="true"></span><span class="vs__in"><i class="vs__ico" aria-hidden="true">🎮</i><b>Videojuegos</b><small>Física, reflejos y retos</small></span></span>
+        <span class="vs__in"><i class="vs__ico" aria-hidden="true">🎮</i><b>Videojuegos</b><small>Física, reflejos y retos</small></span>
       </button>
       <button type="button" class="vs__lado vs__lado--mapas" data-vs="mapas">
-        <span class="vs__txt"><span class="vs__glow" aria-hidden="true"></span><span class="vs__fx" data-no-t aria-hidden="true"><svg class="vs__mapa" viewBox="-260 -190 520 380" aria-hidden="true"><g fill="none" stroke="#fff3c2" stroke-opacity=".3" stroke-width="1.3"><ellipse rx="236" ry="168"/><ellipse rx="150" ry="168"/><ellipse rx="62" ry="168"/><path d="M-236 0H236M-222 -84H222M-222 84H222M0 -168V168"/></g><path d="M-200 78Q-96 -150 18 -38T214 -96" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2" stroke-dasharray="6 8"/><g fill="#ffd23a"><circle cx="-200" cy="78" r="5"/><circle cx="18" cy="-38" r="5"/><circle cx="214" cy="-96" r="5"/></g><circle class="vs__onda" cx="214" cy="-96" r="14" fill="none" stroke="#ffd23a" stroke-width="2"/><circle class="vs__onda" cx="-200" cy="78" r="14" fill="none" stroke="#ffd23a" stroke-width="2" style="animation-delay:1.3s"/></svg></span><span class="vs__in"><i class="vs__ico vs__ico--m" aria-hidden="true">📍</i><b>Juegos de mapas</b><small>Clava el sitio</small><span class="vs__nuevo">NUEVO</span></span></span>
+        <span class="vs__in"><i class="vs__ico vs__ico--m" aria-hidden="true">📍</i><b>Juegos de mapas</b><small>Clava el sitio</small><span class="vs__nuevo">NUEVO</span></span>
       </button>
-      <svg class="vs__rayo" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        <g><polyline class="vs__r1"/><polyline class="vs__r2"/><polyline class="vs__r3"/><circle class="vs__chispa" r="0"/></g>
-        <g><polyline class="vs__r1"/><polyline class="vs__r2"/><polyline class="vs__r3"/><circle class="vs__chispa" r="0"/></g>
-        <g><polyline class="vs__r1"/><polyline class="vs__r2"/><polyline class="vs__r3"/><circle class="vs__chispa" r="0"/></g>
-      </svg>
-      <div class="vs__hub" aria-hidden="true"><span class="vs__anillo"></span><img src="icons/favicon-48.png" alt="" width="46" height="46"></div>
+      <div class="vs__velo" aria-hidden="true"></div>
     </div>
 <script src="split.js" defer></script>
 <script src="/buscador.js" defer></script>

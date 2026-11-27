@@ -634,7 +634,7 @@ with sync_playwright() as p:
         check("portada: portal visible, juegos ocultos", ph.is_visible('#portal') and not ph.is_visible('[data-modo="diario"]'))
         check("portada: Saber con enlaces reales", ph.evaluate("document.querySelectorAll('.portal__chips a[href]').length >= 4") and ph.get_attribute('.portal__enlace', 'href') == 'curiosidades/')
         ph.click('#portalJuegos'); ph.wait_for_timeout(300)
-        check("pantalla dividida: aparece al entrar en Juegos con Letras, Videojuegos y Mapas y los rayos", ph.is_visible('#vistaSplit') and ph.is_visible('[data-vs=letras]') and ph.is_visible('[data-vs=dinamicos]') and ph.is_visible('[data-vs=mapas]') and ph.evaluate("document.querySelectorAll('#vistaSplit .vs__rayo polyline').length >= 3"))
+        check("pantalla dividida: aparece al entrar en Juegos con el globo y los reinos Letras, Videojuegos y Mapas", ph.is_visible('#vistaSplit') and ph.is_visible('[data-vs=letras]') and ph.is_visible('[data-vs=dinamicos]') and ph.is_visible('[data-vs=mapas]') and ph.evaluate("document.querySelectorAll('#vistaSplit .vs__globo').length === 1"))
         ph.evaluate("document.querySelector('[data-vs=dinamicos]').click()"); ph.wait_for_timeout(1400)
         check("pantalla dividida: elegir Videojuegos abre los dinámicos y la oculta", ph.is_hidden('#vistaSplit') and ph.is_visible('#grupoDinamicos') and not ph.is_visible('#grupoLetras'))
         ph.evaluate("document.querySelector('[data-grupo-btn=letras]').click()"); ph.wait_for_timeout(300)
@@ -1737,97 +1737,472 @@ with sync_playwright() as p:
     except Exception as e:
         check("mapas (Clava el sitio)", False, str(e)[:250])
 
-    print("3bd) Pantalla dividida «Y» de 3 cuñas (Letras, Videojuegos, Mapas)")
+    print("3bd) Pantalla «mundo» al entrar en Juegos: globo con tres reinos (Letras, Videojuegos, Mapas)")
     try:
         _INIT_S = "localStorage.setItem('tikitexto:idioma','es');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1')"
-        def _espera_oculta(pg, ms=3000):
+        def _espera_oculta(pg, ms=3500):
             for _ in range(ms // 100):
                 if pg.evaluate("document.getElementById('vistaSplit').hidden"): return True
                 pg.wait_for_timeout(100)
             return False
-        def _abre_split(pg):
-            pg.evaluate("document.querySelector('#portalJuegos').click()"); pg.wait_for_timeout(900)
+        def _abre_split(pg, espera_tierra=True):
+            pg.evaluate("document.querySelector('#portalJuegos').click()"); pg.wait_for_timeout(1100)
+            if espera_tierra:
+                for _ in range(40):
+                    if pg.evaluate("TIKI_SPLIT.info().tierra"): break
+                    pg.wait_for_timeout(100)
+        def _cajas(pg):
+            return pg.evaluate("""[...document.querySelectorAll('#vistaSplit .vs__lado')].map(e => { const r = e.getBoundingClientRect(); return {n: e.dataset.vs, x: r.left, y: r.top, r: r.right, b: r.bottom}; })""")
+        def _solapan(c):
+            for i in range(len(c)):
+                for j in range(i + 1, len(c)):
+                    a, b = c[i], c[j]
+                    if a["x"] < b["r"] and b["x"] < a["r"] and a["y"] < b["b"] and b["y"] < a["b"]: return "%s/%s" % (a["n"], b["n"])
+            return ""
+        def _colores(pg):
+            return pg.evaluate("""(() => { const c = document.querySelector('#vistaSplit .vs__globo'), d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0, v = 0, r = 0, o = 0, br = 0;
+                for (let i = 0; i < d.length; i += 4) { if (d[i + 3] < 200) continue; n++; const R = d[i], G = d[i + 1], B = d[i + 2], m = Math.max(R, G, B); if (m < 130) continue; br++;
+                  if (G > R + 30 && G > B) v++; else if (R > 190 && B > 90 && G < R - 60) r++; else if (R > 170 && G > 120 && B < 110) o++; }
+                return {n: n, verde: v, rosa: r, oro: o, claros: br, lado: c.width}; })()""")
         _VISTA = {"letras": "#grupoLetras", "dinamicos": "#grupoDinamicos", "mapas": "#grupoMapas"}
-        # escritorio
+        # ---------- escritorio ----------
         csd = br.new_context(viewport={"width": 1280, "height": 720}, service_workers="block"); psd = csd.new_page(); errs_sd = []
         psd.on("pageerror", lambda e: errs_sd.append(str(e)))
+        psd.on("console", lambda m: errs_sd.append(m.text) if m.type == "error" and re.search(r"Content Security Policy|Refused|tierra|split", m.text, re.I) else None)
         psd.add_init_script(_INIT_S)
         psd.goto(BASE, wait_until="networkidle", timeout=60000); psd.wait_for_timeout(400)
+        check("split: la textura de tierra no se descarga hasta abrir Juegos", psd.evaluate("performance.getEntriesByType('resource').every(e => e.name.indexOf('tierra.png') < 0)"))
         _abre_split(psd)
         inf = psd.evaluate("TIKI_SPLIT.info()")
-        check("split (escritorio): disposición horizontal con las tres cuñas", inf["o"] == "h" and sorted(inf["nombres"]) == ["dinamicos", "letras", "mapas"] and inf["abierto"], str(inf["nombres"]))
-        check("split (escritorio): cada cuña ocupa entre el 20 % y el 50 % de la pantalla y suman todo", all(0.2 <= a <= 0.5 for a in inf["areas"]) and 0.97 <= sum(inf["areas"]) <= 1.03, str(inf["areas"]))
-        check("split (escritorio): tres rayos con sus capas y el botón «Mapas» visible", psd.evaluate("document.querySelectorAll('#vistaSplit .vs__rayo g').length === 3 && document.querySelectorAll('#vistaSplit .vs__rayo polyline').length === 9") and psd.is_visible("[data-vs=mapas]"))
-        check("split (escritorio): los textos están dentro de la pantalla y lejos del centro", all(30 < v["x"] < inf["W"] - 30 and 30 < v["y"] < inf["H"] - 30 and ((v["x"] - inf["centro"]["x"]) ** 2 + (v["y"] - inf["centro"]["y"]) ** 2) ** 0.5 > 110 for v in inf["anclas"].values()), str(inf["anclas"]))
-        # el texto y las pestañas internas salen en español
-        check("split (escritorio): textos de las tres cuñas", psd.evaluate("[...document.querySelectorAll('#vistaSplit .vs__in b')].map(e => e.textContent).join('|')") == "Juegos de letras|Videojuegos|Juegos de mapas")
-        # al apuntar una cuña con el ratón crece
-        for _n in ("mapas", "letras", "dinamicos"):
-            base = inf["areas"][inf["nombres"].index(_n)]
-            an = inf["anclas"][_n]; psd.mouse.move(an["x"], an["y"]); psd.wait_for_timeout(900)
-            a1 = psd.evaluate("TIKI_SPLIT.info()"); i1 = a1["nombres"].index(_n)
-            check("split (escritorio): al apuntar «%s» esa cuña crece" % _n, a1["areas"][i1] > base + 0.03, "%.3f → %.3f" % (base, a1["areas"][i1]))
-            psd.mouse.move(640, 1); psd.mouse.move(640, 2); psd.wait_for_timeout(300)
-        # clic real en el texto de cada cuña abre su pestaña
+        check("split (escritorio): globo entero a la vista, con tres reinos y la tierra cargada", inf["o"] == "h" and sorted(inf["nombres"]) == ["dinamicos", "letras", "mapas"] and inf["abierto"] and inf["tierra"] and 560 <= inf["D"] <= 700 and inf["N"] >= 200, str({k: inf[k] for k in ("o", "D", "N", "tierra")}))
+        check("split (escritorio): el canvas del globo y la capa de estrellas son visibles", psd.is_visible("#vistaSplit .vs__globo") and psd.is_visible("#vistaSplit .vs__estrellas") and psd.is_visible("#vistaSplit .vs__hub"))
+        co = _colores(psd)
+        check("split (escritorio): el globo está pintado y se ven tierras verdes, rosas y doradas", co["n"] > 0.7 * 3.14159 / 4 * co["lado"] ** 2 and co["verde"] > 400 and co["rosa"] > 400 and co["oro"] > 400, str(co))
+        cx0, cy0, R0 = inf["centro"]["x"], inf["centro"]["y"], inf["R"]
+        _d = {n: ((v["x"] - cx0) ** 2 + (v["y"] - cy0) ** 2) ** 0.5 for n, v in inf["anclas"].items()}
+        check("split (escritorio): las tres etiquetas orbitan dentro del globo, a media distancia del centro", all(0.4 * R0 < x < 0.8 * R0 for x in _d.values()), str(_d))
+        import math as _m
+        _ang = sorted(_m.degrees(_m.atan2(v["y"] - cy0, v["x"] - cx0)) % 360 for v in inf["anclas"].values())
+        _hue = [_ang[1] - _ang[0], _ang[2] - _ang[1], 360 - _ang[2] + _ang[0]]
+        check("split (escritorio): las etiquetas están repartidas cada 120°", all(105 < x < 135 for x in _hue), str(_hue))
+        check("split (escritorio): textos de las tres etiquetas", psd.evaluate("[...document.querySelectorAll('#vistaSplit .vs__lado .vs__in b')].map(e => e.textContent).join('|')") == "Juegos de letras|Videojuegos|Juegos de mapas")
+        check("split (escritorio): las etiquetas no se tocan entre sí ni salen de la pantalla", _solapan(_cajas(psd)) == "" and all(c["x"] >= 0 and c["y"] >= 0 and c["r"] <= 1280 and c["b"] <= 720 for c in _cajas(psd)))
+        # el globo gira solo
+        s0 = psd.evaluate("TIKI_SPLIT.info().spin"); a0 = psd.evaluate("TIKI_SPLIT.info().anclas.letras"); psd.wait_for_timeout(1500)
+        s1 = psd.evaluate("TIKI_SPLIT.info().spin"); a1 = psd.evaluate("TIKI_SPLIT.info().anclas.letras")
+        check("split (escritorio): el globo gira solo y las etiquetas viajan con él", s1 - s0 > 0.03 and (abs(a1["x"] - a0["x"]) + abs(a1["y"] - a0["y"])) >= 2, "%.3f %s→%s" % (s1 - s0, a0, a1))
+        # con las etiquetas girando por todas las posiciones nunca se tocan (se gira con ← →)
+        mal = ""
+        for _i in range(26):
+            psd.keyboard.press("ArrowRight"); psd.wait_for_timeout(30)
+            mal = _solapan(_cajas(psd))
+            if mal: break
+        check("split (escritorio): en ninguna posición del giro se solapan las etiquetas", mal == "", mal)
+        # al apuntar una etiqueta, el reino se resalta y el giro casi se detiene
+        psd.mouse.move(5, 5); psd.wait_for_timeout(1500)
+        v0 = psd.evaluate("TIKI_SPLIT.info().spin"); psd.wait_for_timeout(700); v1 = psd.evaluate("TIKI_SPLIT.info().spin"); libre = v1 - v0
+        an = psd.evaluate("TIKI_SPLIT.info().anclas.mapas"); psd.mouse.move(an["x"], an["y"]); psd.wait_for_timeout(2200)
+        h0 = psd.evaluate("TIKI_SPLIT.info().spin"); psd.wait_for_timeout(700); h1 = psd.evaluate("TIKI_SPLIT.info().spin")
+        check("split (escritorio): al apuntar «Mapas» se resalta y el giro se frena", psd.evaluate("document.querySelector('[data-vs=mapas]').classList.contains('vs--resalta')") and (h1 - h0) < 0.4 * libre, "libre %.3f apuntando %.3f" % (libre, h1 - h0))
+        psd.mouse.move(5, 5); psd.wait_for_timeout(400)
+        # arrastrar el globo lo hace girar con el dedo y no elige nada
+        ii = psd.evaluate("TIKI_SPLIT.info()"); R = ii["R"]; cx, cy = ii["centro"]["x"], ii["centro"]["y"]
+        # punto cerca del borde, entre dos etiquetas (sin etiquetas encima)
+        best = None
+        for g in range(0, 360, 6):
+            px, py = cx + R * 0.93 * _m.cos(_m.radians(g)), cy + R * 0.93 * _m.sin(_m.radians(g))
+            if 20 < py < 700 and psd.evaluate("document.elementFromPoint(%f, %f).classList.contains('vs__globo') || document.elementFromPoint(%f, %f).classList.contains('vs__mundo')" % (px, py, px, py)): best = g; break
+        check("split (escritorio): hay una zona del globo libre para arrastrar", best is not None)
+        sA = psd.evaluate("TIKI_SPLIT.info().spin"); g0 = best
+        psd.mouse.move(cx + R * 0.93 * _m.cos(_m.radians(g0)), cy + R * 0.93 * _m.sin(_m.radians(g0))); psd.mouse.down()
+        for st in range(1, 9):
+            gg = g0 + st * 4  # 32° en sentido horario (la y de pantalla crece hacia abajo)
+            psd.mouse.move(cx + R * 0.93 * _m.cos(_m.radians(gg)), cy + R * 0.93 * _m.sin(_m.radians(gg))); psd.wait_for_timeout(16)
+        inmediato = psd.evaluate("TIKI_SPLIT.info().spin") - sA
+        psd.mouse.up(); psd.wait_for_timeout(250)
+        check("split (escritorio): arrastrar gira el globo en sentido contrario a la longitud (≈32°) sin elegir nada", abs(inmediato + _m.radians(32)) < 0.18 and psd.evaluate("TIKI_SPLIT.info().sel") is None and not psd.evaluate("document.getElementById('vistaSplit').hidden"), "%.3f rad" % inmediato)
+        # reino bajo un punto: las tres cuñas existen y cambian de nombre cada 120°
+        _r = [psd.evaluate("TIKI_SPLIT.reino(%f, %f)" % (cx + R * 0.8 * _m.cos(_m.radians(g)), cy + R * 0.8 * _m.sin(_m.radians(g)))) for g in range(0, 360, 20)]
+        check("split (escritorio): los tres reinos ocupan el globo a partes iguales", sorted(set(_r)) == ["dinamicos", "letras", "mapas"] and all(5 <= _r.count(n) <= 7 for n in set(_r)), str(_r))
+        check("split (escritorio): el centro (logo) no pertenece a ningún reino", psd.evaluate("TIKI_SPLIT.reino(%f, %f)" % (cx + 2, cy + 2)) is None and psd.evaluate("TIKI_SPLIT.reino(%f, %f)" % (cx + R * 1.2, cy)) is None)
+        # tocar el propio globo (sin etiqueta) elige ese reino
+        tocado = None
+        for g in range(0, 360, 4):
+            px, py = cx + R * 0.93 * _m.cos(_m.radians(g)), cy + R * 0.93 * _m.sin(_m.radians(g))
+            ii2 = psd.evaluate("TIKI_SPLIT.info()")
+            if psd.evaluate("(e => !!e && (e.classList.contains('vs__globo') || e.classList.contains('vs__mundo')))(document.elementFromPoint(%f, %f))" % (px, py)):
+                tocado = (psd.evaluate("TIKI_SPLIT.reino(%f, %f)" % (px, py)), px, py); break
+        psd.mouse.click(tocado[1], tocado[2]); ok_g = _espera_oculta(psd)
+        check("split (escritorio): tocar el globo abre el reino que se toca", ok_g and tocado[0] in _VISTA and psd.is_visible(_VISTA[tocado[0]]) and psd.locator("[data-grupo-btn=%s][aria-selected=true]" % tocado[0]).count() == 1, str(tocado))
+        check("split (escritorio): sin errores de JavaScript ni de CSP", not errs_sd, "; ".join(errs_sd)[:200])
         csd.close()
+        # clic real en cada etiqueta abre su pestaña
         for _n in ("letras", "dinamicos", "mapas"):
             c1 = br.new_context(viewport={"width": 1280, "height": 720}, service_workers="block"); p1 = c1.new_page()
             p1.add_init_script(_INIT_S); p1.goto(BASE, wait_until="networkidle", timeout=60000); p1.wait_for_timeout(300)
-            _abre_split(p1); an = p1.evaluate("TIKI_SPLIT.info().anclas")[_n]
+            _abre_split(p1, False); an = p1.evaluate("TIKI_SPLIT.info().anclas")[_n]
             p1.mouse.click(an["x"], an["y"])
             ok_h = _espera_oculta(p1); p1.wait_for_timeout(300)
             check("split: clic real sobre «%s» abre su pestaña y oculta la pantalla" % _n, ok_h and p1.is_visible(_VISTA[_n]) and p1.locator("[data-grupo-btn=%s][aria-selected=true]" % _n).count() == 1)
             c1.close()
-        # teclado: 3 abre Mapas; Esc vuelve a la portada
+        # teclado: 3 abre Mapas, ← → giran, Esc vuelve a la portada
         c2 = br.new_context(viewport={"width": 1280, "height": 720}, service_workers="block"); p2 = c2.new_page()
         p2.add_init_script(_INIT_S); p2.goto(BASE, wait_until="networkidle", timeout=60000); p2.wait_for_timeout(300)
-        _abre_split(p2); p2.keyboard.press("Escape"); p2.wait_for_timeout(500)
+        _abre_split(p2, False); sa = p2.evaluate("TIKI_SPLIT.info().spin"); p2.keyboard.press("ArrowLeft"); p2.wait_for_timeout(50)
+        sb = p2.evaluate("TIKI_SPLIT.info().spin")
+        check("split: la flecha izquierda gira el globo", sb < sa - 0.2, "%.3f → %.3f" % (sa, sb))
+        p2.keyboard.press("Escape"); p2.wait_for_timeout(500)
         check("split: Esc cierra la pantalla y vuelve a la portada", p2.evaluate("document.getElementById('vistaSplit').hidden") and p2.is_visible("#portal"))
-        _abre_split(p2); p2.keyboard.press("3"); ok_t = _espera_oculta(p2)
+        _abre_split(p2, False); p2.keyboard.press("3"); ok_t = _espera_oculta(p2)
         check("split: la tecla 3 elige Mapas", ok_t and p2.locator("[data-grupo-btn=mapas][aria-selected=true]").count() == 1)
+        _abre_split(p2, False); p2.keyboard.press("Tab"); p2.keyboard.press("Tab"); p2.keyboard.press("Tab"); p2.keyboard.press("Tab")
+        foco = p2.evaluate("document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.vs || document.activeElement.id : ''")
+        p2.keyboard.press("Enter"); ok_e = _espera_oculta(p2)
+        check("split: con Tab se llega a las etiquetas y Enter elige", foco in ("letras", "dinamicos", "mapas") and ok_e, str(foco))
         c2.close()
-        # móvil (vertical)
+        # ---------- móvil (vertical) ----------
         c3 = br.new_context(viewport={"width": 390, "height": 844}, service_workers="block", has_touch=True, is_mobile=True); p3 = c3.new_page(); errs_sm = []
         p3.on("pageerror", lambda e: errs_sm.append(str(e)))
         p3.add_init_script(_INIT_S); p3.goto(BASE, wait_until="networkidle", timeout=60000); p3.wait_for_timeout(300)
         _abre_split(p3); im = p3.evaluate("TIKI_SPLIT.info()")
-        check("split (móvil): disposición vertical con Letras arriba y las otras dos abajo", im["o"] == "v" and im["anclas"]["letras"]["y"] < im["anclas"]["dinamicos"]["y"] - 150 and im["anclas"]["letras"]["y"] < im["anclas"]["mapas"]["y"] - 150 and im["anclas"]["dinamicos"]["x"] < im["anclas"]["mapas"]["x"], str(im["anclas"]))
-        check("split (móvil): reparto de áreas y textos dentro", all(0.2 <= a <= 0.55 for a in im["areas"]) and 0.97 <= sum(im["areas"]) <= 1.03 and all(30 < v["x"] < 360 and 30 < v["y"] < 814 for v in im["anclas"].values()), str(im["areas"]))
-        check("split (móvil): sin desbordamiento horizontal", p3.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1"))
-        an = im["anclas"]["mapas"]; p3.touchscreen.tap(an["x"], an["y"]); ok_m = _espera_oculta(p3)
+        check("split (móvil): disposición vertical con el globo entero dentro de la pantalla", im["o"] == "v" and 330 <= im["D"] <= 390 and im["centro"]["x"] - im["R"] >= -1 and im["centro"]["x"] + im["R"] <= 391, str({k: im[k] for k in ("o", "D", "centro")}))
+        mal = ""
+        for _i in range(26):
+            p3.evaluate("document.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowRight'}))"); p3.wait_for_timeout(30)
+            cj = _cajas(p3); mal = _solapan(cj) or ("fuera" if any(c["x"] < 0 or c["r"] > 390 or c["y"] < 0 or c["b"] > 844 for c in cj) else "")
+            if mal: break
+        check("split (móvil): en ninguna posición del giro se solapan las etiquetas ni se salen de la pantalla", mal == "", mal)
+        check("split (móvil): sin desbordamiento horizontal y la tierra cargada", p3.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1") and im["tierra"])
+        co3 = _colores(p3); check("split (móvil): el globo está pintado con los tres colores", co3["verde"] > 200 and co3["rosa"] > 200 and co3["oro"] > 200, str(co3))
+        an = p3.evaluate("TIKI_SPLIT.info().anclas")["mapas"]; p3.touchscreen.tap(an["x"], an["y"]); ok_m = _espera_oculta(p3)
         check("split (móvil): tocar «Mapas» abre su pestaña", ok_m and p3.is_visible("#grupoMapas"))
         # girar el móvil con la pantalla abierta
         p3.goto(BASE, wait_until="networkidle", timeout=60000); p3.wait_for_timeout(300)
-        _abre_split(p3); p3.set_viewport_size({"width": 844, "height": 390}); p3.wait_for_timeout(600)
+        _abre_split(p3, False); p3.set_viewport_size({"width": 844, "height": 390}); p3.wait_for_timeout(700)
         ig = p3.evaluate("TIKI_SPLIT.info()")
-        check("split: al girar el dispositivo pasa a horizontal y sigue repartido", ig["o"] == "h" and 0.97 <= sum(ig["areas"]) <= 1.03, str(ig["areas"]))
-        check("split: sin errores de JavaScript", not errs_sd and not errs_sm, "; ".join(errs_sd + errs_sm)[:150])
+        check("split: al girar el dispositivo pasa a horizontal y el globo cabe en la altura", ig["o"] == "h" and ig["D"] <= 390 - 56 and ig["centro"]["y"] + ig["R"] <= 391, str({k: ig[k] for k in ("o", "D", "centro")}))
+        check("split (móvil apaisado): las etiquetas caben (sin subtítulos) y no se solapan", p3.evaluate("getComputedStyle(document.querySelector('#vistaSplit .vs__in small')).display") == "none" and _solapan(_cajas(p3)) == "")
+        mal = ""
+        for _i in range(26):
+            p3.evaluate("document.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowRight'}))"); p3.wait_for_timeout(30)
+            cj = _cajas(p3); mal = _solapan(cj)
+            if mal: break
+        check("split (móvil apaisado): en ninguna posición del giro se solapan las etiquetas", mal == "", mal)
+        check("split: sin errores de JavaScript en móvil", not errs_sm, "; ".join(errs_sm)[:150])
         c3.close()
-        # movimiento reducido
+        # ---------- otro idioma: los textos de las etiquetas se traducen ----------
+        c6 = br.new_context(viewport={"width": 1280, "height": 720}, service_workers="block"); p6 = c6.new_page()
+        p6.add_init_script(_INIT_S.replace("'es'", "'en'")); p6.goto(BASE, wait_until="networkidle", timeout=60000); p6.wait_for_timeout(500)
+        _abre_split(p6, False)
+        _t6 = p6.evaluate("[...document.querySelectorAll('#vistaSplit .vs__lado .vs__in b')].map(e => e.textContent).join('|') + '#' + document.querySelector('#vistaSplit .vs__titulo').textContent")
+        check("split (inglés): etiquetas y título traducidos", "Videojuegos" not in _t6 and "Juegos de letras" not in _t6 and "¿Cómo" not in _t6, _t6)
+        c6.close()
+        # ---------- movimiento reducido ----------
         c4 = br.new_context(viewport={"width": 1280, "height": 720}, service_workers="block", reduced_motion="reduce"); p4 = c4.new_page(); errs_r = []
         p4.on("pageerror", lambda e: errs_r.append(str(e)))
         p4.add_init_script(_INIT_S); p4.goto(BASE, wait_until="networkidle", timeout=60000); p4.wait_for_timeout(300)
-        _abre_split(p4); ir = p4.evaluate("TIKI_SPLIT.info()")
-        check("split (movimiento reducido): se reparte en seguida y sin animaciones", ir["reducido"] and 0.97 <= sum(ir["areas"]) <= 1.03 and p4.evaluate("getComputedStyle(document.querySelector('.vs__anillo')).animationName") == "none", str(ir["areas"]))
+        _abre_split(p4); ir = p4.evaluate("TIKI_SPLIT.info()"); sr0 = ir["spin"]; p4.wait_for_timeout(1200); sr1 = p4.evaluate("TIKI_SPLIT.info().spin")
+        co4 = _colores(p4)
+        check("split (movimiento reducido): el globo se ve de golpe, pintado y sin girar", ir["reducido"] and sr0 == sr1 and co4["verde"] > 400 and p4.evaluate("getComputedStyle(document.querySelector('.vs__anillo')).animationName") == "none", "%s %s" % (sr0, sr1))
+        p4.keyboard.press("ArrowRight"); p4.wait_for_timeout(100)
+        check("split (movimiento reducido): las flechas siguen girando el globo a petición", p4.evaluate("TIKI_SPLIT.info().spin") > sr1 + 0.2)
         p4.evaluate("document.querySelector('[data-vs=letras]').click()"); p4.wait_for_timeout(500)
         check("split (movimiento reducido): elegir cierra al momento", p4.evaluate("document.getElementById('vistaSplit').hidden") and p4.is_visible("#grupoLetras") and not errs_r)
         c4.close()
-        # sin el script: respaldo estático
+        # ---------- sin el script: franjas estáticas ----------
         c5 = br.new_context(viewport={"width": 1280, "height": 720}, service_workers="block"); c5.route("**/split.js", lambda r: r.abort()); p5 = c5.new_page()
         p5.add_init_script(_INIT_S); p5.goto(BASE, wait_until="domcontentloaded", timeout=60000); p5.wait_for_timeout(1200)
         p5.evaluate("document.querySelector('#portalJuegos').click()"); p5.wait_for_timeout(500)
-        check("split (sin script): se ve la pantalla con las tres opciones", p5.is_visible("#vistaSplit") and p5.is_visible("[data-vs=mapas]") and p5.evaluate("getComputedStyle(document.querySelector('[data-vs=mapas]')).clipPath.indexOf('polygon') === 0"))
+        cj5 = _cajas(p5)
+        check("split (sin script): se ven tres franjas con las tres opciones y sin globo", p5.is_visible("#vistaSplit") and len(cj5) == 3 and all(c["r"] - c["x"] > 1200 and 200 < c["b"] - c["y"] < 280 for c in cj5) and sorted(c["y"] for c in cj5) == [c["y"] for c in sorted(cj5, key=lambda c: c["y"])] and cj5[0]["y"] < 5 and cj5[2]["b"] > 715 and p5.evaluate("getComputedStyle(document.querySelector('#vistaSplit .vs__mundo')).display") == "none")
         p5.evaluate("document.querySelector('[data-vs=mapas]').click()"); ok_f = _espera_oculta(p5)
         check("split (sin script): elegir sigue funcionando", ok_f and p5.is_visible("#grupoMapas"))
         c5.close()
-        # estático
+        # ---------- sin canvas 2D: mismo respaldo ----------
+        c7 = br.new_context(viewport={"width": 1280, "height": 720}, service_workers="block"); p7 = c7.new_page(); errs_7 = []
+        p7.on("pageerror", lambda e: errs_7.append(str(e)))
+        p7.add_init_script(_INIT_S + ";(function(){const o = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function(t){ if (this.classList && this.classList.contains('vs__globo')) return null; return o.apply(this, arguments); };})()")
+        p7.goto(BASE, wait_until="networkidle", timeout=60000); p7.wait_for_timeout(500)
+        p7.evaluate("document.querySelector('#portalJuegos').click()"); p7.wait_for_timeout(500)
+        check("split (sin canvas): queda el respaldo de franjas y se puede elegir", p7.is_visible("#vistaSplit") and p7.evaluate("!window.TIKI_SPLIT") and p7.evaluate("getComputedStyle(document.querySelector('#vistaSplit .vs__mundo')).display") == "none" and not errs_7)
+        p7.evaluate("document.querySelector('[data-vs=letras]').click()"); ok_c = _espera_oculta(p7)
+        check("split (sin canvas): elegir abre la pestaña", ok_c and p7.is_visible("#grupoLetras"))
+        c7.close()
+        # ---------- estático ----------
         _rz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         _ix = open(os.path.join(_rz, "index.html"), encoding="utf-8").read()
         _sj = open(os.path.join(_rz, "split.js"), encoding="utf-8").read()
-        check("split: index.html enlaza split.js y no quedan animaciones SMIL del rayo antiguo", '<script src="split.js" defer></script>' in _ix and "vsRespL" not in _ix and "<animate " not in _ix[_ix.index('id="vistaSplit"'):_ix.index('id="vistaSplit"') + 6000])
-        check("split: sin manejadores en línea ni recursos externos en split.js", not re.search(r"\bon[a-z]+\s*=", _sj.replace("onload", "")) and "http" not in _sj)
+        check("split: index.html enlaza split.js y ya no quedan los rayos SVG de la «Y» antigua", '<script src="split.js" defer></script>' in _ix and "vs__rayo" not in _ix and "vs__txt" not in _ix and "vsRespL" not in _ix)
+        check("split: sin manejadores en línea ni recursos externos en split.js", not re.search(r"\bon[a-z]+\s*=", _sj.replace("onload", "").replace("onerror", "")) and "http" not in _sj and "innerHTML" not in _sj)
+        try:
+            from PIL import Image as _Im
+            _im = _Im.open(os.path.join(_rz, "mapas", "tierra.png")).convert("L"); _w, _h = _im.size
+            def _px(lon, lat): return _im.getpixel((min(_w - 1, int((lon + 180) / 360 * _w)), min(_h - 1, int((90 - lat) / 180 * _h))))
+            _tierra = sum(1 for v in _im.tobytes() if v > 128) / (_w * _h)
+            check("split: mapas/tierra.png (1024×512, ligera) coloca bien Europa, Asia, América y los océanos", (_w, _h) == (1024, 512) and os.path.getsize(os.path.join(_rz, "mapas", "tierra.png")) < 80000 and 0.2 < _tierra < 0.45 and _px(2, 47) > 200 and _px(10, 50) > 200 and _px(105, 35) > 200 and _px(-100, 40) > 200 and _px(-150, 10) < 50 and _px(-30, 30) < 50 and _px(75, -10) < 50, "tierra %.2f" % _tierra)
+        except ImportError:
+            pass
     except Exception as e:
-        check("pantalla dividida «Y» (3bd)", False, str(e)[:250])
+        check("pantalla «mundo» (3bd)", False, str(e)[:300])
+
+    print("3be) Minijuegos de mapas (Zoom out, Brújula, Ruta del crack, Encuentra el país)")
+    try:
+        _INIT_MJ = "localStorage.setItem('tikitexto:idioma','%s');localStorage.setItem('tikitexto:consentimiento','no');localStorage.setItem('tikitexto:analitica','no');sessionStorage.setItem('tikitexto:intro','1');sessionStorage.setItem('tikitexto:vista','juegos');sessionStorage.setItem('tikitexto:grupo','letras')"
+        def _espera_mj(pg, t=45000):
+            for _i in range(int(t / 300)):
+                if pg.evaluate("!!(window.TIKI && TIKI.mapasj && TIKI.mapasj.juego() && TIKI.mapasj.juego().S.listo)"): return True
+                pg.wait_for_timeout(300)
+            raise Exception("el minijuego de mapas no terminó de cargar")
+        def _abre_mj(modo, lang="es", ancho=400, alto=820):
+            cx = br.new_context(viewport={"width": ancho, "height": alto}, service_workers="block")
+            pgx = cx.new_page(); errs = []
+            pgx.on("pageerror", lambda e: errs.append(str(e)))
+            pgx.on("console", lambda m: errs.append(m.text) if m.type == "error" and re.search(r"Content Security Policy|Refused|mapas", m.text, re.I) else None)
+            pgx.add_init_script(_INIT_MJ % lang)
+            pgx.goto(BASE + "?modo=" + modo, wait_until="networkidle", timeout=60000)
+            _espera_mj(pgx)
+            return cx, pgx, errs
+        # --- pestaña y tarjetas ---
+        cm0 = br.new_context(viewport={"width": 400, "height": 820}, service_workers="block"); pm0 = cm0.new_page(); errs_m0 = []
+        pm0.on("pageerror", lambda e: errs_m0.append(str(e)))
+        pm0.add_init_script(_INIT_MJ % "es")
+        pm0.goto(BASE, wait_until="networkidle", timeout=60000); pm0.wait_for_timeout(400)
+        pm0.evaluate("document.querySelector('[data-grupo-btn=mapas]').click()"); pm0.wait_for_timeout(300)
+        check("minijuegos de mapas: la pestaña «Mapas» tiene 5 tarjetas (Clava el sitio + 4 minijuegos)", pm0.locator("#grupoMapas [data-mapas]").count() == 1 and pm0.locator("#grupoMapas [data-mapasj]").count() == 4 and pm0.evaluate("[...document.querySelectorAll('#grupoMapas [data-mapasj]')].map(e=>e.dataset.mapasj).join()") == "zoom,brujula,ruta,paises")
+        check("minijuegos de mapas: las 4 tarjetas son visibles y tienen título y descripción", pm0.evaluate("[...document.querySelectorAll('#grupoMapas [data-mapasj]')].every(e=>{const r=e.getBoundingClientRect(); return r.width>150&&r.height>100&&e.innerText.trim().length>25;})"))
+        check("minijuegos de mapas: la portada sin errores de JavaScript", not errs_m0, "; ".join(errs_m0)[:160])
+        cm0.close()
+        # --- Zoom out ---
+        cz, pz, errs_z = _abre_mj("zoomout")
+        check("zoom out: ?modo=zoomout abre el juego con su menú y su mapa", pz.locator(".mp-raiz[data-juego-mapas=zoom]").count() == 1 and pz.locator("[data-menu]:not([hidden])").count() == 1 and pz.locator("[data-mapa] canvas").count() >= 1 and "OUT" in pz.inner_text(".mp-logo").upper())
+        r = pz.evaluate("""(()=>{ const j=TIKI.mapasj.juego(), G=j.G; const out=[]; let bien=true, pop=true, nom=true;
+          for(let s=1;s<=300;s++){ const rr=G.generar(j.mulberry(s)); if(rr.length!==5||new Set(rr.map(x=>x.idx)).size!==5) bien=false;
+            rr.forEach((x,k)=>{ if(x.opts.length!==4||x.opts.indexOf(x.idx)<0||new Set(x.opts).size!==4) bien=false; const nn=x.opts.map(i=>j.M.ciudad(i).nom); if(new Set(nn).size!==4) nom=false; if(k>0&&j.M.ciudad(x.idx).pop>j.M.ciudad(rr[k-1].idx).pop) pop=false; }); }
+          const A=G.generar(j.mulberry(20261127)).map(x=>x.idx).join(), B=G.generar(j.mulberry(20261127)).map(x=>x.idx).join(), C=G.generar(j.mulberry(20261128)).map(x=>x.idx).join();
+          return {bien,pop,nom,det:A===B,otro:A!==C,zp:G.ZPASOS.length,zm:G.ZMULT.join()}; })()""")
+        check("zoom out: 300 retos con 5 ciudades distintas, 4 opciones con la correcta y sin nombres repetidos", r["bien"] and r["nom"], str(r))
+        check("zoom out: las ciudades van de la más grande a la más pequeña y el reto diario es determinista", r["pop"] and r["det"] and r["otro"], str(r))
+        check("zoom out: 6 encuadres que valen 1000, 800, 620, 460, 320 y 200", r["zp"] == 6 and r["zm"] == "1,0.8,0.62,0.46,0.32,0.2", str(r))
+        pz.evaluate("document.querySelector('[data-mp=diario]').click()"); pz.wait_for_timeout(500)
+        check("zoom out: el reto diario arranca con 5 rondas, 4 opciones y el valor actual visible", pz.evaluate("TIKI.mapasj.juego().S.rondas.length") == 5 and pz.locator(".mj-op").count() == 4 and re.search(r"1\.?000", pz.inner_text("[data-qs]")) is not None)
+        _ok = False
+        for _i in range(60):
+            if pz.evaluate("TIKI.mapasj.juego().S.paso") >= 1: _ok = True; break
+            pz.wait_for_timeout(300)
+        check("zoom out: el mapa se aleja solo (pasa al siguiente encuadre y baja lo que vale acertar)", _ok and re.search(r"1\.?000", pz.inner_text("[data-qs]")) is None, pz.inner_text("[data-qs]"))
+        # ronda 1: fallo -> 0 puntos y la opción elegida en rojo
+        pz.evaluate("(()=>{const j=TIKI.mapasj.juego(); const r=j.S.rondas[0]; const mala=r.opts.find(i=>i!==r.idx); j.contesta(mala);})()"); pz.wait_for_timeout(400)
+        q = pz.evaluate("(()=>{const j=TIKI.mapasj.juego(); return {pts:j.S.res[0].pts, fase:j.S.fase, ok:document.querySelectorAll('.mj-op.ok').length, mal:document.querySelectorAll('.mj-op.mal').length, bl:[...document.querySelectorAll('.mj-op')].every(b=>b.disabled)};})()")
+        check("zoom out: un fallo vale 0, marca la buena en verde y la elegida en rojo, y bloquea los botones", q["pts"] == 0 and q["fase"] == "reveal" and q["ok"] == 1 and q["mal"] == 1 and q["bl"], str(q))
+        pz.evaluate("TIKI.mapasj.juego().siguiente()"); pz.wait_for_timeout(400)
+        # ronda 2: acierto -> 1000·ZMULT[paso]
+        pz.evaluate("(()=>{const j=TIKI.mapasj.juego(); j.contesta(j.S.rondas[1].idx);})()"); pz.wait_for_timeout(300)
+        q = pz.evaluate("(()=>{const j=TIKI.mapasj.juego(); return {pts:j.S.res[1].pts, esperado:Math.round(1000*j.G.ZMULT[j.S.paso])};})()")
+        check("zoom out: un acierto vale 1000 por el multiplicador del encuadre en que se responde", q["pts"] == q["esperado"] and q["pts"] >= 200, str(q))
+        pz.evaluate("TIKI.mapasj.juego().siguiente()"); pz.wait_for_timeout(400)
+        # ronda 3: se agota el tiempo
+        pz.evaluate("TIKI.mapasj.juego().G.agota()"); pz.wait_for_timeout(300)
+        q = pz.evaluate("(()=>{const j=TIKI.mapasj.juego(); const r=j.S.res[2]; return {pts:r.pts, ag:r.agotado, fase:j.S.fase};})()")
+        check("zoom out: al agotarse el tiempo la ronda vale 0 y se marca como agotada", q["pts"] == 0 and q["ag"] is True and q["fase"] == "reveal", str(q))
+        pz.evaluate("TIKI.mapasj.juego().siguiente()"); pz.wait_for_timeout(400)
+        for _k in (3, 4):
+            pz.evaluate("(()=>{const j=TIKI.mapasj.juego(); j.contesta(j.S.rondas[%d].idx);})()" % _k); pz.wait_for_timeout(300)
+            pz.evaluate("TIKI.mapasj.juego().siguiente()"); pz.wait_for_timeout(400)
+        pz.wait_for_timeout(1400)
+        fin = pz.evaluate("(()=>{const j=TIKI.mapasj.juego(); return {fase:j.S.fase, total:j.S.total, suma:j.S.res.reduce((a,x)=>a+x.pts,0), filas:document.querySelectorAll('[data-f-lista] li').length, vis:!document.querySelector('[data-fin]').hidden, comp:!document.querySelector('[data-f-comp-b]').hidden, tiki:!document.querySelector('[data-f-tiki]').hidden};})()")
+        check("zoom out: tras 5 rondas sale el resultado con la suma correcta, 5 filas y compartir", fin["vis"] and fin["filas"] == 5 and fin["total"] == fin["suma"] and fin["comp"], str(fin))
+        check("zoom out: el tikitexto del reto diario solo se da con media ≥500", fin["tiki"] == (fin["total"] / 5 >= 500), str(fin))
+        check("zoom out: el reto cuenta para la racha diaria (clave mj)", "mj" in pz.evaluate("TIKI.racha.actual().retos.join(',')").split(","))
+        pz.keyboard.press("Escape"); pz.wait_for_timeout(300)
+        pz.keyboard.press("Escape"); pz.wait_for_timeout(400)
+        check("zoom out: Esc dos veces vuelve al menú y cierra el juego", pz.locator(".mp-raiz").count() == 0 and pz.evaluate("TIKI.mapasj.juego()") is None)
+        check("zoom out: sin errores de JavaScript ni CSP", not errs_z, "; ".join(errs_z)[:200])
+        cz.close()
+        # --- Brújula del fútbol ---
+        cb, pb, errs_b = _abre_mj("brujula")
+        check("brújula: ?modo=brujula abre el juego con su menú y su mapa", pb.locator(".mp-raiz[data-juego-mapas=brujula]").count() == 1 and pb.locator("[data-menu]:not([hidden])").count() == 1 and "BR" in pb.inner_text(".mp-logo").upper())
+        r = pb.evaluate("""async()=>{ const m=await import(new URL('mapas_juegos.js', location.href).href); const j=TIKI.mapasj.juego(), G=j.G; const byId={}; let n=0, nr=0, nc=0, mal=[];
+          const hav=(a,b)=>{const R=6371,r=Math.PI/180,dl=(b.lat-a.lat)*r,dn=(b.lon-a.lon)*r,x=Math.sin(dl/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dn/2)**2; return 2*R*Math.asin(Math.sqrt(x));};
+          for(let s=1;s<=300;s++){ const rr=G.generar(j.mulberry(s)); if(rr.length!==5) mal.push('n'+s);
+            const rumbo=rr.filter(x=>x.tipo==='rumbo').length; if(rumbo<3) mal.push('r'+s);
+            rr.forEach(x=>{ n++; if(x.tipo==='rumbo'){ nr++; const q=m.rumbos(x.a,x.b); if(m.sectorDe(q.gc)!==x.sector||m.sectorDe(q.rh)!==x.sector||m.margenSector(q.gc)<7||m.margenSector(q.rh)<7) mal.push('s'+s);
+                const d=hav(x.a,x.b); if(d<349||d>7501) mal.push('d'+s); if(x.a.idx===x.b.idx) mal.push('i'+s); }
+              else { nc++; if(x.opts.length!==3||new Set(x.opts).size!==3||x.opts.indexOf(x.ans)<0) mal.push('o'+s);
+                const ds=x.ds; if(ds[1].d/ds[0].d<1.29||ds[0].d<149||ds[0].id!==x.ans) mal.push('c'+s); } }); }
+          return {n,nr,nc,mal:mal.slice(0,8), nm:mal.length, mar:m.margenSector(22.5), sec:[0,22.4,22.6,90,337.4,337.6,359].map(m.sectorDe).join()}; }""")
+        check("brújula: 300 retos de 5 rondas (≥3 de rumbo) con sectores, márgenes ≥7° y distancias válidas", r["n"] == 1500 and r["nm"] == 0, str(r))
+        check("brújula: en cada ronda de cercanía la respuesta es la más cercana y la segunda está ≥30 % más lejos", r["nc"] > 100 and r["nm"] == 0, str(r))
+        check("brújula: los 8 sectores se reparten de 45° centrados en N, NE, E…", r["sec"] == "0,0,1,2,7,0,0", str(r))
+        pb.evaluate("document.querySelector('[data-mp=diario]').click()"); pb.wait_for_timeout(500)
+        tipos = pb.evaluate("TIKI.mapasj.juego().S.rondas.map(r=>r.tipo).join()").split(",")
+        for _k in range(5):
+            tp = pb.evaluate("TIKI.mapasj.juego().S.rondas[TIKI.mapasj.juego().S.i].tipo")
+            if tp == "rumbo":
+                n_dir = pb.locator(".mj-dir").count()
+                check("brújula: ronda %d de rumbo muestra los 8 rumbos y el pin de referencia" % (_k + 1), n_dir == 8 and pb.evaluate("TIKI.mapasj.juego().M.marcadores().length") == 1, str(n_dir))
+                if _k == 0:
+                    pb.evaluate("(()=>{const j=TIKI.mapasj.juego(); j.contesta((j.S.rondas[0].sector+4)%8);})()"); pb.wait_for_timeout(300)
+                    check("brújula: un rumbo opuesto vale 0", pb.evaluate("TIKI.mapasj.juego().S.res[0].pts") == 0)
+                elif _k == 1 and tp == "rumbo":
+                    pb.evaluate("(()=>{const j=TIKI.mapasj.juego(); j.contesta((j.S.rondas[1].sector+1)%8);})()"); pb.wait_for_timeout(300)
+                    check("brújula: un rumbo vecino vale 200", pb.evaluate("TIKI.mapasj.juego().S.res[1].pts") == 200, str(pb.evaluate("TIKI.mapasj.juego().S.res[1].pts")))
+                else:
+                    pb.evaluate("(()=>{const j=TIKI.mapasj.juego(); j.contesta(j.S.rondas[j.S.i].sector);})()"); pb.wait_for_timeout(300)
+                    check("brújula: acertar el rumbo da entre 600 y 1000", 600 <= pb.evaluate("TIKI.mapasj.juego().S.res[%d].pts" % _k) <= 1000)
+            else:
+                check("brújula: ronda %d de cercanía muestra 3 opciones" % (_k + 1), pb.locator(".mj-op").count() == 3, str(pb.locator(".mj-op").count()))
+                pb.evaluate("(()=>{const j=TIKI.mapasj.juego(); j.contesta(j.S.rondas[j.S.i].ans);})()"); pb.wait_for_timeout(300)
+                check("brújula: acertar la cercanía da entre 600 y 1000 y muestra las distancias", 600 <= pb.evaluate("TIKI.mapasj.juego().S.res[%d].pts" % _k) <= 1000 and "km" in pb.inner_text("[data-r-det]"))
+            pb.evaluate("TIKI.mapasj.juego().siguiente()"); pb.wait_for_timeout(350)
+        pb.wait_for_timeout(1400)
+        fin = pb.evaluate("(()=>{const j=TIKI.mapasj.juego(); return {total:j.S.total, suma:j.S.res.reduce((a,x)=>a+x.pts,0), filas:document.querySelectorAll('[data-f-lista] li').length, vis:!document.querySelector('[data-fin]').hidden, tiki:!document.querySelector('[data-f-tiki]').hidden, comp:!document.querySelector('[data-f-comp-b]').hidden};})()")
+        check("brújula: final con 5 filas, suma correcta, +1 tikitexto (media ≥500) y compartir", fin["vis"] and fin["filas"] == 5 and fin["total"] == fin["suma"] and fin["tiki"] and fin["comp"], str(fin))
+        check("brújula: sin errores de JavaScript ni CSP", not errs_b, "; ".join(errs_b)[:200])
+        cb.close()
+        # --- Ruta del crack ---
+        cr, pr, errs_r = _abre_mj("rutacrack")
+        check("ruta del crack: ?modo=rutacrack abre el juego con su menú y su mapa", pr.locator(".mp-raiz[data-juego-mapas=ruta]").count() == 1 and pr.locator("[data-menu]:not([hidden])").count() == 1 and "CRACK" in pr.inner_text(".mp-logo").upper())
+        r = pr.evaluate("""async()=>{ const m=await import(new URL('mapas_juegos.js', location.href).href); const d=await import(new URL('cuartetos_datos.js', location.href).href); const j=TIKI.mapasj.juego(), G=j.G;
+          const cc=m.CIUDAD_CLUB, jug={}; d.JUGADORES.forEach(x=>{ jug[x.n]=[...new Set(x.c.map(k=>cc[k]))].sort((a,b)=>a-b).join('+'); });
+          let mal=[], orden=true, largos=0;
+          for(let s=1;s<=300;s++){ const rr=G.generar(j.mulberry(s)); if(rr.length!==5) mal.push('n'+s);
+            rr.forEach((x,k)=>{ const clave=x.ciudades.slice().sort((a,b)=>a-b).join('+'); if(x.ciudades.length<2) mal.push('c'+s); if(x.opts.length!==4||new Set(x.opts).size!==4||x.opts.indexOf(x.n)<0) mal.push('o'+s);
+              const iguales=x.opts.filter(n=>jug[n]===clave); if(iguales.length!==1||iguales[0]!==x.n) mal.push('u'+s);
+              if(k>0&&x.ciudades.length>rr[k-1].ciudades.length) orden=false; if(x.ciudades.length>=3) largos++; }); }
+          return {mal:mal.slice(0,8), nm:mal.length, orden, largos, clubes:Object.keys(cc).length}; }""")
+        check("ruta del crack: 300 retos con 5 jugadores, ≥2 ciudades y 4 opciones con UNA sola ruta idéntica", r["nm"] == 0 and r["largos"] > 50, str(r))
+        check("ruta del crack: las rutas van de más a menos pines y solo cuentan 13 clubes", r["orden"] and r["clubes"] == 13, str(r))
+        pr.evaluate("document.querySelector('[data-mp=diario]').click()"); pr.wait_for_timeout(700)
+        check("ruta del crack: el reto diario muestra tantos pines como ciudades, 4 nombres y el botón de pista", pr.evaluate("(()=>{const j=TIKI.mapasj.juego(); return j.M.marcadores().length===j.S.rondas[0].ciudades.length;})()") and pr.locator(".mj-op").count() == 4 and pr.locator("[data-pista]:not([hidden])").count() == 1)
+        pr.evaluate("TIKI.mapasj.juego().G.pista()"); pr.wait_for_timeout(200)
+        check("ruta del crack: la pista enseña selección y posición y se desactiva", pr.evaluate("TIKI.mapasj.juego().S.pista") is True and "·" in pr.inner_text("[data-guia]") and pr.evaluate("document.querySelector('[data-pista]').disabled") is True, pr.inner_text("[data-guia]")[:80])
+        pr.evaluate("(()=>{const j=TIKI.mapasj.juego(); j.contesta(j.S.rondas[0].n);})()"); pr.wait_for_timeout(300)
+        q = pr.evaluate("TIKI.mapasj.juego().S.res[0]")
+        check("ruta del crack: con la pista usada un acierto vale entre 300 y 600 y se marca la pista", 300 <= q["pts"] <= 600 and q["pista"] is True, str(q)[:140])
+        pr.evaluate("TIKI.mapasj.juego().siguiente()"); pr.wait_for_timeout(350)
+        pr.evaluate("(()=>{const j=TIKI.mapasj.juego(); const r=j.S.rondas[1]; j.contesta(r.opts.find(n=>n!==r.n));})()"); pr.wait_for_timeout(300)
+        check("ruta del crack: un fallo vale 0", pr.evaluate("TIKI.mapasj.juego().S.res[1].pts") == 0)
+        pr.evaluate("TIKI.mapasj.juego().siguiente()"); pr.wait_for_timeout(350)
+        for _k in (2, 3, 4):
+            pr.evaluate("(()=>{const j=TIKI.mapasj.juego(); j.contesta(j.S.rondas[%d].n);})()" % _k); pr.wait_for_timeout(300)
+            pr.evaluate("TIKI.mapasj.juego().siguiente()"); pr.wait_for_timeout(350)
+        pr.wait_for_timeout(1400)
+        fin = pr.evaluate("(()=>{const j=TIKI.mapasj.juego(); return {total:j.S.total, suma:j.S.res.reduce((a,x)=>a+x.pts,0), filas:document.querySelectorAll('[data-f-lista] li').length, vis:!document.querySelector('[data-fin]').hidden};})()")
+        check("ruta del crack: final con 5 filas y la suma correcta", fin["vis"] and fin["filas"] == 5 and fin["total"] == fin["suma"], str(fin))
+        check("ruta del crack: sin errores de JavaScript ni CSP", not errs_r, "; ".join(errs_r)[:200])
+        cr.close()
+        # --- Encuentra el país ---
+        cp, pp, errs_p = _abre_mj("encuentrapais")
+        check("encuentra el país: ?modo=encuentrapais abre el juego con su menú y su mapa", pp.locator(".mp-raiz[data-juego-mapas=paises]").count() == 1 and pp.locator("[data-menu]:not([hidden])").count() == 1 and "FIND" not in pp.inner_text(".mp-logo").upper() and "PA" in pp.inner_text(".mp-logo").upper())
+        r = pp.evaluate("""(()=>{ const j=TIKI.mapasj.juego(), G=j.G; const geo=G.geo(); const pool=G.PAISES_POOL; let mal=[]; let toca=[0,0,0,0,0,0];
+          const faltan=pool.filter(p=>!geo.has(p[0])).map(p=>p[0]);
+          for(let s=1;s<=300;s++){ const rr=G.generar(j.mulberry(s)); if(rr.length!==5||new Set(rr.map(x=>x.iso)).size!==5) mal.push('n'+s);
+            const niv=rr.map(x=>pool.find(p=>p[0]===x.iso)[2]).join(''); if(niv!=='00112') mal.push('l'+s+niv);
+            const nt=rr.filter(x=>x.tipo==='toca').length; toca[nt]++; if(nt<2||nt>3) mal.push('t'+s);
+            rr.forEach(x=>{ if(x.opts.length!==4||new Set(x.opts).size!==4||x.opts.indexOf(x.iso)<0) mal.push('o'+s); }); }
+          const sel=(lon,lat)=>G.paisEn(lon,lat); const fuera=pool.filter(p=>geo.has(p[0])&&(()=>{const c=G.centro(p[0]); return G.paisEn(c.lon,c.lat)!==p[0];})()).map(p=>p[0]);
+          return {n:pool.length, uni:new Set(pool.map(p=>p[0])).size, niveles:[0,1,2].map(n=>pool.filter(p=>p[2]===n).length).join(), faltan, mal:mal.slice(0,8), nm:mal.length, toca:toca.join(),
+            es:sel(-3.70,40.42), fr:sel(2.35,48.86), ar:sel(-58.4,-34.6), jp:sel(139.7,35.7), br:sel(-47.9,-15.8), mar:sel(-30,30), gb:sel(-0.12,51.5),
+            fuera, dentro:G.distanciaPais('ES',-3.70,40.42), pt:Math.round(G.distanciaPais('PT',-3.70,40.42)), lejos:Math.round(G.distanciaPais('ES',139.7,35.7)) }; })()""")
+        check("encuentra el país: ≥70 países únicos, todos con contorno, en 3 niveles", r["n"] >= 70 and r["uni"] == r["n"] and not r["faltan"] and all(int(x) >= 10 for x in r["niveles"].split(",")), str(r))
+        check("encuentra el país: 300 retos con 5 países distintos, niveles 0·0·1·1·2, 2-3 de tocar y 4 opciones con la correcta", r["nm"] == 0, str(r))
+        check("encuentra el país: el contorno acierta Madrid, París, Buenos Aires, Tokio, Brasilia y Londres y el mar queda sin país", r["es"] == "ES" and r["fr"] == "FR" and r["ar"] == "AR" and r["jp"] == "JP" and r["br"] == "BR" and r["gb"] == "GB" and r["mar"] is None, str(r))
+        check("encuentra el país: el punto que marca cada país (centro) cae siempre dentro de su territorio (Noruega, Japón, Chile…)", not r["fuera"], str(r["fuera"]))
+        check("encuentra el país: distancia 0 dentro del país y razonable fuera (Madrid–Portugal, Tokio–España)", r["dentro"] == 0 and 150 <= r["pt"] <= 450 and r["lejos"] > 9000, str(r))
+        pp.evaluate("document.querySelector('[data-mp=diario]').click()"); pp.wait_for_timeout(700)
+        # reto diario completo: se responde bien cada ronda según su tipo
+        vistos = set()
+        for _k in range(5):
+            tp = pp.evaluate("TIKI.mapasj.juego().S.rondas[TIKI.mapasj.juego().S.i].tipo"); vistos.add(tp)
+            if tp == "forma":
+                check("encuentra el país: ronda %d «resaltado» con contorno dorado y 4 opciones" % (_k + 1), pp.evaluate("TIKI.mapasj.juego().S.cap[0].c") == "objetivo" and pp.locator(".mj-op").count() == 4)
+                pp.evaluate("(()=>{const j=TIKI.mapasj.juego(); j.contesta(j.S.rondas[j.S.i].iso);})()")
+            else:
+                check("encuentra el país: ronda %d «tocar» sin botones de respuesta y con «Confirmar» desactivado" % (_k + 1), pp.locator(".mj-op").count() == 0 and pp.evaluate("document.querySelector('[data-confirmar]').disabled") is True and pp.locator("[data-confirmar]:not([hidden])").count() == 1)
+                pp.evaluate("(()=>{const j=TIKI.mapasj.juego(); const c=j.G.centro(j.S.rondas[j.S.i].iso); j.G.alTocar({lon:c.lon,lat:c.lat}); j.G.confirma();})()")
+            pp.wait_for_timeout(300)
+            q = pp.evaluate("TIKI.mapasj.juego().S.res[%d].pts" % _k)
+            check("encuentra el país: acertar la ronda %d da entre 500 y 1000" % (_k + 1), 500 <= q <= 1000, str(q))
+            pp.evaluate("TIKI.mapasj.juego().siguiente()"); pp.wait_for_timeout(400)
+        pp.wait_for_timeout(1400)
+        fin = pp.evaluate("(()=>{const j=TIKI.mapasj.juego(); return {total:j.S.total, suma:j.S.res.reduce((a,x)=>a+x.pts,0), filas:document.querySelectorAll('[data-f-lista] li').length, vis:!document.querySelector('[data-fin]').hidden, tiki:!document.querySelector('[data-f-tiki]').hidden, comp:!document.querySelector('[data-f-comp-b]').hidden};})()")
+        check("encuentra el país: el reto diario mezcla rondas de tocar y de resaltado", vistos == {"toca", "forma"}, str(vistos))
+        check("encuentra el país: final con 5 filas, suma correcta, +1 tikitexto (media ≥500) y compartir", fin["vis"] and fin["filas"] == 5 and fin["total"] == fin["suma"] and fin["tiki"] and fin["comp"], str(fin))
+        # partida libre hasta una ronda de «tocar» y de «resaltado» para los casos de fallo
+        def _libre_hasta(tipo):
+            for _t in range(40):
+                pp.evaluate("TIKI.mapasj.juego().empezar('libre')"); pp.wait_for_timeout(120)
+                if pp.evaluate("TIKI.mapasj.juego().S.rondas[0].tipo") == tipo: return True
+            return False
+        check("encuentra el país: la partida libre ofrece rondas de «resaltado»", _libre_hasta("forma"))
+        pp.evaluate("(()=>{const j=TIKI.mapasj.juego(); const r=j.S.rondas[0]; j.contesta(r.opts.find(i=>i!==r.iso));})()"); pp.wait_for_timeout(300)
+        q = pp.evaluate("(()=>{const j=TIKI.mapasj.juego(); return {pts:j.S.res[0].pts, c:j.S.cap[0].c, fase:j.S.fase};})()")
+        check("encuentra el país: un fallo en «resaltado» vale 0 y el contorno pasa a rojo", q["pts"] == 0 and q["c"] == "mal" and q["fase"] == "reveal", str(q))
+        check("encuentra el país: la partida libre ofrece rondas de «tocar»", _libre_hasta("toca"))
+        pp.evaluate("(()=>{const j=TIKI.mapasj.juego(); j.G.alTocar({lon:-30,lat:-50}); j.G.confirma();})()"); pp.wait_for_timeout(300)
+        q = pp.evaluate("(()=>{const j=TIKI.mapasj.juego(); return {pts:j.S.res[0].pts, n:j.S.cap.length, c:j.S.cap[0].c};})()")
+        check("encuentra el país: tocar en mitad del océano vale 0 y se ilumina el país pedido", q["pts"] == 0 and q["c"] in ("bien", "mal"), str(q))
+        _casi = None
+        for _t in range(40):
+            if not _libre_hasta("toca"): break
+            pt = pp.evaluate("""(()=>{ const j=TIKI.mapasj.juego(), G=j.G, r=j.S.rondas[0]; const c=G.centro(r.iso); let mejor=null;
+              for(let a=0;a<360&&!mejor;a+=15){ for(let d=30;d<=420&&!mejor;d+=15){ const lat=c.lat+d/111*Math.cos(a*Math.PI/180), lon=c.lon+d/111/Math.max(.2,Math.cos(c.lat*Math.PI/180))*Math.sin(a*Math.PI/180);
+                if(Math.abs(lat)>80) continue; const dd=G.distanciaPais(r.iso,lon,lat); if(dd>40&&dd<110&&G.paisEn(lon,lat)!==r.iso) mejor={lon,lat,dd}; } } return mejor; })()""")
+            if pt:
+                pp.evaluate("(p)=>{const j=TIKI.mapasj.juego(); j.G.alTocar({lon:p.lon,lat:p.lat}); j.G.confirma();}", pt); pp.wait_for_timeout(300)
+                _casi = pp.evaluate("(()=>{const j=TIKI.mapasj.juego(); return {pts:j.S.res[0].pts, txt:document.querySelector('[data-r-det]').textContent};})()"); break
+        check("encuentra el país: fallar por poco (≤120 km de la frontera) da 250 y avisa «Casi»", _casi is not None and _casi["pts"] == 250 and ("km" in _casi["txt"]), str(_casi))
+        check("encuentra el país: sin errores de JavaScript ni CSP", not errs_p, "; ".join(errs_p)[:200])
+        cp.close()
+        # --- idiomas y modo horizontal ---
+        for _lg, _txt in (("en", "COMPASS"), ("de", "KOMPASS"), ("fr", "BOUSSOLE")):
+            cl, pl, errs_l = _abre_mj("brujula", _lg)
+            logo = pl.inner_text(".mp-logo").upper()
+            check("minijuegos de mapas (%s): ?modo=brujula está traducido (%s) y el módulo no se re-traduce" % (_lg, _txt), _txt in logo and "BRÚJULA" not in logo and pl.evaluate("document.querySelector('.mp-raiz').hasAttribute('data-no-t')"), logo.replace("\n", " "))
+            pl.evaluate("document.querySelector('[data-mp=diario]').click()"); pl.wait_for_timeout(500)
+            pq = pl.inner_text("[data-q]")
+            check("minijuegos de mapas (%s): la pregunta no queda en español" % _lg, not re.search(r"¿|Desde |hacia dónde|más cerca", pq), pq[:90])
+            check("minijuegos de mapas (%s): sin errores de JavaScript" % _lg, not errs_l, "; ".join(errs_l)[:150])
+            cl.close()
+        ch, ph, errs_h = _abre_mj("rutacrack", "es", 844, 390)
+        ph.evaluate("document.querySelector('[data-mp=diario]').click()"); ph.wait_for_timeout(900)
+        sol = ph.evaluate("""(()=>{ const m=document.querySelector('[data-mapa]').getBoundingClientRect(), p=document.querySelector('[data-pie] .mp-pie__caja').getBoundingClientRect(); return {mapaAlto:Math.round(m.height), caja:Math.round(p.height), alto:innerHeight, desborda:document.documentElement.scrollWidth>innerWidth+1}; })()""")
+        check("minijuegos de mapas: en horizontal (844×390) la caja de respuestas no tapa más de la mitad del mapa y no hay scroll lateral", sol["caja"] < sol["alto"] * 0.62 and not sol["desborda"], str(sol))
+        check("minijuegos de mapas (horizontal): sin errores", not errs_h, "; ".join(errs_h)[:150])
+        ch.close()
+        # --- estático: traducciones, ficheros y enlaces ---
+        _rz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        _sj = open(os.path.join(_rz, "mapas_juegos.js"), encoding="utf-8").read()
+        _a = _sj.index("const X = {"); _b = _sj.index("const DIRS", _a)
+        _arrs = re.findall(r'(\w+): (\[(?:"(?:[^"\\]|\\.)*"(?:, )?)+\])', _sj[_a:_b])
+        _mal = []
+        for _k, _arr in _arrs:
+            try: _v = json.loads(_arr)
+            except Exception: _mal.append(_k + ":json"); continue
+            if len(_v) != 6 or any(not str(x).strip() for x in _v): _mal.append(_k + ":6 idiomas"); continue
+            _ph = [sorted(re.findall(r"\{\w+\}", x)) for x in _v]
+            if any(p_ != _ph[0] for p_ in _ph): _mal.append(_k + ":marcadores")
+        check("minijuegos de mapas: %d textos del módulo, todos en los 6 idiomas y con los mismos marcadores" % len(_arrs), len(_arrs) >= 100 and not _mal, ", ".join(_mal)[:200])
+        _claves = {k for k, _ in _arrs}
+        _usadas = set(re.findall(r'\btr\("(\w+)"', _sj)) | set(re.findall(r'\bfw\.tr\("(\w+)"', _sj))
+        _faltan = sorted(k for k in _usadas if len(k) > 1 and k not in _claves)
+        check("minijuegos de mapas: todas las claves tr(\"…\") usadas existen en los textos", not _faltan and all(k in _claves for k in ("pP", "pD", "pM", "pF", "w0", "w1", "w2", "w3", "w4", "w5", "r1", "r2", "r3", "r4", "r5")), ", ".join(_faltan)[:200])
+        _dirs = re.findall(r'(\w\w): \[((?:"[^"]+"(?:, )?)+)\]', _sj[_sj.index("const DIRS"):_sj.index("const FLECHAS")])
+        check("minijuegos de mapas: los rumbos están en los 6 idiomas con 8 direcciones cada uno", len(_dirs) == 6 and all(len(re.findall('"', d_)) == 16 for _, d_ in _dirs), str(len(_dirs)))
+        for _f in ("mapas_juegos.js", "mapas_juegos.css", "mapas/paises_geo.bin", "mapas_motor.js"):
+            check("minijuegos de mapas: existe %s" % _f, os.path.exists(os.path.join(_rz, _f)))
+        _bin = open(os.path.join(_rz, "mapas", "paises_geo.bin"), "rb").read()
+        check("minijuegos de mapas: paises_geo.bin tiene la cabecera P1 y pesa <300 KB", _bin[:2] == b"P1" and 20000 < len(_bin) < 300000, str(len(_bin)))
+        _ix = open(os.path.join(_rz, "index.html"), encoding="utf-8").read()
+        check("minijuegos de mapas: index.html enlaza los 4 modos directos y la pestaña habla de 5 juegos", all(k in _ix for k in ("zoomout", "brujula", "rutacrack", "encuentrapais")) and not re.search(r"\bon[a-z]+\s*=\s*[\"']", _sj))
+        _rj = open(os.path.join(_rz, "racha.js"), encoding="utf-8").read()
+        check("minijuegos de mapas: la racha diaria incluye el reto «mj»", re.search(r"\bmj\b", _rj) is not None)
+        _bu = open(os.path.join(_rz, "tools", "buscador.py"), encoding="utf-8").read()
+        check("minijuegos de mapas: el buscador conoce los 4 modos", all(("/?modo=" + m) in _bu for m in ("zoomout", "brujula", "rutacrack", "encuentrapais")))
+        _jd2 = open(os.path.join(_rz, "buscador.json"), encoding="utf-8").read()
+        check("minijuegos de mapas: buscador.json incluye las 4 guías y los 4 modos", all(k in _jd2 for k in ("zoom-out-juego-de-ciudades-futbol", "brujula-del-futbol-juego-de-mapas", "ruta-del-crack-juego-de-mapas-futbol", "encuentra-el-pais-mapa-mudo-futbol", "modo=zoomout", "modo=encuentrapais")))
+    except Exception as e:
+        check("minijuegos de mapas (3be)", False, str(e)[:250])
 
     print("3au) Portada compacta y panel de tutorial y ayuda")
     try:
@@ -1921,7 +2296,7 @@ with sync_playwright() as p:
           for (const l of L) { ids.add(l.id); if (l.t.length!==6||l.d.length!==6||l.tiers.length!==3||!(l.tiers[0]<l.tiers[1]&&l.tiers[1]<l.tiers[2])||!l.d.every(x=>x.includes('{n}'))) mal++; }
           const v0 = m.calcular({}, {}), v1 = m.calcular({pts:300,jugadas:200,mejor:20,diaMejor:40}, {sl:{mejorm:7000,bal:6000}});
           return {mal, n:L.length, uni:ids.size, vacio:v0.every(e=>e.nivel===0), oro:v1.filter(e=>e.nivel===3).length, r0:m.resumen(v0).rango, r1:m.resumen(v1).rango}; })()""")
-        check("logros: 34 logros únicos con 6 idiomas y 3 niveles crecientes", r["mal"] == 0 and r["n"] >= 34 and r["uni"] == r["n"], str(r))
+        check("logros: 38 logros únicos con 6 idiomas y 3 niveles crecientes", r["mal"] == 0 and r["n"] >= 38 and r["uni"] == r["n"], str(r))
         check("logros: perfil vacío = 0 medallas; marcas altas = oro", r["vacio"] and r["oro"] >= 5 and r["r0"] == 0 and r["r1"] >= 1, str(r))
         # perfil de ejemplo en el almacenamiento
         plg.evaluate("""(()=>{ const d = JSON.parse(localStorage.getItem('tikitexto:jugadores')); const p = d.perfiles[d.actual];
@@ -1929,16 +2304,16 @@ with sync_playwright() as p:
           localStorage.setItem('tikitexto:jugadores', JSON.stringify(d)); })()""")
         plg.goto(BASE, wait_until="networkidle", timeout=60000); plg.wait_for_timeout(5000)
         check("logros: la primera vez avisa de lo ya conseguido (una sola vez)", plg.locator(".lg-toast").count() >= 1)
-        check("logros: el banner muestra medallas y rango", re.match(r"^\d+/108", plg.locator("[data-lg-cnt]").first.inner_text().strip()) is not None, plg.locator("[data-lg-cnt]").first.inner_text())
+        check("logros: el banner muestra medallas y rango", re.match(r"^\d+/114", plg.locator("[data-lg-cnt]").first.inner_text().strip()) is not None, plg.locator("[data-lg-cnt]").first.inner_text())
         plg.evaluate("document.querySelector('[data-logros]').click()"); plg.wait_for_timeout(1800)
-        check("logros: se abre la vitrina con las 36 tarjetas", plg.locator(".lg-raiz").count() == 1 and plg.locator(".lg-card").count() == 36)
+        check("logros: se abre la vitrina con las 38 tarjetas", plg.locator(".lg-raiz").count() == 1 and plg.locator(".lg-card").count() == 38)
         check("logros: botón de compartir y anillo de progreso", plg.locator("[data-lg=compartir]").count() == 1 and plg.locator(".lg-anillo .prog").count() == 1)
         check("logros: hay medallas de oro, plata y bronce y bloqueadas", plg.locator(".lg-card--3").count() >= 1 and plg.locator(".lg-card--2").count() >= 1 and plg.locator(".lg-card--1").count() >= 1 and plg.locator(".lg-card--0").count() >= 1)
         plg.click("[data-f=ganadas]"); plg.wait_for_timeout(300)
         n_g = plg.locator(".lg-card").count()
         plg.click("[data-f=pendientes]"); plg.wait_for_timeout(300)
         n_p = plg.locator(".lg-card").count()
-        check("logros: los filtros reparten las tarjetas", 0 < n_g < 36 and 0 < n_p < 36 and plg.locator(".lg-card--3").count() == 0, "%d/%d" % (n_g, n_p))
+        check("logros: los filtros reparten las tarjetas", 0 < n_g < 38 and 0 < n_p < 38 and plg.locator(".lg-card--3").count() == 0, "%d/%d" % (n_g, n_p))
         plg.keyboard.press("Escape"); plg.wait_for_timeout(300)
         check("logros: Esc cierra la vitrina", plg.locator(".lg-raiz").count() == 0)
         # un logro nuevo muestra un aviso

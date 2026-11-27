@@ -5,6 +5,7 @@ const RETOS = [
   { k: "tv", ico: "❓", n: "Trivia" },
   { k: "cr", ico: "✖️", n: "Cruces" },
   { k: "ma", ico: "🗺️", n: "Clava el sitio" },
+  { k: "mj", ico: "🧭", n: "Minijuegos de mapas" },
 ];
 const PLANTILLA = `
 <div class="rc-fondo" aria-hidden="true"></div>

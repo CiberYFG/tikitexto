@@ -18,6 +18,8 @@ Genera (todo relativo a la raíz del repositorio):
   mapas/ciudades.json  geometría de las 7.342 ciudades
   mapas/n_<id>.json    nombres de ciudades por idioma (es,en,pt,fr,it,de)
   mapas/paises.json    etiquetas de países (posición, zoom y nombres)
+  mapas/paises_geo.bin contornos de países (50m) para saber en qué país se toca y para resaltarlos
+                       (formato «P1»: ver construye_paises_geo)
 
 Formato binario (idéntico en mundo y teselas):
   'T1' + byte shift (las coordenadas van divididas entre 2**shift) + 5 secciones
@@ -478,6 +480,55 @@ def construye_paises(base, salida):
     print("países:", len(out))
 
 
+def construye_paises_geo(base, salida):
+    """Contornos de países (Natural Earth 50m, simplificados) para el juego «Encuentra el país».
+    Formato «P1»: 'P1' + byte shift (las coordenadas van divididas entre 2**shift, igual que mundo.bin)
+    + uvarint nPaises; por país: 2 bytes ISO A2, uvarint nAnillos; por anillo: uvarint nPuntos,
+    primer punto (zigzag, absoluto) y deltas zigzag. Rejilla global de 2^18 unidades (x = longitud,
+    y = Mercator, y=0 arriba). Los países sin ISO (Somalilandia, Chipre del Norte, glaciar Siachen) no se incluyen."""
+    pa = paises(base, "50")
+    por = {}
+    for c in pa:
+        iso = limpia(c["f"].get("ISO_A2")) or ""
+        if iso in ("", "-99"):
+            iso = limpia(c["f"].get("ISO_A2_EH")) or ""
+        if len(iso) != 2 or iso == "-9":
+            continue
+        for a in c["anillos"]:
+            s = simplifica(a + [a[0]], 24)[:-1]
+            if len(s) < 3:
+                continue
+            xs = [p[0] for p in s]; ys = [p[1] for p in s]
+            if max(xs) - min(xs) < 24 and max(ys) - min(ys) < 24:
+                continue          # islote diminuto
+            por.setdefault(iso, []).append(s)
+    shift = 2
+    d = 1 << shift
+    out = bytearray(b"P1")
+    out.append(shift)
+    isos = sorted(por)
+    uvarint(len(isos), out)
+    for iso in isos:
+        out += iso.encode("ascii")
+        anillos = por[iso]
+        uvarint(len(anillos), out)
+        for a in anillos:
+            q = []
+            for x, y in a:
+                p = (int(round(x / d)), int(round(y / d)))
+                if not q or q[-1] != p:
+                    q.append(p)
+            uvarint(len(q), out)
+            px, py = q[0]
+            uvarint(zig(px), out); uvarint(zig(py), out)
+            for x, y in q[1:]:
+                uvarint(zig(x - px), out); uvarint(zig(y - py), out)
+                px, py = x, y
+    with open(os.path.join(salida, "paises_geo.bin"), "wb") as fh:
+        fh.write(out)
+    print("paises_geo.bin", len(out), "bytes;", len(isos), "países,", sum(len(v) for v in por.values()), "anillos")
+
+
 def main():
     if len(sys.argv) < 2:
         print(__doc__); sys.exit(1)
@@ -490,6 +541,8 @@ def main():
     if solo in ("todo", "ciudades"):
         construye_ciudades(base, salida)
         construye_paises(base, salida)
+    if solo in ("todo", "paises_geo"):
+        construye_paises_geo(base, salida)
     if solo in ("todo", "teselas"):
         construye_teselas(base, salida)
 
