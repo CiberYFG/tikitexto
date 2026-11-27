@@ -104,7 +104,7 @@ export function crearMapa(cont, op) {
   const mctx = cv.getContext("2d");
   let ctx = mctx;                       // destino actual de dibujo (principal u offscreen)
   const bg = document.createElement("canvas"), bctx = bg.getContext("2d");
-  let bw = 300, bh = 300, bref = null, baseInvalida = true, ultimoRender = 0, tIdle = 0;
+  let bw = 300, bh = 300, bref = null, baseInvalida = true, ultimoRender = 0, costeBase = 0, tIdle = 0;
   let w = 300, h = 300, dpr = 1;
   let cx = 0.5, cy = 0.42, z = 1.4;
   let etiq = { paises: op.paises !== false, ciudades: op.ciudades !== false, mares: op.mares !== false, carreteras: op.carreteras !== false };
@@ -167,11 +167,11 @@ export function crearMapa(cont, op) {
   function medir() {
     const r = cont.getBoundingClientRect();
     const nw = Math.max(1, Math.round(r.width)), nh = Math.max(1, Math.round(r.height));
-    const nd = Math.min(window.devicePixelRatio || 1, 2.5);
+    const nd = Math.min(window.devicePixelRatio || 1, 2);
     if (nw === w && nh === h && nd === dpr) return;
     w = nw; h = nh; dpr = nd;
     cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
-    const m = Math.round(Math.max(w, h) * 0.35);
+    const m = Math.round(Math.max(w, h) * 0.28);
     bw = w + 2 * m; bh = h + 2 * m;
     bg.width = Math.round(bw * dpr); bg.height = Math.round(bh * dpr);
     acota(); baseInvalida = true; pedir();
@@ -590,13 +590,14 @@ export function crearMapa(cont, op) {
      hacer zoom solo se desplaza/escala ese bitmap (barato) y al parar se vuelve a pintar nítido. */
   function renderBase() {
     const sw = w, sh = h;
+    const t0 = performance.now();
     ctx = bctx; w = bw; h = bh;
     bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     dibujaMapa();
     dibujaEtiquetas();
     ctx = mctx; w = sw; h = sh;
     bref = { cx: cx, cy: cy, z: z };
-    baseInvalida = false; ultimoRender = performance.now();
+    baseInvalida = false; ultimoRender = performance.now(); costeBase = ultimoRender - t0;
   }
   function cubre() {
     if (!bref) return false;
@@ -611,7 +612,11 @@ export function crearMapa(cont, op) {
     let x0 = c.x - (bw * k) / 2, y0 = c.y - (bh * k) / 2;
     if (Math.abs(k - 1) < 1e-9) { x0 = Math.round(x0 * dpr) / dpr; y0 = Math.round(y0 * dpr) / dpr; }
     mctx.fillStyle = P.mar; mctx.fillRect(0, 0, w, h);
-    mctx.drawImage(bg, 0, 0, bg.width, bg.height, x0, y0, bw * k, bh * k);
+    /* solo se copia la parte de la base que se ve (la base es mucho mayor que la pantalla: copiarla entera cuesta de más en móviles) */
+    const dw = bw * k, dh = bh * k, ex0 = Math.max(0, x0), ey0 = Math.max(0, y0), ex1 = Math.min(w, x0 + dw), ey1 = Math.min(h, y0 + dh);
+    if (ex1 <= ex0 || ey1 <= ey0) return;
+    const fx = bg.width / dw, fy = bg.height / dh;
+    mctx.drawImage(bg, (ex0 - x0) * fx, (ey0 - y0) * fy, (ex1 - ex0) * fx, (ey1 - ey0) * fy, ex0, ey0, ex1 - ex0, ey1 - ey0);
   }
   function bucle() {
     raf = 0;
@@ -627,9 +632,10 @@ export function crearMapa(cont, op) {
     if (sucio || hayVuelo) {
       sucio = false;
       const activo = ptrs.size > 0 || hayVuelo || inercia;
-      if (baseInvalida || !cubre()) {
-        if (!bref || !activo || performance.now() - ultimoRender > 45 || !cubre()) renderBase();
-      }
+      /* mientras se arrastra o se hace zoom, la base ya pintada se limita a desplazarse/escalarse (su margen la cubre); solo se
+         repinta si deja de cubrir la pantalla, y entonces a un ritmo proporcional a lo que cuesta (así no encadena fotogramas lentos) */
+      if (!bref || !cubre()) renderBase();
+      else if (baseInvalida && (!activo || performance.now() - ultimoRender > Math.max(90, costeBase * 3))) renderBase();
       compone();
       if (capa) { /* capa propia del juego (p. ej. un país resaltado), bajo los marcadores */
         mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
